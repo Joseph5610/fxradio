@@ -1,6 +1,6 @@
 package online.hudacek.broadcastsfx.data
 
-data class CountriesModel(
+data class Countries(
         val name: String,
         val stationcount: Int
 )

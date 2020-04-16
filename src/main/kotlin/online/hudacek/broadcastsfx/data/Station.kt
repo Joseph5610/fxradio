@@ -1,6 +1,6 @@
 package online.hudacek.broadcastsfx.data
 
-data class TopStationsModel(
+data class Station(
         val changeuuid: String,
         val stationuuid: String,
         val name: String,

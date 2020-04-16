@@ -1,8 +1,8 @@
 package online.hudacek.broadcastsfx
 
 import io.reactivex.Observable
-import online.hudacek.broadcastsfx.data.CountriesModel
-import online.hudacek.broadcastsfx.data.TopStationsModel
+import online.hudacek.broadcastsfx.data.Countries
+import online.hudacek.broadcastsfx.data.Station
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,16 +13,16 @@ import java.net.InetAddress
 interface StationsApiClient {
 
     @GET("json/stations/bycountry/{countryCode}")
-    fun getStationsByCountry(@Path("countryCode") countryCode: String): Observable<List<TopStationsModel>>
+    fun getStationsByCountry(@Path("countryCode") countryCode: String): Observable<List<Station>>
 
     @GET("json/stations")
-    fun getAllStations(): Observable<List<TopStationsModel>>
+    fun getAllStations(): Observable<List<Station>>
 
     @GET("json/stations/topvote/50")
-    fun getTopStations(): Observable<List<TopStationsModel>>
+    fun getTopStations(): Observable<List<Station>>
 
     @GET("json/countries")
-    fun getCountries(): Observable<List<CountriesModel>>
+    fun getCountries(): Observable<List<Countries>>
 
     companion object {
 

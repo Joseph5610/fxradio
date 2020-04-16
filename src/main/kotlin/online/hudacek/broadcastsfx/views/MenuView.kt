@@ -1,18 +1,24 @@
 package online.hudacek.broadcastsfx.views
 
+import javafx.collections.ObservableList
 import javafx.scene.control.ListView
-import javafx.scene.paint.Color
-import javafx.scene.text.Font
+import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.MenuController
-import online.hudacek.broadcastsfx.styles.NoBorder
+import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 import java.util.ArrayList
 
+private val logger = KotlinLogging.logger {}
+
 class MenuView : View() {
+
     private val controller: MenuController by inject()
 
-    override val root = vbox {
+    private val userMenuItems: ObservableList<String> by lazy {
+        listOf(messages["favourites"], messages["topStations"]).asObservable()
+    }
 
+    override val root = vbox {
         paddingAll = 10
 
         vbox {
@@ -20,31 +26,34 @@ class MenuView : View() {
         }
 
         textfield {
-            promptText = "Search"
+            promptText = messages["search"]
         }
 
         vbox {
             prefHeight = 20.0
         }
 
-        label("Library") {
-            textFill = Color.GRAY
-            font = Font(11.0)
+        label(messages["library"]) {
+            addClass(Styles.grayLabel)
         }
 
-        listview(listOf("Favourites", "Top Stations").asObservable()) {
+        listview(userMenuItems) {
             prefHeight = items.size * 24.0 + 4
             items.onChange {
                 (parent as ListView<*>).setPrefHeight(items.size * 24.0 + 4)
+            }
+            onUserSelect {
+                logger.debug { "selected list item" }
+                controller.reloadStations("")
             }
         }
 
         vbox {
             prefHeight = 20.0
         }
-        label("Countries") {
-            textFill = Color.GRAY
-            font = Font(11.0)
+
+        label(messages["countries"]) {
+            addClass(Styles.grayLabel)
         }
     }
 
@@ -63,8 +72,9 @@ class MenuView : View() {
                         { error -> error.printStackTrace() }
                 )
         root.add(listview(results.asObservable()) {
-            addClass(NoBorder.style)
-            onUserSelect(1) {
+            onUserSelect {
+                logger.debug { "selected $it" }
+                controller.reloadStations(it)
             }
         })
     }
