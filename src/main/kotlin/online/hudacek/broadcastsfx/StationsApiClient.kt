@@ -25,18 +25,16 @@ interface StationsApiClient {
     fun getCountries(): Observable<List<Countries>>
 
     companion object {
+        private val hostname: InetAddress by lazy { InetAddress.getAllByName("all.api.radio-browser.info")[0] }
 
-        fun create(): StationsApiClient {
-
-            val list = InetAddress.getAllByName("all.api.radio-browser.info")
+        val client: StationsApiClient by lazy {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://${list[0].canonicalHostName}/")
+                    .baseUrl("https://" + hostname.canonicalHostName)
                     .build()
 
-            return retrofit.create(StationsApiClient::class.java)
+            retrofit.create(StationsApiClient::class.java)
         }
     }
-
 }

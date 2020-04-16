@@ -4,8 +4,6 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.Button
 import javafx.scene.control.Label
-import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import mu.KotlinLogging
@@ -14,9 +12,6 @@ import online.hudacek.broadcastsfx.data.Station
 import online.hudacek.broadcastsfx.events.StationChangedEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.extension.MediaPlayerWrapper
-import online.hudacek.broadcastsfx.extension.cancelPlaying
-import online.hudacek.broadcastsfx.extension.changeVolume
-import online.hudacek.broadcastsfx.extension.play
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
@@ -26,12 +21,9 @@ class PlayerView : View() {
 
     private val controller: PlayerController by inject()
 
-    private var playingStation: Station? = null
-    private var previousStatus = PlayingStatus.Stopped
-
-    private lateinit var radioNameLabel: Label
-    private lateinit var radioLogoBox: VBox
-    private lateinit var playerControls: Button
+    private var radioNameLabel: Label by singleAssign()
+    private var radioLogoBox: VBox by singleAssign()
+    private var playerControls: Button by singleAssign()
 
     private val playButton = imageview("Media-Controls-Play-icon.png") {
         id = "playerControl"
@@ -51,22 +43,12 @@ class PlayerView : View() {
         subscribe<StationChangedEvent> { event ->
             logger.debug { "received event " + event.playingStatus + " for " + event.station }
             radioNameLabel.text = event.station.name
+            controller.handleStationChange(event)
             updateControls(event.playingStatus)
-            if (event.playingStatus == PlayingStatus.Playing) {
-                if (event.playingStatus != previousStatus || event.station.stationuuid != playingStation?.stationuuid) {
-                    play(event.station.url_resolved)
-                }
-                updateLogo(event.station.favicon)
-            } else if (event.playingStatus == PlayingStatus.Stopped) {
-                cancelPlaying()
-            }
-            previousStatus = event.playingStatus
-            playingStation = event.station
         }
     }
 
     private fun updateControls(status: PlayingStatus) {
-        logger.debug { "updating controls" }
         if (status == PlayingStatus.Stopped) {
             playerControls.replaceChildren { add(playButton) }
         } else {
@@ -74,11 +56,14 @@ class PlayerView : View() {
         }
     }
 
-    private fun updateLogo(url: String?) {
-        val iv = ImageView(Image(url, true))
-        iv.fitHeight = 30.0
-        iv.fitWidth = 30.0
-        radioLogoBox.replaceChildren { add(iv) }
+    fun updateLogo(url: String?) {
+        url?.let {
+            val iv = imageview(url) {
+                fitWidth = 30.0
+                fitHeight = 30.0
+            }
+            radioLogoBox.replaceChildren { add(iv) }
+        }
     }
 
     override val root = vbox {
@@ -87,16 +72,10 @@ class PlayerView : View() {
         hbox(15) {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
-            playerControls = button("") {
-                add(stopButton)
+            playerControls = button {
+                add(playButton)
                 action {
-                    MediaPlayerWrapper.mediaPlayerCoroutine?.let {
-                        if (it.isActive) {
-                            fire(StationChangedEvent(playingStation!!, PlayingStatus.Stopped))
-                        } else {
-                            fire(StationChangedEvent(playingStation!!, PlayingStatus.Playing))
-                        }
-                    }
+                    controller.handlePlayerControls()
                 }
             }
             region {
@@ -107,12 +86,17 @@ class PlayerView : View() {
                 hbox(5) {
                     radioLogoBox = vbox {
                         alignment = Pos.CENTER_LEFT
+                        imageview("Clouds-icon.png") {
+                            fitWidth = 30.0
+                            fitHeight = 30.0
+                            isPreserveRatio = true
+                        }
                     }
                     separator(Orientation.VERTICAL)
                     vbox {
                         paddingLeft = 10.0
                         paddingRight = 10.0
-                        label("Now streaming")
+                        label(messages["nowStreaming"])
                         radioNameLabel = label("-")
                     }
                 }
@@ -129,9 +113,8 @@ class PlayerView : View() {
                     isPreserveRatio = true
                 }
                 slider(-30..6, value = -5) {
-                    valueProperty().addListener { observable, oldValue, newValue ->
-                        println("Changed value to " + value)
-                        MediaPlayerWrapper.audioFrame?.changeVolume(newValue.toFloat())
+                    valueProperty().addListener { _, _, newValue ->
+                        controller.changeVolume(newValue.toFloat())
                     }
                 }
                 imageview("Media-Controls-Volume-Up-icon.png") {

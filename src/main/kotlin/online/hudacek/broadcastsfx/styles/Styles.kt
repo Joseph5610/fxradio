@@ -2,7 +2,6 @@ package online.hudacek.broadcastsfx.styles
 
 import javafx.scene.paint.Color
 import javafx.scene.paint.Paint
-import javafx.scene.text.Font
 import tornadofx.*
 
 class Styles : Stylesheet() {
@@ -22,8 +21,8 @@ class Styles : Stylesheet() {
         }
 
         grayLabel {
+            fontSize = 11.px
             textFill = Color.GRAY
-            font = Font(11.0)
         }
 
         noBorder {

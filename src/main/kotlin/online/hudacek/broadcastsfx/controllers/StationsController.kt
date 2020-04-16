@@ -9,7 +9,7 @@ import tornadofx.Controller
 
 class StationsController : Controller() {
 
-    private val stationsApi by lazy { StationsApiClient.create() }
+    private val stationsApi by lazy { StationsApiClient.client }
 
     fun getStationsByCountry(country: String): Observable<List<Station>> {
         return if (country == "") {
@@ -21,7 +21,5 @@ class StationsController : Controller() {
 
     fun getTopStations() = stationsApi.getTopStations()
 
-    fun playStream(station: Station) {
-        fire(StationChangedEvent(station, PlayingStatus.Playing))
-    }
+    fun playStream(station: Station) = fire(StationChangedEvent(station, PlayingStatus.Playing))
 }

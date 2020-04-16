@@ -7,6 +7,10 @@ enum class PlayingStatus {
     Playing, Stopped
 }
 
+enum class StationDirectoryType {
+    Favourites, Country, TopList
+}
+
 class StationChangedEvent(val station: Station, val playingStatus: PlayingStatus) : FXEvent()
 
-class StationDirectoryReloadEvent(val country: String) : FXEvent()
+class StationListReloadEvent(val country: String, val type: StationDirectoryType) : FXEvent()
