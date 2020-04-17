@@ -11,8 +11,6 @@ import online.hudacek.broadcastsfx.extension.vboxH
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-private val logger = KotlinLogging.logger {}
-
 class MenuView : View() {
 
     private val notification by lazy { find(MainView::class).notification }
@@ -39,9 +37,10 @@ class MenuView : View() {
         smallLabel(messages["library"])
 
         libraryListView = listview(userMenuItems) {
-            prefHeight = items.size * 24.0 + 4
+            val size = items.size * 24.0 + 4
+            prefHeight = size
             items.onChange {
-                (parent as ListView<*>).setPrefHeight(items.size * 24.0 + 4)
+                (parent as ListView<*>).setPrefHeight(size)
             }
             onUserSelect {
                 countriesListView.selectionModel.clearSelection()

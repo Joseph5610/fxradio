@@ -4,7 +4,6 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.StationListReloadEvent
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
@@ -13,8 +12,6 @@ import online.hudacek.broadcastsfx.extension.tooltip
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-
-private val logger = KotlinLogging.logger {}
 
 class StationsView : View() {
 
@@ -30,7 +27,9 @@ class StationsView : View() {
 
     override val root = vbox(alignment = Pos.CENTER) {
         label(messages["startScreen"]) {
-            addClass(Styles.playerBackground)
+            isWrapText = true
+            requestFocusOnSceneAvailable()
+            addClass(Styles.playerStationInfo)
         }
     }
 
@@ -39,7 +38,7 @@ class StationsView : View() {
             root.replaceChildren(
                     datagrid(result.asObservable()) {
                         cellCache {
-                            effect = DropShadow(10.0, Color.LIGHTGRAY)
+                            effect = DropShadow(15.0, Color.LIGHTGRAY)
                             paddingAll = 5
                             vbox(alignment = Pos.CENTER) {
                                 requestFocusOnSceneAvailable()
@@ -59,18 +58,12 @@ class StationsView : View() {
                                     isPreserveRatio = true
                                 }
 
-                                label(it.name) {
-                                    isWrapText = true
-                                }
+                                label(it.name)
 
                                 if (it.url_resolved != null) {
-                                    selectionModel
-                                            .selectedItemProperty()
-                                            .addListener { _, oldValue, newValue ->
-                                                if (oldValue != newValue) {
-                                                    controller.playStream(newValue)
-                                                }
-                                            }
+                                    onUserSelect(clickCount = 2) {
+                                        controller.playStream(it)
+                                    }
                                 } else {
                                     notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
                                 }

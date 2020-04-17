@@ -1,8 +1,8 @@
 package online.hudacek.broadcastsfx
 
 import io.reactivex.Observable
-import online.hudacek.broadcastsfx.data.Countries
-import online.hudacek.broadcastsfx.data.Station
+import online.hudacek.broadcastsfx.model.Countries
+import online.hudacek.broadcastsfx.model.Station
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

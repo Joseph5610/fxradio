@@ -11,12 +11,8 @@ class ProgressView : View() {
     override val root = vbox {
         alignment = Pos.CENTER
 
-        vbox {
-            paddingAll = 50
-        }
-        progressindicator()
-        vbox {
-            paddingAll = 50
+        progressindicator {
+            paddingAll = 50.0
         }
     }
 }

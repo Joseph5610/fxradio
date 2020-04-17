@@ -2,16 +2,16 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.control.Button
 import javafx.scene.control.Label
+import javafx.scene.control.Slider
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.PlayerController
-import online.hudacek.broadcastsfx.data.Station
-import online.hudacek.broadcastsfx.events.StationChangedEvent
-import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.extension.smallIcon
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
@@ -22,47 +22,33 @@ class PlayerView : View() {
     private val controller: PlayerController by inject()
 
     private var radioNameLabel: Label by singleAssign()
-    private var radioLogoBox: VBox by singleAssign()
-    private var playerControls: Button by singleAssign()
+    private var radioLogo: ImageView by singleAssign()
+    private var volumeSlider: Slider by singleAssign()
 
     private val playButton = imageview("Media-Controls-Play-icon.png") {
-        id = "playerControl"
-        fitWidth = 30.0
-        fitHeight = 30.0
-        isPreserveRatio = true
-    }
-
-    private val stopButton = imageview("Media-Controls-Stop-icon.png") {
-        id = "playerControl"
         fitWidth = 30.0
         fitHeight = 30.0
         isPreserveRatio = true
     }
 
     init {
-        subscribe<StationChangedEvent> { event ->
-            logger.debug { "received event " + event.playingStatus + " for " + event.station }
-            radioNameLabel.text = event.station.name
+        subscribe<PlaybackChangeEvent> { event ->
             controller.handleStationChange(event)
-            updateControls(event.playingStatus)
         }
     }
 
-    private fun updateControls(status: PlayingStatus) {
-        if (status == PlayingStatus.Stopped) {
-            playerControls.replaceChildren { add(playButton) }
+    fun updateControls(isPlaying: Boolean) {
+        if (isPlaying) {
+            playButton.image = Image("Media-Controls-Stop-icon.png")
         } else {
-            playerControls.replaceChildren { add(stopButton) }
+            playButton.image = Image("Media-Controls-Play-icon.png")
         }
     }
 
-    fun updateLogo(url: String?) {
-        url?.let {
-            val iv = imageview(url) {
-                fitWidth = 30.0
-                fitHeight = 30.0
-            }
-            radioLogoBox.replaceChildren { add(iv) }
+    fun updateUI(station: Station) {
+        radioNameLabel.text = station.name
+        station.favicon?.let {
+            radioLogo.image = Image(it, true)
         }
     }
 
@@ -72,7 +58,7 @@ class PlayerView : View() {
         hbox(15) {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
-            playerControls = button {
+            button {
                 add(playButton)
                 action {
                     controller.handlePlayerControls()
@@ -82,11 +68,11 @@ class PlayerView : View() {
                 hgrow = Priority.ALWAYS
             }
             vbox {
-                addClass(Styles.playerBackground)
+                addClass(Styles.playerStationInfo)
                 hbox(5) {
-                    radioLogoBox = vbox {
+                    vbox {
                         alignment = Pos.CENTER_LEFT
-                        imageview("Clouds-icon.png") {
+                        radioLogo = imageview("Clouds-icon.png") {
                             fitWidth = 30.0
                             fitHeight = 30.0
                             isPreserveRatio = true
@@ -107,21 +93,13 @@ class PlayerView : View() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
-                imageview("Media-Controls-Volume-Down-icon.png") {
-                    fitWidth = 16.0
-                    fitHeight = 16.0
-                    isPreserveRatio = true
-                }
-                slider(-30..6, value = -5) {
+                smallIcon("Media-Controls-Volume-Down-icon.png")
+                volumeSlider = slider(-30..6, value = -5) {
                     valueProperty().addListener { _, _, newValue ->
                         controller.changeVolume(newValue.toFloat())
                     }
                 }
-                imageview("Media-Controls-Volume-Up-icon.png") {
-                    fitWidth = 16.0
-                    fitHeight = 16.0
-                    isPreserveRatio = true
-                }
+                smallIcon("Media-Controls-Volume-Up-icon.png")
             }
         }
     }

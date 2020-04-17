@@ -2,8 +2,9 @@ package online.hudacek.broadcastsfx.extension
 
 import javafx.event.EventTarget
 import javafx.scene.control.Label
+import javafx.scene.image.ImageView
 import javafx.scene.layout.VBox
-import online.hudacek.broadcastsfx.data.Station
+import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -35,5 +36,12 @@ fun VBox.tooltip(station: Station): VBox {
 fun EventTarget.smallLabel(text: String = ""): Label {
     return label(text) {
         addClass(Styles.grayLabel)
+    }
+}
+
+fun EventTarget.smallIcon(url: String = ""): ImageView {
+    return imageview(url) {
+        fitWidth = 16.0
+        fitHeight = 16.0
     }
 }

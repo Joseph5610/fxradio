@@ -1,39 +1,54 @@
 package online.hudacek.broadcastsfx.controllers
 
-import online.hudacek.broadcastsfx.data.Station
+import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.events.StationChangedEvent
+import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.extension.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.views.PlayerView
+import online.hudacek.broadcastsfx.model.StationViewModel
 import tornadofx.Controller
+import tornadofx.onChange
 
 class PlayerController : Controller() {
 
     private val mediaPlayer = MediaPlayerWrapper
 
-    private var playingStation: Station? = null
+    private var previousStation: Station? = null
     private var previousStatus = PlayingStatus.Stopped
+
+    val currentStation: StationViewModel by inject()
+
+    init {
+        currentStation.itemProperty.onChange {
+            //println("view Model onChange")
+            if (it != null) {
+                if (it.station.stationuuid != previousStation?.stationuuid) {
+                    view.updateUI(it.station)
+                }
+            }
+        }
+    }
 
     private val view by lazy { find(PlayerView::class) }
 
-    fun handleStationChange(event: StationChangedEvent) {
+    fun handleStationChange(event: PlaybackChangeEvent) {
         if (event.playingStatus == PlayingStatus.Playing) {
-            if (event.playingStatus != previousStatus || event.station.stationuuid != playingStation?.stationuuid) {
-                event.station.url_resolved?.let { mediaPlayer.play(it) }
+            if (event.playingStatus != previousStatus) {
+                currentStation.item.station.url_resolved?.let { mediaPlayer.play(it) }
             }
-            view.updateLogo(event.station.favicon)
+
         } else if (event.playingStatus == PlayingStatus.Stopped) {
             mediaPlayer.cancelPlaying()
         }
+
         previousStatus = event.playingStatus
-        playingStation = event.station
     }
 
     fun handlePlayerControls() {
         if (mediaPlayer.isPlaying) {
-            fire(StationChangedEvent(playingStation!!, PlayingStatus.Stopped))
+            fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         } else {
-            fire(StationChangedEvent(playingStation!!, PlayingStatus.Playing))
+            fire(PlaybackChangeEvent(PlayingStatus.Playing))
         }
     }
 

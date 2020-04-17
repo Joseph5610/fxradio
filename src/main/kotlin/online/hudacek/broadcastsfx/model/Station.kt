@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.data
+package online.hudacek.broadcastsfx.model
 
 data class Station(
         val changeuuid: String,
