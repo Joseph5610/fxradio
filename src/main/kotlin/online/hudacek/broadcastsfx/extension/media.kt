@@ -20,16 +20,11 @@ object MediaPlayerWrapper : Component() {
 
     private val logger = KotlinLogging.logger {}
 
-    private val playerView = find(PlayerView::class)
-
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
     private var currentVolume: Float = 0.0f
 
-    var isPlaying: Boolean by Delegates.observable(false) { _, _, newValue ->
-        Platform.runLater {
-            playerView.updateControls(newValue)
-        }
+    var isPlaying: Boolean by Delegates.observable(false) { _, oldValue, newValue ->
     }
 
     private val handler = CoroutineExceptionHandler { _, exception ->

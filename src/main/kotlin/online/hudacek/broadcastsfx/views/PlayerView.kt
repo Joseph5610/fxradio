@@ -7,15 +7,13 @@ import javafx.scene.control.Slider
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
-import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.extension.smallIcon
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
-
-private val logger = KotlinLogging.logger {}
 
 class PlayerView : View() {
 
@@ -33,22 +31,29 @@ class PlayerView : View() {
 
     init {
         subscribe<PlaybackChangeEvent> { event ->
-            controller.handleStationChange(event)
+            with(event) {
+                println("new status $playingStatus")
+                if (playingStatus == PlayingStatus.Stopped) {
+                    controller.mediaPlayer.cancelPlaying()
+                    playButton.image = Image("Media-Controls-Play-icon.png")
+                } else {
+                    controller.playPreviousStation()
+                    playButton.image = Image("Media-Controls-Stop-icon.png")
+                }
+            }
         }
-    }
 
-    fun updateControls(isPlaying: Boolean) {
-        if (isPlaying) {
-            playButton.image = Image("Media-Controls-Stop-icon.png")
-        } else {
-            playButton.image = Image("Media-Controls-Play-icon.png")
-        }
-    }
-
-    fun updateUI(station: Station) {
-        radioNameLabel.text = station.name
-        station.favicon?.let {
-            radioLogo.image = Image(it, true)
+        controller.currentStation.station.onChange {
+            if (it != null) {
+                if (it.stationuuid != controller.previousStation?.stationuuid) {
+                    it.url_resolved?.let { url ->
+                        controller.play(url)
+                        playButton.image = Image("Media-Controls-Stop-icon.png")
+                    }
+                }
+                it.updateView()
+                controller.previousStation = it
+            }
         }
     }
 
@@ -75,7 +80,6 @@ class PlayerView : View() {
                         radioLogo = imageview("Clouds-icon.png") {
                             fitWidth = 30.0
                             fitHeight = 30.0
-                            isPreserveRatio = true
                         }
                     }
                     separator(Orientation.VERTICAL)
@@ -95,12 +99,19 @@ class PlayerView : View() {
                 alignment = Pos.CENTER_LEFT
                 smallIcon("Media-Controls-Volume-Down-icon.png")
                 volumeSlider = slider(-30..6, value = -5) {
-                    valueProperty().addListener { _, _, newValue ->
-                        controller.changeVolume(newValue.toFloat())
+                    valueProperty().onChange { volume ->
+                        controller.mediaPlayer.changeVolume(volume.toFloat())
                     }
                 }
                 smallIcon("Media-Controls-Volume-Up-icon.png")
             }
+        }
+    }
+
+    private fun Station.updateView() {
+        radioNameLabel.text = name
+        favicon?.let {
+            radioLogo.image = Image(it, true)
         }
     }
 }

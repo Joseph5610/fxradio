@@ -2,7 +2,6 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.collections.FXCollections
 import javafx.scene.control.ListView
-import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.MenuController
 import online.hudacek.broadcastsfx.events.StationDirectoryType
 import online.hudacek.broadcastsfx.extension.set

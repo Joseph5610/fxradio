@@ -9,6 +9,8 @@ import online.hudacek.broadcastsfx.events.StationListReloadEvent
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.extension.set
 import online.hudacek.broadcastsfx.extension.tooltip
+import online.hudacek.broadcastsfx.model.CurrentStation
+import online.hudacek.broadcastsfx.model.StationViewModel
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -16,8 +18,11 @@ import tornadofx.*
 class StationsView : View() {
 
     private val controller: StationsController by inject()
+
     private val notification by lazy { find(MainView::class).notification }
     private val cloudsImageView by lazy { "Clouds-icon.png" }
+
+    private val currentStation: StationViewModel by inject()
 
     init {
         subscribe<StationListReloadEvent> { event ->
@@ -37,6 +42,13 @@ class StationsView : View() {
         controller.getStationsByCountry(country).subscribe({ result ->
             root.replaceChildren(
                     datagrid(result.asObservable()) {
+
+                        selectionModel.selectedItemProperty().onChange {
+                            it?.let {
+                                currentStation.item = CurrentStation(it)
+                            }
+                        }
+
                         cellCache {
                             effect = DropShadow(15.0, Color.LIGHTGRAY)
                             paddingAll = 5
@@ -59,14 +71,6 @@ class StationsView : View() {
                                 }
 
                                 label(it.name)
-
-                                if (it.url_resolved != null) {
-                                    onUserSelect(clickCount = 2) {
-                                        controller.playStream(it)
-                                    }
-                                } else {
-                                    notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
-                                }
                             }
                         }
                     }
