@@ -1,9 +1,9 @@
 package online.hudacek.broadcastsfx.views
 
-import javafx.application.Platform
 import javafx.geometry.Orientation
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
+import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
 import org.controlsfx.control.NotificationPane
 import tornadofx.*
@@ -14,7 +14,7 @@ class MainView : View() {
 
     private val controller: MainController by inject()
 
-    private val appName: String by lazy { messages["appName"] }
+    private val appName: String by lazy { About.appName }
     private val appIcon: String by lazy { "Election-News-Broadcast-icon.png" }
 
     private val playerView: PlayerView by inject()
@@ -41,23 +41,9 @@ class MainView : View() {
 
     override val root = vbox {
         setPrefSize(800.0, 600.0)
-
-        menubar {
-            menu(appName) {
-                item(messages["menu.app.about"]).action {
-                    controller.openAbout()
-                }
-                item(messages["menu.app.quit"]).action {
-                    Platform.exit()
-                }
-            }
-            menu(messages["menu.station"]) {
-                item(messages["menu.station.info"]).action {
-                    controller.openStationInfo()
-                }
-            }
-        }
+        add(MenuBarView::class)
         notificationPane {
+
             notification = this
             isShowFromTop = true
 

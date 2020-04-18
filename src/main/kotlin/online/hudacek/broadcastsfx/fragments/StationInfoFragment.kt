@@ -1,30 +1,53 @@
 package online.hudacek.broadcastsfx.fragments
 
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
+import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.model.StationViewModel
 import tornadofx.*
+import tornadofx.controlsfx.statusbar
 
 
 class StationInfoFragment : Fragment() {
 
-    val currentStation: StationViewModel by inject()
+    private val currentStation: StationViewModel by inject()
 
     override val root = vbox {
-        setPrefSize(200.0, 200.0)
+        setPrefSize(300.0, 300.0)
 
         currentStation.station.value?.let {
-            title = currentStation.station.value.name
+            title = it.name
 
-            label(currentStation.station.value.name)
-            label(currentStation.station.value.tags)
-            label(currentStation.station.value.codec)
-            label(currentStation.station.value.language)
-            label("Last checked: " + currentStation.station.value.lastcheckok)
-            hyperlink(currentStation.station.value.homepage).action {
-                val hostServices = HostServicesFactory.getInstance(app)
-                hostServices.showDocument(currentStation.station.value.homepage)
+            val codecBitrateInfo = it.codec + " (" + it.bitrate + ")"
+
+            val list = observableListOf(
+                    it.tags,
+                    codecBitrateInfo,
+                    it.country,
+                    it.language,
+                    it.lastcheckoktime)
+
+            vbox {
+                paddingAll = 20.0
+                alignment = Pos.CENTER
+
+                imageview(it.favicon) {
+                    fitHeight = 100.0
+                    fitHeight = 100.0
+                    isPreserveRatio = true
+                }
+            }
+
+            listview(list)
+            statusbar {
+                rightItems.add(
+                        hyperlink(it.homepage) {
+                            action {
+                                val hostServices = HostServicesFactory.getInstance(app)
+                                hostServices.showDocument(it.homepage)
+                            }
+                        }
+                )
             }
         }
-
     }
 }

@@ -7,9 +7,12 @@ import tornadofx.Controller
 
 class MenuController : Controller() {
 
-    private val stations by lazy { StationsApiClient.client }
+    private val stationsApi: StationsApiClient
+        get() {
+            return StationsApiClient.client
+        }
 
-    fun getCountries() = stations.getCountries()
+    fun getCountries() = stationsApi.getCountries()
 
     fun loadStationsByCountry(country: String) = fire(StationListReloadEvent(country, StationDirectoryType.Country))
 

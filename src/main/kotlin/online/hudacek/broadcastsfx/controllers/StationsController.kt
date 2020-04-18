@@ -7,7 +7,10 @@ import tornadofx.Controller
 
 class StationsController : Controller() {
 
-    private val stationsApi by lazy { StationsApiClient.client }
+    private val stationsApi: StationsApiClient
+        get() {
+            return StationsApiClient.client
+        }
 
     fun getStationsByCountry(country: String): Observable<List<Station>> {
         return if (country == "") {

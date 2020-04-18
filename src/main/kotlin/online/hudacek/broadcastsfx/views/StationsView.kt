@@ -62,7 +62,7 @@ class StationsView : View() {
                                     it.favicon = cloudsImageView
                                 }
 
-                                imageview(it.favicon, lazyload = true) {
+                                imageview(it.favicon) {
                                     isCache = true
                                     cacheHint = CacheHint.SPEED
                                     fitHeight = 100.0

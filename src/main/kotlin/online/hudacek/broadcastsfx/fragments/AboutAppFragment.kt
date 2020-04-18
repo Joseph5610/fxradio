@@ -1,19 +1,52 @@
 package online.hudacek.broadcastsfx.fragments
 
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
-import online.hudacek.broadcastsfx.styles.Styles
-import tornadofx.Fragment
-import tornadofx.addClass
-import tornadofx.label
-import tornadofx.vbox
+import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
+import tornadofx.*
+import tornadofx.controlsfx.statusbar
 
 class AboutAppFragment : Fragment() {
 
+    private val list = observableListOf(
+            About.appName,
+            About.appDesc,
+            "",
+            About.author,
+            About.copyright)
+
     override val root = vbox {
-        setPrefSize(120.0, 120.0)
-        alignment = Pos.CENTER
-        label("About app") {
-            addClass(Styles.playerStationInfo)
+        setPrefSize(300.0, 300.0)
+
+        title = "${About.appName} ${About.appVersion}"
+
+        vbox {
+            paddingAll = 20.0
+            alignment = Pos.CENTER
+
+            imageview("Election-News-Broadcast-icon.png") {
+                requestFocusOnSceneAvailable()
+                fitHeight = 100.0
+                fitHeight = 100.0
+                isPreserveRatio = true
+            }
+        }
+
+        listview(list)
+
+        statusbar {
+            rightItems.add(
+                    hbox {
+                        alignment = Pos.CENTER_LEFT
+                        label("Data source: ")
+                        hyperlink(About.dataSource) {
+                            action {
+                                val hostServices = HostServicesFactory.getInstance(app)
+                                hostServices.showDocument(About.dataSource)
+                            }
+                        }
+                    })
         }
     }
 

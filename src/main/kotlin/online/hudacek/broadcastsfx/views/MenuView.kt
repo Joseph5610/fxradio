@@ -25,6 +25,37 @@ class MenuView : View() {
     private var libraryListView: ListView<String> by singleAssign()
     private var countriesListView: ListView<String> by singleAssign()
 
+    init {
+        runAsync {
+            controller
+                    .getCountries()
+                    .subscribe(
+                            { result ->
+                                ui {
+                                    val results = FXCollections.observableArrayList<String>()
+
+                                    result.forEach {
+                                        results.add(it.name)
+                                    }
+
+                                    countriesListView = listview(results) {
+                                        onUserSelect {
+                                            libraryListView.selectionModel.clearSelection()
+                                            controller.loadStationsByCountry(it)
+                                        }
+                                    }
+                                    root.add(countriesListView)
+                                }
+                            },
+                            {
+                                ui {
+                                    notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
+                                }
+                            }
+                    )
+        }
+    }
+
     override val root = vbox {
         paddingAll = 10
 
@@ -48,28 +79,5 @@ class MenuView : View() {
         }
         vboxH()
         smallLabel(messages["countries"])
-    }
-
-    override fun onDock() {
-        controller
-                .getCountries()
-                .subscribe(
-                        { result ->
-                            val results = FXCollections.observableArrayList<String>()
-
-                            result.forEach {
-                                results.add(it.name)
-                            }
-
-                            countriesListView = listview(results) {
-                                onUserSelect {
-                                    libraryListView.selectionModel.clearSelection()
-                                    controller.loadStationsByCountry(it)
-                                }
-                            }
-                            add(countriesListView)
-                        },
-                        { notification[FontAwesome.Glyph.WARNING] = messages["downloadError"] }
-                )
     }
 }

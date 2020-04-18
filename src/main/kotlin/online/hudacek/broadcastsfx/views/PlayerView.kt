@@ -1,27 +1,55 @@
 package online.hudacek.broadcastsfx.views
 
+import javafx.animation.Interpolator
+import javafx.animation.TranslateTransitionBuilder
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.Slider
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
+import javafx.util.Duration
+import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.extension.Marquee
 import online.hudacek.broadcastsfx.extension.smallIcon
+import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
 class PlayerView : View() {
+
+    private val logger = KotlinLogging.logger {}
 
     private val controller: PlayerController by inject()
 
     private var radioNameLabel: Label by singleAssign()
     private var radioLogo: ImageView by singleAssign()
     private var volumeSlider: Slider by singleAssign()
+    private var playerControls: Button by singleAssign()
+
+    private var radioNameLabelParent = hbox(5) {
+        vbox {
+            alignment = Pos.CENTER_LEFT
+            radioLogo = imageview("Clouds-icon.png") {
+                fitWidth = 30.0
+                fitHeight = 30.0
+            }
+        }
+        separator(Orientation.VERTICAL)
+        vbox {
+            paddingLeft = 10.0
+            paddingRight = 10.0
+            label(messages["nowStreaming"])
+            radioNameLabel = label("-")
+        }
+    }
 
     private val playButton = imageview("Media-Controls-Play-icon.png") {
         fitWidth = 30.0
@@ -29,10 +57,14 @@ class PlayerView : View() {
         isPreserveRatio = true
     }
 
+    override fun onDock() {
+        //radioNameLabel.run()
+    }
+
     init {
         subscribe<PlaybackChangeEvent> { event ->
             with(event) {
-                println("new status $playingStatus")
+                logger.debug { "received PlayerChangeEvent $playingStatus" }
                 if (playingStatus == PlayingStatus.Stopped) {
                     controller.mediaPlayer.cancelPlaying()
                     playButton.image = Image("Media-Controls-Play-icon.png")
@@ -45,6 +77,7 @@ class PlayerView : View() {
 
         controller.currentStation.station.onChange {
             if (it != null) {
+                playerControls.isDisable = false
                 if (it.stationuuid != controller.previousStation?.stationuuid) {
                     it.url_resolved?.let { url ->
                         controller.play(url)
@@ -63,7 +96,8 @@ class PlayerView : View() {
         hbox(15) {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
-            button {
+            playerControls = button {
+                isDisable = true
                 add(playButton)
                 action {
                     controller.handlePlayerControls()
@@ -74,22 +108,7 @@ class PlayerView : View() {
             }
             vbox {
                 addClass(Styles.playerStationInfo)
-                hbox(5) {
-                    vbox {
-                        alignment = Pos.CENTER_LEFT
-                        radioLogo = imageview("Clouds-icon.png") {
-                            fitWidth = 30.0
-                            fitHeight = 30.0
-                        }
-                    }
-                    separator(Orientation.VERTICAL)
-                    vbox {
-                        paddingLeft = 10.0
-                        paddingRight = 10.0
-                        label(messages["nowStreaming"])
-                        radioNameLabel = label("-")
-                    }
-                }
+                add(radioNameLabelParent)
             }
             region {
                 hgrow = Priority.ALWAYS

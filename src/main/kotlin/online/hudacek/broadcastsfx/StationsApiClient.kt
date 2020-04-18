@@ -3,6 +3,7 @@ package online.hudacek.broadcastsfx
 import io.reactivex.Observable
 import online.hudacek.broadcastsfx.model.Countries
 import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.model.Stats
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,17 +25,24 @@ interface StationsApiClient {
     @GET("json/countries")
     fun getCountries(): Observable<List<Countries>>
 
+    @GET("json/stats")
+    fun getStats(): Observable<Stats>
+
     companion object {
-        private val hostname: InetAddress by lazy { InetAddress.getAllByName("all.api.radio-browser.info")[0] }
 
-        val client: StationsApiClient by lazy {
-            val retrofit = Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://" + hostname.canonicalHostName)
-                    .build()
+        private val inetAddress: InetAddress by lazy { InetAddress.getAllByName("all.api.radio-browser.info")[0] }
 
-            retrofit.create(StationsApiClient::class.java)
-        }
+        var hostname = inetAddress.canonicalHostName
+
+        val client: StationsApiClient
+            get() {
+                val retrofit = Retrofit.Builder()
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .baseUrl("https://$hostname")
+                        .build()
+
+                return retrofit.create(StationsApiClient::class.java)
+            }
     }
 }
