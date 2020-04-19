@@ -15,7 +15,6 @@ class MainView : View() {
     private val controller: MainController by inject()
 
     private val appName: String by lazy { About.appName }
-    private val appIcon: String by lazy { "Election-News-Broadcast-icon.png" }
 
     private val playerView: PlayerView by inject()
     private val menuView: MenuView by inject()
@@ -25,7 +24,7 @@ class MainView : View() {
 
     init {
         title = appName
-        setStageIcon(Image(appIcon))
+        setStageIcon(Image(About.appIcon))
     }
 
     private val rightPane = vbox {

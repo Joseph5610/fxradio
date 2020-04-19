@@ -1,7 +1,6 @@
 package online.hudacek.broadcastsfx.media
 
 import javafx.application.Platform
-import javafx.geometry.Pos
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
@@ -10,8 +9,6 @@ import online.hudacek.broadcastsfx.extension.set
 import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.Component
-import tornadofx.controlsfx.errorNotification
-import tornadofx.get
 
 object MediaPlayerWrapper : Component() {
 

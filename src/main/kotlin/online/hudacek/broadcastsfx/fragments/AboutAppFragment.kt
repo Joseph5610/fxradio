@@ -25,7 +25,7 @@ class AboutAppFragment : Fragment() {
             paddingAll = 20.0
             alignment = Pos.CENTER
 
-            imageview("Election-News-Broadcast-icon.png") {
+            imageview(About.appIcon) {
                 requestFocusOnSceneAvailable()
                 fitHeight = 100.0
                 fitHeight = 100.0

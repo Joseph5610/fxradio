@@ -8,7 +8,5 @@ class MainController : Controller() {
 
     private val mediaPlayer = MediaPlayerWrapper
 
-    fun cancelMediaPlaying() {
-        mediaPlayer.cancelPlaying()
-    }
+    fun cancelMediaPlaying() = mediaPlayer.cancelPlaying()
 }

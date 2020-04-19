@@ -32,7 +32,7 @@ interface StationsApiClient {
 
         private val inetAddress: InetAddress by lazy { InetAddress.getAllByName("all.api.radio-browser.info")[0] }
 
-        var hostname = inetAddress.canonicalHostName
+        var hostname: String = inetAddress.canonicalHostName
 
         val client: StationsApiClient
             get() {

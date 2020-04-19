@@ -1,7 +1,5 @@
 package online.hudacek.broadcastsfx.views
 
-import javafx.animation.Interpolator
-import javafx.animation.TranslateTransitionBuilder
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.Button
@@ -9,15 +7,12 @@ import javafx.scene.control.Label
 import javafx.scene.control.Slider
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
-import javafx.util.Duration
 import mu.KotlinLogging
+import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.Marquee
 import online.hudacek.broadcastsfx.extension.smallIcon
 import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
@@ -37,7 +32,7 @@ class PlayerView : View() {
     private var radioNameLabelParent = hbox(5) {
         vbox {
             alignment = Pos.CENTER_LEFT
-            radioLogo = imageview("Clouds-icon.png") {
+            radioLogo = imageview(About.appIcon) {
                 fitWidth = 30.0
                 fitHeight = 30.0
             }
@@ -55,10 +50,6 @@ class PlayerView : View() {
         fitWidth = 30.0
         fitHeight = 30.0
         isPreserveRatio = true
-    }
-
-    override fun onDock() {
-        //radioNameLabel.run()
     }
 
     init {

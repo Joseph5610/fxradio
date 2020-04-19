@@ -4,6 +4,7 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.StationListReloadEvent
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
@@ -17,11 +18,9 @@ import tornadofx.*
 
 class StationsView : View() {
 
-    private val controller: StationsController by inject()
-
     private val notification by lazy { find(MainView::class).notification }
-    private val cloudsImageView by lazy { "Clouds-icon.png" }
 
+    private val controller: StationsController by inject()
     private val currentStation: StationViewModel by inject()
 
     init {
@@ -59,7 +58,7 @@ class StationsView : View() {
                                 paddingAll = 5
 
                                 if (it.favicon == null || it.favicon!!.isEmpty()) {
-                                    it.favicon = cloudsImageView
+                                    it.favicon = About.appIcon
                                 }
 
                                 imageview(it.favicon) {

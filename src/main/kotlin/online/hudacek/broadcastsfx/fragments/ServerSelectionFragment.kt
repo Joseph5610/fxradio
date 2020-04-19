@@ -2,34 +2,32 @@ package online.hudacek.broadcastsfx.fragments
 
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApiClient
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.infoNotification
 
 class ServerSelectionFragment : Fragment() {
 
-    private val labelTitle = "Select API server"
+    private val urlTextField = textfield()
 
-    override val root = vbox {
+    override val root = Form()
 
-        setPrefSize(300.0, 130.0)
-        title = labelTitle
-        paddingAll = 10.0
+    init {
+        title = "Select API server"
 
-        label(labelTitle).paddingBottom = 10.0
-        val field = textfield(StationsApiClient.hostname)
-        vbox {
-            paddingTop = 10.0
-            alignment = Pos.CENTER_RIGHT
-            button("Save") {
-                action {
-                    StationsApiClient.hostname = field.text
-                    infoNotification(
-                            "Saved",
-                            "Server saved",
-                            position = Pos.TOP_RIGHT)
+        with(root) {
+            setPrefSize(300.0, 110.0)
+            fieldset("Set API server") {
+                field("URL") {
+                    add(urlTextField)
                 }
             }
-        }
+            button("Save") {
+                setOnAction {
 
+                }
+            }
+            //disableProperty().bind()
+        }
     }
 }
