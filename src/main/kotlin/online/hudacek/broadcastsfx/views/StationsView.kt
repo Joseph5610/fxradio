@@ -2,10 +2,14 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
+import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.StationsController
+import online.hudacek.broadcastsfx.events.PlayerType
+import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.StationListReloadEvent
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.extension.set
@@ -22,10 +26,28 @@ class StationsView : View() {
 
     private val controller: StationsController by inject()
     private val currentStation: StationViewModel by inject()
+    private var playerInfo: VBox by singleAssign()
 
     init {
+        playerInfo = vbox {
+            alignment = Pos.CENTER
+        }
+
         subscribe<StationListReloadEvent> { event ->
             getStations(event.country)
+        }
+
+        subscribe<PlayerTypeChange> { event ->
+            println("changed status")
+            if (event.playerType == PlayerType.Native) {
+                playerInfo.replaceChildren(label("Native media player is used. For better experience please install VLC player") {
+                    isWrapText = true
+                    requestFocusOnSceneAvailable()
+                    addClass(Styles.playerStationInfo)
+                })
+            } else {
+                playerInfo.replaceChildren(label())
+            }
         }
     }
 
@@ -35,6 +57,8 @@ class StationsView : View() {
             requestFocusOnSceneAvailable()
             addClass(Styles.playerStationInfo)
         }
+        vbox { paddingBottom = 30.0 }
+        add(playerInfo)
     }
 
     private fun getStations(country: String = "") {

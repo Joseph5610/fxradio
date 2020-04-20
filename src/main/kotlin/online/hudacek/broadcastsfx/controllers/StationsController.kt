@@ -2,10 +2,13 @@ package online.hudacek.broadcastsfx.controllers
 
 import io.reactivex.Observable
 import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.Station
 import tornadofx.Controller
 
 class StationsController : Controller() {
+
+    val mediaPlayer = MediaPlayerWrapper
 
     private val stationsApi: StationsApiClient
         get() {

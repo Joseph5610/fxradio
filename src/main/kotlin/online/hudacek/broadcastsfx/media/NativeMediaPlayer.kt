@@ -3,8 +3,7 @@ package online.hudacek.broadcastsfx.media
 import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
 import io.humble.video.javaxsound.MediaAudioConverterFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.*
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import java.nio.ByteBuffer
@@ -18,97 +17,114 @@ class NativeMediaPlayer : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
-    private var audioFrame: AudioFrame? = null
-    private var currentVolume: Float = 0.0f
-
+    override var volume: Double = 0.0
     override var playingStatus: PlayingStatus = PlayingStatus.Stopped
 
+    private var mediaPlayerCoroutine: Job? = null
+    private var audioFrame: AudioFrame? = null
+
     init {
-        logger.debug { "Player started" }
+        logger.debug { "Native player started" }
     }
 
-    override fun play(scope: CoroutineScope, url: String) {
-        val demuxer = Demuxer.make()
-        try {
-            val numStreams = demuxer.stream(url)
+    private val handler = CoroutineExceptionHandler { _, exception ->
+        MediaPlayerWrapper.handleError(exception)
+    }
 
-            var audioStreamId = -1
-            var audioDecoder: Decoder? = null
+    override fun play(url: String) {
+        mediaPlayerCoroutine = GlobalScope.launch(handler) {
+            val demuxer = Demuxer.make()
+            try {
+                val numStreams = demuxer.stream(url)
 
-            for (i in 0 until numStreams) {
-                val decoder = demuxer.getStream(i).decoder
-                if (decoder != null && decoder.codecType == MediaDescriptor.Type.MEDIA_AUDIO) {
-                    audioStreamId = i
-                    audioDecoder = decoder
-                    break
-                }
-            }
-            if (audioStreamId == -1) throw RuntimeException("could not find audio stream in container")
+                var audioStreamId = -1
+                var audioDecoder: Decoder? = null
 
-            with(audioDecoder!!) {
-                audioDecoder.open()
-                val samples = MediaAudio.make(
-                        this.frameSize,
-                        this.sampleRate,
-                        this.channels,
-                        this.channelLayout,
-                        this.sampleFormat)
-
-                val converter = MediaAudioConverterFactory.createConverter(
-                        MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
-                        samples)
-                audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
-                logger.debug { "Stream started" }
-                changeVolume(currentVolume)
-                var rawAudio: ByteBuffer? = null
-
-                val packet = MediaPacket.make()
-                while (demuxer.read(packet) >= 0) {
-                    if (!scope.isActive) break
-                    if (packet.streamIndex == audioStreamId) {
-                        var offset = 0
-                        var bytesRead = 0
-                        do {
-                            bytesRead += decode(samples, packet, offset)
-                            if (samples.isComplete) {
-                                rawAudio = converter.toJavaAudio(rawAudio, samples)
-                                audioFrame?.play(rawAudio)
-                                playingStatus = PlayingStatus.Playing
-                            }
-                            offset += bytesRead
-                        } while (offset < packet.size)
+                for (i in 0 until numStreams) {
+                    val decoder = demuxer.getStream(i).decoder
+                    if (decoder != null && decoder.codecType == MediaDescriptor.Type.MEDIA_AUDIO) {
+                        audioStreamId = i
+                        audioDecoder = decoder
+                        break
                     }
                 }
+                if (audioStreamId == -1) throw RuntimeException("could not find audio stream in container")
 
-                do {
-                    decode(samples, null, 0)
-                    if (samples.isComplete) {
-                        rawAudio = converter.toJavaAudio(rawAudio, samples)
-                        audioFrame?.play(rawAudio)
+                with(audioDecoder!!) {
+                    audioDecoder.open()
+                    val samples = MediaAudio.make(
+                            this.frameSize,
+                            this.sampleRate,
+                            this.channels,
+                            this.channelLayout,
+                            this.sampleFormat)
+
+                    val converter = MediaAudioConverterFactory.createConverter(
+                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
+                            samples)
+                    audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
+                    logger.debug { "Stream started" }
+                    changeVolume(volume)
+                    var rawAudio: ByteBuffer? = null
+
+                    val packet = MediaPacket.make()
+                    while (demuxer.read(packet) >= 0) {
+                        if (!isActive) break
+                        if (packet.streamIndex == audioStreamId) {
+                            var offset = 0
+                            var bytesRead = 0
+                            do {
+                                bytesRead += decode(samples, packet, offset)
+                                if (samples.isComplete) {
+                                    rawAudio = converter.toJavaAudio(rawAudio, samples)
+                                    audioFrame?.play(rawAudio)
+                                    playingStatus = PlayingStatus.Playing
+                                }
+                                offset += bytesRead
+                            } while (offset < packet.size)
+                        }
                     }
-                } while (samples.isComplete)
+
+                    do {
+                        decode(samples, null, 0)
+                        if (samples.isComplete) {
+                            rawAudio = converter.toJavaAudio(rawAudio, samples)
+                            audioFrame?.play(rawAudio)
+                        }
+                    } while (samples.isComplete)
+                }
+            } finally {
+                playingStatus = PlayingStatus.Stopped
+                demuxer?.close()
+                audioFrame?.dispose()
             }
-        } finally {
-            playingStatus = PlayingStatus.Stopped
-            demuxer?.close()
-            audioFrame?.dispose()
         }
     }
 
-    override fun changeVolume(volume: Float): Boolean {
+    override fun changeVolume(volume: Double): Boolean {
         return try {
             val frameCls = AudioFrame::class
             val mLine = frameCls.memberProperties.filter { it.name == "mLine" }[0]
             mLine.isAccessible = true
             val lineValue = mLine.getter.call(audioFrame) as SourceDataLine
             val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
-            gainControl.value = volume
-            currentVolume = volume
+            gainControl.value = volume.toFloat()
+            this.volume = volume
             true
         } catch (e: Exception) {
             false
         }
     }
+
+    override fun cancelPlaying() {
+        playingStatus = PlayingStatus.Stopped
+        mediaPlayerCoroutine?.isActive.let {
+            logger.debug { "cancelling player" }
+            mediaPlayerCoroutine?.cancel()
+        }
+    }
+
+    override fun releasePlayer() = cancelPlaying()
 
     private fun Decoder.open() = this.open(null, null)
 

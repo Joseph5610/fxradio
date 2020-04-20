@@ -17,6 +17,7 @@ import online.hudacek.broadcastsfx.extension.smallIcon
 import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
+import kotlin.contracts.contract
 
 class PlayerView : View() {
 
@@ -110,7 +111,7 @@ class PlayerView : View() {
                 smallIcon("Media-Controls-Volume-Down-icon.png")
                 volumeSlider = slider(-30..6, value = -5) {
                     valueProperty().onChange { volume ->
-                        controller.mediaPlayer.changeVolume(volume.toFloat())
+                        controller.mediaPlayer.changeVolume(volume)
                     }
                 }
                 smallIcon("Media-Controls-Volume-Up-icon.png")

@@ -14,8 +14,6 @@ class MainView : View() {
 
     private val controller: MainController by inject()
 
-    private val appName: String by lazy { About.appName }
-
     private val playerView: PlayerView by inject()
     private val menuView: MenuView by inject()
     private val stationsView: StationsView by inject()
@@ -23,7 +21,7 @@ class MainView : View() {
     var notification: NotificationPane by singleAssign()
 
     init {
-        title = appName
+        title = About.appName
         setStageIcon(Image(About.appIcon))
     }
 

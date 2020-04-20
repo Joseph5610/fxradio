@@ -1,21 +1,38 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.application.Platform
+import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MenuBarController
+import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.events.PlayerType
+import online.hudacek.broadcastsfx.events.PlayerTypeChange
+import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import tornadofx.*
+import kotlin.reflect.jvm.internal.impl.util.Check
 
 class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
     private var stationInfo: Menu by singleAssign()
+    private var playerPlay: MenuItem by singleAssign()
+    private var playerCheck: CheckMenuItem by singleAssign()
 
     init {
         controller.currentStation.station.onChange {
             stationInfo.isDisable = it == null
+            playerPlay.isDisable = it == null
+        }
+
+        subscribe<PlayerTypeChange> { event ->
+            with(event) {
+                println("PlayerTypeChange to $playerType")
+                playerCheck.isSelected = playerType == PlayerType.Native
+            }
         }
     }
 
@@ -43,11 +60,21 @@ class MenuBarView : View() {
             }
         }
         menu(messages["menu.player.controls"]) {
-            item(messages["menu.player.start"]).action {
+            playerPlay = item(messages["menu.player.start"]) {
+                isDisable = true
+                action {
 
+                }
             }
             item(messages["menu.player.stop"]).action {
+                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+            }
 
+            playerCheck = checkmenuitem("Use Native media player") {
+                isSelected = controller.mediaPlayer.isNativePlayer
+                action {
+                    controller.mediaPlayer.isNativePlayer = isSelected
+                }
             }
         }
         menu(messages["menu.view"]) {
