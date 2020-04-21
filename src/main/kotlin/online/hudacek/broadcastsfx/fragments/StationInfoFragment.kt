@@ -2,8 +2,12 @@ package online.hudacek.broadcastsfx.fragments
 
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
+import javafx.scene.effect.BlurType
+import javafx.scene.effect.DropShadow
+import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.model.StationViewModel
 import tornadofx.*
+import tornadofx.controlsfx.rating
 import tornadofx.controlsfx.statusbar
 
 
@@ -11,9 +15,12 @@ class StationInfoFragment : Fragment() {
 
     private val currentStation: StationViewModel by inject()
 
+    override fun onBeforeShow() {
+        currentStage?.opacity = 0.85
+    }
+
     override val root = vbox {
         setPrefSize(300.0, 300.0)
-
         currentStation.station.value?.let {
             title = it.name
 
@@ -31,9 +38,15 @@ class StationInfoFragment : Fragment() {
                 alignment = Pos.CENTER
 
                 imageview(it.favicon) {
+                    effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 100.0
                     fitHeight = 100.0
                     isPreserveRatio = true
+                }
+
+                rating(0, 5) {
+                    paddingTop = 10.0
+                    maxHeight = 15.0
                 }
             }
 

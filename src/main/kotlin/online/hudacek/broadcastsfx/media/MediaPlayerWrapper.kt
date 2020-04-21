@@ -11,29 +11,48 @@ import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.Component
 import java.lang.RuntimeException
-import kotlin.properties.Delegates
 
 object MediaPlayerWrapper : Component() {
 
     private val logger = KotlinLogging.logger {}
 
-    private val mediaPlayer: MediaPlayer = initMediaPlayer()
-
+    private var mediaPlayer: MediaPlayer = initMediaPlayer()
     private val notification by lazy { find(MainView::class).notification }
 
-    init {
-        mediaPlayer.volume = config.double("volume", 0.0)
-    }
+    var playerType: PlayerType = PlayerType.VLC
 
-    var isNativePlayer: Boolean by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) fire(PlayerTypeChange(PlayerType.Native))
-        else fire(PlayerTypeChange(PlayerType.VLC))
-    }
-
-    val playingStatus: PlayingStatus
-        get() {
-            return mediaPlayer.playingStatus
+    var volume: Double
+        get() = mediaPlayer.volume
+        set(value) {
+            if (mediaPlayer.changeVolume(value)) {
+                with(config) {
+                    set("volume" to value)
+                    save()
+                }
+            }
         }
+
+    init {
+        volume = config.double("volume", 0.0)
+        subscribe<PlayerTypeChange> { event ->
+            with(event) {
+                if (playerType != changedPlayerType) {
+                    mediaPlayer.releasePlayer()
+                    mediaPlayer = if (changedPlayerType == PlayerType.VLC) VLCMediaPlayer()
+                    else NativeMediaPlayer()
+                    playerType = changedPlayerType
+                }
+            }
+        }
+
+        subscribe<PlaybackChangeEvent> { event ->
+            with(event) {
+                if (playingStatus == PlayingStatus.Stopped) {
+                    mediaPlayer.cancelPlaying()
+                }
+            }
+        }
+    }
 
     private fun initMediaPlayer(): MediaPlayer {
         return try {
@@ -41,7 +60,7 @@ object MediaPlayerWrapper : Component() {
             VLCMediaPlayer()
         } catch (e: RuntimeException) {
             e.printStackTrace()
-            isNativePlayer = true
+            playerType = PlayerType.Native
             logger.debug { "VLC init failed, init native library " }
             NativeMediaPlayer()
         }
@@ -58,13 +77,9 @@ object MediaPlayerWrapper : Component() {
 
     fun play(url: String) {
         logger.debug { "play() called" }
-        cancelPlaying()
+        mediaPlayer.cancelPlaying()
         mediaPlayer.play(url)
     }
-
-    fun changeVolume(volume: Double) = mediaPlayer.changeVolume(volume)
-
-    fun cancelPlaying() = mediaPlayer.cancelPlaying()
 
     fun releasePlayer() = mediaPlayer.releasePlayer()
 }

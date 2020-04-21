@@ -22,6 +22,7 @@ class VLCMediaPlayer : MediaPlayer {
     }
 
     override fun play(url: String) {
+        changeVolume(volume)
         mediaPlayerComponent.mediaPlayer().media().play(url)
         mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
             override fun finished(mediaPlayer: uk.co.caprica.vlcj.player.base.MediaPlayer?) {
@@ -36,22 +37,22 @@ class VLCMediaPlayer : MediaPlayer {
                 playingStatus = PlayingStatus.Playing
             }
         })
-        val log: NativeLog = mediaPlayerComponent.mediaPlayerFactory().application().newLog()
+        val log = mediaPlayerComponent.mediaPlayerFactory().application().newLog()
         log.level = LogLevel.NOTICE
         log.addLogListener { level, module, file, line, name, header, id, message ->
             logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
         }
-
     }
 
     override fun changeVolume(volume: Double): Boolean {
+        logger.debug { "change volume to $volume" }
+
+        this.volume = volume
         val intVol = if (volume < -28) {
             0
         } else {
             ((volume + 80) * (100 / 86)).toInt()
         }
-
-        println(intVol)
         return mediaPlayerComponent.mediaPlayer().audio().setVolume(intVol)
     }
 
@@ -59,7 +60,7 @@ class VLCMediaPlayer : MediaPlayer {
         logger.debug { "ending current stream if any" }
 
         if (result == 1) {
-            MediaPlayerWrapper.handleError(RuntimeException("Error in playing stream"))
+            MediaPlayerWrapper.handleError(RuntimeException("See app.log for more details."))
         }
 
         mediaPlayerComponent.mediaPlayer().submit {
@@ -72,9 +73,10 @@ class VLCMediaPlayer : MediaPlayer {
 
     override fun releasePlayer() {
         logger.debug { "releasing player" }
+        playingStatus = PlayingStatus.Stopped
 
+        end(0)
         mediaPlayerComponent.mediaPlayer().submit {
-            mediaPlayerComponent.mediaPlayer().controls().stop()
             mediaPlayerComponent.mediaPlayer().release()
         }
     }

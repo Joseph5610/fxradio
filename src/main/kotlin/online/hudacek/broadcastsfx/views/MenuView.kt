@@ -1,6 +1,5 @@
 package online.hudacek.broadcastsfx.views
 
-import javafx.collections.FXCollections
 import javafx.scene.control.ListView
 import online.hudacek.broadcastsfx.controllers.MenuController
 import online.hudacek.broadcastsfx.events.StationDirectoryType
@@ -32,7 +31,7 @@ class MenuView : View() {
                     .subscribe(
                             { result ->
                                 ui {
-                                    val results = FXCollections.observableArrayList<String>()
+                                    val results = observableListOf<String>()
 
                                     result.forEach {
                                         results.add(it.name)
@@ -46,12 +45,11 @@ class MenuView : View() {
                                     }
                                     root.add(countriesListView)
                                 }
-                            },
-                            {
-                                ui {
-                                    notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
-                                }
-                            }
+                            }, {
+                        ui {
+                            notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
+                        }
+                    }
                     )
         }
     }
@@ -67,7 +65,7 @@ class MenuView : View() {
         smallLabel(messages["library"])
 
         libraryListView = listview(userMenuItems) {
-            val size = items.size * 24.0 + 4
+            val size = items.size * 24.0 + 10
             prefHeight = size
             items.onChange {
                 (parent as ListView<*>).setPrefHeight(size)

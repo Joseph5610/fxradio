@@ -16,6 +16,11 @@ class AboutAppFragment : Fragment() {
             About.author,
             About.copyright)
 
+    override fun onBeforeShow() {
+        currentStage?.opacity = 0.85
+        currentStage?.isResizable = false
+    }
+
     override val root = vbox {
         setPrefSize(300.0, 300.0)
 

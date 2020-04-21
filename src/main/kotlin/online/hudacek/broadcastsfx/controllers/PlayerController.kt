@@ -13,10 +13,11 @@ class PlayerController : Controller() {
 
     val mediaPlayer = MediaPlayerWrapper
 
+    var playingStatus: PlayingStatus = PlayingStatus.Stopped
     var previousStation: Station? = null
 
     fun handlePlayerControls() {
-        if (mediaPlayer.playingStatus == PlayingStatus.Playing) {
+        if (playingStatus == PlayingStatus.Playing) {
             fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         } else {
             fire(PlaybackChangeEvent(PlayingStatus.Playing))
@@ -27,7 +28,7 @@ class PlayerController : Controller() {
 
     fun playPreviousStation() {
         previousStation?.let {
-            it.url_resolved?.let { url -> mediaPlayer.play(url) }
+            it.url_resolved?.let { url -> play(url) }
         }
     }
 }

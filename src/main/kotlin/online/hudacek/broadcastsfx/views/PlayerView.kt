@@ -17,7 +17,6 @@ import online.hudacek.broadcastsfx.extension.smallIcon
 import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
-import kotlin.contracts.contract
 
 class PlayerView : View() {
 
@@ -57,8 +56,9 @@ class PlayerView : View() {
         subscribe<PlaybackChangeEvent> { event ->
             with(event) {
                 logger.debug { "received PlayerChangeEvent $playingStatus" }
+                controller.playingStatus = playingStatus
+
                 if (playingStatus == PlayingStatus.Stopped) {
-                    controller.mediaPlayer.cancelPlaying()
                     playButton.image = Image("Media-Controls-Play-icon.png")
                 } else {
                     controller.playPreviousStation()
@@ -70,7 +70,7 @@ class PlayerView : View() {
         controller.currentStation.station.onChange {
             if (it != null) {
                 playerControls.isDisable = false
-                if (it.stationuuid != controller.previousStation?.stationuuid) {
+                if (it != controller.previousStation) {
                     it.url_resolved?.let { url ->
                         controller.play(url)
                         playButton.image = Image("Media-Controls-Stop-icon.png")
@@ -109,9 +109,10 @@ class PlayerView : View() {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
                 smallIcon("Media-Controls-Volume-Down-icon.png")
-                volumeSlider = slider(-30..6, value = -5) {
-                    valueProperty().onChange { volume ->
-                        controller.mediaPlayer.changeVolume(volume)
+                volumeSlider = slider(-30..6) {
+                    value = controller.mediaPlayer.volume
+                    valueProperty().onChange { newVolume ->
+                        controller.mediaPlayer.volume = newVolume
                     }
                 }
                 smallIcon("Media-Controls-Volume-Up-icon.png")

@@ -13,16 +13,23 @@ class StatsFragment : Fragment() {
             return StationsApiClient.client
         }
 
+    override fun onBeforeShow() {
+        currentStage?.opacity = 0.85
+    }
+
     init {
+        title = "Statistics"
         runAsync {
             stationsApi.getStats().subscribe {
                 ui { _ ->
                     val list = observableListOf(
                             "Status: ${it.status}",
                             "API version: ${it.software_version}",
+                            "Supported version: ${it.supported_version}",
                             "Stations: ${it.stations}",
                             "Countries: ${it.countries}",
-                            "Broken stations: ${it.stations_broken}")
+                            "Broken stations: ${it.stations_broken}",
+                            "Tags: ${it.tags}")
                     container.replaceChildren(listview(list))
                 }
             }

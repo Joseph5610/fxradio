@@ -25,4 +25,14 @@ data class Station(
         val clicktimestamp: String,
         val clickcount: Int,
         val clicktrend: Int
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return if (other is Station) {
+            this.stationuuid == other.stationuuid
+        } else super.equals(other)
+    }
+
+    override fun hashCode(): Int {
+       return super.hashCode()
+    }
+}

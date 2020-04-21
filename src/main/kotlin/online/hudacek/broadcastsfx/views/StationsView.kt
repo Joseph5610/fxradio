@@ -2,9 +2,8 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
-import javafx.scene.control.Label
+import javafx.scene.effect.BlurType
 import javafx.scene.effect.DropShadow
-import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.StationsController
@@ -26,27 +25,15 @@ class StationsView : View() {
 
     private val controller: StationsController by inject()
     private val currentStation: StationViewModel by inject()
-    private var playerInfo: VBox by singleAssign()
 
     init {
-        playerInfo = vbox {
-            alignment = Pos.CENTER
-        }
-
         subscribe<StationListReloadEvent> { event ->
             getStations(event.country)
         }
 
         subscribe<PlayerTypeChange> { event ->
-            println("changed status")
-            if (event.playerType == PlayerType.Native) {
-                playerInfo.replaceChildren(label("Native media player is used. For better experience please install VLC player") {
-                    isWrapText = true
-                    requestFocusOnSceneAvailable()
-                    addClass(Styles.playerStationInfo)
-                })
-            } else {
-                playerInfo.replaceChildren(label())
+            if (event.changedPlayerType == PlayerType.Native) {
+                notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
             }
         }
     }
@@ -57,15 +44,12 @@ class StationsView : View() {
             requestFocusOnSceneAvailable()
             addClass(Styles.playerStationInfo)
         }
-        vbox { paddingBottom = 30.0 }
-        add(playerInfo)
     }
 
     private fun getStations(country: String = "") {
         controller.getStationsByCountry(country).subscribe({ result ->
             root.replaceChildren(
                     datagrid(result.asObservable()) {
-
                         selectionModel.selectedItemProperty().onChange {
                             it?.let {
                                 currentStation.item = CurrentStation(it)
@@ -73,7 +57,7 @@ class StationsView : View() {
                         }
 
                         cellCache {
-                            effect = DropShadow(15.0, Color.LIGHTGRAY)
+                            effect = DropShadow(20.0, Color.LIGHTGRAY)
                             paddingAll = 5
                             vbox(alignment = Pos.CENTER) {
                                 requestFocusOnSceneAvailable()
@@ -86,11 +70,13 @@ class StationsView : View() {
                                 }
 
                                 imageview(it.favicon) {
+                                    effect  = DropShadow(20.0, Color.LIGHTGRAY)
                                     isCache = true
                                     cacheHint = CacheHint.SPEED
                                     fitHeight = 100.0
                                     fitWidth = 100.0
                                     isPreserveRatio = true
+                                    paddingBottom = 10.0
                                 }
 
                                 label(it.name)

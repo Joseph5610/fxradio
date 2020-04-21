@@ -19,9 +19,6 @@ buildscript {
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id 'org.jetbrains.kotlin.jvm' version '1.3.70'
-
-    // Apply the application plugin to add support for building a CLI application.
-    id 'application'
 }
 
 apply plugin: 'javafx-gradle-plugin'
@@ -72,12 +69,16 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-mainClassName = "online.hudacek.broadcastsfx.BroadcastsKt"
-
 jfx {
+    verbose = true
+    appName = "broadcastsFX"
     // minimal requirement for jfxJar-task
     mainClass = 'online.hudacek.broadcastsfx.BroadcastsKt'
 
     // minimal requirement for jfxNative-task
-    vendor = 'YourName'
+    vendor = 'BroadcastsFX'
+    jfxMainAppJarName = "broadcastsFX.jar"
+    deployDir = "src/main/deploy"
+    nativeOutputDir = "build/jfx/native"
+    nativeReleaseVersion = "1.0"
 }
