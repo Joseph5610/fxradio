@@ -17,7 +17,6 @@ class AboutAppFragment : Fragment() {
             About.copyright)
 
     override fun onBeforeShow() {
-        currentStage?.opacity = 0.85
         currentStage?.isResizable = false
     }
 

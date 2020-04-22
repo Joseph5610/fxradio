@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.controllers
 
+import javafx.stage.Stage
 import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
@@ -9,7 +10,6 @@ import tornadofx.Controller
 class MenuBarController : Controller() {
 
     val currentStation: StationViewModel by inject()
-
     val mediaPlayer = MediaPlayerWrapper
 
     fun openStats() {
@@ -25,10 +25,15 @@ class MenuBarController : Controller() {
     }
 
     fun openServerSelect() {
-        find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UNIFIED)
+        find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UTILITY)
     }
 
     fun openAttributions() {
-        find<AttributionsFragment>().openModal(stageStyle = StageStyle.UNIFIED)
+        find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
+    }
+
+    fun closeApp(currentStage: Stage?) {
+        currentStage?.close()
+        mediaPlayer.releasePlayer()
     }
 }

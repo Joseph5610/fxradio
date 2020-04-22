@@ -56,7 +56,7 @@ class MenuBarView : View() {
                 controller.openAttributions()
             }
             item(messages["menu.app.quit"]).action {
-                Platform.exit()
+                controller.closeApp(currentStage)
             }
         }
         stationInfo = menu(messages["menu.station"]) {

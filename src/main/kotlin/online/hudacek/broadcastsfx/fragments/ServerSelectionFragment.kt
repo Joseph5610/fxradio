@@ -2,6 +2,7 @@ package online.hudacek.broadcastsfx.fragments
 
 import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.model.ApiServerViewModel
+import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
 class ServerSelectionFragment : Fragment() {
@@ -9,6 +10,10 @@ class ServerSelectionFragment : Fragment() {
     val model: ApiServerViewModel by inject()
 
     override val root = Form()
+
+    override fun onBeforeShow() {
+        currentStage?.isResizable = false
+    }
 
     init {
         model.url.value = StationsApiClient.hostname
@@ -29,14 +34,24 @@ class ServerSelectionFragment : Fragment() {
                     }
                 }
             }
-            button("Save") {
-                setOnAction {
-                    model.commit()
-                    StationsApiClient.hostname = model.url.value
-                    close()
+            hbox(5) {
+                button("Save") {
+                    addClass(Styles.primaryButton)
+                    setOnAction {
+                        model.commit()
+                        StationsApiClient.hostname = model.url.value
+                        close()
+                    }
+                    disableProperty().bind(model.url.isBlank())
                 }
-                disableProperty().bind(model.url.isBlank())
+
+                button("Cancel") {
+                    setOnAction {
+                        close()
+                    }
+                }
             }
+
         }
     }
 }

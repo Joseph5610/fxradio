@@ -9,6 +9,10 @@ class Styles : Stylesheet() {
         val playerStationInfo by cssclass()
         val grayLabel by cssclass()
         val noBorder by cssclass()
+        val primaryButton by cssclass()
+
+        const val primaryColor = "#0097CE"
+        const val hoverColor = "#0097EA"
     }
 
     init {
@@ -24,6 +28,14 @@ class Styles : Stylesheet() {
         grayLabel {
             fontSize = 11.px
             textFill = Color.GRAY
+        }
+
+        primaryButton {
+            backgroundColor += c(primaryColor)
+            textFill = Color.WHITESMOKE
+            and(hover) {
+                backgroundColor += c(hoverColor)
+            }
         }
 
         noBorder {

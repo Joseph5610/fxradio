@@ -5,9 +5,11 @@ import javafx.geometry.Pos
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.Slider
+import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
+import javafx.scene.paint.Color
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.PlayerController
@@ -33,16 +35,20 @@ class PlayerView : View() {
         vbox {
             alignment = Pos.CENTER_LEFT
             radioLogo = imageview(About.appIcon) {
+                effect = DropShadow(20.0, Color.WHITE)
                 fitWidth = 30.0
                 fitHeight = 30.0
             }
         }
         separator(Orientation.VERTICAL)
         vbox {
+            alignment = Pos.CENTER
             paddingLeft = 10.0
             paddingRight = 10.0
-            label(messages["nowStreaming"])
-            radioNameLabel = label("-")
+            radioNameLabel = label()
+            label(messages["nowStreaming"]) {
+                addClass(Styles.grayLabel)
+            }
         }
     }
 
@@ -83,7 +89,7 @@ class PlayerView : View() {
     }
 
     override val root = vbox {
-        prefHeight = 80.0
+        prefHeight = 75.0
         paddingTop = 20.0
         hbox(15) {
             alignment = Pos.CENTER_LEFT
