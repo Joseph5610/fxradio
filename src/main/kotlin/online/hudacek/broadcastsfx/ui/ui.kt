@@ -62,7 +62,7 @@ fun createImage(imageview: ImageView, station: Station) {
     } else {
         logger.debug { "trying to download image from ${station.favicon}" }
 
-        if (station.favicon.isNullOrEmpty() || station.favicon!!.contains(".ico")) {
+        if (station.isInvalidImage()) {
             logger.debug { "url is empty or unsupported, using default image" }
             imageview.image = Image("Industry-Radio-Tower-icon.png")
             return

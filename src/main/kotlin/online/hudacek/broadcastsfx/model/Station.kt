@@ -26,6 +26,9 @@ data class Station(
         val clickcount: Int,
         val clicktrend: Int
 ) {
+
+    fun isInvalidImage() = favicon.isNullOrEmpty() || favicon!!.contains(".ico")
+
     override fun equals(other: Any?): Boolean {
         return if (other is Station) {
             this.stationuuid == other.stationuuid
@@ -33,6 +36,6 @@ data class Station(
     }
 
     override fun hashCode(): Int {
-       return super.hashCode()
+        return super.hashCode()
     }
 }

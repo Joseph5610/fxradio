@@ -2,10 +2,10 @@ package online.hudacek.broadcastsfx.fragments
 
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
-import javafx.scene.effect.BlurType
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.model.StationViewModel
+import online.hudacek.broadcastsfx.ui.createImage
 import tornadofx.*
 import tornadofx.controlsfx.rating
 import tornadofx.controlsfx.statusbar
@@ -37,17 +37,19 @@ class StationInfoFragment : Fragment() {
                 paddingAll = 20.0
                 alignment = Pos.CENTER
 
-                imageview(it.favicon) {
+                imageview {
+                    createImage(this, it)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 100.0
                     fitHeight = 100.0
                     isPreserveRatio = true
                 }
 
+                /*
                 rating(0, 5) {
                     paddingTop = 10.0
                     maxHeight = 15.0
-                }
+                }*/
             }
 
             listview(list)

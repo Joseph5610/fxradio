@@ -66,8 +66,8 @@ class MenuBarView : View() {
                     controller.openStationInfo()
                 }
             }
-            item(messages["menu.station.report"]).action {
-
+            item(messages["menu.station.report"]) {
+                isDisable = true
             }
         }
         menu(messages["menu.player.controls"]) {
@@ -93,6 +93,7 @@ class MenuBarView : View() {
                     } else {
                         fire(PlayerTypeChange(PlayerType.Native))
                     }
+                    fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                 }
             }
         }

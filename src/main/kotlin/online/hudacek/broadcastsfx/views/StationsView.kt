@@ -60,7 +60,6 @@ class StationsView : View() {
                             effect = DropShadow(20.0, Color.LIGHTGRAY)
                             paddingAll = 5
                             vbox(alignment = Pos.CENTER) {
-                                requestFocusOnSceneAvailable()
                                 tooltip(it)
 
                                 paddingAll = 5

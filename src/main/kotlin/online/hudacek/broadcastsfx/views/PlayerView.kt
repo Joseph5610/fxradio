@@ -19,6 +19,7 @@ import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.TickerView
 import online.hudacek.broadcastsfx.ui.createImage
+import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import tornadofx.*
 
 class PlayerView : View() {
@@ -69,6 +70,7 @@ class PlayerView : View() {
     }
 
     override val root = vbox {
+        requestFocusOnSceneAvailable()
         prefHeight = 75.0
         paddingTop = 20.0
         hbox(15) {
@@ -119,7 +121,7 @@ class PlayerView : View() {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
                 smallIcon("Media-Controls-Volume-Down-icon.png")
-                volumeSlider = slider(-30..6) {
+                volumeSlider = slider(-30..5) {
                     value = controller.mediaPlayer.volume
                     valueProperty().onChange { newVolume ->
                         controller.mediaPlayer.volume = newVolume

@@ -14,7 +14,7 @@ class MenuView : View() {
     private val notification by lazy { find(MainView::class).notification }
 
     private val listItem = hashMapOf(
-            messages["favourites"] to StationDirectoryType.Favourites,
+           //messages["favourites"] to StationDirectoryType.Favourites,
             messages["topStations"] to StationDirectoryType.TopList)
 
     private val controller: MenuController by inject()
@@ -58,14 +58,15 @@ class MenuView : View() {
         paddingAll = 10
 
         vboxH()
+        /*
         textfield {
             promptText = messages["search"]
-        }
+        }*/
         vboxH()
         smallLabel(messages["library"])
 
         libraryListView = listview(userMenuItems) {
-            val size = items.size * 24.0 + 10
+            val size = items.size * 24.0 + 6
             prefHeight = size
             items.onChange {
                 (parent as ListView<*>).setPrefHeight(size)
