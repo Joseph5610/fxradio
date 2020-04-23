@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.extension
+package online.hudacek.broadcastsfx.ui
 
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue

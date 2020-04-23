@@ -2,7 +2,6 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
-import javafx.scene.effect.BlurType
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
@@ -10,12 +9,13 @@ import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.StationListReloadEvent
-import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
-import online.hudacek.broadcastsfx.extension.set
-import online.hudacek.broadcastsfx.extension.tooltip
+import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.ui.set
+import online.hudacek.broadcastsfx.ui.tooltip
 import online.hudacek.broadcastsfx.model.CurrentStation
 import online.hudacek.broadcastsfx.model.StationViewModel
 import online.hudacek.broadcastsfx.styles.Styles
+import online.hudacek.broadcastsfx.ui.createImage
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -65,12 +65,9 @@ class StationsView : View() {
 
                                 paddingAll = 5
 
-                                if (it.favicon == null || it.favicon!!.isEmpty()) {
-                                    it.favicon = About.appIcon
-                                }
-
-                                imageview(it.favicon) {
-                                    effect  = DropShadow(20.0, Color.LIGHTGRAY)
+                                imageview {
+                                    createImage(this, it)
+                                    effect = DropShadow(20.0, Color.LIGHTGRAY)
                                     isCache = true
                                     cacheHint = CacheHint.SPEED
                                     fitHeight = 100.0

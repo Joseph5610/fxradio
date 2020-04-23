@@ -3,7 +3,7 @@ package online.hudacek.broadcastsfx.fragments
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.About
-import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 

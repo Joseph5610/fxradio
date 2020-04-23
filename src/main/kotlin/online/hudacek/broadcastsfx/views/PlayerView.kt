@@ -3,7 +3,6 @@ package online.hudacek.broadcastsfx.views
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.Button
-import javafx.scene.control.Label
 import javafx.scene.control.Slider
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
@@ -15,9 +14,11 @@ import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.smallIcon
+import online.hudacek.broadcastsfx.ui.smallIcon
 import online.hudacek.broadcastsfx.model.Station
 import online.hudacek.broadcastsfx.styles.Styles
+import online.hudacek.broadcastsfx.ui.TickerView
+import online.hudacek.broadcastsfx.ui.createImage
 import tornadofx.*
 
 class PlayerView : View() {
@@ -26,31 +27,10 @@ class PlayerView : View() {
 
     private val controller: PlayerController by inject()
 
-    private var radioNameLabel: Label by singleAssign()
+    private var radioNameLabel: TickerView by singleAssign()
     private var radioLogo: ImageView by singleAssign()
     private var volumeSlider: Slider by singleAssign()
     private var playerControls: Button by singleAssign()
-
-    private var radioNameLabelParent = hbox(5) {
-        vbox {
-            alignment = Pos.CENTER_LEFT
-            radioLogo = imageview(About.appIcon) {
-                effect = DropShadow(20.0, Color.WHITE)
-                fitWidth = 30.0
-                fitHeight = 30.0
-            }
-        }
-        separator(Orientation.VERTICAL)
-        vbox {
-            alignment = Pos.CENTER
-            paddingLeft = 10.0
-            paddingRight = 10.0
-            radioNameLabel = label()
-            label(messages["nowStreaming"]) {
-                addClass(Styles.grayLabel)
-            }
-        }
-    }
 
     private val playButton = imageview("Media-Controls-Play-icon.png") {
         fitWidth = 30.0
@@ -104,9 +84,33 @@ class PlayerView : View() {
             region {
                 hgrow = Priority.ALWAYS
             }
-            vbox {
+
+            //Player box
+            hbox(5) {
+                prefWidth = 220.0
                 addClass(Styles.playerStationInfo)
-                add(radioNameLabelParent)
+
+                vbox {
+                    alignment = Pos.CENTER_LEFT
+                    radioLogo = imageview(About.appIcon) {
+                        effect = DropShadow(20.0, Color.WHITE)
+                        fitWidth = 30.0
+                        fitHeight = 30.0
+                        isPreserveRatio = true
+                    }
+                }
+                separator(Orientation.VERTICAL)
+
+                vbox {
+                    fitToParentWidth()
+                    alignment = Pos.CENTER
+                    add(TickerView::class) {
+                        radioNameLabel = this
+                    }
+                    label(messages["nowStreaming"]) {
+                        addClass(Styles.grayLabel)
+                    }
+                }
             }
             region {
                 hgrow = Priority.ALWAYS
@@ -127,9 +131,7 @@ class PlayerView : View() {
     }
 
     private fun Station.updateView() {
-        radioNameLabel.text = name
-        favicon?.let {
-            radioLogo.image = Image(it, true)
-        }
+        radioNameLabel.updateText(name)
+        createImage(radioLogo, this)
     }
 }

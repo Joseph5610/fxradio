@@ -1,17 +1,13 @@
 package online.hudacek.broadcastsfx.fragments
 
 import javafx.geometry.Pos
-import javafx.scene.Parent
 import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.About
-import online.hudacek.broadcastsfx.StationsApiClient
-import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.model.Attribution
 import online.hudacek.broadcastsfx.model.AttributionViewModel
-import online.hudacek.broadcastsfx.model.License
 import online.hudacek.broadcastsfx.model.Licenses
-import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
 class LicenseFragment : Fragment() {

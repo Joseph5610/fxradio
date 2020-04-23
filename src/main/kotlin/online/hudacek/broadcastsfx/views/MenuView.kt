@@ -3,9 +3,9 @@ package online.hudacek.broadcastsfx.views
 import javafx.scene.control.ListView
 import online.hudacek.broadcastsfx.controllers.MenuController
 import online.hudacek.broadcastsfx.events.StationDirectoryType
-import online.hudacek.broadcastsfx.extension.set
-import online.hudacek.broadcastsfx.extension.smallLabel
-import online.hudacek.broadcastsfx.extension.vboxH
+import online.hudacek.broadcastsfx.ui.set
+import online.hudacek.broadcastsfx.ui.smallLabel
+import online.hudacek.broadcastsfx.ui.vboxH
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
