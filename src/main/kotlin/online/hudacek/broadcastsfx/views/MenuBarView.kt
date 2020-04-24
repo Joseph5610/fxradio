@@ -29,6 +29,8 @@ class MenuBarView : View() {
 
     private var currentPlayerType = controller.mediaPlayer.playerType
 
+    private var emptyItem: MenuItem by singleAssign()
+
     init {
         controller.currentStation.station.onChange {
             stationInfo.isDisable = it == null
@@ -97,6 +99,13 @@ class MenuBarView : View() {
                 }
             }
         }
+
+        menu(messages["menu.history"]) {
+            emptyItem = item("Empty") {
+                isDisable = true
+            }
+        }
+
         menu(messages["menu.view"]) {
             item(messages["menu.view.stats"]).action {
                 controller.openStats()

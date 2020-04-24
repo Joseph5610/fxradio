@@ -1,5 +1,9 @@
 package online.hudacek.broadcastsfx.model
 
+import tornadofx.ItemViewModel
+import tornadofx.getProperty
+import tornadofx.property
+
 data class Station(
         val changeuuid: String,
         val stationuuid: String,
@@ -38,4 +42,13 @@ data class Station(
     override fun hashCode(): Int {
         return super.hashCode()
     }
+}
+
+class CurrentStation(station: Station) {
+    var station: Station by property(station)
+    fun stationProperty() = getProperty(CurrentStation::station)
+}
+
+class StationViewModel : ItemViewModel<CurrentStation>() {
+    val station = bind { item?.stationProperty() }
 }

@@ -15,7 +15,7 @@ class MainView : View() {
     private val controller: MainController by inject()
 
     private val playerView: PlayerView by inject()
-    private val menuView: MenuView by inject()
+    private val leftPaneView: LeftPaneView by inject()
     private val stationsView: StationsView by inject()
 
     var notification: NotificationPane by singleAssign()
@@ -48,7 +48,7 @@ class MainView : View() {
                 vbox {
                     vgrow = Priority.ALWAYS
                     vbox {
-                        splitpane(Orientation.HORIZONTAL, menuView.root, rightPane) {
+                        splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
                             setDividerPositions(0.3)
                         }
                     }

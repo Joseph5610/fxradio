@@ -6,15 +6,16 @@ import online.hudacek.broadcastsfx.events.StationDirectoryType
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.smallLabel
 import online.hudacek.broadcastsfx.ui.vboxH
+import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class MenuView : View() {
+class LeftPaneView : View() {
 
     private val notification by lazy { find(MainView::class).notification }
 
     private val listItem = hashMapOf(
-           //messages["favourites"] to StationDirectoryType.Favourites,
+            //messages["favourites"] to StationDirectoryType.Favourites,
             messages["topStations"] to StationDirectoryType.TopList)
 
     private val controller: MenuController by inject()
@@ -23,6 +24,8 @@ class MenuView : View() {
 
     private var libraryListView: ListView<String> by singleAssign()
     private var countriesListView: ListView<String> by singleAssign()
+
+    private val searchField = textfield()
 
     init {
         runAsync {
@@ -36,6 +39,8 @@ class MenuView : View() {
                                     result.forEach {
                                         results.add(it.name)
                                     }
+
+                                    TextFields.bindAutoCompletion(searchField, results)
 
                                     countriesListView = listview(results) {
                                         onUserSelect {
@@ -58,19 +63,13 @@ class MenuView : View() {
         paddingAll = 10
 
         vboxH()
-        /*
-        textfield {
-            promptText = messages["search"]
-        }*/
+        add(searchField)
         vboxH()
         smallLabel(messages["library"])
 
         libraryListView = listview(userMenuItems) {
             val size = items.size * 24.0 + 6
             prefHeight = size
-            items.onChange {
-                (parent as ListView<*>).setPrefHeight(size)
-            }
             onUserSelect {
                 countriesListView.selectionModel.clearSelection()
                 controller.loadTopListOfStations()

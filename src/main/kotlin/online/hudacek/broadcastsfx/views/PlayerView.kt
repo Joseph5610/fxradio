@@ -2,14 +2,11 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.control.Button
-import javafx.scene.control.Slider
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import mu.KotlinLogging
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
@@ -24,43 +21,54 @@ import tornadofx.*
 
 class PlayerView : View() {
 
-    private val logger = KotlinLogging.logger {}
-
     private val controller: PlayerController by inject()
 
     private var radioNameLabel: TickerView by singleAssign()
     private var radioLogo: ImageView by singleAssign()
-    private var volumeSlider: Slider by singleAssign()
-    private var playerControls: Button by singleAssign()
 
-    private val playButton = imageview("Media-Controls-Play-icon.png") {
+    private val playImage = imageview(playIcon) {
         fitWidth = 30.0
         fitHeight = 30.0
         isPreserveRatio = true
     }
 
+    private val playerControls = button {
+        isDisable = true
+        add(playImage)
+        addClass(Styles.playerControls)
+        action {
+            controller.handlePlayerControls()
+        }
+    }
+
+    private val volumeSlider = slider(-30..5) {
+        value = controller.mediaPlayer.volume
+        valueProperty().onChange { newVolume ->
+            controller.mediaPlayer.volume = newVolume
+        }
+    }
+
     init {
         subscribe<PlaybackChangeEvent> { event ->
             with(event) {
-                logger.debug { "received PlayerChangeEvent $playingStatus" }
                 controller.playingStatus = playingStatus
 
                 if (playingStatus == PlayingStatus.Stopped) {
-                    playButton.image = Image("Media-Controls-Play-icon.png")
+                    playImage.image = Image(playIcon)
                 } else {
                     controller.playPreviousStation()
-                    playButton.image = Image("Media-Controls-Stop-icon.png")
+                    playImage.image = Image(stopIcon)
                 }
             }
         }
 
         controller.currentStation.station.onChange {
-            if (it != null) {
+            it?.let {
                 playerControls.isDisable = false
                 if (it != controller.previousStation) {
                     it.url_resolved?.let { url ->
                         controller.play(url)
-                        playButton.image = Image("Media-Controls-Stop-icon.png")
+                        playImage.image = Image(stopIcon)
                     }
                 }
                 it.updateView()
@@ -73,23 +81,17 @@ class PlayerView : View() {
         requestFocusOnSceneAvailable()
         prefHeight = 75.0
         paddingTop = 20.0
+
         hbox(15) {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
-            playerControls = button {
-                isDisable = true
-                add(playButton)
-                action {
-                    controller.handlePlayerControls()
-                }
-            }
+            add(playerControls)
             region {
                 hgrow = Priority.ALWAYS
             }
 
             //Player box
             hbox(5) {
-                prefWidth = 220.0
                 addClass(Styles.playerStationInfo)
 
                 vbox {
@@ -101,6 +103,7 @@ class PlayerView : View() {
                         isPreserveRatio = true
                     }
                 }
+
                 separator(Orientation.VERTICAL)
 
                 vbox {
@@ -121,12 +124,7 @@ class PlayerView : View() {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
                 smallIcon("Media-Controls-Volume-Down-icon.png")
-                volumeSlider = slider(-30..5) {
-                    value = controller.mediaPlayer.volume
-                    valueProperty().onChange { newVolume ->
-                        controller.mediaPlayer.volume = newVolume
-                    }
-                }
+                add(volumeSlider)
                 smallIcon("Media-Controls-Volume-Up-icon.png")
             }
         }
@@ -135,5 +133,10 @@ class PlayerView : View() {
     private fun Station.updateView() {
         radioNameLabel.updateText(name)
         createImage(radioLogo, this)
+    }
+
+    private companion object {
+        private const val playIcon = "Media-Controls-Play-icon.png"
+        private const val stopIcon = "Media-Controls-Stop-icon.png"
     }
 }
