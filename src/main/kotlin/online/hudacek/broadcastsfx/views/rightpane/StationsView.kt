@@ -135,7 +135,7 @@ class StationsView : View() {
                             tooltip(it)
                             paddingAll = 5
                             imageview {
-                                createImage(this, it)
+                                createImage(it)
                                 effect = DropShadow(20.0, Color.LIGHTGRAY)
                                 isCache = true
                                 cacheHint = CacheHint.SPEED

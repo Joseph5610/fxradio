@@ -1,5 +1,9 @@
 package online.hudacek.broadcastsfx
 
+/**
+ * Basic information about the app
+ * mostly for displaying in About dialog
+ */
 object About {
     const val appName = "FXRadio"
     const val appDesc = "Internet radio directory"

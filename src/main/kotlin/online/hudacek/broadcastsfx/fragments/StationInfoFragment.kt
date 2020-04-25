@@ -37,7 +37,7 @@ class StationInfoFragment : Fragment() {
 
 
                 imageview {
-                    createImage(this, it)
+                    createImage(it)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 100.0
                     fitHeight = 100.0

@@ -19,44 +19,63 @@ import tornadofx.*
 import java.net.URL
 import java.net.URLConnection
 
+/*
+ * Helper extension functions for UI
+ */
 private val logger = KotlinLogging.logger {}
 
-operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
+/**
+ * Custom function for showing notification in NotificationPane.
+ * Notification disappears after 5 seconds
+ *
+ * Example usage:
+ * notificationPane[FontAwesome.Glyph.WARNING] = "Custom notification Text"
+ */
+internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
     if (isVisible) show(message, Glyph("FontAwesome", glyph))
     val delay = PauseTransition(Duration.seconds(5.0))
     delay.onFinished = EventHandler { hide() }
     delay.play()
 }
 
-fun VBox.tooltip(station: Station): VBox {
+internal fun VBox.tooltip(station: Station): VBox {
     return onHover {
         tooltip(station.name)
     }
 }
 
-fun EventTarget.smallLabel(text: String = ""): Label {
+internal fun EventTarget.smallLabel(text: String = ""): Label {
     return label(text) {
         addClass(Styles.grayLabel)
     }
 }
 
-fun EventTarget.smallIcon(url: String = ""): ImageView {
+internal fun EventTarget.smallIcon(url: String = ""): ImageView {
     return imageview(url) {
         fitWidth = 16.0
         fitHeight = 16.0
     }
 }
 
-fun createImage(imageview: ImageView, station: Station) {
+/**
+ * This method is used for custom downloading of station's logo
+ * and storing it in cache directory
+ *
+ * It is using custom URLConnection with fake user-agent because some servers deny
+ * response when no user agent is send
+ *
+ * In case of error Industry-Radio-Tower-icon static png file is used as station logo
+ */
+internal fun ImageView.createImage(station: Station) {
     if (ImageCache.isImageInCache(station)) {
         logger.debug { "file is in cache, loading" }
-        imageview.image = ImageCache.getImageFromCache(station)
+        this.image = ImageCache.getImageFromCache(station)
     } else {
         logger.debug { "trying to download image from ${station.favicon}" }
 
         if (station.isInvalidImage()) {
             logger.debug { "url is empty or unsupported, using default image" }
-            imageview.image = Image("Industry-Radio-Tower-icon.png")
+            this.image = Image("Industry-Radio-Tower-icon.png")
             return
         }
 
@@ -68,11 +87,11 @@ fun createImage(imageview: ImageView, station: Station) {
                 ImageCache.saveImage(station, stream)
             }
         } success {
-            imageview.image = ImageCache.getImageFromCache(station)
+            this.image = ImageCache.getImageFromCache(station)
         } fail {
             logger.debug { "image download failed for $station " }
             it.printStackTrace()
-            imageview.image = Image("Industry-Radio-Tower-icon.png")
+            this.image = Image("Industry-Radio-Tower-icon.png")
         }
     }
 }

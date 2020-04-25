@@ -133,7 +133,7 @@ class PlayerView : View() {
     private fun Station.updateView() {
         nowStreamingLabel.text = messages["nowStreaming"]
         radioNameLabel.updateText(name)
-        createImage(radioLogo, this)
+        radioLogo.createImage(this)
     }
 
     private companion object {

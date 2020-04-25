@@ -20,6 +20,9 @@ import java.lang.RuntimeException
 import java.net.InetAddress
 import java.net.UnknownHostException
 
+/**
+ * HTTP endpoints for radio-browser.info API
+ */
 interface StationsApiClient {
 
     @GET("json/stations/bycountry/{countryCode}")
@@ -39,6 +42,7 @@ interface StationsApiClient {
 
     companion object {
 
+        //try to connect to working API server
         private val inetAddressHostname: String by lazy {
             try {
                 InetAddress.getAllByName("all.api.radio-browser.info")[0].canonicalHostName
@@ -49,6 +53,8 @@ interface StationsApiClient {
             }
         }
 
+        //API server URL property which is actually used for requests
+        //Can be changed in app: About -> server selection
         var hostname: String = ""
             get() {
                 return if (field.isEmpty()) inetAddressHostname

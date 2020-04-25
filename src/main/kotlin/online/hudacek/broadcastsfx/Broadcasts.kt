@@ -8,19 +8,12 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
+/**
+ * Main class for the app
+ */
 class Broadcasts : App(MainView::class, Styles::class) {
+    //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(About.appConfigLocation)
-
-    private val cacheBasePath: Path = Paths.get(About.imageCacheLocation)
-
-    init {
-        //prepare cache directory
-        if (!Files.isDirectory(cacheBasePath)) {
-            Files.createDirectories(cacheBasePath)
-        }
-    }
 }
 
-fun main(args: Array<String>) {
-    launch<Broadcasts>(args)
-}
+fun main(args: Array<String>) = launch<Broadcasts>(args)
