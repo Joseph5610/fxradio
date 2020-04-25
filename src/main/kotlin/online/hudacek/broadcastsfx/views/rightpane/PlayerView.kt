@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.views
+package online.hudacek.broadcastsfx.views.rightpane
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
@@ -26,6 +26,10 @@ class PlayerView : View() {
     private var radioNameLabel: TickerView by singleAssign()
     private var radioLogo: ImageView by singleAssign()
 
+    private val nowStreamingLabel = label(messages["streamingStopped"]) {
+        addClass(Styles.grayLabel)
+    }
+
     private val playImage = imageview(playIcon) {
         fitWidth = 30.0
         fitHeight = 30.0
@@ -52,12 +56,13 @@ class PlayerView : View() {
         subscribe<PlaybackChangeEvent> { event ->
             with(event) {
                 controller.playingStatus = playingStatus
-
                 if (playingStatus == PlayingStatus.Stopped) {
                     playImage.image = Image(playIcon)
+                    nowStreamingLabel.text = messages["streamingStopped"]
                 } else {
                     controller.playPreviousStation()
                     playImage.image = Image(stopIcon)
+                    nowStreamingLabel.text = messages["nowStreaming"]
                 }
             }
         }
@@ -94,8 +99,7 @@ class PlayerView : View() {
             hbox(5) {
                 addClass(Styles.playerStationInfo)
 
-                vbox {
-                    alignment = Pos.CENTER_LEFT
+                vbox(alignment = Pos.CENTER_LEFT) {
                     radioLogo = imageview(About.appIcon) {
                         effect = DropShadow(20.0, Color.WHITE)
                         fitWidth = 30.0
@@ -105,16 +109,12 @@ class PlayerView : View() {
                 }
 
                 separator(Orientation.VERTICAL)
-
-                vbox {
+                vbox(alignment = Pos.CENTER) {
                     fitToParentWidth()
-                    alignment = Pos.CENTER
                     add(TickerView::class) {
                         radioNameLabel = this
                     }
-                    label(messages["nowStreaming"]) {
-                        addClass(Styles.grayLabel)
-                    }
+                    add(nowStreamingLabel)
                 }
             }
             region {
@@ -123,14 +123,15 @@ class PlayerView : View() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
-                smallIcon("Media-Controls-Volume-Down-icon.png")
+                smallIcon(volumeDownIcon)
                 add(volumeSlider)
-                smallIcon("Media-Controls-Volume-Up-icon.png")
+                smallIcon(volumeUpIcon)
             }
         }
     }
 
     private fun Station.updateView() {
+        nowStreamingLabel.text = messages["nowStreaming"]
         radioNameLabel.updateText(name)
         createImage(radioLogo, this)
     }
@@ -138,5 +139,7 @@ class PlayerView : View() {
     private companion object {
         private const val playIcon = "Media-Controls-Play-icon.png"
         private const val stopIcon = "Media-Controls-Stop-icon.png"
+        private const val volumeDownIcon = "Media-Controls-Volume-Down-icon.png"
+        private const val volumeUpIcon = "Media-Controls-Volume-Up-icon.png"
     }
 }

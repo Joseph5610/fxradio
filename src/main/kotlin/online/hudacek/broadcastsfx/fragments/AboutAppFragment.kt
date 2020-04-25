@@ -25,9 +25,8 @@ class AboutAppFragment : Fragment() {
 
         title = "${About.appName} ${About.appVersion}"
 
-        vbox {
+        vbox(alignment = Pos.CENTER) {
             paddingAll = 20.0
-            alignment = Pos.CENTER
 
             imageview(About.appIcon) {
                 requestFocusOnSceneAvailable()

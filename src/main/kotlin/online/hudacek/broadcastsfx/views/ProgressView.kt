@@ -5,8 +5,7 @@ import tornadofx.*
 
 class ProgressView : View() {
 
-    override val root = vbox {
-        alignment = Pos.CENTER
+    override val root = vbox(alignment = Pos.CENTER) {
         paddingTop = 30.0
         progressindicator()
     }

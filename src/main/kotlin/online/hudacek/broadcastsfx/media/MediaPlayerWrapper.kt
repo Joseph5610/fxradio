@@ -2,6 +2,7 @@ package online.hudacek.broadcastsfx.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
+import online.hudacek.broadcastsfx.ConfigValues
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayerTypeChange
@@ -25,15 +26,15 @@ object MediaPlayerWrapper : Component() {
         get() = mediaPlayer.volume
         set(value) {
             if (mediaPlayer.changeVolume(value)) {
-                with(config) {
-                    set("volume" to value)
+                with(app.config) {
+                    set(ConfigValues.keyVolume to value)
                     save()
                 }
             }
         }
 
     init {
-        volume = config.double("volume", 0.0)
+        volume = app.config.double(ConfigValues.keyVolume, 0.0)
         subscribe<PlayerTypeChange> { event ->
             with(event) {
                 if (playerType != changedPlayerType) {

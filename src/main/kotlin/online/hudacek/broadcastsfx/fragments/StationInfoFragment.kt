@@ -10,7 +10,6 @@ import tornadofx.*
 import tornadofx.controlsfx.rating
 import tornadofx.controlsfx.statusbar
 
-
 class StationInfoFragment : Fragment() {
 
     private val currentStation: StationViewModel by inject()
@@ -33,9 +32,9 @@ class StationInfoFragment : Fragment() {
                     it.language,
                     it.lastcheckoktime)
 
-            vbox {
+            vbox(alignment = Pos.CENTER) {
                 paddingAll = 20.0
-                alignment = Pos.CENTER
+
 
                 imageview {
                     createImage(this, it)

@@ -16,8 +16,6 @@ import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
-import java.io.IOException
-import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
 
@@ -28,12 +26,6 @@ operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
     val delay = PauseTransition(Duration.seconds(5.0))
     delay.onFinished = EventHandler { hide() }
     delay.play()
-}
-
-fun EventTarget.vboxH(height: Double = 20.0): VBox {
-    return vbox {
-        prefHeight = height
-    }
 }
 
 fun VBox.tooltip(station: Station): VBox {

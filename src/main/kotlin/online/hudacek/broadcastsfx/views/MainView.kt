@@ -5,6 +5,9 @@ import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
+import online.hudacek.broadcastsfx.views.leftpane.LeftPaneView
+import online.hudacek.broadcastsfx.views.rightpane.PlayerView
+import online.hudacek.broadcastsfx.views.rightpane.StationsView
 import org.controlsfx.control.NotificationPane
 import tornadofx.*
 import tornadofx.controlsfx.content

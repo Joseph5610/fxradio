@@ -4,13 +4,17 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.model.StationHistoryViewModel
 import online.hudacek.broadcastsfx.model.StationViewModel
 import tornadofx.Controller
 
 class MenuBarController : Controller() {
 
     val currentStation: StationViewModel by inject()
+    val stationHistory: StationHistoryViewModel by inject()
+
     val mediaPlayer = MediaPlayerWrapper
+
 
     fun openStats() {
         find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)

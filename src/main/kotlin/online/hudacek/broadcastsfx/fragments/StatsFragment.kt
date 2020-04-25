@@ -1,5 +1,7 @@
 package online.hudacek.broadcastsfx.fragments
 
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
+import io.reactivex.schedulers.Schedulers
 import javafx.scene.layout.VBox
 import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.views.ProgressView
@@ -19,9 +21,11 @@ class StatsFragment : Fragment() {
 
     init {
         title = "Statistics"
-        runAsync {
-            stationsApi.getStats().subscribe {
-                ui { _ ->
+        stationsApi.getStats()
+                .subscribeOn(Schedulers.io())
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe {
+
                     val list = observableListOf(
                             "Status: ${it.status}",
                             "API version: ${it.software_version}",
@@ -32,8 +36,6 @@ class StatsFragment : Fragment() {
                             "Tags: ${it.tags}")
                     container.replaceChildren(listview(list))
                 }
-            }
-        }
     }
 
     override val root = vbox {

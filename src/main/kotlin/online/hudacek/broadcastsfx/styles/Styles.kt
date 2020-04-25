@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.styles
 
+import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.scene.paint.Paint
@@ -12,12 +13,18 @@ class Styles : Stylesheet() {
         val noBorder by cssclass()
         val primaryButton by cssclass()
         val playerControls by cssclass()
+        val header by cssclass()
+        val searchBoxLabel by cssclass()
 
         const val primaryColor = "#0097CE"
         const val hoverColor = "#0097EA"
     }
 
     init {
+        searchBoxLabel {
+            padding = box(0.px, 2.px, 0.px, 7.px)
+        }
+
         playerStationInfo {
             padding = box(3.px, 10.px, 3.px, 10.px)
             backgroundRadius += box(3.px)
@@ -26,6 +33,11 @@ class Styles : Stylesheet() {
             borderColor += box(c("#E8E8E8"))
             maxWidth = 260.px
             prefWidth = 220.px
+        }
+
+        header {
+            wrapText = true
+            fontSize = 20.px
         }
 
         playerControls {

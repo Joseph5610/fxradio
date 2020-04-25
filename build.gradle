@@ -55,6 +55,7 @@ dependencies {
     compile 'commons-io:commons-io:2.6'
     compile 'com.github.thomasnield:rxkotlinfx:2.2.2'
     compile 'org.threeten:threeten-extra:1.5.0'
+    compile 'io.reactivex.rxjava2:rxjavafx:2.2.2'
     runtime group: 'io.humble', name: 'humble-video-all', version: '0.3.0'
 }
 

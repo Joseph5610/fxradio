@@ -2,6 +2,7 @@ package online.hudacek.broadcastsfx.model
 
 import tornadofx.ItemViewModel
 import tornadofx.getProperty
+import tornadofx.observableListOf
 import tornadofx.property
 
 data class Station(
@@ -49,6 +50,25 @@ class CurrentStation(station: Station) {
     fun stationProperty() = getProperty(CurrentStation::station)
 }
 
+
 class StationViewModel : ItemViewModel<CurrentStation>() {
     val station = bind { item?.stationProperty() }
+}
+
+class StationHistory {
+    val stations = observableListOf<Station>()
+}
+
+class StationHistoryViewModel : ItemViewModel<StationHistory>() {
+    val stations = bind(StationHistory::stations)
+
+    fun add(station: Station) {
+        with(stations.value) {
+            if (size > 10) {
+                removeAt(0)
+            }
+            add(station)
+            println(this)
+        }
+    }
 }

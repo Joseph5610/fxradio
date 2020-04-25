@@ -69,9 +69,8 @@ class AttributionsFragment : Fragment() {
             }
         }
 
-        vbox {
+        vbox(alignment = Pos.CENTER_RIGHT) {
             paddingAll = 10.0
-            alignment = Pos.CENTER_RIGHT
             button("Close") {
                 setOnAction {
                     close()
