@@ -21,4 +21,3 @@ deploy:
   skip_cleanup: true
   on:
     repo: Joseph5610/broadcastsFX
-    tags: true
