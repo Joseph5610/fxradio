@@ -11,7 +11,7 @@ class PlayerController : Controller() {
 
     val currentStation: StationViewModel by inject()
 
-    val mediaPlayer = MediaPlayerWrapper
+    val mediaPlayer by lazy { MediaPlayerWrapper }
 
     var playingStatus: PlayingStatus = PlayingStatus.Stopped
     var previousStation: Station? = null

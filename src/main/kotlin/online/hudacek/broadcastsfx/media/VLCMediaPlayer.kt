@@ -37,11 +37,13 @@ class VLCMediaPlayer : MediaPlayer {
                 playingStatus = PlayingStatus.Playing
             }
         })
-        val log = mediaPlayerComponent.mediaPlayerFactory().application().newLog()
-        log.level = LogLevel.NOTICE
-        log.addLogListener { level, module, file, line, name, header, id, message ->
-            logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
-        }
+
+       mediaPlayerComponent.mediaPlayerFactory().application().newLog().apply {
+           level = LogLevel.NOTICE
+           addLogListener { level, module, file, line, name, header, id, message ->
+               logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
+           }
+       }
     }
 
     override fun changeVolume(volume: Double): Boolean {
@@ -62,7 +64,6 @@ class VLCMediaPlayer : MediaPlayer {
         if (result == 1) {
             MediaPlayerWrapper.handleError(RuntimeException("See app.log for more details."))
         }
-
         mediaPlayerComponent.mediaPlayer().submit {
             mediaPlayerComponent.mediaPlayer().controls().stop()
         }
@@ -76,8 +77,6 @@ class VLCMediaPlayer : MediaPlayer {
         playingStatus = PlayingStatus.Stopped
 
         end(0)
-        mediaPlayerComponent.mediaPlayer().submit {
-            mediaPlayerComponent.mediaPlayer().release()
-        }
+        mediaPlayerComponent.release()
     }
 }

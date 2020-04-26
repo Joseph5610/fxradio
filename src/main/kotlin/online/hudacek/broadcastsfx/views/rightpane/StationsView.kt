@@ -35,12 +35,13 @@ class StationsView : View() {
     private var headerContainer: VBox by singleAssign()
     private val contentContainer = vbox()
 
-    private val header = label(messages["startScreen"]) {
+    private val header = label() {
         requestFocusOnSceneAvailable()
         addClass(Styles.header)
     }
 
     init {
+        getTopStations()
         subscribe<StationListReloadEvent> { event ->
             with(event) {
                 if (type == StationListType.Country) {

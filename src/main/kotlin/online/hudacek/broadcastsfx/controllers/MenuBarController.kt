@@ -13,8 +13,7 @@ class MenuBarController : Controller() {
     val currentStation: StationViewModel by inject()
     val stationHistory: StationHistoryViewModel by inject()
 
-    val mediaPlayer = MediaPlayerWrapper
-
+    val mediaPlayer by lazy { MediaPlayerWrapper }
 
     fun openStats() {
         find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
