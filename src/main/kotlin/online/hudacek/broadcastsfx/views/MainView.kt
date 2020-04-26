@@ -1,6 +1,7 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
+import javafx.scene.control.SplitPane
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
@@ -41,20 +42,19 @@ class MainView : View() {
 
     override val root = vbox {
         setPrefSize(800.0, 600.0)
+        vgrow = Priority.ALWAYS
         add(MenuBarView::class)
         notificationPane {
-
             notification = this
             isShowFromTop = true
 
             content {
-                vbox {
+                splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
+                    prefWidthProperty().bind(this@vbox.widthProperty())
+                    prefHeightProperty().bind(this@vbox.heightProperty())
                     vgrow = Priority.ALWAYS
-                    vbox {
-                        splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
-                            setDividerPositions(0.3)
-                        }
-                    }
+                    setDividerPositions(0.3)
+                    dividerPositions
                 }
             }
         }

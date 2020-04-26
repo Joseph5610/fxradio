@@ -5,6 +5,7 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
+import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.controllers.StationsController
@@ -35,7 +36,7 @@ class StationsView : View() {
     private var headerContainer: VBox by singleAssign()
     private val contentContainer = vbox()
 
-    private val header = label() {
+    private val header = label {
         requestFocusOnSceneAvailable()
         addClass(Styles.header)
     }
@@ -79,6 +80,7 @@ class StationsView : View() {
     }
 
     override val root = vbox {
+        vgrow = Priority.ALWAYS
         headerContainer = vbox(alignment = Pos.CENTER) {
             paddingTop = 120.0
             add(header)
@@ -122,6 +124,7 @@ class StationsView : View() {
         contentContainer.show()
         contentContainer.replaceChildren(
                 datagrid(observableList) {
+                    fitToParentHeight()
                     selectionModel.selectedItemProperty().onChange {
                         it?.let {
                             currentStation.item = CurrentStation(it)
