@@ -16,6 +16,9 @@ deploy:
   provider: releases
   api_key:
     secure: swxP34XOQE76cJ3JgloH0JY/vGd96ex76/24lBlCMCmRoMwZ35YJ9xzKxZO0F+LS477ozd32Uibg64rUTegbwVIIs3I8NbXfxdLDOQKnuBHvvnzZRhtEplRdwyW+PieAHvJwXMkRy8r71WfoDkPKPmrsgDlTKGeFJiD5+E7QEof9pY3/7GtTJApfGvYs6Nm5Iyga4uTuTsV9sLt1yLtq0vurEbLYLhfuuqTRvxky2yxPjZkUYL8Z+jiNc0vvOv1NKFXRVGpX2LAL20ABPa306iIQANtzUk5b5rp1Wp0S/4LXXAO8xlhnH5+r+CM/DyeYD6qyuheTtWRtZE0swBQw8rZSzKO7OnSHxNTUrokzTLDyO3RydMyk6u7HPvINVWo1YSXTx+0Lmdo/OeehW8iLfygFO/w2zo3kuAGixZkg4orUsPKnJkW193dRvD7ijzJZ9vsQyfV0AZhZ7mvosfAyw6VlL/u0Tm+6x5mOVASyUnQCMmM3nNyfaYIIZOs11M3fwG9ozXDcgMPgcHTv2EVjCFd5J+VtxbZrOtceZ2cUAROEEgRzErDKUREmWkzeVrzCJfVyfCMEY1yuhh0uQuHil0PoJW/9/lrhG228ThRExQ7p881hKzBl/r11ThUytSKsWefOcRm4W5iV8RPLKWzMWQeBYyy4bVt7VlRWEkBhamU=
+  file_glob: true
   file: build/jfx/*
+  skip_cleanup: true
   on:
     repo: Joseph5610/broadcastsFX
+    tags: true
