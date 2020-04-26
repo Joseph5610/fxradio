@@ -1,7 +1,8 @@
 language: java
 install: true
-os: linux
-dist: trusty
+os:
+  - linux
+  - osx
 jdk: oraclejdk8
 script:
 - "./gradlew jfxJar"
@@ -24,3 +25,7 @@ deploy:
   cleanup: true
   on:
     repo: Joseph5610/broadcastsFX
+branches:
+  only:
+  - master
+  - develop
