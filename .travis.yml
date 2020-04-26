@@ -3,6 +3,7 @@ install: true
 os:
   - linux
   - osx
+dist: trusty
 jdk: oraclejdk8
 script:
 - "./gradlew jfxJar"
@@ -14,7 +15,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 before_deploy:
-- ls build
+- ls -all build/jfx/*
 - zip -r releaseJar.zip build/jfx/app
 deploy:
   provider: releases
