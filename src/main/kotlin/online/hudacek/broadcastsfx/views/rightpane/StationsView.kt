@@ -5,6 +5,8 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color

@@ -5,6 +5,8 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
@@ -53,18 +55,16 @@ class PlayerView : View() {
     }
 
     init {
-        subscribe<PlaybackChangeEvent> { event ->
-            with(event) {
-                controller.playingStatus = playingStatus
-                if (playingStatus == PlayingStatus.Stopped) {
-                    playImage.image = Image(playIcon)
-                    nowStreamingLabel.text = messages["streamingStopped"]
-                } else {
-                    controller.playPreviousStation()
-                    playImage.image = Image(stopIcon)
-                    nowStreamingLabel.text = messages["nowStreaming"]
+        keyboard {
+            addEventHandler(KeyEvent.KEY_PRESSED) {
+                if (it.code == KeyCode.SPACE) {
+                    controller.handlePlayerControls()
                 }
             }
+        }
+
+        subscribe<PlaybackChangeEvent> { event ->
+            togglePlayerStatus(event.playingStatus)
         }
 
         controller.currentStation.station.onChange {
@@ -127,6 +127,18 @@ class PlayerView : View() {
                 add(volumeSlider)
                 smallIcon(volumeUpIcon)
             }
+        }
+    }
+
+    private fun togglePlayerStatus(playingStatus: PlayingStatus) {
+        controller.playingStatus = playingStatus
+        if (playingStatus == PlayingStatus.Stopped) {
+            playImage.image = Image(playIcon)
+            nowStreamingLabel.text = messages["streamingStopped"]
+        } else {
+            controller.playPreviousStation()
+            playImage.image = Image(stopIcon)
+            nowStreamingLabel.text = messages["nowStreaming"]
         }
     }
 
