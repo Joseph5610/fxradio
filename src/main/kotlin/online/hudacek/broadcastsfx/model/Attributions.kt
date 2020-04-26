@@ -2,7 +2,24 @@ package online.hudacek.broadcastsfx.model
 
 import tornadofx.ItemViewModel
 import tornadofx.getProperty
+import tornadofx.observableListOf
 import tornadofx.property
+
+object Attributions {
+    val list = observableListOf(
+            Attribution("tornadofx", "1.7.20", Licenses.apache20),
+            Attribution("controlsfx", "8.40.16", Licenses.controlsfx),
+            Attribution("vlcj", "4.0", Licenses.gpl3),
+            Attribution("humble video", "0.3.0", Licenses.gpl3),
+            Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
+            Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
+            Attribution("log4j", "2.9.1", Licenses.apache20),
+            Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
+            Attribution("appdmg", "0.6.0", Licenses.appdmg),
+            Attribution("macOS install disk background", "", Licenses.bg),
+            Attribution("Application logo, radio station icon, play, pause, volume icons", "", Licenses.iconArchive)
+    )
+}
 
 class License(name: String, content: String) {
     var name: String by property(name)
@@ -30,8 +47,9 @@ class AttributionViewModel : ItemViewModel<Attribution>() {
     val license = bind { item?.licenseProperty() }
 }
 
-object Licenses {
-    val bgLicense = License("", "Designed by xb100 / Freepik")
+private object Licenses {
+    val bg = License("", "Designed by xb100 / Freepik")
+    val iconArchive = License("", "Obtained from http://iconarchive.com")
     val retrofit = License("Apache License 2.0", "Copyright 2013 Square, Inc.\n" +
             "\n" +
             "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +

@@ -1,8 +1,7 @@
 package online.hudacek.broadcastsfx.views
 
-import javafx.scene.control.CheckMenuItem
-import javafx.scene.control.Menu
-import javafx.scene.control.MenuItem
+import de.codecentric.centerdevice.MenuToolkit
+import javafx.scene.control.*
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
@@ -14,11 +13,13 @@ import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.utils.Utils
 import tornadofx.*
+import java.util.*
+
 
 class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
-    private var stationInfo: Menu by singleAssign()
+
     private var playerPlay: MenuItem by singleAssign()
     private var playerStop: MenuItem by singleAssign()
     private var playerCheck: CheckMenuItem by singleAssign()
@@ -29,19 +30,63 @@ class MenuBarView : View() {
 
     private var currentPlayerType = controller.mediaPlayer.playerType
 
-    private var historyItem: Menu by singleAssign()
+    private val historyMenu = Menu(messages["menu.history"])
+    private val stationMenu = Menu(messages["menu.station"]).apply {
+        isVisible = false
+
+        item(messages["menu.station.info"], keyCodeInfo) {
+            action {
+                controller.openStationInfo()
+            }
+        }
+
+        item(messages["menu.station.report"]) {
+            isDisable = true
+        }
+    }
+
+    private val viewMenu = Menu(messages["menu.view"]).apply {
+        item(messages["menu.view.stats"]).action {
+            controller.openStats()
+        }
+    }
+
+    private val playerMenu = Menu(messages["menu.player.controls"]).apply {
+        playerPlay = item(messages["menu.player.start"], keyCodePlay) {
+            action {
+                fire(PlaybackChangeEvent(PlayingStatus.Playing))
+            }
+        }
+
+        playerStop = item(messages["menu.player.stop"], keyCodeStop) {
+            action {
+                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+            }
+        }
+
+        playerCheck = checkmenuitem(messages["menu.player.switch"]) {
+            isSelected = currentPlayerType == PlayerType.Native
+            action {
+                if (currentPlayerType == PlayerType.Native) {
+                    fire(PlayerTypeChange(PlayerType.VLC))
+                } else {
+                    fire(PlayerTypeChange(PlayerType.Native))
+                }
+                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+            }
+        }
+    }
 
     init {
         controller.currentStation.station.onChange {
-            stationInfo.isDisable = it == null
-            playerPlay.isDisable = it == null
-            playerStop.isDisable = it == null
+            stationMenu.isVisible = it != null
+            playerPlay.isVisible = it != null
+            playerStop.isVisible = it != null
         }
 
         controller.stationHistory.stations.onChange {
-
-            if (historyItem.items.size > 10) {
-                historyItem.items.removeAt(0)
+            if (historyMenu.items.size > 10) {
+                historyMenu.items.removeAt(0)
             }
         }
 
@@ -53,10 +98,14 @@ class MenuBarView : View() {
         }
     }
 
-    override val root = menubar {
-        isUseSystemMenuBar = true
+    override val root = if (Utils.isMacOs) {
+        platformMenuBar()
+    } else {
+        defaultMenuBar()
+    }
 
-        if (!Utils.isMacOs) {
+    private fun defaultMenuBar(): MenuBar {
+        return menubar {
             menu(About.appName) {
                 item(messages["menu.app.about"]).action {
                     controller.openAbout()
@@ -71,60 +120,43 @@ class MenuBarView : View() {
                     controller.closeApp(currentStage)
                 }
             }
-        } else {
-            //menus[0].items.add(0, MenuItem("test test"))
+            menus.addAll(stationMenu, playerMenu, historyMenu, viewMenu)
         }
+    }
 
-        stationInfo = menu(messages["menu.station"]) {
+    private fun platformMenuBar(): MenuBar {
+        return menubar {
+            val tk = MenuToolkit.toolkit(Locale.getDefault())
+            tk.setApplicationMenu(tk.createDefaultApplicationMenu(About.appName))
 
-            isDisable = true
-            item(messages["menu.station.info"], keyCodeInfo) {
-                action {
-                    controller.openStationInfo()
+            useSystemMenuBarProperty().set(true)
+
+            val appMenu = Menu(About.appName).apply {
+                item(messages["menu.app.about"]).action {
+                    controller.openAbout()
                 }
-            }
-            item(messages["menu.station.report"]) {
-                isDisable = true
-            }
-        }
-        menu(messages["menu.player.controls"]) {
-
-            playerPlay = item(messages["menu.player.start"], keyCodePlay) {
-                isDisable = true
-                action {
-                    fire(PlaybackChangeEvent(PlayingStatus.Playing))
+                separator()
+                item(messages["menu.app.server"]).action {
+                    controller.openServerSelect()
                 }
-            }
-
-            playerStop = item(messages["menu.player.stop"], keyCodeStop) {
-                isDisable = true
-                action {
-                    fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+                item(messages["menu.app.attributions"]).action {
+                    controller.openAttributions()
                 }
+                separator()
             }
+            appMenu.items.addAll(
+                    tk.createHideMenuItem(About.appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
+                    SeparatorMenuItem(), tk.createQuitMenuItem(About.appName))
 
-            playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-                isSelected = currentPlayerType == PlayerType.Native
-                action {
-                    if (currentPlayerType == PlayerType.Native) {
-                        fire(PlayerTypeChange(PlayerType.VLC))
-                    } else {
-                        fire(PlayerTypeChange(PlayerType.Native))
-                    }
-                    fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-                }
-            }
-        }
+            val windowMenu = Menu("Window")
+            windowMenu.items.addAll(tk.createMinimizeMenuItem(), tk.createZoomMenuItem(), tk.createCycleWindowsItem(),
+                    SeparatorMenuItem(), tk.createBringAllToFrontItem())
 
-        historyItem = menu(messages["menu.history"]) {
+            menus.addAll(stationMenu, playerMenu, historyMenu, viewMenu, windowMenu)
 
-        }
-
-        menu(messages["menu.view"]) {
-
-            item(messages["menu.view.stats"]).action {
-                controller.openStats()
-            }
+            tk.setApplicationMenu(appMenu)
+            tk.autoAddWindowMenuItems(windowMenu)
+            tk.setMenuBar(this)
         }
     }
 }

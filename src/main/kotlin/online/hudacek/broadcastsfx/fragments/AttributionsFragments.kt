@@ -7,7 +7,7 @@ import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.model.Attribution
 import online.hudacek.broadcastsfx.model.AttributionViewModel
-import online.hudacek.broadcastsfx.model.Licenses
+import online.hudacek.broadcastsfx.model.Attributions
 import tornadofx.*
 
 class LicenseFragment : Fragment() {
@@ -34,19 +34,6 @@ class AttributionsFragment : Fragment() {
 
     private val header = "Third Party software used by " + About.appName
 
-    private val attrs = observableListOf(
-            Attribution("tornadofx", "1.7.20", Licenses.apache20),
-            Attribution("controlsfx", "8.40.16", Licenses.controlsfx),
-            Attribution("vlcj", "4.0", Licenses.gpl3),
-            Attribution("humble video", "0.3.0", Licenses.gpl3),
-            Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
-            Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
-            Attribution("log4j", "2.9.1", Licenses.apache20),
-            Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
-            Attribution("appdmg", "0.6.0", Licenses.appdmg),
-            Attribution("macOS install disk background", "1.0", Licenses.bgLicense)
-    )
-
     override val root = vbox {
         title = header
 
@@ -56,7 +43,7 @@ class AttributionsFragment : Fragment() {
             paddingAll = 10.0
             requestFocusOnSceneAvailable()
 
-            tableview(attrs) {
+            tableview(Attributions.list) {
                 columnResizePolicy = SmartResize.POLICY
                 readonlyColumn("Name", Attribution::name).remainingWidth()
                 readonlyColumn("Version", Attribution::version)
