@@ -35,7 +35,6 @@ class StationInfoFragment : Fragment() {
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 20.0
 
-
                 imageview {
                     createImage(it)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)

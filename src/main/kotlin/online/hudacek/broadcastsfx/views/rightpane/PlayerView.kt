@@ -39,7 +39,10 @@ class PlayerView : View() {
     }
 
     private val playerControls = button {
-        isDisable = true
+        requestFocusOnSceneAvailable()
+        disableProperty().bind(booleanBinding(controller.currentStation.station) {
+            value == null
+        })
         add(playImage)
         addClass(Styles.playerControls)
         action {
@@ -68,8 +71,7 @@ class PlayerView : View() {
         }
 
         controller.currentStation.station.onChange {
-            it?.let {
-                playerControls.isDisable = false
+            if (it != null) {
                 if (it != controller.previousStation) {
                     it.url_resolved?.let { url ->
                         controller.play(url)
@@ -83,7 +85,6 @@ class PlayerView : View() {
     }
 
     override val root = vbox {
-        requestFocusOnSceneAvailable()
         prefHeight = 75.0
         paddingTop = 20.0
 

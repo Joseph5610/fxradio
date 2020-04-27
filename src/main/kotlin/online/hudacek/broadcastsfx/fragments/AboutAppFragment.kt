@@ -52,5 +52,4 @@ class AboutAppFragment : Fragment() {
                     })
         }
     }
-
 }

@@ -1,7 +1,6 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
-import javafx.scene.control.SplitPane
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
@@ -52,9 +51,7 @@ class MainView : View() {
                 splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
-                    vgrow = Priority.ALWAYS
                     setDividerPositions(0.3)
-                    dividerPositions
                 }
             }
         }

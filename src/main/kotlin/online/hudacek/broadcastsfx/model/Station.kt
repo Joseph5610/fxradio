@@ -1,9 +1,6 @@
 package online.hudacek.broadcastsfx.model
 
-import tornadofx.ItemViewModel
-import tornadofx.getProperty
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 
 data class Station(
         val changeuuid: String,
@@ -52,7 +49,17 @@ class CurrentStation(station: Station) {
 
 
 class StationViewModel : ItemViewModel<CurrentStation>() {
+    private val stationHistory: StationHistoryViewModel by inject()
+
     val station = bind { item?.stationProperty() }
+
+    init {
+        station.onChange {
+            if (it != null) {
+                stationHistory.add(it)
+            }
+        }
+    }
 }
 
 class StationHistory {
@@ -68,7 +75,6 @@ class StationHistoryViewModel : ItemViewModel<StationHistory>() {
                 removeAt(0)
             }
             add(station)
-            println(this)
         }
     }
 }

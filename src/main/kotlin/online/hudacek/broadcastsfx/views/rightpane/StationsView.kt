@@ -5,15 +5,11 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.*
 import online.hudacek.broadcastsfx.model.*
-import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.tooltip
 import online.hudacek.broadcastsfx.styles.Styles
@@ -33,15 +29,17 @@ class StationsView : View() {
 
     private val controller: StationsController by inject()
     private val currentStation: StationViewModel by inject()
-    private val stationHistory: StationHistoryViewModel by inject()
-
-    private var headerContainer: VBox by singleAssign()
-    private val contentContainer = vbox()
 
     private val header = label {
-        requestFocusOnSceneAvailable()
         addClass(Styles.header)
     }
+
+    private val headerContainer = vbox(alignment = Pos.CENTER) {
+        paddingTop = 120.0
+        add(header)
+    }
+
+    private val contentContainer = vbox()
 
     init {
         getTopStations()
@@ -83,10 +81,7 @@ class StationsView : View() {
 
     override val root = vbox {
         vgrow = Priority.ALWAYS
-        headerContainer = vbox(alignment = Pos.CENTER) {
-            paddingTop = 120.0
-            add(header)
-        }
+        add(headerContainer)
         add(contentContainer)
     }
 
@@ -108,7 +103,7 @@ class StationsView : View() {
                 })
     }
 
-    private fun searchStations(searchString: String = "") {
+    private fun searchStations(searchString: String) {
         controller.searchStations(searchString)
                 .subscribe({ result ->
                     showDataGrid(result.asObservable())
@@ -128,9 +123,8 @@ class StationsView : View() {
                 datagrid(observableList) {
                     fitToParentHeight()
                     selectionModel.selectedItemProperty().onChange {
-                        it?.let {
+                        if (it != null) {
                             currentStation.item = CurrentStation(it)
-                            stationHistory.add(it)
                         }
                     }
 

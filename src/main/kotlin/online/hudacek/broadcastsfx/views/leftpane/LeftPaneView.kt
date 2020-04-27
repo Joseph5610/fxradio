@@ -1,11 +1,10 @@
 package online.hudacek.broadcastsfx.views.leftpane
 
-import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
-import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.controllers.LeftPaneController
 import online.hudacek.broadcastsfx.events.StationListType
+import online.hudacek.broadcastsfx.model.Countries
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.smallLabel
 import online.hudacek.broadcastsfx.views.MainView
@@ -14,18 +13,11 @@ import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
 
-
 class LeftPaneView : View() {
 
     private val notification by lazy { find(MainView::class).notification }
 
-    private val listItem = hashMapOf(
-            //messages["favourites"] to StationDirectoryType.Favourites,
-            messages["topStations"] to StationListType.TopStations)
-
     private val controller: LeftPaneController by inject()
-
-    private val userMenuItems by lazy { observableListOf(listItem.keys) }
 
     private val retryLink = hyperlink("Retry?") {
         setOnAction {
@@ -33,15 +25,15 @@ class LeftPaneView : View() {
         }
     }
 
-    private val libraryListView = listview(userMenuItems) {
+    private val libraryListView = listview(controller.libraryItems) {
         val size = items.size * 24.0 + 6
         prefHeight = size
     }
 
-    private val countriesListView = listview<String> {
+    private val countriesListView = listview<Countries> {
         onUserSelect {
             libraryListView.selectionModel.clearSelection()
-            controller.loadStationsByCountry(it)
+            controller.loadStationsByCountry(it.name)
         }
     }
 
@@ -65,6 +57,11 @@ class LeftPaneView : View() {
 
     init {
         getCountries()
+
+        libraryListView.onUserSelect {
+            countriesListView.selectionModel.clearSelection()
+            controller.loadTopListOfStations()
+        }
     }
 
     override val root = vbox {
@@ -79,10 +76,6 @@ class LeftPaneView : View() {
         }
         smallLabel(messages["library"])
 
-        libraryListView.onUserSelect {
-            countriesListView.selectionModel.clearSelection()
-            controller.loadTopListOfStations()
-        }
 
         add(libraryListView)
         vbox {
@@ -100,17 +93,9 @@ class LeftPaneView : View() {
         retryLink.hide()
         controller
                 .getCountries()
-                .subscribeOn(Schedulers.io())
-                .observeOn(JavaFxScheduler.platform())
                 .subscribe(
-                        { result ->
-                            val results = observableListOf<String>()
-
-                            result.forEach {
-                                results.add(it.name)
-                            }
-
-                            countriesListView.items.setAll(results)
+                        { countries ->
+                            countriesListView.items.setAll(countries)
                         },
                         {
                             retryLink.show()
