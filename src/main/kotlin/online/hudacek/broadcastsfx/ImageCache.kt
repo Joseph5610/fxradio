@@ -1,8 +1,8 @@
 package online.hudacek.broadcastsfx
 
 import javafx.scene.image.Image
-import mu.KotlinLogging
-import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.model.rest.Station
+import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.file.Files
@@ -10,9 +10,12 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
+/**
+ * Simple image cache
+ * Images are saved according to their station id
+ * and loaded using fileInputStream
+ */
 object ImageCache {
-    private val logger = KotlinLogging.logger {}
-
     private val cacheBasePath: Path = Paths.get(About.imageCacheLocation)
 
     init {
@@ -21,6 +24,8 @@ object ImageCache {
             Files.createDirectories(cacheBasePath)
         }
     }
+
+    fun clearCache() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
     fun isImageInCache(station: Station): Boolean {
         val imagePath = Paths.get(About.imageCacheLocation + "/" + station.stationuuid)

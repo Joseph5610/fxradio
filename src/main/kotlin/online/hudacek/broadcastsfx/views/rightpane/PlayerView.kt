@@ -14,7 +14,7 @@ import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.ui.smallIcon
-import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.TickerView
 import online.hudacek.broadcastsfx.ui.createImage
@@ -40,7 +40,7 @@ class PlayerView : View() {
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
-        disableProperty().bind(booleanBinding(controller.currentStation.station) {
+        disableProperty().bind(booleanBinding(controller.currentCurrentStation.station) {
             value == null
         })
         add(playImage)
@@ -70,7 +70,7 @@ class PlayerView : View() {
             togglePlayerStatus(event.playingStatus)
         }
 
-        controller.currentStation.station.onChange {
+        controller.currentCurrentStation.station.onChange {
             if (it != null) {
                 if (it != controller.previousStation) {
                     it.url_resolved?.let { url ->

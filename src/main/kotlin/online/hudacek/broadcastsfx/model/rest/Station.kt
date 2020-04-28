@@ -1,7 +1,8 @@
-package online.hudacek.broadcastsfx.model
+package online.hudacek.broadcastsfx.model.rest
 
-import tornadofx.*
-
+/**
+ * Stations json structure
+ */
 data class Station(
         val changeuuid: String,
         val stationuuid: String,
@@ -39,42 +40,5 @@ data class Station(
 
     override fun hashCode(): Int {
         return super.hashCode()
-    }
-}
-
-class CurrentStation(station: Station) {
-    var station: Station by property(station)
-    fun stationProperty() = getProperty(CurrentStation::station)
-}
-
-
-class StationViewModel : ItemViewModel<CurrentStation>() {
-    private val stationHistory: StationHistoryViewModel by inject()
-
-    val station = bind { item?.stationProperty() }
-
-    init {
-        station.onChange {
-            if (it != null) {
-                stationHistory.add(it)
-            }
-        }
-    }
-}
-
-class StationHistory {
-    val stations = observableListOf<Station>()
-}
-
-class StationHistoryViewModel : ItemViewModel<StationHistory>() {
-    val stations = bind(StationHistory::stations)
-
-    fun add(station: Station) {
-        with(stations.value) {
-            if (size > 10) {
-                removeAt(0)
-            }
-            add(station)
-        }
     }
 }

@@ -5,7 +5,6 @@ import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
-import online.hudacek.broadcastsfx.views.leftpane.LeftPaneView
 import online.hudacek.broadcastsfx.views.rightpane.PlayerView
 import online.hudacek.broadcastsfx.views.rightpane.StationsView
 import org.controlsfx.control.NotificationPane
@@ -18,7 +17,7 @@ class MainView : View() {
     private val controller: MainController by inject()
 
     private val playerView: PlayerView by inject()
-    private val leftPaneView: LeftPaneView by inject()
+    private val leftPaneView: LibraryView by inject()
     private val stationsView: StationsView by inject()
 
     var notification: NotificationPane by singleAssign()

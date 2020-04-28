@@ -1,19 +1,17 @@
-package online.hudacek.broadcastsfx.views.leftpane
+package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.controllers.LeftPaneController
-import online.hudacek.broadcastsfx.events.StationListType
-import online.hudacek.broadcastsfx.model.Countries
+import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.smallLabel
-import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
 
-class LeftPaneView : View() {
+class LibraryView : View() {
 
     private val notification by lazy { find(MainView::class).notification }
 
@@ -57,10 +55,9 @@ class LeftPaneView : View() {
 
     init {
         getCountries()
-
         libraryListView.onUserSelect {
             countriesListView.selectionModel.clearSelection()
-            controller.loadTopListOfStations()
+            controller.loadLibrary(it.type)
         }
     }
 

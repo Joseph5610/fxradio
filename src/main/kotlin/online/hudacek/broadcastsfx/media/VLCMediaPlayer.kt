@@ -8,7 +8,7 @@ import uk.co.caprica.vlcj.log.NativeLog
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-class VLCMediaPlayer : MediaPlayer {
+internal class VLCMediaPlayer : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
@@ -58,12 +58,14 @@ class VLCMediaPlayer : MediaPlayer {
         return mediaPlayerComponent.mediaPlayer().audio().setVolume(intVol)
     }
 
-    private fun end(result: Int) { // It// s not allowed to call back into LibVLC from an event handling thread, so submit() is used
+    private fun end(result: Int) {
         logger.debug { "ending current stream if any" }
 
         if (result == 1) {
             MediaPlayerWrapper.handleError(RuntimeException("See app.log for more details."))
         }
+
+        // Its not allowed to call back into LibVLC from an event handling thread, so submit() is used
         mediaPlayerComponent.mediaPlayer().submit {
             mediaPlayerComponent.mediaPlayer().controls().stop()
         }

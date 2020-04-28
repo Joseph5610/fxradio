@@ -6,14 +6,17 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.ConfigValues
 import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.CurrentStation
-import online.hudacek.broadcastsfx.model.StationHistoryViewModel
-import online.hudacek.broadcastsfx.model.StationViewModel
+import online.hudacek.broadcastsfx.model.StationHistoryModel
+import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.ui.shouldBeDisabled
+import online.hudacek.broadcastsfx.ui.shouldBeVisible
 import online.hudacek.broadcastsfx.utils.Utils
 import tornadofx.*
 import java.util.*
@@ -22,16 +25,12 @@ class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
 
-    private val currentStation: StationViewModel by inject()
-    private val stationHistory: StationHistoryViewModel by inject()
+    private val currentCurrentStation: CurrentStationModel by inject()
+    private val stationHistory: StationHistoryModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
     private var playerStop: MenuItem by singleAssign()
     private var playerCheck: CheckMenuItem by singleAssign()
-
-    private val keyCodePlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
-    private val keyCodeStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
-    private val keyCodeInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
 
     private var currentPlayerType = controller.mediaPlayer.playerType
 
@@ -39,18 +38,15 @@ class MenuBarView : View() {
         items.bind(stationHistory.stations.value) {
             MenuItem(it.name).apply {
                 action {
-                    currentStation.item = CurrentStation(it)
+                    currentCurrentStation.item = CurrentStation(it)
                 }
             }
         }
     }
 
     private val stationMenu = Menu(messages["menu.station"]).apply {
-        visibleProperty().bind(booleanBinding(currentStation.station) {
-            value != null
-        })
-
-        item(messages["menu.station.info"], keyCodeInfo).action {
+        shouldBeDisabled(currentCurrentStation.station)
+        item(messages["menu.station.info"], keyInfo).action {
             controller.openStationInfo()
         }
 
@@ -66,20 +62,15 @@ class MenuBarView : View() {
     }
 
     private val playerMenu = Menu(messages["menu.player.controls"]).apply {
-        playerPlay = item(messages["menu.player.start"], keyCodePlay) {
-            visibleProperty().bind(booleanBinding(currentStation.station) {
-                value != null
-            })
-
+        playerPlay = item(messages["menu.player.start"], keyPlay) {
+            shouldBeVisible(currentCurrentStation.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
-        playerStop = item(messages["menu.player.stop"], keyCodeStop) {
-            visibleProperty().bind(booleanBinding(currentStation.station) {
-                value != null
-            })
+        playerStop = item(messages["menu.player.stop"], keyStop) {
+            shouldBeVisible(currentCurrentStation.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
@@ -107,7 +98,9 @@ class MenuBarView : View() {
         }
     }
 
-    override val root = if (Utils.isMacOs) {
+    private val shouldUseNativeMenuBar = app.config.boolean(ConfigValues.keyUseNativeMenuBar, true)
+
+    override val root = if (Utils.isMacOs && shouldUseNativeMenuBar) {
         platformMenuBar()
     } else {
         defaultMenuBar()
@@ -115,15 +108,8 @@ class MenuBarView : View() {
 
     private fun defaultMenuBar() = menubar {
         menu(About.appName) {
-            item(messages["menu.app.about"]).action {
-                controller.openAbout()
-            }
-            item(messages["menu.app.server"]).action {
-                controller.openServerSelect()
-            }
-            item(messages["menu.app.attributions"]).action {
-                controller.openAttributions()
-            }
+            addAboutMenu()
+            separator()
             item(messages["menu.app.quit"]).action {
                 controller.closeApp(currentStage)
             }
@@ -142,16 +128,7 @@ class MenuBarView : View() {
         useSystemMenuBarProperty().set(true)
 
         val appMenu = Menu(About.appName).apply {
-            item(messages["menu.app.about"]).action {
-                controller.openAbout()
-            }
-            separator()
-            item(messages["menu.app.server"]).action {
-                controller.openServerSelect()
-            }
-            item(messages["menu.app.attributions"]).action {
-                controller.openAttributions()
-            }
+            addAboutMenu()
             separator()
             items.addAll(
                     tk.createHideMenuItem(About.appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
@@ -172,5 +149,28 @@ class MenuBarView : View() {
         tk.setApplicationMenu(appMenu)
         tk.autoAddWindowMenuItems(windowMenu)
         tk.setMenuBar(this)
+    }
+
+    private fun Menu.addAboutMenu() {
+        item(messages["menu.app.about"]).action {
+            controller.openAbout()
+        }
+        separator()
+        item(messages["menu.app.server"]).action {
+            controller.openServerSelect()
+        }
+        item(messages["menu.app.attributions"]).action {
+            controller.openAttributions()
+        }
+        separator()
+        item(messages["menu.app.clearCache"]).action {
+            controller.clearCache()
+        }
+    }
+
+    private companion object {
+        val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
+        val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
+        val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
     }
 }

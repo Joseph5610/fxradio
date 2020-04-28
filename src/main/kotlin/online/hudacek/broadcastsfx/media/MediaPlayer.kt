@@ -2,10 +2,10 @@ package online.hudacek.broadcastsfx.media
 
 import online.hudacek.broadcastsfx.events.PlayingStatus
 
-interface MediaPlayer {
+internal interface MediaPlayer {
 
     var playingStatus: PlayingStatus
-    var volume : Double
+    var volume: Double
 
     fun play(url: String)
     fun changeVolume(volume: Double): Boolean

@@ -6,31 +6,13 @@ import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.model.Attribution
-import online.hudacek.broadcastsfx.model.AttributionViewModel
+import online.hudacek.broadcastsfx.model.AttributionModel
 import online.hudacek.broadcastsfx.model.Attributions
 import tornadofx.*
 
-class LicenseFragment : Fragment() {
-
-    private val model: AttributionViewModel by inject()
-
-    override val root = vbox {
-        setPrefSize(600.0, 400.0)
-        title = model.license.value.name
-
-        textarea {
-            vgrow = Priority.ALWAYS
-            text = model.license.value.content
-            style {
-                fontFamily = "monospace"
-            }
-        }
-    }
-}
-
 class AttributionsFragment : Fragment() {
 
-    private val model: AttributionViewModel by inject()
+    private val model: AttributionModel by inject()
 
     private val header = "Third Party software used by " + About.appName
 
@@ -61,6 +43,28 @@ class AttributionsFragment : Fragment() {
             button("Close") {
                 setOnAction {
                     close()
+                }
+            }
+        }
+    }
+
+    /**
+     * Text Area When user clicks on any attribution
+     * to show the contents of license file
+     */
+    internal class LicenseFragment : Fragment() {
+
+        private val model: AttributionModel by inject()
+
+        override val root = vbox {
+            setPrefSize(600.0, 400.0)
+            title = model.license.value.name
+
+            textarea {
+                vgrow = Priority.ALWAYS
+                text = model.license.value.content
+                style {
+                    fontFamily = "monospace"
                 }
             }
         }

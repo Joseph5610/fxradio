@@ -1,16 +1,18 @@
 package online.hudacek.broadcastsfx.ui
 
 import javafx.animation.PauseTransition
+import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.scene.control.Label
+import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.VBox
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.ImageCache
-import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -55,6 +57,21 @@ internal fun EventTarget.smallIcon(url: String = ""): ImageView {
         fitWidth = 16.0
         fitHeight = 16.0
     }
+}
+
+/**
+ * Convenience methods for MenuItems
+ */
+internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
+    visibleProperty().bind(booleanBinding(station) {
+        value != null
+    })
+}
+
+internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
+    disableProperty().bind(booleanBinding(station) {
+        value == null
+    })
 }
 
 /**

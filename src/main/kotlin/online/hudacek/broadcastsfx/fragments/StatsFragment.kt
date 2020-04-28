@@ -3,15 +3,19 @@ package online.hudacek.broadcastsfx.fragments
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
-import javafx.scene.layout.VBox
 import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*
 
+/**
+ * Modal window that shows status of API server
+ */
 class StatsFragment : Fragment() {
 
-    private var container: VBox by singleAssign()
+    private var container = vbox {
+        add(ProgressView::class)
+    }
 
     private val stationsApi: StationsApiClient
         get() {
@@ -53,8 +57,6 @@ class StatsFragment : Fragment() {
 
     override val root = vbox {
         setPrefSize(300.0, 300.0)
-        container = vbox {
-            add(ProgressView::class)
-        }
+        add(container)
     }
 }

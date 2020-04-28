@@ -1,10 +1,11 @@
 package online.hudacek.broadcastsfx
 
 import io.reactivex.Observable
-import online.hudacek.broadcastsfx.model.Countries
-import online.hudacek.broadcastsfx.model.SearchModel
-import online.hudacek.broadcastsfx.model.Station
-import online.hudacek.broadcastsfx.model.Stats
+import online.hudacek.broadcastsfx.model.rest.Countries
+import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
+import online.hudacek.broadcastsfx.model.rest.SearchBody
+import online.hudacek.broadcastsfx.model.rest.Stats
+import online.hudacek.broadcastsfx.model.rest.Station
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,30 +13,24 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import tornadofx.controlsfx.errorNotification
-import tornadofx.fail
-import tornadofx.runAsync
-import tornadofx.success
-import java.lang.RuntimeException
 import java.net.InetAddress
-import java.net.UnknownHostException
 
 /**
  * HTTP endpoints for radio-browser.info API
  */
 interface StationsApiClient {
 
-    @GET("json/stations/bycountry/{countryCode}")
-    fun getStationsByCountry(@Path("countryCode") countryCode: String): Observable<List<Station>>
+    @POST("json/stations/bycountry/{countryCode}")
+    fun getStationsByCountry(@Body countriesBody: HideBrokenBody, @Path("countryCode") countryCode: String): Observable<List<Station>>
 
     @POST("json/stations/search")
-    fun searchStationByName(@Body searchModel: SearchModel): Observable<List<Station>>
+    fun searchStationByName(@Body searchBody: SearchBody): Observable<List<Station>>
 
     @GET("json/stations/topvote/50")
     fun getTopStations(): Observable<List<Station>>
 
-    @GET("json/countries")
-    fun getCountries(): Observable<List<Countries>>
+    @POST("json/countries")
+    fun getCountries(@Body countriesBody: HideBrokenBody): Observable<List<Countries>>
 
     @GET("json/stats")
     fun getStats(): Observable<Stats>

@@ -4,8 +4,9 @@ import io.reactivex.Observable
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApiClient
-import online.hudacek.broadcastsfx.model.SearchModel
-import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
+import online.hudacek.broadcastsfx.model.rest.SearchBody
+import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.Controller
 
 class StationsController : Controller() {
@@ -16,12 +17,12 @@ class StationsController : Controller() {
         }
 
     fun getStationsByCountry(country: String): Observable<List<Station>> = stationsApi
-            .getStationsByCountry(country)
+            .getStationsByCountry(HideBrokenBody(), country)
             .subscribeOn(Schedulers.io())
             .observeOn(JavaFxScheduler.platform())
 
     fun searchStations(name: String): Observable<List<Station>> = stationsApi
-            .searchStationByName(SearchModel(name))
+            .searchStationByName(SearchBody(name))
             .subscribeOn(Schedulers.io())
             .observeOn(JavaFxScheduler.platform())
 

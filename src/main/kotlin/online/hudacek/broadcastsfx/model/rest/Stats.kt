@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.model
+package online.hudacek.broadcastsfx.model.rest
 
 data class Stats(
         val supported_version: Int,

@@ -1,10 +1,11 @@
 package online.hudacek.broadcastsfx.events
 
-import online.hudacek.broadcastsfx.model.Station
+import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.FXEvent
 
 enum class PlayingStatus {
-    Playing, Stopped
+    Playing,
+    Stopped
 }
 
 enum class PlayerType {

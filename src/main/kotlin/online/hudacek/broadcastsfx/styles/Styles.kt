@@ -1,11 +1,13 @@
 package online.hudacek.broadcastsfx.styles
 
-import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.scene.paint.Paint
 import tornadofx.*
 
+/**
+ * Type-safe CSS classes used around the app
+ */
 class Styles : Stylesheet() {
     companion object {
         val playerStationInfo by cssclass()

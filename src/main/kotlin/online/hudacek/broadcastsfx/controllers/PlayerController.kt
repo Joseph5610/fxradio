@@ -3,13 +3,13 @@ package online.hudacek.broadcastsfx.controllers
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
-import online.hudacek.broadcastsfx.model.Station
-import online.hudacek.broadcastsfx.model.StationViewModel
+import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.CurrentStationModel
 import tornadofx.Controller
 
 class PlayerController : Controller() {
 
-    val currentStation: StationViewModel by inject()
+    val currentCurrentStation: CurrentStationModel by inject()
 
     val mediaPlayer by lazy { MediaPlayerWrapper }
 

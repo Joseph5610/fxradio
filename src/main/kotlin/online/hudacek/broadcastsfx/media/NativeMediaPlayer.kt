@@ -13,7 +13,7 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-class NativeMediaPlayer : MediaPlayer {
+internal class NativeMediaPlayer : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 

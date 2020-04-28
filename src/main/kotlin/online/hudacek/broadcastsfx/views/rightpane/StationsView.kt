@@ -9,7 +9,9 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.*
-import online.hudacek.broadcastsfx.model.*
+import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.StationHistoryModel
+import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.tooltip
 import online.hudacek.broadcastsfx.styles.Styles
@@ -28,7 +30,9 @@ class StationsView : View() {
     private val notification by lazy { find(MainView::class).notification }
 
     private val controller: StationsController by inject()
-    private val currentStation: StationViewModel by inject()
+    private val currentCurrentStation: CurrentStationModel by inject()
+    private val stationHistory: StationHistoryModel by inject()
+
 
     private val header = label {
         addClass(Styles.header)
@@ -43,19 +47,21 @@ class StationsView : View() {
 
     init {
         getTopStations()
-        subscribe<StationListReloadEvent> { event ->
+        subscribe<LibraryRefreshEvent> { event ->
             with(event) {
-                if (type == StationListType.Country) {
-                    params?.let {
-                        getStationsByCountry(params)
+                when (type) {
+                    LibraryType.Country -> {
+                        if (params != null) getStationsByCountry(params)
                     }
-                } else {
-                    getTopStations()
+                    LibraryType.History -> getHistory()
+                    else -> {
+                        getTopStations()
+                    }
                 }
             }
         }
 
-        subscribe<SearchFieldChanged> { event ->
+        subscribe<LibrarySearchChanged> { event ->
             with(event) {
                 if (searchString.isEmpty()) {
                     headerContainer.show()
@@ -94,6 +100,10 @@ class StationsView : View() {
                 })
     }
 
+    private fun getHistory() {
+        showDataGrid(stationHistory.stations.value)
+    }
+
     private fun getStationsByCountry(country: String) {
         controller.getStationsByCountry(country)
                 .subscribe({ result ->
@@ -122,11 +132,7 @@ class StationsView : View() {
         contentContainer.replaceChildren(
                 datagrid(observableList) {
                     fitToParentHeight()
-                    selectionModel.selectedItemProperty().onChange {
-                        if (it != null) {
-                            currentStation.item = CurrentStation(it)
-                        }
-                    }
+                    bindSelected(currentCurrentStation.station)
 
                     cellCache {
                         effect = DropShadow(20.0, Color.LIGHTGRAY)

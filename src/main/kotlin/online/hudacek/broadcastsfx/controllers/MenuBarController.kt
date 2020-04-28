@@ -2,10 +2,9 @@ package online.hudacek.broadcastsfx.controllers
 
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
-import online.hudacek.broadcastsfx.model.StationHistoryViewModel
-import online.hudacek.broadcastsfx.model.StationViewModel
 import tornadofx.Controller
 
 class MenuBarController : Controller() {
@@ -21,6 +20,8 @@ class MenuBarController : Controller() {
     fun openServerSelect() = find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
+
+    fun clearCache() = ImageCache.clearCache()
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()

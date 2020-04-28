@@ -20,7 +20,14 @@ object MediaPlayerWrapper : Component() {
     private var mediaPlayer: MediaPlayer = initMediaPlayer()
     private val notification by lazy { find(MainView::class).notification }
 
-    var playerType: PlayerType = PlayerType.VLC
+    var playerType: PlayerType? = null
+        private set
+        get() {
+            return if (field == null) {
+                PlayerType.valueOf(app.config.string(
+                        ConfigValues.keyPlayerType, "VLC"))
+            } else field
+        }
 
     var volume: Double
         get() = mediaPlayer.volume
@@ -42,6 +49,10 @@ object MediaPlayerWrapper : Component() {
                     mediaPlayer = if (changedPlayerType == PlayerType.VLC) VLCMediaPlayer()
                     else NativeMediaPlayer()
                     playerType = changedPlayerType
+                    with(app.config) {
+                        set(ConfigValues.keyPlayerType to playerType)
+                        save()
+                    }
                 }
             }
         }
@@ -57,8 +68,13 @@ object MediaPlayerWrapper : Component() {
 
     private fun initMediaPlayer(): MediaPlayer {
         return try {
-            logger.debug { "trying to init VLC media player " }
-            VLCMediaPlayer()
+            if (playerType == PlayerType.Native) {
+                logger.debug { "said to load native player.. " }
+                NativeMediaPlayer()
+            } else {
+                logger.debug { "trying to init VLC media player " }
+                VLCMediaPlayer()
+            }
         } catch (e: RuntimeException) {
             e.printStackTrace()
             playerType = PlayerType.Native

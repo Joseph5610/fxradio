@@ -2,7 +2,7 @@ package online.hudacek.broadcastsfx.fragments
 
 import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.ui.set
-import online.hudacek.broadcastsfx.model.ApiServerViewModel
+import online.hudacek.broadcastsfx.model.ApiServerModel
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
@@ -10,7 +10,7 @@ import tornadofx.*
 
 class ServerSelectionFragment : Fragment() {
 
-    val model: ApiServerViewModel by inject()
+    private val model: ApiServerModel by inject()
 
     private val notification by lazy { find(MainView::class).notification }
 
@@ -45,7 +45,6 @@ class ServerSelectionFragment : Fragment() {
                     setOnAction {
                         model.commit()
                         notification[FontAwesome.Glyph.CHECK] = "API Server saved!"
-                        StationsApiClient.hostname = model.url.value
                         close()
                     }
                     disableProperty().bind(model.url.isBlank().or(model.url.booleanBinding {

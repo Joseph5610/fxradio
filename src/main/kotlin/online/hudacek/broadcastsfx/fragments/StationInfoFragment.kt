@@ -4,15 +4,14 @@ import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.model.StationViewModel
+import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.ui.createImage
 import tornadofx.*
-import tornadofx.controlsfx.rating
 import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment : Fragment() {
 
-    private val currentStation: StationViewModel by inject()
+    private val currentCurrentStation: CurrentStationModel by inject()
 
     override fun onBeforeShow() {
         currentStage?.opacity = 0.85
@@ -20,7 +19,7 @@ class StationInfoFragment : Fragment() {
 
     override val root = vbox {
         setPrefSize(300.0, 300.0)
-        currentStation.station.value?.let {
+        currentCurrentStation.station.value?.let {
             title = it.name
 
             val codecBitrateInfo = it.codec + " (" + it.bitrate + ")"
