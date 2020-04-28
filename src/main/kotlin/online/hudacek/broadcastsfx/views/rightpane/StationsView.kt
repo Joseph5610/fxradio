@@ -30,9 +30,8 @@ class StationsView : View() {
     private val notification by lazy { find(MainView::class).notification }
 
     private val controller: StationsController by inject()
-    private val currentCurrentStation: CurrentStationModel by inject()
+    private val currentStation: CurrentStationModel by inject()
     private val stationHistory: StationHistoryModel by inject()
-
 
     private val header = label {
         addClass(Styles.header)
@@ -132,7 +131,7 @@ class StationsView : View() {
         contentContainer.replaceChildren(
                 datagrid(observableList) {
                     fitToParentHeight()
-                    bindSelected(currentCurrentStation.station)
+                    bindSelected(currentStation.station)
 
                     cellCache {
                         effect = DropShadow(20.0, Color.LIGHTGRAY)

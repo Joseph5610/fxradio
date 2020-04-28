@@ -9,7 +9,7 @@ import tornadofx.Controller
 
 class PlayerController : Controller() {
 
-    val currentCurrentStation: CurrentStationModel by inject()
+    val currentStation: CurrentStationModel by inject()
 
     val mediaPlayer by lazy { MediaPlayerWrapper }
 

@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.utils
+package online.hudacek.broadcastsfx
 
 import com.sun.javafx.PlatformUtil
 

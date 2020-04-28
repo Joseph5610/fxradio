@@ -5,9 +5,13 @@ import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
+import online.hudacek.broadcastsfx.events.PlayerType
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.views.rightpane.PlayerView
 import online.hudacek.broadcastsfx.views.rightpane.StationsView
 import org.controlsfx.control.NotificationPane
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
@@ -15,6 +19,8 @@ import tornadofx.controlsfx.notificationPane
 class MainView : View() {
 
     private val controller: MainController by inject()
+
+    val mediaPlayer by lazy { MediaPlayerWrapper }
 
     private val playerView: PlayerView by inject()
     private val leftPaneView: LibraryView by inject()
@@ -35,6 +41,10 @@ class MainView : View() {
     override fun onDock() {
         currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
+        }
+
+        if (mediaPlayer.playerType == PlayerType.Native) {
+            notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
         }
     }
 

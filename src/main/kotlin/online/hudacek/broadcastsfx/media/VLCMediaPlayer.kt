@@ -2,9 +2,7 @@ package online.hudacek.broadcastsfx.media
 
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
-import uk.co.caprica.vlcj.log.NativeLog
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
@@ -38,12 +36,12 @@ internal class VLCMediaPlayer : MediaPlayer {
             }
         })
 
-       mediaPlayerComponent.mediaPlayerFactory().application().newLog().apply {
-           level = LogLevel.NOTICE
-           addLogListener { level, module, file, line, name, header, id, message ->
-               logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
-           }
-       }
+        mediaPlayerComponent.mediaPlayerFactory().application().newLog().apply {
+            level = LogLevel.NOTICE
+            addLogListener { level, module, file, line, name, header, id, message ->
+                logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
+            }
+        }
     }
 
     override fun changeVolume(volume: Double): Boolean {
@@ -66,9 +64,14 @@ internal class VLCMediaPlayer : MediaPlayer {
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread, so submit() is used
-        mediaPlayerComponent.mediaPlayer().submit {
-            mediaPlayerComponent.mediaPlayer().controls().stop()
+        try {
+            mediaPlayerComponent.mediaPlayer().submit {
+                mediaPlayerComponent.mediaPlayer().controls().stop()
+            }
+        } catch (e: Exception) {
+            logger.debug { "stop failed, probably already stopped, whatever" }
         }
+
         playingStatus = PlayingStatus.Stopped
     }
 
@@ -77,8 +80,6 @@ internal class VLCMediaPlayer : MediaPlayer {
     override fun releasePlayer() {
         logger.debug { "releasing player" }
         playingStatus = PlayingStatus.Stopped
-
-        end(0)
         mediaPlayerComponent.release()
     }
 }

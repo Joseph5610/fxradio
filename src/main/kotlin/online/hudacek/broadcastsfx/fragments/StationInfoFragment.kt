@@ -11,7 +11,7 @@ import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment : Fragment() {
 
-    private val currentCurrentStation: CurrentStationModel by inject()
+    private val currentStation: CurrentStationModel by inject()
 
     override fun onBeforeShow() {
         currentStage?.opacity = 0.85
@@ -19,7 +19,7 @@ class StationInfoFragment : Fragment() {
 
     override val root = vbox {
         setPrefSize(300.0, 300.0)
-        currentCurrentStation.station.value?.let {
+        currentStation.station.value?.let {
             title = it.name
 
             val codecBitrateInfo = it.codec + " (" + it.bitrate + ")"

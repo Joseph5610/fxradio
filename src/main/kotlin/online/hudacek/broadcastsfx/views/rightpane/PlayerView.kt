@@ -12,13 +12,16 @@ import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.ui.smallIcon
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.ui.TickerView
+import online.hudacek.broadcastsfx.ui.*
 import online.hudacek.broadcastsfx.ui.createImage
-import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.ui.smallIcon
+import online.hudacek.broadcastsfx.views.MainView
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class PlayerView : View() {
@@ -40,7 +43,7 @@ class PlayerView : View() {
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
-        disableProperty().bind(booleanBinding(controller.currentCurrentStation.station) {
+        disableProperty().bind(booleanBinding(controller.currentStation.station) {
             value == null
         })
         add(playImage)
@@ -70,7 +73,7 @@ class PlayerView : View() {
             togglePlayerStatus(event.playingStatus)
         }
 
-        controller.currentCurrentStation.station.onChange {
+        controller.currentStation.station.onChange {
             if (it != null) {
                 if (it != controller.previousStation) {
                     it.url_resolved?.let { url ->

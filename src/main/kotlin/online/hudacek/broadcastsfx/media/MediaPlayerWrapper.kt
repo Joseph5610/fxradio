@@ -16,18 +16,23 @@ import java.lang.RuntimeException
 object MediaPlayerWrapper : Component() {
 
     private val logger = KotlinLogging.logger {}
-
-    private var mediaPlayer: MediaPlayer = initMediaPlayer()
     private val notification by lazy { find(MainView::class).notification }
 
     var playerType: PlayerType? = null
-        private set
+        private set(value) {
+            with(app.config) {
+                set(ConfigValues.keyPlayerType to value)
+                save()
+            }
+        }
         get() {
             return if (field == null) {
                 PlayerType.valueOf(app.config.string(
                         ConfigValues.keyPlayerType, "VLC"))
             } else field
         }
+
+    private var mediaPlayer: MediaPlayer = initMediaPlayer(playerType)
 
     var volume: Double
         get() = mediaPlayer.volume
@@ -46,13 +51,7 @@ object MediaPlayerWrapper : Component() {
             with(event) {
                 if (playerType != changedPlayerType) {
                     mediaPlayer.releasePlayer()
-                    mediaPlayer = if (changedPlayerType == PlayerType.VLC) VLCMediaPlayer()
-                    else NativeMediaPlayer()
-                    playerType = changedPlayerType
-                    with(app.config) {
-                        set(ConfigValues.keyPlayerType to playerType)
-                        save()
-                    }
+                    mediaPlayer = initMediaPlayer(changedPlayerType)
                 }
             }
         }
@@ -66,20 +65,22 @@ object MediaPlayerWrapper : Component() {
         }
     }
 
-    private fun initMediaPlayer(): MediaPlayer {
-        return try {
-            if (playerType == PlayerType.Native) {
-                logger.debug { "said to load native player.. " }
-                NativeMediaPlayer()
-            } else {
+    private fun initMediaPlayer(playerType: PlayerType?): MediaPlayer {
+        return if (playerType == PlayerType.Native) {
+            this.playerType = PlayerType.Native
+            logger.debug { "said to load native player.. " }
+            NativeMediaPlayer()
+        } else {
+            try {
+                this.playerType = PlayerType.VLC
                 logger.debug { "trying to init VLC media player " }
                 VLCMediaPlayer()
+            } catch (e: RuntimeException) {
+                e.printStackTrace()
+                this.playerType = PlayerType.Native
+                logger.debug { "VLC init failed, init native library " }
+                NativeMediaPlayer()
             }
-        } catch (e: RuntimeException) {
-            e.printStackTrace()
-            playerType = PlayerType.Native
-            logger.debug { "VLC init failed, init native library " }
-            NativeMediaPlayer()
         }
     }
 

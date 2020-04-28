@@ -17,7 +17,7 @@ import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
 import online.hudacek.broadcastsfx.ui.shouldBeVisible
-import online.hudacek.broadcastsfx.utils.Utils
+import online.hudacek.broadcastsfx.Utils
 import tornadofx.*
 import java.util.*
 
@@ -25,7 +25,7 @@ class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
 
-    private val currentCurrentStation: CurrentStationModel by inject()
+    private val currentStation: CurrentStationModel by inject()
     private val stationHistory: StationHistoryModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
@@ -38,14 +38,14 @@ class MenuBarView : View() {
         items.bind(stationHistory.stations.value) {
             MenuItem(it.name).apply {
                 action {
-                    currentCurrentStation.item = CurrentStation(it)
+                    currentStation.item = CurrentStation(it)
                 }
             }
         }
     }
 
     private val stationMenu = Menu(messages["menu.station"]).apply {
-        shouldBeDisabled(currentCurrentStation.station)
+        shouldBeDisabled(currentStation.station)
         item(messages["menu.station.info"], keyInfo).action {
             controller.openStationInfo()
         }
@@ -63,14 +63,14 @@ class MenuBarView : View() {
 
     private val playerMenu = Menu(messages["menu.player.controls"]).apply {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
-            shouldBeVisible(currentCurrentStation.station)
+            shouldBeVisible(currentStation.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
         playerStop = item(messages["menu.player.stop"], keyStop) {
-            shouldBeVisible(currentCurrentStation.station)
+            shouldBeVisible(currentStation.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
