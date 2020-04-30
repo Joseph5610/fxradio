@@ -42,10 +42,11 @@ class ServerSelectionFragment : Fragment() {
             hbox(5) {
                 button("Save") {
                     addClass(Styles.primaryButton)
-                    setOnAction {
-                        model.commit()
-                        notification[FontAwesome.Glyph.CHECK] = "API Server saved!"
-                        close()
+                    action {
+                        model.commit {
+                            notification[FontAwesome.Glyph.CHECK] = "API Server saved!"
+                            close()
+                        }
                     }
                     disableProperty().bind(model.url.isBlank().or(model.url.booleanBinding {
                         it?.contains(".") == false
@@ -53,7 +54,7 @@ class ServerSelectionFragment : Fragment() {
                 }
 
                 button("Cancel") {
-                    setOnAction {
+                    action {
                         close()
                     }
                 }
