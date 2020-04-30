@@ -4,6 +4,7 @@ import javafx.animation.PauseTransition
 import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.event.EventTarget
+import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
@@ -60,8 +61,14 @@ internal fun EventTarget.smallIcon(url: String = ""): ImageView {
 }
 
 /**
- * Convenience methods for MenuItems
+ * Convenience methods for boolean bindings
  */
+internal fun Node.shouldBeVisible(station: Property<Station>) {
+    visibleProperty().bind(booleanBinding(station) {
+        value != null
+    })
+}
+
 internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
     visibleProperty().bind(booleanBinding(station) {
         value != null
@@ -69,6 +76,12 @@ internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
+    disableProperty().bind(booleanBinding(station) {
+        value == null
+    })
+}
+
+internal fun Node.shouldBeDisabled(station: Property<Station>) {
     disableProperty().bind(booleanBinding(station) {
         value == null
     })

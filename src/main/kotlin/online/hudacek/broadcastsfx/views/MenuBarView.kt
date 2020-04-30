@@ -5,8 +5,7 @@ import javafx.scene.control.*
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.broadcastsfx.About
-import online.hudacek.broadcastsfx.ConfigValues
+import online.hudacek.broadcastsfx.*
 import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
@@ -17,7 +16,6 @@ import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
 import online.hudacek.broadcastsfx.ui.shouldBeVisible
-import online.hudacek.broadcastsfx.Utils
 import tornadofx.*
 import java.util.*
 
@@ -84,7 +82,6 @@ class MenuBarView : View() {
                 } else {
                     fire(PlayerTypeChange(PlayerType.Native))
                 }
-                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
         }
     }
@@ -98,7 +95,7 @@ class MenuBarView : View() {
         }
     }
 
-    private val shouldUseNativeMenuBar = app.config.boolean(ConfigValues.keyUseNativeMenuBar, true)
+    private val shouldUseNativeMenuBar = app.config.boolean(Config.useNativeMenuBar, true)
 
     override val root = if (Utils.isMacOs && shouldUseNativeMenuBar) {
         platformMenuBar()

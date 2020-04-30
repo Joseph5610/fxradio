@@ -1,6 +1,5 @@
 package online.hudacek.broadcastsfx.events
 
-import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.FXEvent
 
 enum class PlayingStatus {
@@ -12,8 +11,6 @@ enum class PlayerType {
     Native, VLC
 }
 
-class PlaybackChangeEvent(val playingStatus: PlayingStatus) : FXEvent() {
-    constructor(station: Station?, playingStatus: PlayingStatus) : this(playingStatus)
-}
+class PlaybackChangeEvent(val playingStatus: PlayingStatus, params: Any? = null) : FXEvent()
 
 class PlayerTypeChange(val changedPlayerType: PlayerType) : FXEvent()

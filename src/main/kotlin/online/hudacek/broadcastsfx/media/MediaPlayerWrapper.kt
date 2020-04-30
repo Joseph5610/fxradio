@@ -2,15 +2,17 @@ package online.hudacek.broadcastsfx.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.ConfigValues
+import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.Component
+import tornadofx.onChange
 import java.lang.RuntimeException
 
 object MediaPlayerWrapper : Component() {
@@ -18,17 +20,24 @@ object MediaPlayerWrapper : Component() {
     private val logger = KotlinLogging.logger {}
     private val notification by lazy { find(MainView::class).notification }
 
+    private val currentStation: CurrentStationModel by inject()
+
+    val playingStatus: PlayingStatus
+        get() {
+            return mediaPlayer.playingStatus
+        }
+
     var playerType: PlayerType? = null
         private set(value) {
             with(app.config) {
-                set(ConfigValues.keyPlayerType to value)
+                set(Config.playerType to value)
                 save()
             }
         }
         get() {
             return if (field == null) {
                 PlayerType.valueOf(app.config.string(
-                        ConfigValues.keyPlayerType, "VLC"))
+                        Config.playerType, "VLC"))
             } else field
         }
 
@@ -39,14 +48,14 @@ object MediaPlayerWrapper : Component() {
         set(value) {
             if (mediaPlayer.changeVolume(value)) {
                 with(app.config) {
-                    set(ConfigValues.keyVolume to value)
+                    set(Config.volume to value)
                     save()
                 }
             }
         }
 
     init {
-        volume = app.config.double(ConfigValues.keyVolume, 0.0)
+        volume = app.config.double(Config.volume, 0.0)
         subscribe<PlayerTypeChange> { event ->
             with(event) {
                 if (playerType != changedPlayerType) {
@@ -60,7 +69,15 @@ object MediaPlayerWrapper : Component() {
             with(event) {
                 if (playingStatus == PlayingStatus.Stopped) {
                     mediaPlayer.cancelPlaying()
+                } else {
+                    play(currentStation.station.value.url_resolved)
                 }
+            }
+        }
+
+        currentStation.station.onChange {
+            it?.let {
+                play(it.url_resolved)
             }
         }
     }
@@ -93,10 +110,12 @@ object MediaPlayerWrapper : Component() {
         }
     }
 
-    fun play(url: String) {
+    private fun play(url: String?) {
         logger.debug { "play() called" }
-        mediaPlayer.cancelPlaying()
-        mediaPlayer.play(url)
+        url.let {
+            mediaPlayer.cancelPlaying()
+            mediaPlayer.play(url)
+        }
     }
 
     fun releasePlayer() = mediaPlayer.releasePlayer()

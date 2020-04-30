@@ -9,12 +9,8 @@ import tornadofx.controlsfx.statusbar
 
 class AboutAppFragment : Fragment() {
 
-    private val list = observableListOf(
-            About.appName,
-            About.appDesc,
-            "",
-            About.author,
-            About.copyright)
+    private val list = observableListOf(About.appName, About.appDesc,
+            "${About.copyright} ${About.author}")
 
     override fun onBeforeShow() {
         currentStage?.isResizable = false
@@ -31,13 +27,11 @@ class AboutAppFragment : Fragment() {
             imageview(About.appIcon) {
                 requestFocusOnSceneAvailable()
                 fitHeight = 100.0
-                fitHeight = 100.0
                 isPreserveRatio = true
             }
         }
 
         listview(list)
-
         statusbar {
             rightItems.add(
                     hbox {

@@ -1,0 +1,8 @@
+package online.hudacek.broadcastsfx
+
+object Config {
+    const val useNativeMenuBar = "menu.native"
+    const val volume = "player.volume"
+    const val playerType = "player.type"
+    const val apiServer = "app.server"
+}

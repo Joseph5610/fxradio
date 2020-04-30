@@ -12,20 +12,18 @@ import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
-import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.*
 import online.hudacek.broadcastsfx.ui.createImage
 import online.hudacek.broadcastsfx.ui.smallIcon
-import online.hudacek.broadcastsfx.views.MainView
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class PlayerView : View() {
 
+    private val currentStation: CurrentStationModel by inject()
     private val controller: PlayerController by inject()
 
     private var radioNameLabel: TickerView by singleAssign()
@@ -43,9 +41,7 @@ class PlayerView : View() {
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
-        disableProperty().bind(booleanBinding(controller.currentStation.station) {
-            value == null
-        })
+        shouldBeDisabled(currentStation.station)
         add(playImage)
         addClass(Styles.playerControls)
         action {
@@ -54,9 +50,9 @@ class PlayerView : View() {
     }
 
     private val volumeSlider = slider(-30..5) {
-        value = controller.mediaPlayer.volume
+        value = controller.getVolume()
         valueProperty().onChange { newVolume ->
-            controller.mediaPlayer.volume = newVolume
+            controller.changeVolume(newVolume)
         }
     }
 
@@ -73,17 +69,8 @@ class PlayerView : View() {
             togglePlayerStatus(event.playingStatus)
         }
 
-        controller.currentStation.station.onChange {
-            if (it != null) {
-                if (it != controller.previousStation) {
-                    it.url_resolved?.let { url ->
-                        controller.play(url)
-                        playImage.image = Image(stopIcon)
-                    }
-                }
-                it.updateView()
-                controller.previousStation = it
-            }
+        currentStation.station.onChange {
+            it?.updateView()
         }
     }
 
@@ -135,19 +122,17 @@ class PlayerView : View() {
     }
 
     private fun togglePlayerStatus(playingStatus: PlayingStatus) {
-        controller.playingStatus = playingStatus
         if (playingStatus == PlayingStatus.Stopped) {
             playImage.image = Image(playIcon)
             nowStreamingLabel.text = messages["streamingStopped"]
         } else {
-            controller.playPreviousStation()
             playImage.image = Image(stopIcon)
             nowStreamingLabel.text = messages["nowStreaming"]
         }
     }
 
     private fun Station.updateView() {
-        nowStreamingLabel.text = messages["nowStreaming"]
+        togglePlayerStatus(PlayingStatus.Playing)
         radioNameLabel.updateText(name)
         radioLogo.createImage(this)
     }

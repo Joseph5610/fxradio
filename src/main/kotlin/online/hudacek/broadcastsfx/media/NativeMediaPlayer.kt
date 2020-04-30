@@ -31,7 +31,7 @@ internal class NativeMediaPlayer : MediaPlayer {
         MediaPlayerWrapper.handleError(exception)
     }
 
-    override fun play(url: String) {
+    override fun play(url: String?) {
         mediaPlayerCoroutine = GlobalScope.launch(handler) {
             val demuxer = Demuxer.make()
             try {
@@ -128,7 +128,7 @@ internal class NativeMediaPlayer : MediaPlayer {
 
     private fun Decoder.open() = this.open(null, null)
 
-    private fun Demuxer.stream(streamUrl: String): Int {
+    private fun Demuxer.stream(streamUrl: String?): Int {
         this.open(streamUrl, null, false, true, null, null)
         return this.numStreams
     }

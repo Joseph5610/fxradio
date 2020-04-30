@@ -24,8 +24,7 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        val size = items.size * 24.0 + 6
-        prefHeight = size
+        prefHeight = items.size * 24.0 + 4
     }
 
     private val countriesListView = listview<Countries> {
@@ -72,7 +71,6 @@ class LibraryView : View() {
             prefHeight = 20.0
         }
         smallLabel(messages["library"])
-
 
         add(libraryListView)
         vbox {

@@ -76,12 +76,6 @@ class StationsView : View() {
                 }
             }
         }
-
-        subscribe<PlayerTypeChange> { event ->
-            if (event.changedPlayerType == PlayerType.Native) {
-                notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
-            }
-        }
     }
 
     override val root = vbox {

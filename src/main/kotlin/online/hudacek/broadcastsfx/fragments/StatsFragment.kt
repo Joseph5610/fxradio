@@ -50,7 +50,6 @@ class StatsFragment : Fragment() {
                                     addClass(Styles.header)
                                 }
                             }
-
                     )
                 })
     }

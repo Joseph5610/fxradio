@@ -19,7 +19,7 @@ internal class VLCMediaPlayer : MediaPlayer {
         logger.debug { "VLC player started" }
     }
 
-    override fun play(url: String) {
+    override fun play(url: String?) {
         changeVolume(volume)
         mediaPlayerComponent.mediaPlayer().media().play(url)
         mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
