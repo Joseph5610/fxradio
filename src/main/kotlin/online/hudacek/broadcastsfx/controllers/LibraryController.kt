@@ -1,19 +1,21 @@
 package online.hudacek.broadcastsfx.controllers
 
-import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.events.LibrarySearchChanged
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
 import online.hudacek.broadcastsfx.model.Library
+import online.hudacek.broadcastsfx.views.LibraryView
 import tornadofx.Controller
 import tornadofx.observableListOf
 
-class LeftPaneController : Controller() {
+class LibraryController : Controller() {
+
+    private val libraryView: LibraryView by inject()
 
     private val stationsApi: StationsApiClient
         get() {
@@ -27,12 +29,24 @@ class LeftPaneController : Controller() {
         )
     }
 
+    init {
+        getCountries()
+    }
+
     fun searchStation(searchString: String) = fire(LibrarySearchChanged(searchString))
 
-    fun getCountries(): Observable<List<Countries>> = stationsApi
+    fun getCountries(): Disposable = stationsApi
             .getCountries(HideBrokenBody())
             .subscribeOn(Schedulers.io())
             .observeOn(JavaFxScheduler.platform())
+            .subscribe(
+                    {
+                        libraryView.showCountries(it)
+                    },
+                    {
+                        libraryView.showError()
+                    }
+            )
 
     fun loadStationsByCountry(country: String) = fire(LibraryRefreshEvent(LibraryType.Country, country))
 

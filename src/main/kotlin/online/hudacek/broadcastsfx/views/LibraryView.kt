@@ -2,7 +2,7 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Insets
 import javafx.geometry.Pos
-import online.hudacek.broadcastsfx.controllers.LeftPaneController
+import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.smallLabel
@@ -15,11 +15,12 @@ class LibraryView : View() {
 
     private val notification by lazy { find(MainView::class).notification }
 
-    private val controller: LeftPaneController by inject()
+    private val controller: LibraryController by inject()
 
     private val retryLink = hyperlink("Retry?") {
-        setOnAction {
-            getCountries()
+        hide()
+        action {
+            controller.getCountries()
         }
     }
 
@@ -53,7 +54,6 @@ class LibraryView : View() {
     }
 
     init {
-        getCountries()
         libraryListView.onUserSelect {
             countriesListView.selectionModel.clearSelection()
             controller.loadLibrary(it.type)
@@ -84,18 +84,13 @@ class LibraryView : View() {
         }
     }
 
-    private fun getCountries() {
+    fun showCountries(countries: List<Countries>) {
         retryLink.hide()
-        controller
-                .getCountries()
-                .subscribe(
-                        { countries ->
-                            countriesListView.items.setAll(countries)
-                        },
-                        {
-                            retryLink.show()
-                            notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
-                        }
-                )
+        countriesListView.items.setAll(countries)
+    }
+
+    fun showError() {
+        retryLink.show()
+        notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
     }
 }
