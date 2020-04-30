@@ -13,6 +13,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import tornadofx.Component
 import java.net.InetAddress
 
 /**
@@ -35,7 +36,7 @@ interface StationsApiClient {
     @GET("json/stats")
     fun getStats(): Observable<Stats>
 
-    companion object {
+    companion object : Component() {
 
         //try to connect to working API server
         private val inetAddressHostname: String by lazy {
@@ -44,7 +45,7 @@ interface StationsApiClient {
             } catch (e: Exception) {
                 //fallback
                 //tornadofx.error("Can't connect to server", "We are unable to connect to API server. Are you sure you are connected to internet?")
-                "de1.api.radio-browser.info"
+                app.config.string(Config.apiServer, "de1.api.radio-browser.info")
             }
         }
 
@@ -52,8 +53,11 @@ interface StationsApiClient {
         //Can be changed in app: About -> server selection
         var hostname: String = ""
             get() {
-                return if (field.isEmpty()) inetAddressHostname
-                else field
+                return when {
+                    app.config.string(Config.apiServer) != null -> app.config.string(Config.apiServer)!!
+                    field.isEmpty() -> inetAddressHostname
+                    else -> field
+                }
             }
 
         val client: StationsApiClient

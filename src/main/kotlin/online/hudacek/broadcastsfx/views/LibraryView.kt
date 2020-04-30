@@ -17,7 +17,8 @@ class LibraryView : View() {
 
     private val controller: LibraryController by inject()
 
-    private val retryLink = hyperlink("Retry?") {
+    private val retryLink = hyperlink("The list of countries cannot be downloaded. Retry?") {
+        isWrapText = true
         hide()
         action {
             controller.getCountries()
@@ -86,11 +87,13 @@ class LibraryView : View() {
 
     fun showCountries(countries: List<Countries>) {
         retryLink.hide()
+        countriesListView.show()
         countriesListView.items.setAll(countries)
     }
 
     fun showError() {
         retryLink.show()
+        countriesListView.hide()
         notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
     }
 }

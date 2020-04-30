@@ -1,6 +1,8 @@
 package online.hudacek.broadcastsfx.model
 
+import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import tornadofx.ItemViewModel
 import tornadofx.property
 
@@ -16,5 +18,11 @@ class ApiServerModel : ItemViewModel<ApiServer>() {
 
         //Save new API url to the client
         StationsApiClient.hostname = url.value
+
+        //Save API server
+        with(app.config) {
+            set(Config.apiServer to url.value)
+            save()
+        }
     }
 }
