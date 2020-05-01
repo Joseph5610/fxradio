@@ -3,6 +3,7 @@ package online.hudacek.broadcastsfx.fragments
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.Broadcasts
 import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
@@ -19,12 +20,12 @@ class AboutAppFragment : Fragment() {
     override val root = vbox {
         setPrefSize(300.0, 300.0)
 
-        title = "${About.appName} ${About.appVersion}"
+        title = "${About.appName} ${Broadcasts.getVersion()}"
 
         vbox(alignment = Pos.CENTER) {
             paddingAll = 20.0
 
-            imageview(About.appIcon) {
+            imageview(About.appLogo) {
                 requestFocusOnSceneAvailable()
                 fitHeight = 100.0
                 isPreserveRatio = true

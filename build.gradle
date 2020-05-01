@@ -17,6 +17,7 @@ plugins {
 
 apply plugin: 'javafx-gradle-plugin'
 
+version "0.1.0-SNAPSHOT"
 
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
@@ -64,9 +65,12 @@ repositories {
 }
 
 jfx {
+    HashMap<String, String> attributes = new HashMap<String, String>()
+    attributes.put('Implementation-Version', version.toString())
     verbose = true
     appName = "FXRadio"
     // minimal requirement for jfxJar-task
+    manifestAttributes = attributes
     mainClass = 'online.hudacek.broadcastsfx.BroadcastsKt'
 
     // minimal requirement for jfxNative-task
@@ -74,5 +78,5 @@ jfx {
     jfxMainAppJarName = "fxRadio.jar"
     deployDir = "src/main/deploy"
     nativeOutputDir = "build/jfx/native"
-    nativeReleaseVersion = "1.0"
+    nativeReleaseVersion = version
 }

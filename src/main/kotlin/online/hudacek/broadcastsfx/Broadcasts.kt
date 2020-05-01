@@ -22,6 +22,12 @@ class Broadcasts : App(MainView::class, Styles::class) {
             super.start(this)
         }
     }
+
+    companion object {
+        fun getVersion(): String {
+            return Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
+        }
+    }
 }
 
 fun main(args: Array<String>) = launch<Broadcasts>(args)
