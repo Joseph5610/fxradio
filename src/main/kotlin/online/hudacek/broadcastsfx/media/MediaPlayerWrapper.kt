@@ -1,6 +1,5 @@
 package online.hudacek.broadcastsfx.media
 
-import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
@@ -8,18 +7,14 @@ import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.CurrentStationModel
-import online.hudacek.broadcastsfx.ui.set
-import online.hudacek.broadcastsfx.views.MainView
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.Component
+import tornadofx.ScopedInstance
 import tornadofx.onChange
 import java.lang.RuntimeException
 
-object MediaPlayerWrapper : Component() {
+class MediaPlayerWrapper : Component(), ScopedInstance {
 
     private val logger = KotlinLogging.logger {}
-    private val notification by lazy { find(MainView::class).notification }
-
     private val currentStation: CurrentStationModel by inject()
 
     val playingStatus: PlayingStatus
@@ -67,10 +62,10 @@ object MediaPlayerWrapper : Component() {
 
         subscribe<PlaybackChangeEvent> { event ->
             with(event) {
-                if (playingStatus == PlayingStatus.Stopped) {
-                    mediaPlayer.cancelPlaying()
-                } else {
+                if (playingStatus == PlayingStatus.Playing) {
                     play(currentStation.station.value.url_resolved)
+                } else {
+                    mediaPlayer.cancelPlaying()
                 }
             }
         }
@@ -86,27 +81,18 @@ object MediaPlayerWrapper : Component() {
         return if (playerType == PlayerType.Native) {
             this.playerType = PlayerType.Native
             logger.debug { "said to load native player.. " }
-            NativeMediaPlayer()
+            NativeMediaPlayer(this)
         } else {
             try {
                 this.playerType = PlayerType.VLC
                 logger.debug { "trying to init VLC media player " }
-                VLCMediaPlayer()
+                VLCMediaPlayer(this)
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 this.playerType = PlayerType.Native
                 logger.debug { "VLC init failed, init native library " }
-                NativeMediaPlayer()
+                NativeMediaPlayer(this)
             }
-        }
-    }
-
-    fun handleError(e: Throwable) {
-        mediaPlayer.playingStatus = PlayingStatus.Stopped
-        fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-        e.printStackTrace()
-        Platform.runLater {
-            notification[FontAwesome.Glyph.WARNING] = "Can't open stream: " + e.localizedMessage
         }
     }
 
@@ -118,5 +104,11 @@ object MediaPlayerWrapper : Component() {
         }
     }
 
-    fun releasePlayer() = mediaPlayer.releasePlayer()
+    fun release() = mediaPlayer.releasePlayer()
+
+    fun handleError(t: Throwable) {
+        mediaPlayer.playingStatus = PlayingStatus.Stopped
+        fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+        tornadofx.error("Stream can't be played", t.localizedMessage)
+    }
 }

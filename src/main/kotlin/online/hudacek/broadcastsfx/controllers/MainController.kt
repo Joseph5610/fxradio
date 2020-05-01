@@ -5,6 +5,8 @@ import tornadofx.Controller
 
 class MainController : Controller() {
 
-    fun cancelMediaPlaying() = MediaPlayerWrapper.releasePlayer()
+    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
+
+    fun cancelMediaPlaying() = mediaPlayerWrapper.release()
 
 }

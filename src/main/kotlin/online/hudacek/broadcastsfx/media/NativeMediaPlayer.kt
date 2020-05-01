@@ -3,6 +3,7 @@ package online.hudacek.broadcastsfx.media
 import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
 import io.humble.video.javaxsound.MediaAudioConverterFactory
+import javafx.application.Platform
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.PlayingStatus
@@ -13,7 +14,8 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-internal class NativeMediaPlayer : MediaPlayer {
+internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
+    : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
@@ -28,7 +30,9 @@ internal class NativeMediaPlayer : MediaPlayer {
     }
 
     private val handler = CoroutineExceptionHandler { _, exception ->
-        MediaPlayerWrapper.handleError(exception)
+        Platform.runLater {
+            mediaPlayer.handleError(exception)
+        }
     }
 
     override fun play(url: String?) {

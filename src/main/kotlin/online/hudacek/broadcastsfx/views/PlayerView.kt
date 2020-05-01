@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.views.rightpane
+package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
@@ -137,6 +137,7 @@ class PlayerView : View() {
         radioLogo.createImage(this)
     }
 
+    //Icon constants
     private companion object {
         private const val playIcon = "Media-Controls-Play-icon.png"
         private const val stopIcon = "Media-Controls-Stop-icon.png"

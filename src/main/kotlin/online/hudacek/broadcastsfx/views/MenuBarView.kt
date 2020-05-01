@@ -14,6 +14,7 @@ import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.CurrentStation
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.ui.createImage
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
 import online.hudacek.broadcastsfx.ui.shouldBeVisible
 import tornadofx.*
@@ -33,8 +34,19 @@ class MenuBarView : View() {
     private var currentPlayerType = controller.mediaPlayer.playerType
 
     private val historyMenu = Menu(messages["menu.history"]).apply {
+        shouldBeDisabled(currentStation.station)
         items.bind(stationHistory.stations.value) {
-            MenuItem(it.name).apply {
+            item("${it.name} (${it.countrycode})") {
+                //for some reason macos native menu does not respect
+                // width/height setting so it is disabled for nowł
+                if (!Utils.isMacOs || !shouldUseNativeMenuBar) {
+                    graphic = imageview {
+                        createImage(it)
+                        fitHeight = 15.0
+                        fitWidth = 15.0
+                        isPreserveRatio = true
+                    }
+                }
                 action {
                     currentStation.item = CurrentStation(it)
                 }

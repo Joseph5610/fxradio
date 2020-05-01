@@ -9,7 +9,7 @@ import tornadofx.Controller
 
 class MenuBarController : Controller() {
 
-    val mediaPlayer by lazy { MediaPlayerWrapper }
+    val mediaPlayer: MediaPlayerWrapper by inject()
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -25,6 +25,6 @@ class MenuBarController : Controller() {
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()
-        mediaPlayer.releasePlayer()
+        mediaPlayer.release()
     }
 }

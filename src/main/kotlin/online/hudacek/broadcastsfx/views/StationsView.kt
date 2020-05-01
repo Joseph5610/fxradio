@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.views.rightpane
+package online.hudacek.broadcastsfx.views
 
 import javafx.collections.ObservableList
 import javafx.geometry.Insets
@@ -16,7 +16,6 @@ import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.tooltip
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.createImage
-import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
@@ -45,16 +44,16 @@ class StationsView : View() {
     private val contentContainer = vbox()
 
     init {
-        getTopStations()
+        controller.getTopStations()
         subscribe<LibraryRefreshEvent> { event ->
             with(event) {
                 when (type) {
                     LibraryType.Country -> {
-                        if (params != null) getStationsByCountry(params)
+                        params?.let { controller.getStationsByCountry(it) }
                     }
                     LibraryType.History -> getHistory()
                     else -> {
-                        getTopStations()
+                        controller.getTopStations()
                     }
                 }
             }
@@ -72,7 +71,7 @@ class StationsView : View() {
                     contentContainer.hide()
                 } else {
                     if (searchString.length > 3)
-                        searchStations(searchString)
+                        controller.searchStations(searchString)
                 }
             }
         }
@@ -84,42 +83,15 @@ class StationsView : View() {
         add(contentContainer)
     }
 
-    private fun getTopStations() {
-        controller.getTopStations()
-                .subscribe({ result ->
-                    showDataGrid(result.asObservable())
-                }, {
-                    showNotification()
-                })
-    }
-
     private fun getHistory() {
         showDataGrid(stationHistory.stations.value)
     }
 
-    private fun getStationsByCountry(country: String) {
-        controller.getStationsByCountry(country)
-                .subscribe({ result ->
-                    showDataGrid(result.asObservable())
-                }, {
-                    showNotification()
-                })
-    }
-
-    private fun searchStations(searchString: String) {
-        controller.searchStations(searchString)
-                .subscribe({ result ->
-                    showDataGrid(result.asObservable())
-                }, {
-                    showNotification()
-                })
-    }
-
-    private fun showNotification() {
+    fun showNotification() {
         notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
     }
 
-    private fun showDataGrid(observableList: ObservableList<Station>) {
+    fun showDataGrid(observableList: ObservableList<Station>) {
         headerContainer.hide()
         contentContainer.show()
         contentContainer.replaceChildren(

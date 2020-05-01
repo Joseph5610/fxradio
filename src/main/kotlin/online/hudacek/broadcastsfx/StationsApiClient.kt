@@ -61,14 +61,11 @@ interface StationsApiClient {
             }
 
         val client: StationsApiClient
-            get() {
-                val retrofit = Retrofit.Builder()
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .baseUrl("https://$hostname")
-                        .build()
-
-                return retrofit.create(StationsApiClient::class.java)
-            }
+            get() = Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl("https://$hostname")
+                    .build()
+                    .create(StationsApiClient::class.java)
     }
 }

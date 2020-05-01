@@ -7,7 +7,7 @@ import tornadofx.Controller
 
 class PlayerController : Controller() {
 
-    private val mediaPlayer by lazy { MediaPlayerWrapper }
+    private val mediaPlayer: MediaPlayerWrapper by inject()
 
     fun handlePlayerControls() {
         if (mediaPlayer.playingStatus == PlayingStatus.Playing) {

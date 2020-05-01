@@ -8,9 +8,8 @@ import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.ui.osNotification
 import online.hudacek.broadcastsfx.ui.set
-import online.hudacek.broadcastsfx.views.rightpane.PlayerView
-import online.hudacek.broadcastsfx.views.rightpane.StationsView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -21,7 +20,7 @@ class MainView : View() {
 
     private val controller: MainController by inject()
 
-    private val mediaPlayer by lazy { MediaPlayerWrapper }
+    private val mediaPlayer: MediaPlayerWrapper by inject()
 
     private val playerView: PlayerView by inject()
     private val leftPaneView: LibraryView by inject()
@@ -46,6 +45,7 @@ class MainView : View() {
     }
 
     override fun onDock() {
+        osNotification()
         currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }

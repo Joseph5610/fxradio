@@ -13,14 +13,20 @@ import javafx.scene.layout.VBox
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.ImageCache
+import online.hudacek.broadcastsfx.Utils
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
+import java.awt.SystemTray
+import java.awt.Toolkit
+import java.awt.TrayIcon
+import java.awt.TrayIcon.MessageType
 import java.net.URL
 import java.net.URLConnection
+
 
 /*
  * Helper extension functions for UI
@@ -124,4 +130,30 @@ internal fun ImageView.createImage(station: Station) {
             this.image = Image("Industry-Radio-Tower-icon.png")
         }
     }
+}
+
+internal fun osNotification() {
+    /*
+    runAsync {
+       // if(Utils.isMacOs) {
+         //   Runtime.getRuntime().exec(arrayOf("osascript", "-e", "display notification \"This is a message\" with title \"Title\" subtitle \"Subtitle\" sound name \"Funk\""))
+      //  } else {
+            if (SystemTray.isSupported()) {
+                val tray = SystemTray.getSystemTray()
+                val image: java.awt.Image = Toolkit.getDefaultToolkit().createImage("Industry-Radio-Tower-icon.png")
+                val trayIcon = TrayIcon(image, "Tray Demo")
+                trayIcon.isImageAutoSize = true
+                trayIcon.toolTip = "System tray icon demo"
+                tray.add(trayIcon)
+
+                trayIcon.displayMessage("Hello, World", "notification demo", MessageType.INFO)
+
+            } else {
+                println("not supported")
+            }
+
+
+       // }
+    }
+       */
 }
