@@ -2,7 +2,6 @@ package online.hudacek.broadcastsfx.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.events.PlayingStatus
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent

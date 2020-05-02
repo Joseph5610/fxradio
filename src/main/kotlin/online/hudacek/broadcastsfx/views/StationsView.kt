@@ -90,6 +90,13 @@ class StationsView : View() {
         showDataGrid(stationHistory.stations.value)
     }
 
+    fun showNoResults() {
+        headerContainer.show()
+        contentContainer.hide()
+        header.graphic = null
+        header.text = "No stations found"
+    }
+
     fun showNotification() {
         notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
     }

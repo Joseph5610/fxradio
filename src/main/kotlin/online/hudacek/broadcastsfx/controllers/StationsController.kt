@@ -34,7 +34,11 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOn(JavaFxScheduler.platform())
             .subscribe({ result ->
-                stationsView.showDataGrid(result.asObservable())
+                if (result.isEmpty()) {
+                    stationsView.showNoResults()
+                } else {
+                    stationsView.showDataGrid(result.asObservable())
+                }
             }, {
                 stationsView.showNotification()
             })

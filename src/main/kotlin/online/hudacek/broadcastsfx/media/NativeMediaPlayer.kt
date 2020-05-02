@@ -6,7 +6,6 @@ import io.humble.video.javaxsound.MediaAudioConverterFactory
 import javafx.application.Platform
 import kotlinx.coroutines.*
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.events.PlayingStatus
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
 import javax.sound.sampled.LineUnavailableException
@@ -79,7 +78,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                                 if (samples.isComplete) {
                                     rawAudio = converter.toJavaAudio(rawAudio, samples)
                                     audioFrame?.play(rawAudio)
-                                    //TODO
                                 }
                                 offset += bytesRead
                             } while (offset < packet.size)
@@ -95,7 +93,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                     } while (samples.isComplete)
                 }
             } finally {
-                //TODO
                 demuxer?.close()
                 audioFrame?.dispose()
             }
@@ -117,7 +114,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     }
 
     override fun cancelPlaying() {
-        //TODOplayingStatus = PlayingStatus.Stopped
         logger.debug { "ending current stream if any" }
         mediaPlayerCoroutine?.isActive.let {
             mediaPlayerCoroutine?.cancel()

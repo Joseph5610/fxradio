@@ -1,7 +1,6 @@
 package online.hudacek.broadcastsfx.media
 
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.events.PlayingStatus
 
 class StubMediaPlayer : MediaPlayer {
     private val logger = KotlinLogging.logger {}

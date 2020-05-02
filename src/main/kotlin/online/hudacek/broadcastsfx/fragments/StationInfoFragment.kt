@@ -74,22 +74,24 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
             if (showList) {
                 val list = observableListOf(
                         codecBitrateInfo,
-                        it.country,
-                        it.language)
+                        "Country: ${it.country}",
+                        "Language: ${it.language}")
 
                 listview(list)
             }
 
-            statusbar {
-                rightItems.add(
-                        hyperlink(it.homepage) {
-                            addClass(Styles.primaryTextColor)
-                            action {
-                                val hostServices = HostServicesFactory.getInstance(app)
-                                hostServices.showDocument(it.homepage)
+            if (it.homepage.isNotEmpty()) {
+                statusbar {
+                    rightItems.add(
+                            hyperlink(it.homepage) {
+                                addClass(Styles.primaryTextColor)
+                                action {
+                                    val hostServices = HostServicesFactory.getInstance(app)
+                                    hostServices.showDocument(it.homepage)
+                                }
                             }
-                        }
-                )
+                    )
+                }
             }
         }
     }
