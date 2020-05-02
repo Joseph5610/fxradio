@@ -19,8 +19,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     private val logger = KotlinLogging.logger {}
 
-    override var playingStatus: PlayingStatus = PlayingStatus.Stopped
-
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
 
@@ -34,7 +32,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         }
     }
 
-    override fun play(url: String?) {
+    override fun play(url: String) {
         mediaPlayerCoroutine = GlobalScope.launch(handler) {
             val demuxer = Demuxer.make()
             try {
@@ -81,7 +79,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                                 if (samples.isComplete) {
                                     rawAudio = converter.toJavaAudio(rawAudio, samples)
                                     audioFrame?.play(rawAudio)
-                                    playingStatus = PlayingStatus.Playing
+                                    //TODO
                                 }
                                 offset += bytesRead
                             } while (offset < packet.size)
@@ -97,7 +95,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                     } while (samples.isComplete)
                 }
             } finally {
-                playingStatus = PlayingStatus.Stopped
+                //TODO
                 demuxer?.close()
                 audioFrame?.dispose()
             }
@@ -119,7 +117,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     }
 
     override fun cancelPlaying() {
-        playingStatus = PlayingStatus.Stopped
+        //TODOplayingStatus = PlayingStatus.Stopped
         logger.debug { "ending current stream if any" }
         mediaPlayerCoroutine?.isActive.let {
             mediaPlayerCoroutine?.cancel()

@@ -17,10 +17,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     private val logger = KotlinLogging.logger {}
     private val playerModel: PlayerModel by inject()
 
-    val playingStatus: PlayingStatus
-        get() {
-            return mediaPlayer.playingStatus
-        }
+    var playingStatus = PlayingStatus.Stopped
 
     var volume: Double
         get() = app.config.double(Config.volume, -15.0)
@@ -45,6 +42,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         }
 
         subscribe<PlaybackChangeEvent> { event ->
+            playingStatus = event.playingStatus
             with(event) {
                 if (playingStatus == PlayingStatus.Playing) {
                     play(playerModel.station.value.url_resolved)
@@ -57,6 +55,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         playerModel.station.onChange {
             it?.let {
                 play(it.url_resolved)
+                playingStatus = PlayingStatus.Playing
             }
         }
     }
@@ -80,7 +79,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     private fun play(url: String?) {
         logger.debug { "play() called" }
-        url.let {
+        url?.let {
             mediaPlayer.cancelPlaying()
             mediaPlayer.play(url)
         }
@@ -89,7 +88,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     fun release() = mediaPlayer.releasePlayer()
 
     fun handleError(t: Throwable) {
-        mediaPlayer.playingStatus = PlayingStatus.Stopped
         fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         tornadofx.error("Stream can't be played", t.localizedMessage)
     }

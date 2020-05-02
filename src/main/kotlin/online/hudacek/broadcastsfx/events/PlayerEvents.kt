@@ -11,4 +11,4 @@ enum class PlayerType {
     Native, VLC
 }
 
-class PlaybackChangeEvent(val playingStatus: PlayingStatus, params: Any? = null) : FXEvent()
+class PlaybackChangeEvent(val playingStatus: PlayingStatus) : FXEvent()

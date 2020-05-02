@@ -10,9 +10,7 @@ class StubMediaPlayer : MediaPlayer {
         logger.debug { "init stub media player" }
     }
 
-    override var playingStatus: PlayingStatus = PlayingStatus.Stopped
-
-    override fun play(url: String?) {
+    override fun play(url: String) {
     }
 
     override fun changeVolume(volume: Double): Boolean {

@@ -1,12 +1,7 @@
 package online.hudacek.broadcastsfx.media
 
-import online.hudacek.broadcastsfx.events.PlayingStatus
-
 interface MediaPlayer {
-
-    var playingStatus: PlayingStatus
-
-    fun play(url: String?)
+    fun play(url: String)
     fun changeVolume(volume: Double): Boolean
     fun cancelPlaying()
     fun releasePlayer()

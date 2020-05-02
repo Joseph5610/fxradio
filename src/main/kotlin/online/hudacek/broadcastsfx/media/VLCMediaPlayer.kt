@@ -12,15 +12,13 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     private val logger = KotlinLogging.logger {}
 
-    override var playingStatus: PlayingStatus = PlayingStatus.Stopped
-
     private val mediaPlayerComponent by lazy { AudioPlayerComponent() }
 
     init {
         logger.debug { "VLC player started" }
     }
 
-    override fun play(url: String?) {
+    override fun play(url: String) {
         changeVolume(mediaPlayer.volume)
         mediaPlayerComponent.mediaPlayer().media().play(url)
         mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
@@ -33,7 +31,7 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
             }
 
             override fun playing(mediaPlayer: uk.co.caprica.vlcj.player.base.MediaPlayer?) {
-                playingStatus = PlayingStatus.Playing
+
             }
         })
 
@@ -73,15 +71,12 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         } catch (e: Exception) {
             logger.debug { "stop failed, probably already stopped, whatever" }
         }
-
-        playingStatus = PlayingStatus.Stopped
     }
 
     override fun cancelPlaying() = end(0)
 
     override fun releasePlayer() {
         logger.debug { "releasing player" }
-        playingStatus = PlayingStatus.Stopped
         mediaPlayerComponent.release()
     }
 }
