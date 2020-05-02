@@ -17,7 +17,7 @@ class PlayerController : Controller() {
         }
     }
 
-    fun getVolume() = mediaPlayer.volume
+    fun getVolume(): Double = mediaPlayer.volume
 
     fun changeVolume(newVolume: Double) {
         mediaPlayer.volume = newVolume

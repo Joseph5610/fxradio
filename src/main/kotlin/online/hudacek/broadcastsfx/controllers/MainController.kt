@@ -8,5 +8,4 @@ class MainController : Controller() {
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     fun cancelMediaPlaying() = mediaPlayerWrapper.release()
-
 }

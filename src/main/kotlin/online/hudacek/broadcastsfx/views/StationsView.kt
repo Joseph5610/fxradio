@@ -12,7 +12,7 @@ import online.hudacek.broadcastsfx.events.*
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.model.StationHistoryModel
-import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.tooltip
 import online.hudacek.broadcastsfx.styles.Styles
@@ -32,7 +32,7 @@ class StationsView : View() {
     private val notification by lazy { find(MainView::class).notification }
 
     private val controller: StationsController by inject()
-    private val currentStation: CurrentStationModel by inject()
+    private val playerModel: PlayerModel by inject()
     private val stationHistory: StationHistoryModel by inject()
 
     private val header = label {
@@ -100,14 +100,14 @@ class StationsView : View() {
         contentContainer.replaceChildren(
                 datagrid(observableList) {
                     fitToParentHeight()
-                    bindSelected(currentStation.station)
+                    bindSelected(playerModel.station)
 
                     cellCache {
                         paddingAll = 5
                         vbox(alignment = Pos.CENTER) {
                             popover {
                                 vbox {
-                                    add(StationInfoFragment(it))
+                                    add(StationInfoFragment(it, showList = false))
                                 }
                             }
 

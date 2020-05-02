@@ -6,8 +6,8 @@ import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.ui.osNotification
 import online.hudacek.broadcastsfx.ui.set
 import org.controlsfx.control.NotificationPane
@@ -20,7 +20,7 @@ class MainView : View() {
 
     private val controller: MainController by inject()
 
-    private val mediaPlayer: MediaPlayerWrapper by inject()
+    private val playerModel: PlayerModel by inject()
 
     private val playerView: PlayerView by inject()
     private val leftPaneView: LibraryView by inject()
@@ -31,12 +31,6 @@ class MainView : View() {
     init {
         title = About.appName
         setStageIcon(Image(About.appIcon))
-
-        subscribe<PlayerTypeChange> { event ->
-            if (event.changedPlayerType == PlayerType.Native) {
-                notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
-            }
-        }
     }
 
     private val rightPane = vbox {
@@ -50,7 +44,7 @@ class MainView : View() {
             controller.cancelMediaPlaying()
         }
 
-        if (mediaPlayer.playerType == PlayerType.Native) {
+        if (playerModel.playerType.value == PlayerType.Native) {
             notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
         }
     }

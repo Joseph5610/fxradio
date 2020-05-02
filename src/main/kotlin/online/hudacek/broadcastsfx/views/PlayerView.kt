@@ -12,11 +12,10 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Config
-import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.model.Player
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -28,7 +27,6 @@ import tornadofx.*
 
 class PlayerView : View() {
 
-    private val currentStation: CurrentStationModel by inject()
     private val controller: PlayerController by inject()
     private val player: PlayerModel by inject()
 
@@ -50,7 +48,7 @@ class PlayerView : View() {
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
-        shouldBeDisabled(currentStation.station)
+        shouldBeDisabled(player.station)
         add(playImage)
         addClass(Styles.playerControls)
         action {
@@ -66,7 +64,9 @@ class PlayerView : View() {
     }
 
     init {
-        player.item = Player(app.config.boolean(Config.playerAnimate, true))
+        val animateName = app.config.boolean(Config.playerAnimate, true)
+        val playerType = PlayerType.valueOf(app.config.string(Config.playerType, "VLC"))
+        player.item = Player(animateName, playerType = playerType)
 
         keyboard {
             addEventHandler(KeyEvent.KEY_PRESSED) {
@@ -80,7 +80,7 @@ class PlayerView : View() {
             togglePlayerStatus(event.playingStatus)
         }
 
-        currentStation.station.onChange {
+        player.station.onChange {
             it?.updateView()
         }
 
@@ -92,7 +92,7 @@ class PlayerView : View() {
                 radioNameTicker.stop()
                 radioNameContainer.replaceChildren(radioNameStaticText)
             }
-            currentStation.station.value.updateView()
+            player.station.value.updateView()
         }
     }
 

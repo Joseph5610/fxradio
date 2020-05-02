@@ -18,9 +18,10 @@ class Styles : Stylesheet() {
         val header by cssclass()
         val tag by cssclass()
         val searchBoxLabel by cssclass()
+        val primaryTextColor by cssclass()
 
-        const val primaryColor = "#0097CE"
-        const val hoverColor = "#0097EA"
+        private const val primaryColor = "#0097CE"
+        private const val hoverColor = "#0097EA"
     }
 
     init {
@@ -70,6 +71,10 @@ class Styles : Stylesheet() {
             and(hover) {
                 backgroundColor += c(hoverColor)
             }
+        }
+
+        primaryTextColor {
+            textFill = Paint.valueOf(primaryColor)
         }
 
         noBorder {

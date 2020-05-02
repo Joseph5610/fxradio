@@ -4,42 +4,26 @@ import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.model.PlayerModel
 import tornadofx.Component
 import tornadofx.ScopedInstance
 import tornadofx.onChange
 import java.lang.RuntimeException
 
+//TODO get rid of this class in its current form
 class MediaPlayerWrapper : Component(), ScopedInstance {
 
     private val logger = KotlinLogging.logger {}
-    private val currentStation: CurrentStationModel by inject()
+    private val playerModel: PlayerModel by inject()
 
     val playingStatus: PlayingStatus
         get() {
             return mediaPlayer.playingStatus
         }
 
-    var playerType: PlayerType? = null
-        private set(value) {
-            with(app.config) {
-                set(Config.playerType to value)
-                save()
-            }
-        }
-        get() {
-            return if (field == null) {
-                PlayerType.valueOf(app.config.string(
-                        Config.playerType, "VLC"))
-            } else field
-        }
-
-    private var mediaPlayer: MediaPlayer = initMediaPlayer(playerType)
-
     var volume: Double
-        get() = mediaPlayer.volume
+        get() = app.config.double(Config.volume, -15.0)
         set(value) {
             if (mediaPlayer.changeVolume(value)) {
                 with(app.config) {
@@ -49,47 +33,45 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             }
         }
 
+    private var mediaPlayer: MediaPlayer = StubMediaPlayer()
+
     init {
-        volume = app.config.double(Config.volume, 0.0)
-        subscribe<PlayerTypeChange> { event ->
-            with(event) {
-                if (playerType != changedPlayerType) {
-                    mediaPlayer.releasePlayer()
-                    mediaPlayer = initMediaPlayer(changedPlayerType)
-                }
+        playerModel.playerType.onChange {
+            if (it != null) {
+                logger.debug { "player type changed: $it" }
+                mediaPlayer.releasePlayer()
+                mediaPlayer = initMediaPlayer(it)
             }
         }
 
         subscribe<PlaybackChangeEvent> { event ->
             with(event) {
                 if (playingStatus == PlayingStatus.Playing) {
-                    play(currentStation.station.value.url_resolved)
+                    play(playerModel.station.value.url_resolved)
                 } else {
                     mediaPlayer.cancelPlaying()
                 }
             }
         }
 
-        currentStation.station.onChange {
+        playerModel.station.onChange {
             it?.let {
                 play(it.url_resolved)
             }
         }
     }
 
-    private fun initMediaPlayer(playerType: PlayerType?): MediaPlayer {
+    private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
+        logger.debug { "initMediaPlayer $playerType" }
         return if (playerType == PlayerType.Native) {
-            this.playerType = PlayerType.Native
-            logger.debug { "said to load native player.. " }
+            logger.debug { "trying to init native player.. " }
             NativeMediaPlayer(this)
         } else {
             try {
-                this.playerType = PlayerType.VLC
                 logger.debug { "trying to init VLC media player " }
                 VLCMediaPlayer(this)
             } catch (e: RuntimeException) {
                 e.printStackTrace()
-                this.playerType = PlayerType.Native
                 logger.debug { "VLC init failed, init native library " }
                 NativeMediaPlayer(this)
             }

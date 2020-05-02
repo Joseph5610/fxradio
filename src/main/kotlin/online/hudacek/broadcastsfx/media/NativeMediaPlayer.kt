@@ -19,7 +19,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     private val logger = KotlinLogging.logger {}
 
-    override var volume: Double = 0.0
     override var playingStatus: PlayingStatus = PlayingStatus.Stopped
 
     private var mediaPlayerCoroutine: Job? = null
@@ -68,7 +67,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                             samples)
                     audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
                     logger.debug { "Stream started" }
-                    changeVolume(volume)
+                    changeVolume(mediaPlayer.volume)
                     var rawAudio: ByteBuffer? = null
 
                     val packet = MediaPacket.make()
@@ -113,7 +112,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
             val lineValue = mLine.getter.call(audioFrame) as SourceDataLine
             val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
             gainControl.value = volume.toFloat()
-            this.volume = volume
             true
         } catch (e: Exception) {
             false
@@ -122,8 +120,8 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     override fun cancelPlaying() {
         playingStatus = PlayingStatus.Stopped
+        logger.debug { "ending current stream if any" }
         mediaPlayerCoroutine?.isActive.let {
-            logger.debug { "cancelling player" }
             mediaPlayerCoroutine?.cancel()
         }
     }

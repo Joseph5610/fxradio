@@ -4,25 +4,30 @@ import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.createImage
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(val station: Station? = null, showImage: Boolean = true) : Fragment() {
+class StationInfoFragment(val station: Station? = null, showImage: Boolean = true, showList: Boolean = true) : Fragment() {
 
-    private val currentStation: CurrentStationModel by inject()
+    private val playerModel: PlayerModel by inject()
 
-    private val showStation: Station = station ?: currentStation.station.value
+    private val showStation: Station = station ?: playerModel.station.value
 
     override fun onBeforeShow() {
         currentStage?.opacity = 0.85
     }
 
     override val root = vbox {
-        setPrefSize(300.0, 300.0)
+        if (showList) {
+            setPrefSize(300.0, 300.0)
+        } else {
+            prefWidth = 300.0
+        }
+
         showStation.let {
             title = it.name
 
@@ -31,11 +36,6 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                     .filter { tag -> tag.isNotEmpty() }
 
             val codecBitrateInfo = it.codec + " (" + it.bitrate + ")"
-
-            val list = observableListOf(
-                    codecBitrateInfo,
-                    it.country,
-                    it.language)
 
             if (showImage) {
                 vbox(alignment = Pos.CENTER) {
@@ -71,10 +71,19 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                 }
             }
 
-            listview(list)
+            if (showList) {
+                val list = observableListOf(
+                        codecBitrateInfo,
+                        it.country,
+                        it.language)
+
+                listview(list)
+            }
+
             statusbar {
                 rightItems.add(
                         hyperlink(it.homepage) {
+                            addClass(Styles.primaryTextColor)
                             action {
                                 val hostServices = HostServicesFactory.getInstance(app)
                                 hostServices.showDocument(it.homepage)

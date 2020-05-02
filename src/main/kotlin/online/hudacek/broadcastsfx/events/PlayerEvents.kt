@@ -12,5 +12,3 @@ enum class PlayerType {
 }
 
 class PlaybackChangeEvent(val playingStatus: PlayingStatus, params: Any? = null) : FXEvent()
-
-class PlayerTypeChange(val changedPlayerType: PlayerType) : FXEvent()

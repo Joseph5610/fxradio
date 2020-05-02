@@ -2,7 +2,6 @@ package online.hudacek.broadcastsfx.model
 
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.StationsApiClient
-import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import tornadofx.ItemViewModel
 import tornadofx.property
 

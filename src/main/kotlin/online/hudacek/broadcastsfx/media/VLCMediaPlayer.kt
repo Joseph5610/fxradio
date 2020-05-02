@@ -13,7 +13,6 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     private val logger = KotlinLogging.logger {}
 
     override var playingStatus: PlayingStatus = PlayingStatus.Stopped
-    override var volume: Double = 0.0
 
     private val mediaPlayerComponent by lazy { AudioPlayerComponent() }
 
@@ -22,7 +21,7 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     }
 
     override fun play(url: String?) {
-        changeVolume(volume)
+        changeVolume(mediaPlayer.volume)
         mediaPlayerComponent.mediaPlayer().media().play(url)
         mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
             override fun finished(mediaPlayer: uk.co.caprica.vlcj.player.base.MediaPlayer?) {
@@ -49,11 +48,10 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     override fun changeVolume(volume: Double): Boolean {
         logger.debug { "change volume to $volume" }
 
-        this.volume = volume
-        val intVol = if (volume < -28) {
+        val intVol = if (volume < -29.5) {
             0
         } else {
-            ((volume + 80) * (100 / 86)).toInt()
+            ((volume + 50) * (100 / 95)).toInt()
         }
         return mediaPlayerComponent.mediaPlayer().audio().setVolume(intVol)
     }

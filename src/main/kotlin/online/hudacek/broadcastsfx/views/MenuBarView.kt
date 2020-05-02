@@ -9,11 +9,8 @@ import online.hudacek.broadcastsfx.*
 import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.events.PlayerTypeChange
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.model.CurrentStation
 import online.hudacek.broadcastsfx.model.StationHistoryModel
-import online.hudacek.broadcastsfx.model.CurrentStationModel
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.ui.createImage
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
@@ -25,7 +22,6 @@ class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
 
-    private val currentStation: CurrentStationModel by inject()
     private val stationHistory: StationHistoryModel by inject()
     private val player: PlayerModel by inject()
 
@@ -34,10 +30,8 @@ class MenuBarView : View() {
     private var playerCheck: CheckMenuItem by singleAssign()
     private var playerAnimateCheck: CheckMenuItem by singleAssign()
 
-    private var currentPlayerType = controller.mediaPlayer.playerType
-
     private val historyMenu = Menu(messages["menu.history"]).apply {
-        shouldBeDisabled(currentStation.station)
+        shouldBeDisabled(player.station)
         items.bind(stationHistory.stations.value) {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
@@ -51,14 +45,14 @@ class MenuBarView : View() {
                     }
                 }
                 action {
-                    currentStation.item = CurrentStation(it)
+                    player.station.value = it
                 }
             }
         }
     }
 
     private val stationMenu = Menu(messages["menu.station"]).apply {
-        shouldBeDisabled(currentStation.station)
+        shouldBeDisabled(player.station)
         item(messages["menu.station.info"], keyInfo).action {
             controller.openStationInfo()
         }
@@ -76,27 +70,29 @@ class MenuBarView : View() {
 
     private val playerMenu = Menu(messages["menu.player.controls"]).apply {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
-            shouldBeVisible(currentStation.station)
+            shouldBeVisible(player.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
         playerStop = item(messages["menu.player.stop"], keyStop) {
-            shouldBeVisible(currentStation.station)
+            shouldBeVisible(player.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
         }
 
         playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-            isSelected = currentPlayerType == PlayerType.Native
+            isSelected = player.playerType.value == PlayerType.Native
             action {
-                if (currentPlayerType == PlayerType.Native) {
-                    fire(PlayerTypeChange(PlayerType.VLC))
+                if (player.playerType.value == PlayerType.Native) {
+                    player.playerType.value = PlayerType.VLC
                 } else {
-                    fire(PlayerTypeChange(PlayerType.Native))
+                    player.playerType.value = PlayerType.Native
                 }
+                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+                player.commit()
             }
         }
 
@@ -110,11 +106,8 @@ class MenuBarView : View() {
     }
 
     init {
-        subscribe<PlayerTypeChange> { event ->
-            with(event) {
-                currentPlayerType = changedPlayerType
-                playerCheck.isSelected = changedPlayerType == PlayerType.Native
-            }
+        player.playerType.onChange {
+            playerCheck.isSelected = it == PlayerType.Native
         }
     }
 
