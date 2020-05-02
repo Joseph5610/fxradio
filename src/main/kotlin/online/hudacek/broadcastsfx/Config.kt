@@ -6,4 +6,5 @@ object Config {
     const val playerType = "player.type"
     const val apiServer = "app.server"
     const val searchQuery = "search.query"
+    const val playerAnimate = "player.animate"
 }

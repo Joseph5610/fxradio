@@ -16,6 +16,7 @@ class Styles : Stylesheet() {
         val primaryButton by cssclass()
         val playerControls by cssclass()
         val header by cssclass()
+        val tag by cssclass()
         val searchBoxLabel by cssclass()
 
         const val primaryColor = "#0097CE"
@@ -37,6 +38,14 @@ class Styles : Stylesheet() {
             prefWidth = 220.px
         }
 
+        tag {
+            padding = box(3.px, 10.px, 3.px, 10.px)
+            backgroundRadius += box(3.px)
+            backgroundColor += Paint.valueOf("#E9E9E9")
+            borderRadius += box(3.px)
+            borderColor += box(c("#E8E8E8"))
+        }
+
         header {
             wrapText = true
             fontSize = 20.px
@@ -48,7 +57,6 @@ class Styles : Stylesheet() {
             unsafe("-fx-background-color", raw("-fx-background"))
             unsafe("-fx-border-color", raw("transparent"))
             unsafe("-fx-faint-focus-color", raw("transparent"))
-            effect = DropShadow(20.0, Color.valueOf("#E9E9E9"))
         }
 
         grayLabel {

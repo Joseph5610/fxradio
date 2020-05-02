@@ -6,6 +6,7 @@ import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.media.NativeMediaPlayer
 import online.hudacek.broadcastsfx.styles.Styles
+import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*
 
@@ -56,7 +57,14 @@ class StatsFragment : Fragment() {
     }
 
     override val root = vbox {
-        setPrefSize(300.0, 300.0)
+        setPrefSize(300.0, 250.0)
+        vbox(alignment = Pos.CENTER) {
+            paddingAll = 10.0
+            label(StationsApiClient.hostname) {
+                requestFocusOnSceneAvailable()
+                addClass(Styles.header)
+            }
+        }
         add(container)
     }
 }

@@ -9,6 +9,7 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.*
+import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.CurrentStationModel
@@ -19,6 +20,8 @@ import online.hudacek.broadcastsfx.ui.createImage
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
+import tornadofx.controlsfx.popover
+import tornadofx.controlsfx.showPopover
 
 /**
  * Main view displaying grid of stations
@@ -100,22 +103,33 @@ class StationsView : View() {
                     bindSelected(currentStation.station)
 
                     cellCache {
-                        effect = DropShadow(20.0, Color.LIGHTGRAY)
                         paddingAll = 5
                         vbox(alignment = Pos.CENTER) {
-                            tooltip(it)
-                            paddingAll = 5
-                            imageview {
-                                createImage(it)
-                                effect = DropShadow(20.0, Color.LIGHTGRAY)
-                                isCache = true
-                                cacheHint = CacheHint.SPEED
-                                fitHeight = 100.0
-                                fitWidth = 100.0
-                                isPreserveRatio = true
-                                paddingBottom = 10.0
+                            popover {
+                                vbox {
+                                    add(StationInfoFragment(it))
+                                }
                             }
 
+                            onRightClick {
+                                showPopover()
+                            }
+
+                            tooltip(it)
+                            paddingAll = 5
+                            vbox(alignment = Pos.CENTER) {
+                                prefHeight = 120.0
+                                paddingAll = 5
+                                imageview {
+                                    createImage(it)
+                                    effect = DropShadow(15.0, Color.LIGHTGRAY)
+                                    isCache = true
+                                    cacheHint = CacheHint.SPEED
+                                    fitHeight = 100.0
+                                    fitWidth = 100.0
+                                    isPreserveRatio = true
+                                }
+                            }
                             label(it.name)
                         }
                     }

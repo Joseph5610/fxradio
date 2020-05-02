@@ -8,12 +8,17 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.Config
+import online.hudacek.broadcastsfx.StationsApiClient
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.model.Player
+import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.*
@@ -25,8 +30,12 @@ class PlayerView : View() {
 
     private val currentStation: CurrentStationModel by inject()
     private val controller: PlayerController by inject()
+    private val player: PlayerModel by inject()
 
-    private var radioNameLabel: TickerView by singleAssign()
+    private val radioNameTicker = TickerView()
+    private val radioNameStaticText = label()
+
+    private var radioNameContainer: VBox by singleAssign()
     private var radioLogo: ImageView by singleAssign()
 
     private val nowStreamingLabel = label(messages["streamingStopped"]) {
@@ -57,6 +66,8 @@ class PlayerView : View() {
     }
 
     init {
+        player.item = Player(app.config.boolean(Config.playerAnimate, true))
+
         keyboard {
             addEventHandler(KeyEvent.KEY_PRESSED) {
                 if (it.code == KeyCode.SPACE) {
@@ -71,6 +82,17 @@ class PlayerView : View() {
 
         currentStation.station.onChange {
             it?.updateView()
+        }
+
+        player.animate.onChange {
+            if (it == true) {
+                radioNameTicker.play()
+                radioNameContainer.replaceChildren(radioNameTicker)
+            } else {
+                radioNameTicker.stop()
+                radioNameContainer.replaceChildren(radioNameStaticText)
+            }
+            currentStation.station.value.updateView()
         }
     }
 
@@ -102,8 +124,12 @@ class PlayerView : View() {
                 separator(Orientation.VERTICAL)
                 vbox(alignment = Pos.CENTER) {
                     fitToParentWidth()
-                    add(TickerView::class) {
-                        radioNameLabel = this
+                    radioNameContainer = vbox(alignment = Pos.CENTER) {
+                        if (player.animate.value) {
+                            add(radioNameTicker)
+                        } else {
+                            add(radioNameStaticText)
+                        }
                     }
                     add(nowStreamingLabel)
                 }
@@ -133,7 +159,8 @@ class PlayerView : View() {
 
     private fun Station.updateView() {
         togglePlayerStatus(PlayingStatus.Playing)
-        radioNameLabel.updateText(name)
+        if (player.animate.value) radioNameTicker.updateText(name)
+        else radioNameStaticText.text = name
         radioLogo.createImage(this)
     }
 

@@ -14,6 +14,7 @@ import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.CurrentStation
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.CurrentStationModel
+import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.ui.createImage
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
 import online.hudacek.broadcastsfx.ui.shouldBeVisible
@@ -26,10 +27,12 @@ class MenuBarView : View() {
 
     private val currentStation: CurrentStationModel by inject()
     private val stationHistory: StationHistoryModel by inject()
+    private val player: PlayerModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
     private var playerStop: MenuItem by singleAssign()
     private var playerCheck: CheckMenuItem by singleAssign()
+    private var playerAnimateCheck: CheckMenuItem by singleAssign()
 
     private var currentPlayerType = controller.mediaPlayer.playerType
 
@@ -94,6 +97,14 @@ class MenuBarView : View() {
                 } else {
                     fire(PlayerTypeChange(PlayerType.Native))
                 }
+            }
+        }
+
+        playerAnimateCheck = checkmenuitem(messages["menu.player.animate"]) {
+            isSelected = player.animate.value
+            action {
+                player.animate.value = !player.animate.value
+                player.commit()
             }
         }
     }

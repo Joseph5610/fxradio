@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.media
 
+import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import uk.co.caprica.vlcj.log.LogLevel
@@ -61,7 +62,9 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         logger.debug { "ending current stream if any" }
 
         if (result == 1) {
-            mediaPlayer.handleError(RuntimeException("See app.log for more details."))
+            Platform.runLater {
+                mediaPlayer.handleError(RuntimeException("See app.log for more details."))
+            }
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread, so submit() is used

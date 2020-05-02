@@ -41,9 +41,11 @@ class TickerView : View() {
     }
 
     fun updateText(text: String) {
+        marqueeView.stop()
         marqueeView.dequeueTickEntry(tickerEntry)
         tickerEntry = TickerEntry(content = createText(text), reschedule = true)
         marqueeView.enqueueTickEntry(tickerEntry)
+        marqueeView.play()
     }
 
     private fun createText(content: String): Text {
@@ -55,10 +57,20 @@ class TickerView : View() {
     override fun onDock() {
         marqueeView.enqueueTickEntry(tickerEntry)
     }
+
+    fun stop() {
+        println("Stopping anim")
+        marqueeView.stop()
+    }
+
+    fun play() {
+        println("Playing anim")
+        marqueeView.play()
+    }
 }
 
 class MarqueeView : View() {
-    private val logger = KotlinLogging.logger {}
+
     private val offset = 10.0 //Amount of space between entries!
 
     private data class ActiveTick(val entry: TickerEntry<Node>, var cleared: Boolean = false)
@@ -169,4 +181,8 @@ class MarqueeView : View() {
         timeline.cycleCount = Animation.INDEFINITE
         timeline.play()
     }
+
+    fun stop() = timeline.stop()
+
+    fun play() = timeline.play()
 }

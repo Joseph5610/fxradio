@@ -4,6 +4,7 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.model.rest.Countries
+import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.smallLabel
 import org.controlsfx.glyphfont.FontAwesome
@@ -17,7 +18,7 @@ class LibraryView : View() {
 
     private val controller: LibraryController by inject()
 
-    private val retryLink = hyperlink("The list of countries cannot be downloaded. Retry?") {
+    private val retryLink = hyperlink(messages["downloadRetry"]) {
         isWrapText = true
         hide()
         action {
@@ -27,10 +28,12 @@ class LibraryView : View() {
 
     private val libraryListView = listview(controller.libraryItems) {
         prefHeight = items.size * 24.0 + 4
+        addClass(Styles.noBorder)
     }
 
     private val countriesListView = listview<Countries> {
-        onUserSelect {
+        addClass(Styles.noBorder)
+        onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
             controller.loadStationsByCountry(it.name)
         }
@@ -55,7 +58,7 @@ class LibraryView : View() {
     }
 
     init {
-        libraryListView.onUserSelect {
+        libraryListView.onUserSelect(1) {
             countriesListView.selectionModel.clearSelection()
             controller.loadLibrary(it.type)
         }
