@@ -54,8 +54,10 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
         playerModel.station.onChange {
             it?.let {
-                play(it.url_resolved)
-                playingStatus = PlayingStatus.Playing
+                if (it.isValidStation()) {
+                    play(it.url_resolved)
+                    playingStatus = PlayingStatus.Playing
+                }
             }
         }
     }
@@ -90,5 +92,13 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     fun handleError(t: Throwable) {
         fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         tornadofx.error("Stream can't be played", t.localizedMessage)
+    }
+
+    fun togglePlaying() {
+        if (playingStatus == PlayingStatus.Playing) {
+            fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+        } else {
+            fire(PlaybackChangeEvent(PlayingStatus.Playing))
+        }
     }
 }

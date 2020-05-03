@@ -4,6 +4,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
 import online.hudacek.broadcastsfx.model.rest.SearchBody
 import online.hudacek.broadcastsfx.views.StationsView
@@ -13,6 +14,7 @@ import tornadofx.asObservable
 class StationsController : Controller() {
 
     private val stationsView: StationsView by inject()
+    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     private val stationsApi: StationsApiClient
         get() {
@@ -52,4 +54,6 @@ class StationsController : Controller() {
             }, {
                 stationsView.showNotification()
             })
+
+    fun togglePlaying() = mediaPlayerWrapper.togglePlaying()
 }

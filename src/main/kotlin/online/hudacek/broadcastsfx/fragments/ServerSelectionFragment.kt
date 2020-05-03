@@ -31,9 +31,9 @@ class ServerSelectionFragment : Fragment() {
             fieldset("Set server address") {
                 field("URL") {
                     textfield(model.url) {
+                        required()
                         validator {
-                            if (model.url.value.isEmpty()
-                                    || !model.url.value.contains("."))
+                            if (!model.url.value.contains("."))
                                 error("Invalid server address") else null
                         }
                     }
@@ -41,6 +41,7 @@ class ServerSelectionFragment : Fragment() {
             }
             hbox(5) {
                 button("Save") {
+                    isDefaultButton = true
                     addClass(Styles.primaryButton)
                     action {
                         model.commit {
@@ -48,12 +49,11 @@ class ServerSelectionFragment : Fragment() {
                             close()
                         }
                     }
-                    disableProperty().bind(model.url.isBlank().or(model.url.booleanBinding {
-                        it?.contains(".") == false
-                    }))
+                    enableWhen(model.valid)
                 }
 
                 button("Cancel") {
+                    isCancelButton = true
                     action {
                         close()
                     }

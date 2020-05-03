@@ -52,7 +52,7 @@ class PlayerView : View() {
         add(playImage)
         addClass(Styles.playerControls)
         action {
-            controller.handlePlayerControls()
+            controller.togglePlaying()
         }
     }
 
@@ -71,7 +71,7 @@ class PlayerView : View() {
         keyboard {
             addEventHandler(KeyEvent.KEY_PRESSED) {
                 if (it.code == KeyCode.SPACE) {
-                    controller.handlePlayerControls()
+                    controller.togglePlaying()
                 }
             }
         }
@@ -158,10 +158,12 @@ class PlayerView : View() {
     }
 
     private fun Station.updateView() {
-        togglePlayerStatus(PlayingStatus.Playing)
-        if (player.animate.value) radioNameTicker.updateText(name)
-        else radioNameStaticText.text = name
-        radioLogo.createImage(this)
+        if (this.isValidStation()) {
+            togglePlayerStatus(controller.mediaPlayer.playingStatus)
+            if (player.animate.value) radioNameTicker.updateText(name)
+            else radioNameStaticText.text = name
+            radioLogo.createImage(this)
+        }
     }
 
     //Icon constants

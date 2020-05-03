@@ -1,21 +1,13 @@
 package online.hudacek.broadcastsfx.controllers
 
-import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
-import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import tornadofx.Controller
 
 class PlayerController : Controller() {
 
-    private val mediaPlayer: MediaPlayerWrapper by inject()
+    val mediaPlayer: MediaPlayerWrapper by inject()
 
-    fun handlePlayerControls() {
-        if (mediaPlayer.playingStatus == PlayingStatus.Playing) {
-            fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-        } else {
-            fire(PlaybackChangeEvent(PlayingStatus.Playing))
-        }
-    }
+    fun togglePlaying() = mediaPlayer.togglePlaying()
 
     fun getVolume(): Double = mediaPlayer.volume
 

@@ -77,13 +77,13 @@ internal fun Node.shouldBeVisible(station: Property<Station>) {
 
 internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
     visibleProperty().bind(booleanBinding(station) {
-        value != null
+        value != null && value.isValidStation()
     })
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     disableProperty().bind(booleanBinding(station) {
-        value == null
+        value == null || !value.isValidStation()
     })
 }
 

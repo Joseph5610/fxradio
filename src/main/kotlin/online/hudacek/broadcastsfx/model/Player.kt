@@ -3,11 +3,12 @@ package online.hudacek.broadcastsfx.model
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.rest.stubStation
 import tornadofx.ItemViewModel
 import tornadofx.onChange
 import tornadofx.property
 
-class Player(animate: Boolean = true, station: Station? = null,
+class Player(animate: Boolean = true, station: Station = stubStation,
              playerType: PlayerType) {
 
     var animate: Boolean by property(animate)
@@ -25,7 +26,7 @@ class PlayerModel : ItemViewModel<Player>() {
 
     init {
         station.onChange {
-            if (it != null) {
+            if (it != null && it.isValidStation()) {
                 stationHistory.add(it)
             }
         }

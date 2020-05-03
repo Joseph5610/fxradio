@@ -4,7 +4,6 @@ import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApiClient
-import online.hudacek.broadcastsfx.media.NativeMediaPlayer
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.views.ProgressView

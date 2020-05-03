@@ -35,7 +35,7 @@ class MenuBarView : View() {
         items.bind(stationHistory.stations.value) {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
-                // width/height setting so it is disabled for nowł
+                //width/height setting so it is disabled for now
                 if (!Utils.isMacOs || !shouldUseNativeMenuBar) {
                     graphic = imageview {
                         createImage(it)

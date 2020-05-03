@@ -30,6 +30,8 @@ data class Station(
         val clicktrend: Int
 ) {
 
+    fun isValidStation() = stationuuid != "0"
+
     fun isInvalidImage() = favicon.isNullOrEmpty() || favicon!!.contains(".ico")
 
     override fun equals(other: Any?): Boolean {
@@ -42,3 +44,13 @@ data class Station(
         return super.hashCode()
     }
 }
+
+val stubStation = Station(
+        "0",
+        "0",
+        "Not playing",
+        "none", null,
+        "", null,
+        "", "", "", "", "", 0, "",
+        "", 0, 0, 0, "",
+        "", "", "", 0, 0)
