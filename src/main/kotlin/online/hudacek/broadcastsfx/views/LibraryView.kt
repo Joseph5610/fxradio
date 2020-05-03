@@ -11,7 +11,6 @@ import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
-import tornadofx.controlsfx.segmentedbutton
 
 class LibraryView : View() {
 

@@ -43,8 +43,11 @@ class AddStationFragment : Fragment() {
                             action {
                                 val filter = FileChooser.ExtensionFilter("Images (.png, .gif, .jpg)", "*.png", "*.gif", "*.jpg", "*.jpeg")
                                 val file = chooseFile("Select Icon", arrayOf(filter))
-
-                                text = "Selected: ${file.last().name}"
+                                text = if (file.isNotEmpty()) {
+                                    "Selected: ${file.last().name}"
+                                } else {
+                                    "Select"
+                                }
                             }
                         }
 
