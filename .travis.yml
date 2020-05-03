@@ -27,6 +27,7 @@ deploy:
   cleanup: true
   on:
     repo: Joseph5610/broadcastsFX
+    branch: master
 branches:
   only:
   - master
