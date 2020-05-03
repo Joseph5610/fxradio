@@ -3,7 +3,7 @@ package online.hudacek.broadcastsfx.fragments
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
-import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.views.ProgressView
@@ -18,9 +18,9 @@ class StatsFragment : Fragment() {
         add(ProgressView::class)
     }
 
-    private val stationsApi: StationsApiClient
+    private val stationsApi: StationsApi
         get() {
-            return StationsApiClient.client
+            return StationsApi.client
         }
 
     override fun onBeforeShow() {
@@ -59,7 +59,7 @@ class StatsFragment : Fragment() {
         setPrefSize(300.0, 250.0)
         vbox(alignment = Pos.CENTER) {
             paddingAll = 10.0
-            label(StationsApiClient.hostname) {
+            label(StationsApi.hostname) {
                 requestFocusOnSceneAvailable()
                 addClass(Styles.header)
             }

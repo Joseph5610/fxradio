@@ -11,6 +11,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
+import tornadofx.controlsfx.segmentedbutton
 
 class LibraryView : View() {
 
@@ -82,7 +83,15 @@ class LibraryView : View() {
         }
 
         smallLabel(messages["countries"])
+
         vbox(alignment = Pos.CENTER) {
+            /*
+            segmentedbutton {
+                buttons.addAll(
+                        togglebutton("Countries"),
+                        togglebutton("Votes"))
+            }*/
+
             add(retryLink)
             add(countriesListView)
         }

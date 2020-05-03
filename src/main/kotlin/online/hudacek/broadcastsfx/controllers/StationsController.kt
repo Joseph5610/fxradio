@@ -3,9 +3,9 @@ package online.hudacek.broadcastsfx.controllers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
-import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
-import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
+import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.rest.SearchBody
 import online.hudacek.broadcastsfx.views.StationsView
 import tornadofx.Controller
@@ -16,13 +16,13 @@ class StationsController : Controller() {
     private val stationsView: StationsView by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
-    private val stationsApi: StationsApiClient
+    private val stationsApi: StationsApi
         get() {
-            return StationsApiClient.client
+            return StationsApi.client
         }
 
     fun getStationsByCountry(country: String): Disposable = stationsApi
-            .getStationsByCountry(HideBrokenBody(), country)
+            .getStationsByCountry(CountriesBody(), country)
             .subscribeOn(Schedulers.io())
             .observeOn(JavaFxScheduler.platform())
             .subscribe({ result ->
@@ -54,6 +54,4 @@ class StationsController : Controller() {
             }, {
                 stationsView.showNotification()
             })
-
-    fun togglePlaying() = mediaPlayerWrapper.togglePlaying()
 }

@@ -27,4 +27,6 @@ class MenuBarController : Controller() {
         currentStage?.close()
         mediaPlayer.release()
     }
+
+    fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 }

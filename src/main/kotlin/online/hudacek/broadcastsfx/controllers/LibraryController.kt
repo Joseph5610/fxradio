@@ -3,11 +3,11 @@ package online.hudacek.broadcastsfx.controllers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
-import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.events.LibrarySearchChanged
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
+import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.Library
 import online.hudacek.broadcastsfx.views.LibraryView
 import tornadofx.Controller
@@ -17,9 +17,9 @@ class LibraryController : Controller() {
 
     private val libraryView: LibraryView by inject()
 
-    private val stationsApi: StationsApiClient
+    private val stationsApi: StationsApi
         get() {
-            return StationsApiClient.client
+            return StationsApi.client
         }
 
     val libraryItems by lazy {
@@ -36,7 +36,7 @@ class LibraryController : Controller() {
     fun searchStation(searchString: String) = fire(LibrarySearchChanged(searchString))
 
     fun getCountries(): Disposable = stationsApi
-            .getCountries(HideBrokenBody())
+            .getCountries(CountriesBody())
             .subscribeOn(Schedulers.io())
             .observeOn(JavaFxScheduler.platform())
             .subscribe(

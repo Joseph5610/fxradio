@@ -13,20 +13,14 @@ import javafx.scene.layout.VBox
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.ImageCache
-import online.hudacek.broadcastsfx.Utils
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
-import java.awt.SystemTray
-import java.awt.Toolkit
-import java.awt.TrayIcon
-import java.awt.TrayIcon.MessageType
 import java.net.URL
 import java.net.URLConnection
-
 
 /*
  * Helper extension functions for UI
@@ -70,25 +64,25 @@ internal fun EventTarget.smallIcon(url: String = ""): ImageView {
  * Convenience methods for boolean bindings
  */
 internal fun Node.shouldBeVisible(station: Property<Station>) {
-    visibleProperty().bind(booleanBinding(station) {
+    visibleWhen(booleanBinding(station) {
         value != null
     })
 }
 
 internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
-    visibleProperty().bind(booleanBinding(station) {
+    visibleWhen(booleanBinding(station) {
         value != null && value.isValidStation()
     })
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
-    disableProperty().bind(booleanBinding(station) {
+    disableWhen(booleanBinding(station) {
         value == null || !value.isValidStation()
     })
 }
 
 internal fun Node.shouldBeDisabled(station: Property<Station>) {
-    disableProperty().bind(booleanBinding(station) {
+    disableWhen(booleanBinding(station) {
         value == null
     })
 }

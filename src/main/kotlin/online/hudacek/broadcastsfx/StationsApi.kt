@@ -1,11 +1,7 @@
 package online.hudacek.broadcastsfx
 
 import io.reactivex.Observable
-import online.hudacek.broadcastsfx.model.rest.Countries
-import online.hudacek.broadcastsfx.model.rest.HideBrokenBody
-import online.hudacek.broadcastsfx.model.rest.SearchBody
-import online.hudacek.broadcastsfx.model.rest.Stats
-import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.rest.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,10 +15,10 @@ import java.net.InetAddress
 /**
  * HTTP endpoints for radio-browser.info API
  */
-interface StationsApiClient {
+interface StationsApi {
 
     @POST("json/stations/bycountry/{countryCode}")
-    fun getStationsByCountry(@Body countriesBody: HideBrokenBody, @Path("countryCode") countryCode: String): Observable<List<Station>>
+    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryCode") countryCode: String): Observable<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Observable<List<Station>>
@@ -30,8 +26,14 @@ interface StationsApiClient {
     @GET("json/stations/topvote/50")
     fun getTopStations(): Observable<List<Station>>
 
+    @POST("json/add")
+    fun add(@Body addBody: AddStationBody): Observable<AddStationResult>
+
+    @GET("json/tags")
+    fun getTags(): Observable<List<Tags>>
+
     @POST("json/countries")
-    fun getCountries(@Body countriesBody: HideBrokenBody): Observable<List<Countries>>
+    fun getCountries(@Body countriesBody: CountriesBody): Observable<List<Countries>>
 
     @GET("json/stats")
     fun getStats(): Observable<Stats>
@@ -60,12 +62,12 @@ interface StationsApiClient {
                 }
             }
 
-        val client: StationsApiClient
+        val client: StationsApi
             get() = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl("https://$hostname")
                     .build()
-                    .create(StationsApiClient::class.java)
+                    .create(StationsApi::class.java)
     }
 }

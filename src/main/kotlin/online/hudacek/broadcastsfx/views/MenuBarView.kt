@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.views
 
+import com.sun.javafx.PlatformUtil
 import de.codecentric.centerdevice.MenuToolkit
 import javafx.scene.control.*
 import javafx.scene.input.KeyCode
@@ -36,7 +37,7 @@ class MenuBarView : View() {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
-                if (!Utils.isMacOs || !shouldUseNativeMenuBar) {
+                if (!PlatformUtil.isMac() || !shouldUseNativeMenuBar) {
                     graphic = imageview {
                         createImage(it)
                         fitHeight = 15.0
@@ -52,13 +53,15 @@ class MenuBarView : View() {
     }
 
     private val stationMenu = Menu(messages["menu.station"]).apply {
-        shouldBeDisabled(player.station)
-        item(messages["menu.station.info"], keyInfo).action {
-            controller.openStationInfo()
+        item(messages["menu.station.info"], keyInfo) {
+            shouldBeDisabled(player.station)
+            action {
+                controller.openStationInfo()
+            }
         }
 
-        item(messages["menu.station.report"]) {
-            isDisable = true
+        item(messages["menu.station.add"], keyAdd).action {
+            controller.openAddNewStation()
         }
     }
 
@@ -113,7 +116,7 @@ class MenuBarView : View() {
 
     private val shouldUseNativeMenuBar = app.config.boolean(Config.useNativeMenuBar, true)
 
-    override val root = if (Utils.isMacOs && shouldUseNativeMenuBar) {
+    override val root = if (PlatformUtil.isMac() && shouldUseNativeMenuBar) {
         platformMenuBar()
     } else {
         defaultMenuBar()
@@ -185,5 +188,6 @@ class MenuBarView : View() {
         val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
         val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
         val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
+        val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
     }
 }

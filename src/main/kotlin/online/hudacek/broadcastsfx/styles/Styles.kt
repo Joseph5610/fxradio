@@ -1,6 +1,5 @@
 package online.hudacek.broadcastsfx.styles
 
-import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.scene.paint.Paint
 import tornadofx.*

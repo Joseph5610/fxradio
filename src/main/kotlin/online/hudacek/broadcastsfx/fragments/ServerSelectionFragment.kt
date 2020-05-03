@@ -1,6 +1,6 @@
 package online.hudacek.broadcastsfx.fragments
 
-import online.hudacek.broadcastsfx.StationsApiClient
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.model.ApiServerModel
 import online.hudacek.broadcastsfx.styles.Styles
@@ -21,12 +21,11 @@ class ServerSelectionFragment : Fragment() {
     }
 
     init {
-        model.url.value = StationsApiClient.hostname
+        model.url.value = StationsApi.hostname
         title = "Select API server"
 
         with(root) {
             setPrefSize(300.0, 110.0)
-            isResizable
 
             fieldset("Set server address") {
                 field("URL") {
