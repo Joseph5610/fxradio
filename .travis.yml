@@ -1,24 +1,23 @@
 language: java
 install: true
 os:
-  - linux
   - osx
 dist: trusty
 osx_image: xcode9.3
 jdk: oraclejdk8
 script:
-- "./gradlew jfxNative"
+  - "./gradlew jfxNative"
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
 before_deploy:
-- ls -all build/jfx/*
-- zip -r releaseJar.zip build/jfx/app
-- zip -r release_${TRAVIS_OS_NAME}.zip build/jfx/native
+  - ls -all build/jfx/*
+  - zip -r releaseJar.zip build/jfx/app
+  - zip -r release_${TRAVIS_OS_NAME}.zip build/jfx/native/FXRadio.app
 deploy:
   provider: releases
   api_key:
@@ -31,7 +30,8 @@ deploy:
   on:
     repo: Joseph5610/broadcastsFX
     branch: master
+    tags: true
 branches:
   only:
-  - master
-  - develop
+    - master
+    - develop
