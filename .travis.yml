@@ -17,13 +17,14 @@ cache:
 before_deploy:
   - ls -all build/jfx/*
   - zip -r releaseJar.zip build/jfx/app
+  - zip -r release_${TRAVIS_OS_NAME}.zip build/jfx/native/FXRadio.app
 deploy:
   provider: releases
   api_key:
     secure: fwB9d2UYgIOZyxU4POkxR/gJameBfIqcDKJUhGIsXA2gOCsBqX1x8VS8U90geuwHkG3Bug0pSZybkuss1dN39imrcBxbvtlrB5HyiKVhc2YaIhlzY0dRgHIIamKgaOwqv6Mu85TaUf7nhjUSMIAtfaPb011lJolhezaGTJwbSoDg8o74ZvxFtht+Toq2rK3CcNCzmKYsK0FD6rc/T0oXsI3r4SRMarhUe5fgibl1ZxlXmfc8CROxRZTrJ/NYXKpL1QrCRp7jKewWMyOqXf9OQtaYvCyhvPR25x1chG2l3JBEcol1mUgDWGfM2Wj6P3ezVe42FQCfX+zKQ/+4TyXwktEJKa3hWLv6Te0cfRB7g8xwLAnPxYiuvb5Lt3aB11C1MMTMxxN9PnaE9iEyiph8DfjxMFj8ku4/w0JvH8KNUmg+02nhWTwHn/vsCxVYAuEubEF3LTQCfjHcrTmTRd1BK46Wm18mbu0szMEDAFi9fpAzpWhk89mXlCTxGEhbbXZp5yCWqNtiodEdIZ84PNZQSx4mI12CVTdB2uCIhNn3RcC7hCKgmyzeZjCO7/wwSmccFWBsX9SamQsrj+woIEkxvdEzH12xJc8xL6XokYB+CU63KtsomnQdxKD6+2NXrfOVQf8Targb/xMQpTwfVegdQJwTAn0gM4xIcrPOLad9Bds=
   file:
     - releaseJar.zip
-    - build/jfx/native/FXRadio.app
+    - release_${TRAVIS_OS_NAME}.zip
   skip_cleanup: true
   cleanup: true
   on:
