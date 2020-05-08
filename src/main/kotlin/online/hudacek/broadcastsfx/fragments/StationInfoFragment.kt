@@ -35,7 +35,7 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                     .map { tag -> tag.trim() }
                     .filter { tag -> tag.isNotEmpty() }
 
-            val codecBitrateInfo = it.codec + " (" + it.bitrate + ")"
+            val codecBitrateInfo = it.codec + " (" + it.bitrate + " kbps)"
 
             if (showImage) {
                 vbox(alignment = Pos.CENTER) {

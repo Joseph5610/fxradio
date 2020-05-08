@@ -29,7 +29,7 @@ class Styles : Stylesheet() {
         }
 
         playerStationInfo {
-            padding = box(3.px, 10.px, 3.px, 10.px)
+            padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             backgroundColor += Paint.valueOf("#E9E9E9")
             borderRadius += box(3.px)
@@ -39,7 +39,7 @@ class Styles : Stylesheet() {
         }
 
         tag {
-            padding = box(3.px, 10.px, 3.px, 10.px)
+            padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             backgroundColor += Paint.valueOf("#E9E9E9")
             borderRadius += box(3.px)
@@ -82,6 +82,53 @@ class Styles : Stylesheet() {
             unsafe("-fx-background-color", raw("-fx-background"))
             unsafe("-fx-border-color", raw("transparent"))
             unsafe("-fx-faint-focus-color", raw("transparent"))
+        }
+
+
+        scrollBar {
+            backgroundColor += Paint.valueOf("transparent")
+            borderColor += box(c("transparent"))
+
+            incrementButton {
+                backgroundColor += Paint.valueOf("transparent")
+                backgroundRadius += box(0.em)
+                padding = box(0.px, 10.px, 0.px, 0.px)
+            }
+
+            decrementButton {
+                backgroundColor += Paint.valueOf("transparent")
+                backgroundRadius += box(0.em)
+                padding = box(0.px, 10.px, 0.px, 0.px)
+            }
+
+            incrementArrow {
+                shape = " "
+                padding = box(0.px, 0.08.em)
+            }
+
+            decrementArrow {
+                shape = " "
+                padding = box(0.px, 0.08.em)
+            }
+
+            track {
+                backgroundColor += Paint.valueOf("transparent")
+                borderColor += box(c("transparent"))
+                unsafe("-fx-background-radius", raw("0.0em"))
+                unsafe("-fx-border-radius", raw("2.0em"))
+            }
+
+            thumb {
+                unsafe("-fx-background-color", raw("derive(black,90.0%)"))
+                unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
+                unsafe("-fx-background-radius", raw("2.0em"))
+
+                and(hover) {
+                    unsafe("-fx-background-color", raw("derive(#4D4C4F,10.0%)"))
+                    unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
+                    unsafe("-fx-background-radius", raw("2.0em"))
+                }
+            }
         }
     }
 }
