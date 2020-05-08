@@ -59,12 +59,10 @@ class TickerView : View() {
     }
 
     fun stop() {
-        println("Stopping anim")
         marqueeView.stop()
     }
 
     fun play() {
-        println("Playing anim")
         marqueeView.play()
     }
 }

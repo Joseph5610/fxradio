@@ -20,11 +20,11 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     var playingStatus = PlayingStatus.Stopped
 
     var volume: Double
-        get() = app.config.double(Config.volume, -15.0)
+        get() = app.config.double(Config.Keys.volume, -15.0)
         set(value) {
             if (mediaPlayer.changeVolume(value)) {
                 with(app.config) {
-                    set(Config.volume to value)
+                    set(Config.Keys.volume to value)
                     save()
                 }
             }
@@ -72,8 +72,9 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 logger.debug { "trying to init VLC media player " }
                 VLCMediaPlayer(this)
             } catch (e: RuntimeException) {
-                e.printStackTrace()
-                logger.debug { "VLC init failed, init native library " }
+                logger.error(e) {
+                    "VLC init failed, init native library "
+                }
                 NativeMediaPlayer(this)
             }
         }
@@ -92,6 +93,9 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     fun handleError(t: Throwable) {
         fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         tornadofx.error("Stream can't be played", t.localizedMessage)
+        logger.error(t) {
+            "Stream can't be played"
+        }
     }
 
     fun togglePlaying() {

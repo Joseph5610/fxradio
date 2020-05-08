@@ -60,8 +60,11 @@ class MenuBarView : View() {
             }
         }
 
-        item(messages["menu.station.add"], keyAdd).action {
-            controller.openAddNewStation()
+        item(messages["menu.station.add"], keyAdd) {
+            isVisible = Config.Flags.addStationEnabled
+            action {
+                controller.openAddNewStation()
+            }
         }
     }
 
@@ -114,7 +117,7 @@ class MenuBarView : View() {
         }
     }
 
-    private val shouldUseNativeMenuBar = app.config.boolean(Config.useNativeMenuBar, true)
+    private val shouldUseNativeMenuBar = app.config.boolean(Config.Keys.useNativeMenuBar, true)
 
     override val root = if (PlatformUtil.isMac() && shouldUseNativeMenuBar) {
         platformMenuBar()

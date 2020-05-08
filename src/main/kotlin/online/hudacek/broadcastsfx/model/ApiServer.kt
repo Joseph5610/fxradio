@@ -20,7 +20,7 @@ class ApiServerModel : ItemViewModel<ApiServer>() {
 
         //Save API server
         with(app.config) {
-            set(Config.apiServer to url.value)
+            set(Config.Keys.apiServer to url.value)
             save()
         }
     }

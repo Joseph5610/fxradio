@@ -18,7 +18,7 @@ import java.nio.file.StandardCopyOption
  * and loaded using fileInputStream
  */
 object ImageCache {
-    private val cacheBasePath: Path = Paths.get(About.imageCacheLocation)
+    private val cacheBasePath: Path = Paths.get(Config.imageCachePath)
     private val logger = KotlinLogging.logger {}
 
     init {
@@ -34,31 +34,40 @@ object ImageCache {
             FileUtils.cleanDirectory(cacheBasePath.toFile())
             true
         } catch (e: IOException) {
-            logger.debug { "IOException when clearing cache: " + e.localizedMessage }
-            e.printStackTrace()
+            logger.error(e) {
+                "IOException when clearing cache: "
+            }
             false
         }
     }
 
     fun isImageInCache(station: Station): Boolean {
-        val imagePath = Paths.get(About.imageCacheLocation + "/" + station.stationuuid)
-        return Files.exists(imagePath)
+        val imagePath = cacheBasePath.resolve(station.stationuuid)
+        return Files.exists(imagePath).apply {
+            logger.debug { "is file in cache: $this" }
+        }
     }
 
     fun getImageFromCache(station: Station): Image {
         return if (!isImageInCache(station) || station.isInvalidImage()) Image("Industry-Radio-Tower-icon.png")
         else {
-            val imagePath = Paths.get(About.imageCacheLocation + "/" + station.stationuuid)
+            val imagePath = cacheBasePath.resolve(station.stationuuid)
             Image(FileInputStream(imagePath.toFile()))
         }
     }
 
     fun saveImage(station: Station, inputStream: InputStream) {
         if (isImageInCache(station)) return
-        val imagePath = Paths.get(About.imageCacheLocation + "/" + station.stationuuid)
-        Files.copy(
-                inputStream,
-                imagePath,
-                StandardCopyOption.REPLACE_EXISTING)
+        val imagePath = cacheBasePath.resolve(station.stationuuid)
+        try {
+            Files.copy(
+                    inputStream,
+                    imagePath,
+                    StandardCopyOption.REPLACE_EXISTING)
+        } catch (e: FileAlreadyExistsException) {
+            logger.error(e) {
+                "FileAlreadyExists. Probably downloaded on some different thread?"
+            }
+        }
     }
 }

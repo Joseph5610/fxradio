@@ -35,13 +35,26 @@ class StationsView : View() {
     private val playerModel: PlayerModel by inject()
     private val stationHistory: StationHistoryModel by inject()
 
+    private val searchGlyph = Glyph("FontAwesome", FontAwesome.Glyph.SEARCH)
+            .apply {
+                size(35.0)
+                padding = Insets(10.0, 5.0, 10.0, 5.0)
+            }
+
     private val header = label {
         addClass(Styles.header)
     }
 
+    private val subHeader = label {
+        addClass(Styles.grayLabel)
+    }
+
     private val headerContainer = vbox(alignment = Pos.CENTER) {
         paddingTop = 120.0
+        paddingLeft = 10.0
+        paddingRight = 10.0
         add(header)
+        add(subHeader)
     }
 
     private val contentContainer = vbox()
@@ -64,17 +77,14 @@ class StationsView : View() {
 
         subscribe<LibrarySearchChanged> { event ->
             with(event) {
-                if (searchString.isEmpty()) {
+                if (searchString.length > 2)
+                    controller.searchStations(searchString)
+                else {
                     headerContainer.show()
-                    val graph = Glyph("FontAwesome", FontAwesome.Glyph.SEARCH)
-                    graph.size(35.0)
-                    graph.padding = Insets(10.0, 5.0, 10.0, 5.0)
-                    header.graphic = graph
                     header.text = "Searching the library"
+                    header.graphic = searchGlyph
+                    subHeader.text = "Enter at least 3 characters to start searching"
                     contentContainer.hide()
-                } else {
-                    if (searchString.length > 3)
-                        controller.searchStations(searchString)
                 }
             }
         }
@@ -90,11 +100,12 @@ class StationsView : View() {
         showDataGrid(stationHistory.stations.value)
     }
 
-    fun showNoResults() {
+    fun showNoResults(queryString: String) {
         headerContainer.show()
         contentContainer.hide()
+        subHeader.text = "Try refining the search query"
         header.graphic = null
-        header.text = "No stations found"
+        header.text = "No stations found for \"$queryString\""
     }
 
     fun showNotification() {
@@ -107,7 +118,7 @@ class StationsView : View() {
         contentContainer.replaceChildren(
                 datagrid(observableList) {
 
-                fitToParentHeight()
+                    fitToParentHeight()
                     bindSelected(playerModel.station)
 
                     cellCache {

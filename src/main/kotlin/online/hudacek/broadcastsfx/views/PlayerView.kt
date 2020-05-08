@@ -64,8 +64,8 @@ class PlayerView : View() {
     }
 
     init {
-        val animateName = app.config.boolean(Config.playerAnimate, true)
-        val playerType = PlayerType.valueOf(app.config.string(Config.playerType, "VLC"))
+        val animateName = app.config.boolean(Config.Keys.playerAnimate, true)
+        val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
         player.item = Player(animateName, playerType = playerType)
 
         keyboard {

@@ -98,7 +98,6 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
  */
 internal fun ImageView.createImage(station: Station) {
     if (ImageCache.isImageInCache(station)) {
-        logger.debug { "file is in cache, loading" }
         this.image = ImageCache.getImageFromCache(station)
     } else {
         logger.debug { "trying to download image from ${station.favicon}" }
@@ -113,14 +112,14 @@ internal fun ImageView.createImage(station: Station) {
             val conn: URLConnection = URL(station.favicon).openConnection()
             conn.setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
             conn.getInputStream().use { stream ->
-                logger.debug { "Save to cache" }
                 ImageCache.saveImage(station, stream)
             }
         } success {
             this.image = ImageCache.getImageFromCache(station)
         } fail {
-            logger.debug { "image download failed for $station " }
-            it.printStackTrace()
+            logger.error(it) {
+                "image download failed for ${station.stationuuid} "
+            }
             this.image = Image("Industry-Radio-Tower-icon.png")
         }
     }

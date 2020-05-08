@@ -35,8 +35,8 @@ class PlayerModel : ItemViewModel<Player>() {
     override fun onCommit() {
         //Save API server
         with(app.config) {
-            set(Config.playerAnimate to animate.value)
-            set(Config.playerType to playerType.value)
+            set(Config.Keys.playerAnimate to animate.value)
+            set(Config.Keys.playerType to playerType.value)
             save()
         }
     }

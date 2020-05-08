@@ -12,7 +12,4 @@ object About {
     const val author = "Jozef Hudáček"
     const val copyright = "Copyright (c) 2020"
     const val dataSource = "https://api.radio-browser.info"
-
-    val appConfigLocation = System.getProperty("user.home") + "/" + appName.toLowerCase() + "/conf"
-    val imageCacheLocation = System.getProperty("user.home") + "/" + appName.toLowerCase() + "/cache"
 }

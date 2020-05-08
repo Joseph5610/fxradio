@@ -1,10 +1,12 @@
 package online.hudacek.broadcastsfx.fragments
 
+import javafx.scene.layout.Priority
 import javafx.stage.FileChooser
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
+import tornadofx.controlsfx.hyperlinklabel
 import tornadofx.controlsfx.notificationPane
 
 class AddStationFragment : Fragment() {
@@ -16,12 +18,9 @@ class AddStationFragment : Fragment() {
         content {
             form {
                 fieldset("Add new station") {
-
-                    label("Add station into radio-browser.info public directory. " +
-                            "Please fill all required information correctly and check " +
-                            "if the station has not already been added.") {
-                        isWrapText = true
+                    hyperlinklabel("Add station into [radio-browser.info] public directory. Please fill all required information correctly and check if the station has not already been added.") {
                     }
+
 
                     field("Name") {
                         textfield() {

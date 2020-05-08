@@ -2,6 +2,7 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Insets
 import javafx.geometry.Pos
+import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
@@ -47,9 +48,27 @@ class LibraryView : View() {
             graph.padding = Insets(10.0, 5.0, 10.0, 5.0)
             graphic = graph
         }
+        val savedQuery = app.config.string(Config.Keys.searchQuery)
+
+        savedQuery?.let {
+            if (it.isNotBlank()) {
+                text = savedQuery
+            }
+        }
 
         textProperty().onChange {
-            it?.let { controller.searchStation(it) }
+            it?.let {
+                if (it.length > 80) {
+                    text = it.substring(0, 80)
+                } else {
+                    controller.searchStation(it)
+                }
+            }
+
+            with(app.config) {
+                set(Config.Keys.searchQuery to text)
+                save()
+            }
         }
 
         setOnMouseClicked {

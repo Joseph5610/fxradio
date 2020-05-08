@@ -37,7 +37,7 @@ class StationsController : Controller() {
             .observeOn(JavaFxScheduler.platform())
             .subscribe({ result ->
                 if (result.isEmpty()) {
-                    stationsView.showNoResults()
+                    stationsView.showNoResults(name)
                 } else {
                     stationsView.showDataGrid(result.asObservable())
                 }

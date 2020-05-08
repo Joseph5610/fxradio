@@ -12,7 +12,7 @@ import java.nio.file.Paths
  */
 class Broadcasts : App(MainView::class, Styles::class) {
     //override app.config path to user.home/fxradio
-    override val configBasePath: Path = Paths.get(About.appConfigLocation)
+    override val configBasePath: Path = Paths.get(Config.appConfigPath)
 
     init {
         //reloadViewsOnFocus()

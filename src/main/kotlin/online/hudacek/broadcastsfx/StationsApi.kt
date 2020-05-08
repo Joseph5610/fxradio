@@ -47,7 +47,7 @@ interface StationsApi {
             } catch (e: Exception) {
                 //fallback
                 //tornadofx.error("Can't connect to server", "We are unable to connect to API server. Are you sure you are connected to internet?")
-                app.config.string(Config.apiServer, "de1.api.radio-browser.info")
+                app.config.string(Config.Keys.apiServer, "de1.api.radio-browser.info")
             }
         }
 
@@ -56,7 +56,7 @@ interface StationsApi {
         var hostname: String = ""
             get() {
                 return when {
-                    app.config.string(Config.apiServer) != null -> app.config.string(Config.apiServer)!!
+                    app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
                     field.isEmpty() -> inetAddressHostname
                     else -> field
                 }
