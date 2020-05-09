@@ -6,21 +6,17 @@ import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.smallLabel
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
+import tornadofx.controlsfx.glyph
 
 class LibraryView : View() {
-
-    private val notification by lazy { find(MainView::class).notification }
 
     private val controller: LibraryController by inject()
 
     private val retryLink = hyperlink(messages["downloadRetry"]) {
-        isWrapText = true
         hide()
         action {
             controller.getCountries()
@@ -28,11 +24,11 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 24.0 + 5
+        prefHeight = items.size * 24.0 + 6
 
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)
-            graphic = Glyph("FontAwesome", item.graphic)
+            graphic = glyph("FontAwesome", item.graphic)
             text = item.name
             addClass(Styles.customListItem)
         }
@@ -57,9 +53,9 @@ class LibraryView : View() {
         promptText = messages["search"]
 
         left = label {
-            val graph = Glyph("FontAwesome", FontAwesome.Glyph.SEARCH)
-            graph.padding = Insets(10.0, 5.0, 10.0, 5.0)
-            graphic = graph
+            graphic = glyph("FontAwesome", FontAwesome.Glyph.SEARCH) {
+                padding = Insets(10.0, 5.0, 10.0, 5.0)
+            }
         }
         val savedQuery = app.config.string(Config.Keys.searchQuery)
 
@@ -74,7 +70,7 @@ class LibraryView : View() {
                 if (it.length > 80) {
                     text = it.substring(0, 80)
                 } else {
-                    controller.searchStation(it)
+                    controller.searchStation(it.trim())
                 }
             }
 
@@ -118,13 +114,6 @@ class LibraryView : View() {
         smallLabel(messages["countries"])
 
         vbox(alignment = Pos.CENTER) {
-            /*
-            segmentedbutton {
-                buttons.addAll(
-                        togglebutton("Countries"),
-                        togglebutton("Votes"))
-            }*/
-
             add(retryLink)
             add(countriesListView)
         }
@@ -139,6 +128,5 @@ class LibraryView : View() {
     fun showError() {
         retryLink.show()
         countriesListView.hide()
-        notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
     }
 }

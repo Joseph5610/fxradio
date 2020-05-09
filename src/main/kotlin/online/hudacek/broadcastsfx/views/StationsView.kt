@@ -13,10 +13,10 @@ import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.tooltip
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.createImage
+import online.hudacek.broadcastsfx.ui.glyph
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
@@ -28,18 +28,12 @@ import tornadofx.controlsfx.showPopover
  */
 class StationsView : View() {
 
-    //notifications pane exists on main view, so we need to find it somehow
-    private val notification by lazy { find(MainView::class).notification }
-
     private val controller: StationsController by inject()
     private val playerModel: PlayerModel by inject()
     private val stationHistory: StationHistoryModel by inject()
 
-    private val searchGlyph = Glyph("FontAwesome", FontAwesome.Glyph.SEARCH)
-            .apply {
-                size(35.0)
-                padding = Insets(10.0, 5.0, 10.0, 5.0)
-            }
+    private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
+    private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
 
     private val header = label {
         addClass(Styles.header)
@@ -60,7 +54,6 @@ class StationsView : View() {
     private val contentContainer = vbox()
 
     init {
-
         controller.getTopStations()
         subscribe<LibraryRefreshEvent> { event ->
             with(event) {
@@ -114,8 +107,12 @@ class StationsView : View() {
         header.text = "No stations found for \"$queryString\""
     }
 
-    fun showNotification() {
-        notification[FontAwesome.Glyph.WARNING] = messages["downloadError"]
+    fun showError() {
+        headerContainer.show()
+        contentContainer.hide()
+        header.graphic = errorGlyph
+        header.text = "Connection error. Please try again"
+        subHeader.text = "Please check if your internet connection is working."
     }
 
     fun showDataGrid(observableList: ObservableList<Station>) {

@@ -4,6 +4,7 @@ import javafx.animation.PauseTransition
 import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.event.EventTarget
+import javafx.geometry.Insets
 import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
@@ -18,8 +19,8 @@ import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
+import tornadofx.controlsfx.glyph
 import java.net.URL
 import java.net.URLConnection
 
@@ -36,7 +37,7 @@ private val logger = KotlinLogging.logger {}
  * notificationPane[FontAwesome.Glyph.WARNING] = "Custom notification Text"
  */
 internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
-    if (isVisible) show(message, Glyph("FontAwesome", glyph))
+    if (isVisible) show(message, glyph("FontAwesome", glyph))
     val delay = PauseTransition(Duration.seconds(5.0))
     delay.onFinished = EventHandler { hide() }
     delay.play()
@@ -88,7 +89,7 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
 
 internal fun Node.shouldBeDisabled(station: Property<Station>) {
     disableWhen(booleanBinding(station) {
-        value == null
+        value == null || !value.isValidStation()
     })
 }
 
@@ -131,6 +132,12 @@ internal fun ImageView.createImage(station: Station) {
         }
     }
 }
+
+internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) =
+        glyph("FontAwesome", glyph) {
+            size(35.0)
+            padding = Insets(10.0, 5.0, 10.0, 5.0)
+        }
 
 internal fun osNotification() {
     /*

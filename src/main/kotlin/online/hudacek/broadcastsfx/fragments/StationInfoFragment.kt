@@ -47,12 +47,6 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                         fitHeight = 100.0
                         isPreserveRatio = true
                     }
-
-                    /*
-                    rating(0, 5) {
-                        paddingTop = 10.0
-                        maxHeight = 15.0
-                    }*/
                 }
             }
 
@@ -76,7 +70,6 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                         codecBitrateInfo,
                         "Country: ${it.country}",
                         "Language: ${it.language}")
-
                 listview(list)
             }
 

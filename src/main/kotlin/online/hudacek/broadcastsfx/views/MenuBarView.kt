@@ -14,14 +14,17 @@ import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.ui.createImage
+import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
 import online.hudacek.broadcastsfx.ui.shouldBeVisible
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import java.util.*
 
 class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
+    private val notification by lazy { find(MainView::class).notification }
 
     private val stationHistory: StationHistoryModel by inject()
     private val player: PlayerModel by inject()
@@ -183,7 +186,13 @@ class MenuBarView : View() {
         }
         separator()
         item(messages["menu.app.clearCache"]).action {
-            controller.clearCache()
+            confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
+                if (controller.clearCache()) {
+                    notification[FontAwesome.Glyph.CHECK] = messages["cache.clear.ok"]
+                } else {
+                    notification[FontAwesome.Glyph.WARNING] = messages["cache.clear.error"]
+                }
+            }
         }
     }
 

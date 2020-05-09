@@ -5,16 +5,11 @@ import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
-import online.hudacek.broadcastsfx.ui.set
-import online.hudacek.broadcastsfx.views.MainView
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class MenuBarController : Controller() {
 
     private val mediaPlayer: MediaPlayerWrapper by inject()
-
-    private val notification by lazy { find(MainView::class).notification }
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -26,15 +21,7 @@ class MenuBarController : Controller() {
 
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun clearCache() {
-        confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
-            if (ImageCache.clearCache()) {
-                notification[FontAwesome.Glyph.CHECK] = messages["cache.clear.ok"]
-            } else {
-                notification[FontAwesome.Glyph.CHECK] = messages["cache.clear.error"]
-            }
-        }
-    }
+    fun clearCache() = ImageCache.clearCache()
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()
