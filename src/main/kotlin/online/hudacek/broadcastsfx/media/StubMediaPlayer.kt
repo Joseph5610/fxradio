@@ -12,9 +12,7 @@ class StubMediaPlayer : MediaPlayer {
     override fun play(url: String) {
     }
 
-    override fun changeVolume(volume: Double): Boolean {
-        return false
-    }
+    override fun changeVolume(volume: Double) = false
 
     override fun cancelPlaying() {
     }

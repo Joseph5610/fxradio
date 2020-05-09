@@ -63,6 +63,21 @@ class MenuBarView : View() {
             }
         }
 
+        item(messages["menu.station.favourite"], keyFavourites) {
+            shouldBeDisabled(player.station)
+            action {
+                player.station.value.addFavourite().subscribe { id ->
+                    println("new id: $id")
+                    notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
+                }
+
+                player.station.value.isFavourite.subscribe { id ->
+                    println("counnt: $id")
+                    notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
+                }
+            }
+        }
+
         item(messages["menu.station.add"], keyAdd) {
             isVisible = Config.Flags.addStationEnabled
             action {
@@ -201,5 +216,6 @@ class MenuBarView : View() {
         val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
         val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
         val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
+        val keyFavourites = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
     }
 }

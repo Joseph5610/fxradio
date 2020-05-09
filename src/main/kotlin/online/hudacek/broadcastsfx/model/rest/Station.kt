@@ -1,8 +1,17 @@
 package online.hudacek.broadcastsfx.model.rest
 
+import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
+import javafx.collections.ObservableList
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.db
 import online.hudacek.broadcastsfx.flatCollect
+import org.nield.rxkotlinjdbc.insert
 import org.nield.rxkotlinjdbc.select
+import tornadofx.*
 
 /**
  * Stations json structure
@@ -34,6 +43,28 @@ data class Station(
         val clicktrend: Int
 ) {
 
+    val isFavourite: Single<Int>
+        get() =
+            db.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
+                    .parameter("uuid", stationuuid)
+                    .toSingle { it.getInt(1) }
+
+    fun addFavourite(): Single<Int> =
+            db.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
+                    "homepage, country, countrycode, state, language, favicon, tags) " +
+                    "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags )")
+                    .parameter("name", name)
+                    .parameter("stationuuid", stationuuid)
+                    .parameter("url_resolved", url_resolved)
+                    .parameter("homepage", homepage)
+                    .parameter("country", country)
+                    .parameter("countrycode", countrycode)
+                    .parameter("state", state)
+                    .parameter("language", language)
+                    .parameter("favicon", favicon)
+                    .parameter("tags", tags)
+                    .toSingle { it.getInt(1) }
+
     fun isValidStation() = stationuuid != "0"
 
     fun isInvalidImage() = favicon.isNullOrEmpty() || favicon!!.contains(".ico")
@@ -44,11 +75,14 @@ data class Station(
         } else super.equals(other)
     }
 
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
+    override fun hashCode() = super.hashCode()
 
     companion object {
+        private val stationsApi: StationsApi
+            get() {
+                return StationsApi.client
+            }
+
         fun stub() = Station(
                 "0",
                 "0",
@@ -59,29 +93,13 @@ data class Station(
                 "", 0, 0, 0, "",
                 "", "", "", 0, 0)
 
-        fun favourites() = db.select("SELECT * FROM FAVOURITES")
-                .toObservable {
-                    Station(
-                            it.getString("changeuuid"),
-                            it.getString("stationuuid"),
-                            it.getString("name"),
-                            it.getString("url"),
-                            it.getString("url_resolved"),
-                            it.getString("homepage"),
-                            it.getString("favicon"),
-                            it.getString("tags"),
-                            it.getString("country"),
-                            it.getString("countrycode"),
-                            it.getString("state"),
-                            it.getString("language"),
-                            it.getInt("votes"),
-                            it.getString("lastchangetime"),
-                            it.getString("codec"),
-                            it.getInt("bitrate"),
-                            it.getInt("hls"), 0, "",
-                            "", "",
-                            "", 0, 0)
-                }.flatCollect()
+        //get data about station from db and return latest info from API about it
+        fun favourites(): Observable<List<Station>> = db
+                .select("SELECT * FROM FAVOURITES")
+                .toObservable { it.getString("stationuuid") }
+                .flatMap {
+                    stationsApi.getStationInfo(it)
+                }
     }
 }
 

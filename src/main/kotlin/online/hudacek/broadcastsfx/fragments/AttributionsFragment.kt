@@ -41,6 +41,7 @@ class AttributionsFragment : Fragment() {
         vbox(alignment = Pos.CENTER_RIGHT) {
             paddingAll = 10.0
             button("Close") {
+                isCancelButton = true
                 action {
                     close()
                 }

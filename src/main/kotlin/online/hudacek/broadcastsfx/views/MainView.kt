@@ -6,8 +6,8 @@ import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.PlayerModel
+import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.ui.osNotification
 import online.hudacek.broadcastsfx.ui.set
 import org.controlsfx.control.NotificationPane

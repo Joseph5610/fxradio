@@ -61,7 +61,7 @@ class StationsView : View() {
                     LibraryType.Country -> {
                         params?.let { controller.getStationsByCountry(it) }
                     }
-                    LibraryType.History -> getHistory()
+                    LibraryType.Favourites -> controller.getFavourites()
                     else -> {
                         controller.getTopStations()
                     }

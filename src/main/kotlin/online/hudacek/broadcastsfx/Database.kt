@@ -8,10 +8,10 @@ import java.sql.DriverManager
 
 val db: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.dbPath}").apply {
     execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
-            " changeuuid VARCHAR, stationuuid VARCHAR, name VARCHAR, " +
-            "url VARCHAR, url_resolved VARCHAR, homepage VARCHAR," +
+            " stationuuid VARCHAR, name VARCHAR, " +
+            " url_resolved VARCHAR, homepage VARCHAR," +
             " favicon VARCHAR, tags VARCHAR, country VARCHAR, countrycode VARCHAR, state VARCHAR, language VARCHAR" +
-            " votes INT(10),lastchangetime VARCHAR, codec VARCHAR, bitrate INT(10), hls INT(10) )")
+            " )")
             .toSingle()
             .subscribe()
 }

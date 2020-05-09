@@ -4,7 +4,6 @@ import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Broadcasts
-import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import tornadofx.*
 import tornadofx.controlsfx.statusbar

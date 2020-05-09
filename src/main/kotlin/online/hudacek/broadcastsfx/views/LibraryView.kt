@@ -24,7 +24,7 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 24.0 + 6
+        prefHeight = items.size * 24.0 + 16
 
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)

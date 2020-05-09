@@ -1,6 +1,5 @@
 package online.hudacek.broadcastsfx.fragments
 
-import javafx.scene.layout.Priority
 import javafx.stage.FileChooser
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
@@ -23,17 +22,17 @@ class AddStationFragment : Fragment() {
 
 
                     field("Name") {
-                        textfield() {
+                        textfield {
 
                         }
                     }
                     field("Website") {
-                        textfield() {
+                        textfield {
 
                         }
                     }
                     field("Stream URL") {
-                        textfield() {
+                        textfield {
 
                         }
                     }
@@ -52,12 +51,12 @@ class AddStationFragment : Fragment() {
 
                     }
                     field("Language") {
-                        textfield() {
+                        textfield {
 
                         }
                     }
                     field("Country") {
-                        textfield() {
+                        textfield {
 
                         }
                     }

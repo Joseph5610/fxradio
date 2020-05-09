@@ -1,6 +1,6 @@
 package online.hudacek.broadcastsfx.fragments
 
-import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
+import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApi
@@ -31,7 +31,7 @@ class StatsFragment : Fragment() {
         title = "Statistics"
         stationsApi.getStats()
                 .subscribeOn(Schedulers.io())
-                .observeOn(JavaFxScheduler.platform())
+                .observeOnFx()
                 .subscribe({
 
                     val list = observableListOf(

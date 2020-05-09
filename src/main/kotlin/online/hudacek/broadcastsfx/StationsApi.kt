@@ -26,6 +26,9 @@ interface StationsApi {
     @GET("json/stations/topvote/50")
     fun getTopStations(): Observable<List<Station>>
 
+    @GET("json/stations/byuuid/{uuid}")
+    fun getStationInfo(@Path("uuid") uuid: String): Observable<List<Station>>
+
     @POST("json/add")
     fun add(@Body addBody: AddStationBody): Observable<AddStationResult>
 
