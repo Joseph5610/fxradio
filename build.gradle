@@ -50,6 +50,8 @@ dependencies {
     compile 'commons-io:commons-io:2.6'
     compile 'com.github.thomasnield:rxkotlinfx:2.2.2'
     compile 'io.reactivex.rxjava2:rxjavafx:2.2.2'
+    compile 'org.xerial:sqlite-jdbc:3.21.0.1'
+    compile 'org.nield:rxkotlin-jdbc:0.2.5'
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.7"
     runtime group: 'io.humble', name: 'humble-video-all', version: '0.3.0'
 }

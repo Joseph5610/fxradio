@@ -10,6 +10,7 @@ import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.Library
 import online.hudacek.broadcastsfx.views.LibraryView
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.Controller
 import tornadofx.observableListOf
 
@@ -24,8 +25,7 @@ class LibraryController : Controller() {
 
     val libraryItems by lazy {
         observableListOf(
-                Library("Top stations", LibraryType.TopStations)
-                //Library("History", LibraryType.History)
+                Library("Top stations", LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP)
         )
     }
 

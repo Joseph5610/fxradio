@@ -7,6 +7,7 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.layout.BorderStrokeStyle
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
@@ -97,8 +98,12 @@ class PlayerView : View() {
     }
 
     override val root = vbox {
-        prefHeight = 75.0
-        paddingTop = 20.0
+        paddingTop = 10.0
+        paddingBottom = 10.0
+
+        style {
+            borderColor += box(c("transparent"), c("transparent"), c("#E8E8E8"), c("transparent"))
+        }
 
         hbox(15) {
             alignment = Pos.CENTER_LEFT

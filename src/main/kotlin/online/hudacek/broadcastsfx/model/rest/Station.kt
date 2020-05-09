@@ -1,5 +1,9 @@
 package online.hudacek.broadcastsfx.model.rest
 
+import online.hudacek.broadcastsfx.db
+import online.hudacek.broadcastsfx.flatCollect
+import org.nield.rxkotlinjdbc.select
+
 /**
  * Stations json structure
  */
@@ -43,14 +47,41 @@ data class Station(
     override fun hashCode(): Int {
         return super.hashCode()
     }
+
+    companion object {
+        fun stub() = Station(
+                "0",
+                "0",
+                "Not playing",
+                "none", null,
+                "", null,
+                "", "", "", "", "", 0, "",
+                "", 0, 0, 0, "",
+                "", "", "", 0, 0)
+
+        fun favourites() = db.select("SELECT * FROM FAVOURITES")
+                .toObservable {
+                    Station(
+                            it.getString("changeuuid"),
+                            it.getString("stationuuid"),
+                            it.getString("name"),
+                            it.getString("url"),
+                            it.getString("url_resolved"),
+                            it.getString("homepage"),
+                            it.getString("favicon"),
+                            it.getString("tags"),
+                            it.getString("country"),
+                            it.getString("countrycode"),
+                            it.getString("state"),
+                            it.getString("language"),
+                            it.getInt("votes"),
+                            it.getString("lastchangetime"),
+                            it.getString("codec"),
+                            it.getInt("bitrate"),
+                            it.getInt("hls"), 0, "",
+                            "", "",
+                            "", 0, 0)
+                }.flatCollect()
+    }
 }
 
-val stubStation = Station(
-        "0",
-        "0",
-        "Not playing",
-        "none", null,
-        "", null,
-        "", "", "", "", "", 0, "",
-        "", 0, 0, 0, "",
-        "", "", "", 0, 0)

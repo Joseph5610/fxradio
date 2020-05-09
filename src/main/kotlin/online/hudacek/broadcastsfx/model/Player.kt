@@ -3,12 +3,11 @@ package online.hudacek.broadcastsfx.model
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.model.rest.Station
-import online.hudacek.broadcastsfx.model.rest.stubStation
 import tornadofx.ItemViewModel
 import tornadofx.onChange
 import tornadofx.property
 
-class Player(animate: Boolean = true, station: Station = stubStation,
+class Player(animate: Boolean = true, station: Station = Station.stub(),
              playerType: PlayerType) {
 
     var animate: Boolean by property(animate)

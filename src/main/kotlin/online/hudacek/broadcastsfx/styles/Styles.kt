@@ -18,6 +18,7 @@ class Styles : Stylesheet() {
         val tag by cssclass()
         val searchBoxLabel by cssclass()
         val primaryTextColor by cssclass()
+        val customListItem by cssclass()
 
         private const val primaryColor = "#0097CE"
         private const val hoverColor = "#0097EA"
@@ -31,8 +32,8 @@ class Styles : Stylesheet() {
         playerStationInfo {
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
-            backgroundColor += Paint.valueOf("#E9E9E9")
             borderRadius += box(3.px)
+            backgroundColor += Paint.valueOf("#E9E9E9")
             borderColor += box(c("#E8E8E8"))
             maxWidth = 260.px
             prefWidth = 220.px
@@ -44,6 +45,10 @@ class Styles : Stylesheet() {
             backgroundColor += Paint.valueOf("#E9E9E9")
             borderRadius += box(3.px)
             borderColor += box(c("#E8E8E8"))
+
+            and(hover) {
+                textFill = Color.BLACK
+            }
         }
 
         header {
@@ -64,6 +69,11 @@ class Styles : Stylesheet() {
             textFill = Color.GRAY
         }
 
+        splitPaneDivider {
+            padding = box(0.px, 0.01.em)
+            borderColor += box(c("transparent"))
+        }
+
         primaryButton {
             backgroundColor += c(primaryColor)
             textFill = Color.WHITESMOKE
@@ -82,6 +92,15 @@ class Styles : Stylesheet() {
             unsafe("-fx-background-color", raw("-fx-background"))
             unsafe("-fx-border-color", raw("transparent"))
             unsafe("-fx-faint-focus-color", raw("transparent"))
+        }
+
+        customListItem {
+            backgroundColor += Paint.valueOf("transparent")
+            and(selected) {
+                backgroundColor += Paint.valueOf("#E9E9E9")
+                borderColor += box(c("#E8E8E8"))
+                textFill = Color.BLACK
+            }
         }
 
 
@@ -128,6 +147,28 @@ class Styles : Stylesheet() {
                     unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
                     unsafe("-fx-background-radius", raw("2.0em"))
                 }
+            }
+        }
+
+        datagrid {
+            padding = box(0.px)
+        }
+
+        datagridCell {
+
+            backgroundColor += Paint.valueOf("transparent")
+            borderColor += box(c("transparent"))
+            backgroundRadius += box(5.px)
+            borderRadius += box(5.px)
+
+            and(hover) {
+                backgroundColor += Paint.valueOf("#E9E9E9")
+                borderColor += box(c("#E8E8E8"))
+            }
+
+            and(selected) {
+                backgroundColor += Paint.valueOf("#E9E9E9")
+                borderColor += box(c("#E8E8E8"))
             }
         }
     }

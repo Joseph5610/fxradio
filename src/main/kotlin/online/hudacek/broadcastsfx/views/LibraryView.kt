@@ -28,11 +28,24 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 24.0 + 4
+        prefHeight = items.size * 24.0 + 5
+
+        cellFormat {
+            padding = Insets(5.0, 10.0, 5.0, 15.0)
+            graphic = Glyph("FontAwesome", item.graphic)
+            text = item.name
+            addClass(Styles.customListItem)
+        }
         addClass(Styles.noBorder)
     }
 
     private val countriesListView = listview<Countries> {
+        cellFormat {
+            padding = Insets(5.0, 10.0, 5.0, 15.0)
+            text = "${item.name} (${item.stationcount})"
+            addClass(Styles.customListItem)
+        }
+
         addClass(Styles.noBorder)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
@@ -84,12 +97,14 @@ class LibraryView : View() {
     }
 
     override val root = vbox {
-        paddingAll = 10
-
         vbox {
             prefHeight = 20.0
         }
-        add(searchField)
+        vbox {
+            paddingAll = 10.0
+            add(searchField)
+        }
+
         vbox {
             prefHeight = 20.0
         }

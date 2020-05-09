@@ -61,7 +61,7 @@ class MainView : View() {
                 splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
-                    setDividerPositions(0.3)
+                    setDividerPositions(0.33)
                 }
             }
         }

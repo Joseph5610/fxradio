@@ -1,6 +1,8 @@
 package online.hudacek.broadcastsfx
 
+import io.reactivex.rxkotlin.subscribeBy
 import javafx.stage.Stage
+import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.MainView
 import tornadofx.*
@@ -13,10 +15,6 @@ import java.nio.file.Paths
 class Broadcasts : App(MainView::class, Styles::class) {
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.appConfigPath)
-
-    init {
-        //reloadViewsOnFocus()
-    }
 
     override fun start(stage: Stage) {
         with(stage) {

@@ -60,6 +60,7 @@ class StationsView : View() {
     private val contentContainer = vbox()
 
     init {
+
         controller.getTopStations()
         subscribe<LibraryRefreshEvent> { event ->
             with(event) {
@@ -91,6 +92,11 @@ class StationsView : View() {
     }
 
     override val root = vbox {
+
+        style {
+            backgroundColor += Color.WHITE
+        }
+
         vgrow = Priority.ALWAYS
         add(headerContainer)
         add(contentContainer)
@@ -149,7 +155,12 @@ class StationsView : View() {
                                     isPreserveRatio = true
                                 }
                             }
-                            label(it.name)
+                            label(it.name) {
+                                style {
+                                    textFill = Color.BLACK
+                                    fontSize = 14.px
+                                }
+                            }
                         }
                     }
                 }

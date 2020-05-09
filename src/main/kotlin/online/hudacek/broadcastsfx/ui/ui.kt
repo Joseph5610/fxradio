@@ -10,6 +10,7 @@ import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.VBox
+import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.ImageCache
@@ -49,6 +50,10 @@ internal fun VBox.tooltip(station: Station): VBox {
 
 internal fun EventTarget.smallLabel(text: String = ""): Label {
     return label(text) {
+        paddingLeft = 10.0
+        style {
+            fontWeight = FontWeight.BOLD
+        }
         addClass(Styles.grayLabel)
     }
 }
@@ -97,6 +102,8 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
  * In case of error Industry-Radio-Tower-icon static png file is used as station logo
  */
 internal fun ImageView.createImage(station: Station) {
+    this.image = Image("Industry-Radio-Tower-icon.png")
+
     if (ImageCache.isImageInCache(station)) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
