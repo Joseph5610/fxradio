@@ -1,7 +1,9 @@
 package online.hudacek.broadcastsfx.controllers
 
+import com.sun.javafx.PlatformUtil
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
@@ -10,6 +12,10 @@ import tornadofx.*
 class MenuBarController : Controller() {
 
     private val mediaPlayer: MediaPlayerWrapper by inject()
+
+    val shouldUseNativeMenuBar = app.config.boolean(Config.Keys.useNativeMenuBar, true)
+
+    val shouldUsePlatformMenuBar = PlatformUtil.isMac() && shouldUseNativeMenuBar
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 

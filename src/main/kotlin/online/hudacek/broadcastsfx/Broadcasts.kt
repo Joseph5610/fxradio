@@ -1,8 +1,6 @@
 package online.hudacek.broadcastsfx
 
-import io.reactivex.rxkotlin.subscribeBy
 import javafx.stage.Stage
-import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.MainView
 import tornadofx.*

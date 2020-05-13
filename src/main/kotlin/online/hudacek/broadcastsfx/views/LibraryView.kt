@@ -24,7 +24,7 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 24.0 + 16
+        prefHeight = items.size * 28.0
 
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)
@@ -81,7 +81,7 @@ class LibraryView : View() {
         }
 
         setOnMouseClicked {
-            controller.searchStation(text)
+            controller.searchStation(text.trim())
         }
     }
 

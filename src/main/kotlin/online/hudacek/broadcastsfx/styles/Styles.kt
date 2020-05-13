@@ -15,6 +15,7 @@ class Styles : Stylesheet() {
         val primaryButton by cssclass()
         val playerControls by cssclass()
         val header by cssclass()
+        val subheader by cssclass()
         val tag by cssclass()
         val searchBoxLabel by cssclass()
         val primaryTextColor by cssclass()
@@ -36,7 +37,7 @@ class Styles : Stylesheet() {
             backgroundColor += Paint.valueOf("#E9E9E9")
             borderColor += box(c("#E8E8E8"))
             maxWidth = 260.px
-            prefWidth = 220.px
+            prefWidth = 260.px
         }
 
         tag {
@@ -54,6 +55,11 @@ class Styles : Stylesheet() {
         header {
             wrapText = true
             fontSize = 20.px
+        }
+
+        subheader {
+            wrapText = true
+            fontSize = 16.px
         }
 
         playerControls {
@@ -96,10 +102,18 @@ class Styles : Stylesheet() {
 
         customListItem {
             backgroundColor += Paint.valueOf("transparent")
+            and(hover) {
+                backgroundColor += Paint.valueOf("#E9E9E9")
+                borderColor += box(c("#E8E8E8"))
+                textFill = Color.BLACK
+            }
             and(selected) {
                 backgroundColor += Paint.valueOf("#E9E9E9")
                 borderColor += box(c("#E8E8E8"))
                 textFill = Color.BLACK
+                graphicContainer {
+                    backgroundColor += Color.BLACK
+                }
             }
         }
 

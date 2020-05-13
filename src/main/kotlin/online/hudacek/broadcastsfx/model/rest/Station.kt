@@ -1,17 +1,10 @@
 package online.hudacek.broadcastsfx.model.rest
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
-import javafx.collections.ObservableList
-import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.db
-import online.hudacek.broadcastsfx.flatCollect
 import org.nield.rxkotlinjdbc.insert
 import org.nield.rxkotlinjdbc.select
-import tornadofx.*
 
 /**
  * Stations json structure
@@ -29,18 +22,18 @@ data class Station(
         val countrycode: String,
         val state: String,
         val language: String,
-        val votes: Int,
+        val votes: Int = 0,
         val lastchangetime: String,
         val codec: String,
-        val bitrate: Int,
-        val hls: Int,
-        val lastcheckok: Int,
+        val bitrate: Int = 0,
+        val hls: Int = 0,
+        val lastcheckok: Int = 0,
         val lastchecktime: String,
         val lastcheckoktime: String,
         val lastlocalchecktime: String,
         val clicktimestamp: String,
-        val clickcount: Int,
-        val clicktrend: Int
+        val clickcount: Int = 0,
+        val clicktrend: Int = 0
 ) {
 
     val isFavourite: Single<Int>
@@ -78,28 +71,38 @@ data class Station(
     override fun hashCode() = super.hashCode()
 
     companion object {
-        private val stationsApi: StationsApi
-            get() {
-                return StationsApi.client
-            }
-
         fun stub() = Station(
                 "0",
                 "0",
                 "Not playing",
                 "none", null,
                 "", null,
-                "", "", "", "", "", 0, "",
+                "", "", "",
+                "", "", 0, "",
                 "", 0, 0, 0, "",
-                "", "", "", 0, 0)
+                "", "", "")
 
         //get data about station from db and return latest info from API about it
-        fun favourites(): Observable<List<Station>> = db
+        fun favourites(): Observable<Station> = db
                 .select("SELECT * FROM FAVOURITES")
-                .toObservable { it.getString("stationuuid") }
-                .flatMap {
-                    stationsApi.getStationInfo(it)
+                .toObservable {
+                    Station("0",
+                            it.getString("stationuuid"),
+                            it.getString("name"),
+                            it.getString("url_resolved"),
+                            it.getString("url_resolved"),
+                            it.getString("homepage"),
+                            it.getString("favicon"),
+                            it.getString("tags"),
+                            it.getString("country"),
+                            it.getString("countrycode"),
+                            it.getString("state"),
+                            it.getString("language"),
+                            0, "",
+                            "", 0, 0, 0, "",
+                            "", "", "")
                 }
+
     }
 }
 

@@ -6,6 +6,7 @@ import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.geometry.Insets
 import javafx.scene.Node
+import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
@@ -15,6 +16,7 @@ import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.ImageCache
+import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
@@ -79,6 +81,18 @@ internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
     visibleWhen(booleanBinding(station) {
         value != null && value.isValidStation()
     })
+}
+
+internal fun CheckMenuItem.shouldBeSelected(playerType: Property<PlayerType>) {
+    selectedProperty().booleanBinding(playerType) {
+        playerType.value == PlayerType.Native
+    }
+}
+
+internal fun CheckMenuItem.select(booleanProperty: Property<Boolean>) {
+    selectedProperty().booleanBinding(booleanProperty) {
+        it == true
+    }
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {

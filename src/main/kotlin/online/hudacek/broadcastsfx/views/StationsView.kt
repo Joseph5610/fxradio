@@ -1,24 +1,24 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.collections.ObservableList
-import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
+import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.controllers.StationsController
-import online.hudacek.broadcastsfx.events.*
+import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
+import online.hudacek.broadcastsfx.events.LibrarySearchChanged
+import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
-import online.hudacek.broadcastsfx.model.rest.Station
-import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.ui.tooltip
+import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.createImage
 import online.hudacek.broadcastsfx.ui.glyph
+import online.hudacek.broadcastsfx.ui.tooltip
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -30,10 +30,11 @@ class StationsView : View() {
 
     private val controller: StationsController by inject()
     private val playerModel: PlayerModel by inject()
-    private val stationHistory: StationHistoryModel by inject()
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
+
+    var contentHeaderLabel: Label by singleAssign()
 
     private val header = label {
         addClass(Styles.header)
@@ -52,6 +53,24 @@ class StationsView : View() {
     }
 
     private val contentContainer = vbox()
+
+    private val contentHeader = flowpane {
+        paddingBottom = 0.0
+        maxHeight = 10.0
+        style {
+            //opacity = 0.8
+            backgroundColor += Color.WHITESMOKE
+            //borderColor += box(Color.BLACK)
+        }
+
+        contentHeaderLabel = label {
+            paddingTop = 8.0
+            paddingBottom = 8.0
+            paddingLeft = 15.0
+            addClass(Styles.subheader)
+        }
+    }
+
 
     init {
         controller.getTopStations()
@@ -74,6 +93,7 @@ class StationsView : View() {
                 if (searchString.length > 2)
                     controller.searchStations(searchString)
                 else {
+                    contentHeader.hide()
                     headerContainer.show()
                     header.text = "Searching the library"
                     header.graphic = searchGlyph
@@ -92,14 +112,12 @@ class StationsView : View() {
 
         vgrow = Priority.ALWAYS
         add(headerContainer)
+        add(contentHeader)
         add(contentContainer)
     }
 
-    private fun getHistory() {
-        showDataGrid(stationHistory.stations.value)
-    }
-
     fun showNoResults(queryString: String) {
+        contentHeader.hide()
         headerContainer.show()
         contentContainer.hide()
         subHeader.text = "Try refining the search query"
@@ -108,6 +126,7 @@ class StationsView : View() {
     }
 
     fun showError() {
+        contentHeader.hide()
         headerContainer.show()
         contentContainer.hide()
         header.graphic = errorGlyph
@@ -117,10 +136,10 @@ class StationsView : View() {
 
     fun showDataGrid(observableList: ObservableList<Station>) {
         headerContainer.hide()
+        contentHeader.show()
         contentContainer.show()
         contentContainer.replaceChildren(
                 datagrid(observableList) {
-
                     fitToParentHeight()
                     bindSelected(playerModel.station)
 

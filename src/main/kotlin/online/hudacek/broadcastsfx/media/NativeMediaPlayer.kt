@@ -13,6 +13,7 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
+
 internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     : MediaPlayer {
 
@@ -20,6 +21,8 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
+
+    private var streamTitle = ""
 
     init {
         logger.debug { "Native player started" }
@@ -41,7 +44,10 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                 var audioDecoder: Decoder? = null
 
                 for (i in 0 until numStreams) {
-                    val decoder = demuxer.getStream(i).decoder
+                    val demuxerStream = demuxer.getStream(i)
+
+                    val decoder = demuxerStream.decoder
+
                     if (decoder != null && decoder.codecType == MediaDescriptor.Type.MEDIA_AUDIO) {
                         audioStreamId = i
                         audioDecoder = decoder
@@ -51,7 +57,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                 if (audioStreamId == -1) throw RuntimeException("could not find audio stream in container")
 
                 with(audioDecoder!!) {
-                    audioDecoder.open()
+                    open()
                     val samples = MediaAudio.make(
                             this.frameSize,
                             this.sampleRate,
@@ -64,6 +70,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                             samples)
                     audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
                     logger.debug { "Stream started" }
+
                     changeVolume(mediaPlayer.volume)
                     var rawAudio: ByteBuffer? = null
 

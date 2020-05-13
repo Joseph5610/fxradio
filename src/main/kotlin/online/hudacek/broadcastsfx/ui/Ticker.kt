@@ -32,7 +32,6 @@ open class TickerEntry<T : Node>(
 class TickerView : View() {
 
     private val marqueeView: MarqueeView by inject()
-    private var tickerEntry = TickerEntry<Node>(content = createText(""), reschedule = true)
 
     override val root = hbox {
         prefHeight = 15.0
@@ -41,11 +40,8 @@ class TickerView : View() {
     }
 
     fun updateText(text: String) {
-        marqueeView.stop()
-        marqueeView.dequeueTickEntry(tickerEntry)
-        tickerEntry = TickerEntry(content = createText(text), reschedule = true)
-        marqueeView.enqueueTickEntry(tickerEntry)
-        marqueeView.play()
+        marqueeView.clear()
+        marqueeView.enqueueTickEntry(TickerEntry(content = createText(text), reschedule = true))
     }
 
     private fun createText(content: String): Text {
@@ -54,17 +50,9 @@ class TickerView : View() {
         return text
     }
 
-    override fun onDock() {
-        marqueeView.enqueueTickEntry(tickerEntry)
-    }
+    fun stop() = marqueeView.stop()
 
-    fun stop() {
-        marqueeView.stop()
-    }
-
-    fun play() {
-        marqueeView.play()
-    }
+    fun play() = marqueeView.play()
 }
 
 class MarqueeView : View() {
@@ -101,11 +89,6 @@ class MarqueeView : View() {
 
     fun enqueueTickEntry(entry: TickerEntry<Node>) {
         queuedTicks.add(entry)
-    }
-
-    fun dequeueTickEntry(entry: TickerEntry<Node>) {
-        entry.content.removeFromParent()
-        entry.reschedule = false
     }
 
     //Fire up the animation process for the ticker
@@ -178,6 +161,13 @@ class MarqueeView : View() {
         timeline.keyFrames.add(updateFrame)
         timeline.cycleCount = Animation.INDEFINITE
         timeline.play()
+    }
+
+
+    fun clear() {
+        activeTicks.clear()
+        queuedTicks.clear()
+        root.clear()
     }
 
     fun stop() = timeline.stop()

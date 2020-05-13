@@ -25,8 +25,9 @@ class StationsController : Controller() {
                 .observeOnFx()
                 .subscribeOn(Schedulers.io())
                 .subscribe {
-                    list.add(it.last())
+                    list.add(it)
                 }
+        stationsView.contentHeaderLabel.text = "Favourites"
         stationsView.showDataGrid(list)
     }
 
@@ -35,6 +36,7 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
+                stationsView.contentHeaderLabel.text = country
                 stationsView.showDataGrid(result.asObservable())
             }, {
                 stationsView.showError()
@@ -48,6 +50,7 @@ class StationsController : Controller() {
                 if (result.isEmpty()) {
                     stationsView.showNoResults(name)
                 } else {
+                    stationsView.contentHeaderLabel.text = "Search results for \"$name\""
                     stationsView.showDataGrid(result.asObservable())
                 }
             }, {
@@ -59,6 +62,7 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
+                stationsView.contentHeaderLabel.text = "Top Stations"
                 stationsView.showDataGrid(result.asObservable())
             }, {
                 stationsView.showError()

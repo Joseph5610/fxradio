@@ -2,17 +2,24 @@ package online.hudacek.broadcastsfx.views
 
 import com.sun.javafx.PlatformUtil
 import de.codecentric.centerdevice.MenuToolkit
-import javafx.scene.control.*
+import de.codecentric.centerdevice.dialogs.about.AboutStageBuilder
+import javafx.scene.control.CheckMenuItem
+import javafx.scene.control.Menu
+import javafx.scene.control.MenuItem
+import javafx.scene.control.SeparatorMenuItem
+import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.broadcastsfx.*
+import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.Broadcasts
+import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.PlayerModel
+import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.ui.createImage
 import online.hudacek.broadcastsfx.ui.set
 import online.hudacek.broadcastsfx.ui.shouldBeDisabled
@@ -20,6 +27,7 @@ import online.hudacek.broadcastsfx.ui.shouldBeVisible
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import java.util.*
+
 
 class MenuBarView : View() {
 
@@ -40,7 +48,7 @@ class MenuBarView : View() {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
-                if (!PlatformUtil.isMac() || !shouldUseNativeMenuBar) {
+                if (!PlatformUtil.isMac() || !controller.shouldUseNativeMenuBar) {
                     graphic = imageview {
                         createImage(it)
                         fitHeight = 15.0
@@ -66,13 +74,7 @@ class MenuBarView : View() {
         item(messages["menu.station.favourite"], keyFavourites) {
             shouldBeDisabled(player.station)
             action {
-                player.station.value.addFavourite().subscribe { id ->
-                    println("new id: $id")
-                    notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
-                }
-
-                player.station.value.isFavourite.subscribe { id ->
-                    println("counnt: $id")
+                player.station.value.addFavourite().subscribe { _ ->
                     notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
                 }
             }
@@ -110,12 +112,12 @@ class MenuBarView : View() {
         playerCheck = checkmenuitem(messages["menu.player.switch"]) {
             isSelected = player.playerType.value == PlayerType.Native
             action {
+                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                 if (player.playerType.value == PlayerType.Native) {
                     player.playerType.value = PlayerType.VLC
                 } else {
                     player.playerType.value = PlayerType.Native
                 }
-                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                 player.commit()
             }
         }
@@ -135,9 +137,8 @@ class MenuBarView : View() {
         }
     }
 
-    private val shouldUseNativeMenuBar = app.config.boolean(Config.Keys.useNativeMenuBar, true)
 
-    override val root = if (PlatformUtil.isMac() && shouldUseNativeMenuBar) {
+    override val root = if (controller.shouldUsePlatformMenuBar) {
         platformMenuBar()
     } else {
         defaultMenuBar()
@@ -164,8 +165,17 @@ class MenuBarView : View() {
 
         useSystemMenuBarProperty().set(true)
 
+        val aboutStageBuilder = AboutStageBuilder
+                .start("")
+                .withAppName(About.appName + " - " + About.appDesc)
+                .withCloseOnFocusLoss()
+                .withVersionString("Version ${Broadcasts.getVersion()}")
+                .withCopyright("Copyright \u00A9 " + Calendar
+                        .getInstance()[Calendar.YEAR] + " " + About.author)
+                .withImage(Image(About.appLogo))
+
         val appMenu = Menu(About.appName).apply {
-            addAboutMenu()
+            addAboutMenu(tk.createAboutMenuItem(About.appName, aboutStageBuilder.build()))
             separator()
             items.addAll(
                     tk.createHideMenuItem(About.appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
@@ -188,10 +198,15 @@ class MenuBarView : View() {
         tk.setMenuBar(this)
     }
 
-    private fun Menu.addAboutMenu() {
-        item(messages["menu.app.about"]).action {
-            controller.openAbout()
+    private fun Menu.addAboutMenu(aboutMenuItem: MenuItem? = null) {
+        if (aboutMenuItem != null) {
+            items.add(aboutMenuItem)
+        } else {
+            item(messages["menu.app.about"]).action {
+                controller.openAbout()
+            }
         }
+
         separator()
         item(messages["menu.app.server"]).action {
             controller.openServerSelect()

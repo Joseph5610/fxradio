@@ -43,9 +43,7 @@ object ImageCache {
 
     fun isImageInCache(station: Station): Boolean {
         val imagePath = cacheBasePath.resolve(station.stationuuid)
-        return Files.exists(imagePath).apply {
-            logger.debug { "is file in cache: $this" }
-        }
+        return Files.exists(imagePath)
     }
 
     fun getImageFromCache(station: Station): Image {

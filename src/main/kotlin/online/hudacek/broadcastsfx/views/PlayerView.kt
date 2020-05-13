@@ -7,16 +7,13 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import javafx.scene.layout.BorderStrokeStyle
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.PlayerController
-import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
-import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.events.*
 import online.hudacek.broadcastsfx.model.Player
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -81,6 +78,10 @@ class PlayerView : View() {
             togglePlayerStatus(event.playingStatus)
         }
 
+        subscribe<MediaMetaChanged> { event ->
+            updateMetaData(event.mediaMeta)
+        }
+
         player.station.onChange {
             it?.updateView()
         }
@@ -108,7 +109,10 @@ class PlayerView : View() {
         hbox(15) {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
+
+            //Play/Pause buttons
             add(playerControls)
+
             region {
                 hgrow = Priority.ALWAYS
             }
@@ -117,16 +121,20 @@ class PlayerView : View() {
             hbox(5) {
                 addClass(Styles.playerStationInfo)
 
+                //Radio logo
                 vbox(alignment = Pos.CENTER_LEFT) {
                     radioLogo = imageview(About.appIcon) {
                         effect = DropShadow(20.0, Color.WHITE)
                         fitWidth = 30.0
-                        fitHeight = 30.0
+                        minHeight = 30.0
+                        maxHeight = 30.0
                         isPreserveRatio = true
                     }
                 }
 
                 separator(Orientation.VERTICAL)
+
+                //Radio name and label
                 vbox(alignment = Pos.CENTER) {
                     fitToParentWidth()
                     radioNameContainer = vbox(alignment = Pos.CENTER) {
@@ -139,9 +147,12 @@ class PlayerView : View() {
                     add(nowStreamingLabel)
                 }
             }
+
             region {
                 hgrow = Priority.ALWAYS
             }
+
+            //Volume controls
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
@@ -159,6 +170,19 @@ class PlayerView : View() {
         } else {
             playImage.image = Image(stopIcon)
             nowStreamingLabel.text = messages["nowStreaming"]
+        }
+    }
+
+    private fun updateMetaData(metaData: MediaMeta) {
+        //Why would somebody put newlines in now playing string is beyond me ..
+        val nowPlaying = metaData.nowPlaying
+                .replace("\r", "")
+                .replace("\n", "")
+        if (player.animate.value) radioNameTicker.updateText(nowPlaying)
+        else radioNameStaticText.text = nowPlaying
+
+        if (metaData.title.isNotEmpty()) {
+            nowStreamingLabel.text = metaData.title
         }
     }
 

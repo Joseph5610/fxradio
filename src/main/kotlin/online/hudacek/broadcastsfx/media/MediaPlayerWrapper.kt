@@ -2,9 +2,7 @@ package online.hudacek.broadcastsfx.media
 
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
-import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
-import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.events.*
 import online.hudacek.broadcastsfx.model.PlayerModel
 import tornadofx.Component
 import tornadofx.ScopedInstance
@@ -97,6 +95,8 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             "Stream can't be played"
         }
     }
+
+    fun mediaMetaChanged(mediaMeta: MediaMeta) = fire(MediaMetaChanged(mediaMeta))
 
     fun togglePlaying() {
         if (playingStatus == PlayingStatus.Playing) {
