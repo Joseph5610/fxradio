@@ -78,24 +78,10 @@ class PlayerView : View() {
             togglePlayerStatus(event.playingStatus)
         }
 
-        subscribe<MediaMetaChanged> { event ->
-            updateMetaData(event.mediaMeta)
-        }
+        subscribe<MediaMetaChanged> { event -> event.let(::updateMetaData) }
 
-        player.station.onChange {
-            it?.updateView()
-        }
-
-        player.animate.onChange {
-            if (it == true) {
-                radioNameTicker.play()
-                radioNameContainer.replaceChildren(radioNameTicker)
-            } else {
-                radioNameTicker.stop()
-                radioNameContainer.replaceChildren(radioNameStaticText)
-            }
-            player.station.value.updateView()
-        }
+        player.station.onChange { it?.let(::updateView) }
+        player.animate.onChange { it?.let(::updateRadioName) }
     }
 
     override val root = vbox {
@@ -173,25 +159,41 @@ class PlayerView : View() {
         }
     }
 
-    private fun updateMetaData(metaData: MediaMeta) {
+    private fun updateMetaData(event: MediaMetaChanged) {
         //Why would somebody put newlines in now playing string is beyond me ..
-        val nowPlaying = metaData.nowPlaying
+        val nowPlaying = event.mediaMeta.nowPlaying
                 .replace("\r", "")
                 .replace("\n", "")
         if (player.animate.value) radioNameTicker.updateText(nowPlaying)
         else radioNameStaticText.text = nowPlaying
 
-        if (metaData.title.isNotEmpty()) {
-            nowStreamingLabel.text = metaData.title
+        if (event.mediaMeta.title.isNotEmpty()) {
+            nowStreamingLabel.text = event.mediaMeta.title
         }
     }
 
-    private fun Station.updateView() {
-        if (this.isValidStation()) {
-            togglePlayerStatus(controller.mediaPlayer.playingStatus)
-            if (player.animate.value) radioNameTicker.updateText(name)
-            else radioNameStaticText.text = name
-            radioLogo.createImage(this)
+    /**
+     * Show/Hide ticker with radio name / Now playing details
+     */
+    private fun updateRadioName(shouldAnimate: Boolean) {
+        if (shouldAnimate) {
+            radioNameTicker.play()
+            radioNameContainer.replaceChildren(radioNameTicker)
+        } else {
+            radioNameTicker.stop()
+            radioNameContainer.replaceChildren(radioNameStaticText)
+        }
+        updateView(player.station.value)
+    }
+
+    private fun updateView(station: Station) {
+        with(station) {
+            if (this.isValidStation()) {
+                togglePlayerStatus(controller.mediaPlayer.playingStatus)
+                if (player.animate.value) radioNameTicker.updateText(name)
+                else radioNameStaticText.text = name
+                radioLogo.createImage(this)
+            }
         }
     }
 

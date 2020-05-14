@@ -1,6 +1,5 @@
 package online.hudacek.broadcastsfx.media
 
-import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.MediaMeta
 import uk.co.caprica.vlcj.log.LogLevel
@@ -36,7 +35,6 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                     mediaPlayer.mediaMetaChanged(
                             MediaMeta(it[Meta.TITLE], it[Meta.GENRE], it[Meta.NOW_PLAYING]))
                 }
-                println(it.asMetaData())
             }
         }
     }
@@ -56,7 +54,6 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                 logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
             }
         }
-
         mediaPlayerComponent.mediaPlayer().media().play(url)
     }
 
@@ -75,9 +72,7 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         logger.debug { "ending current stream if any with error status $result" }
 
         if (result == 1) {
-            Platform.runLater {
-                mediaPlayer.handleError(RuntimeException("See app.log for more details."))
-            }
+            mediaPlayer.handleError(RuntimeException("See app.log for more details."))
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,

@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.media
 
+import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.*
@@ -81,18 +82,22 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     private fun play(url: String?) {
         logger.debug { "play() called" }
         url?.let {
-            mediaPlayer.cancelPlaying()
-            mediaPlayer.play(url)
+            mediaPlayer.apply {
+                cancelPlaying()
+                play(url)
+            }
         }
     }
 
     fun release() = mediaPlayer.releasePlayer()
 
     fun handleError(t: Throwable) {
-        fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-        tornadofx.error("Stream can't be played", t.localizedMessage)
-        logger.error(t) {
-            "Stream can't be played"
+        Platform.runLater {
+            fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+            tornadofx.error("Stream can't be played", t.localizedMessage)
+            logger.error(t) {
+                "Stream can't be played"
+            }
         }
     }
 

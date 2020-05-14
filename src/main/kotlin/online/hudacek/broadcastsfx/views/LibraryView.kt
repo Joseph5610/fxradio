@@ -4,6 +4,7 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
+import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.ui.smallLabel
@@ -24,12 +25,18 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 28.0
+        prefHeight = items.size * 30.0 + 5
 
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)
             graphic = glyph("FontAwesome", item.graphic)
-            text = item.name
+            text = when (item.type) {
+                LibraryType.Favourites -> messages["favourites"]
+                LibraryType.Search -> ""
+                LibraryType.History -> messages["history"]
+                LibraryType.Country -> ""
+                LibraryType.TopStations -> messages["topStations"]
+            }
             addClass(Styles.customListItem)
         }
         addClass(Styles.noBorder)

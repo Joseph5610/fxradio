@@ -3,7 +3,6 @@ package online.hudacek.broadcastsfx.media
 import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
 import io.humble.video.javaxsound.MediaAudioConverterFactory
-import javafx.application.Platform
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import java.nio.ByteBuffer
@@ -13,7 +12,6 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-
 internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     : MediaPlayer {
 
@@ -22,16 +20,12 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
 
-    private var streamTitle = ""
-
     init {
         logger.debug { "Native player started" }
     }
 
     private val handler = CoroutineExceptionHandler { _, exception ->
-        Platform.runLater {
-            mediaPlayer.handleError(exception)
-        }
+        mediaPlayer.handleError(exception)
     }
 
     override fun play(url: String) {
@@ -55,8 +49,9 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                     }
                 }
                 if (audioStreamId == -1) throw RuntimeException("could not find audio stream in container")
+                if (audioDecoder == null) throw RuntimeException("could not find audio decoder")
 
-                with(audioDecoder!!) {
+                audioDecoder.apply {
                     open()
                     val samples = MediaAudio.make(
                             this.frameSize,
@@ -100,20 +95,22 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                     } while (samples.isComplete)
                 }
             } finally {
-                demuxer?.close()
+                demuxer.close()
                 audioFrame?.dispose()
             }
         }
     }
 
+
     override fun changeVolume(volume: Double): Boolean {
         return try {
-            val frameCls = AudioFrame::class
-            val mLine = frameCls.memberProperties.filter { it.name == "mLine" }[0]
-            mLine.isAccessible = true
-            val lineValue = mLine.getter.call(audioFrame) as SourceDataLine
-            val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
-            gainControl.value = volume.toFloat()
+            AudioFrame::class.memberProperties
+                    .filter { it.name == "mLine" }[0].apply {
+                isAccessible = true
+                val lineValue = getter.call(audioFrame) as SourceDataLine
+                val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
+                gainControl.value = volume.toFloat()
+            }
             true
         } catch (e: Exception) {
             false

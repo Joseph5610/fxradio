@@ -25,9 +25,7 @@ class PlayerModel : ItemViewModel<Player>() {
 
     init {
         station.onChange {
-            if (it != null && it.isValidStation()) {
-                stationHistory.add(it)
-            }
+            it?.let(stationHistory::add)
         }
     }
 

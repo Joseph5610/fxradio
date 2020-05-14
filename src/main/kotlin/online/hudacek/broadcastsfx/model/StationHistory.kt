@@ -12,6 +12,7 @@ class StationHistoryModel : ItemViewModel<StationHistory>() {
     val stations = bind(StationHistory::stations)
 
     fun add(station: Station) {
+        if (!station.isValidStation()) return
         with(stations.value) {
             if (size > 10) {
                 removeAt(0)

@@ -2,8 +2,11 @@ package online.hudacek.broadcastsfx.controllers
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.events.LibraryType
+import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.rest.SearchBody
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -13,6 +16,7 @@ import tornadofx.*
 class StationsController : Controller() {
 
     private val stationsView: StationsView by inject()
+    private val stationsHistory: StationHistoryModel by inject()
 
     private val stationsApi: StationsApi
         get() {
@@ -20,15 +24,19 @@ class StationsController : Controller() {
         }
 
     fun getFavourites() {
-        val list = observableListOf<Station>()
         Station.favourites()
                 .observeOnFx()
                 .subscribeOn(Schedulers.io())
-                .subscribe {
-                    list.add(it)
-                }
-        stationsView.contentHeaderLabel.text = "Favourites"
-        stationsView.showDataGrid(list)
+                .subscribe({
+                    if (it.isEmpty()) {
+                        stationsView.showNoResults()
+                    } else {
+                        stationsView.showDataGrid(it)
+                    }
+                }, {
+                    stationsView.showError(it)
+                })
+        stationsView.setContentName(LibraryType.Favourites)
     }
 
     fun getStationsByCountry(country: String): Disposable = stationsApi
@@ -36,10 +44,10 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
-                stationsView.contentHeaderLabel.text = country
-                stationsView.showDataGrid(result.asObservable())
+                stationsView.setContentName(LibraryType.Country, country)
+                stationsView.showDataGrid(result)
             }, {
-                stationsView.showError()
+                stationsView.showError(it)
             })
 
     fun searchStations(name: String): Disposable = stationsApi
@@ -50,21 +58,31 @@ class StationsController : Controller() {
                 if (result.isEmpty()) {
                     stationsView.showNoResults(name)
                 } else {
-                    stationsView.contentHeaderLabel.text = "Search results for \"$name\""
-                    stationsView.showDataGrid(result.asObservable())
+                    stationsView.setContentName(LibraryType.Search, name)
+                    stationsView.showDataGrid(result)
                 }
             }, {
-                stationsView.showError()
+                stationsView.showError(it)
             })
+
+    fun getHistory() {
+        val historyList = stationsHistory.stations.value.distinct()
+        if (historyList.isEmpty()) {
+            stationsView.showNoResults()
+        } else {
+            stationsView.showDataGrid(historyList)
+        }
+        stationsView.setContentName(LibraryType.History)
+    }
 
     fun getTopStations(): Disposable = stationsApi
             .getTopStations()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
-                stationsView.contentHeaderLabel.text = "Top Stations"
-                stationsView.showDataGrid(result.asObservable())
+                stationsView.setContentName(LibraryType.TopStations)
+                stationsView.showDataGrid(result)
             }, {
-                stationsView.showError()
+                stationsView.showError(it)
             })
 }

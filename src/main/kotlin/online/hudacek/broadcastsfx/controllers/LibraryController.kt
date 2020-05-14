@@ -25,8 +25,9 @@ class LibraryController : Controller() {
 
     val libraryItems by lazy {
         observableListOf(
-                Library("Top stations", LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP),
-                Library("Favourites", LibraryType.Favourites, FontAwesome.Glyph.STAR)
+                Library(LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP),
+                Library(LibraryType.Favourites, FontAwesome.Glyph.STAR),
+                Library(LibraryType.History, FontAwesome.Glyph.HISTORY)
         )
     }
 

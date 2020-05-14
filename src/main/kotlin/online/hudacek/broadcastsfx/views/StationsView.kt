@@ -1,12 +1,12 @@
 package online.hudacek.broadcastsfx.views
 
-import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
 import online.hudacek.broadcastsfx.events.LibrarySearchChanged
@@ -30,11 +30,14 @@ class StationsView : View() {
 
     private val controller: StationsController by inject()
     private val playerModel: PlayerModel by inject()
+    private val logger = KotlinLogging.logger {}
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
 
-    var contentHeaderLabel: Label by singleAssign()
+    private var contentName: Label by singleAssign()
+
+    private val stationsData = observableListOf(Station.stub())
 
     private val header = label {
         addClass(Styles.header)
@@ -52,25 +55,68 @@ class StationsView : View() {
         add(subHeader)
     }
 
-    private val contentContainer = vbox()
+    private val dataGrid = datagrid(stationsData) {
+        fitToParentHeight()
 
-    private val contentHeader = flowpane {
+        selectionModel.selectedItemProperty().onChange {
+            //Update model on selected item
+            it?.let {
+                playerModel.station.value = it
+            }
+        }
+
+        cellCache {
+            paddingAll = 5
+            vbox(alignment = Pos.CENTER) {
+                popover {
+                    vbox {
+                        add(StationInfoFragment(it, showList = false))
+                    }
+                }
+
+                onRightClick {
+                    showPopover()
+                }
+
+                tooltip(it)
+                paddingAll = 5
+                vbox(alignment = Pos.CENTER) {
+                    prefHeight = 120.0
+                    paddingAll = 5
+                    imageview {
+                        createImage(it)
+                        effect = DropShadow(15.0, Color.LIGHTGRAY)
+                        isCache = true
+                        cacheHint = CacheHint.SPEED
+                        fitHeight = 100.0
+                        fitWidth = 100.0
+                        isPreserveRatio = true
+                    }
+                }
+                label(it.name) {
+                    style {
+                        textFill = Color.BLACK
+                        fontSize = 14.px
+                    }
+                }
+            }
+        }
+    }
+
+    private val contentTop = flowpane {
         paddingBottom = 0.0
         maxHeight = 10.0
         style {
-            //opacity = 0.8
             backgroundColor += Color.WHITESMOKE
-            //borderColor += box(Color.BLACK)
         }
 
-        contentHeaderLabel = label {
+        contentName = label {
             paddingTop = 8.0
             paddingBottom = 8.0
             paddingLeft = 15.0
             addClass(Styles.subheader)
         }
     }
-
 
     init {
         controller.getTopStations()
@@ -81,6 +127,7 @@ class StationsView : View() {
                         params?.let { controller.getStationsByCountry(it) }
                     }
                     LibraryType.Favourites -> controller.getFavourites()
+                    LibraryType.History -> controller.getHistory()
                     else -> {
                         controller.getTopStations()
                     }
@@ -93,12 +140,12 @@ class StationsView : View() {
                 if (searchString.length > 2)
                     controller.searchStations(searchString)
                 else {
-                    contentHeader.hide()
+                    contentTop.hide()
                     headerContainer.show()
-                    header.text = "Searching the library"
+                    header.text = messages["searchingLibrary"]
                     header.graphic = searchGlyph
-                    subHeader.text = "Enter at least 3 characters to start searching"
-                    contentContainer.hide()
+                    subHeader.text = messages["searchingLibraryDesc"]
+                    dataGrid.hide()
                 }
             }
         }
@@ -112,74 +159,53 @@ class StationsView : View() {
 
         vgrow = Priority.ALWAYS
         add(headerContainer)
-        add(contentHeader)
-        add(contentContainer)
+        add(contentTop)
+        add(dataGrid)
     }
 
-    fun showNoResults(queryString: String) {
-        contentHeader.hide()
+    fun showNoResults(queryString: String? = null) {
+        contentTop.hide()
         headerContainer.show()
-        contentContainer.hide()
-        subHeader.text = "Try refining the search query"
+        dataGrid.hide()
+        if (queryString != null) {
+            subHeader.text = messages["noResultsDesc"]
+        }
         header.graphic = null
-        header.text = "No stations found for \"$queryString\""
-    }
-
-    fun showError() {
-        contentHeader.hide()
-        headerContainer.show()
-        contentContainer.hide()
-        header.graphic = errorGlyph
-        header.text = "Connection error. Please try again"
-        subHeader.text = "Please check if your internet connection is working."
-    }
-
-    fun showDataGrid(observableList: ObservableList<Station>) {
-        headerContainer.hide()
-        contentHeader.show()
-        contentContainer.show()
-        contentContainer.replaceChildren(
-                datagrid(observableList) {
-                    fitToParentHeight()
-                    bindSelected(playerModel.station)
-
-                    cellCache {
-                        paddingAll = 5
-                        vbox(alignment = Pos.CENTER) {
-                            popover {
-                                vbox {
-                                    add(StationInfoFragment(it, showList = false))
-                                }
-                            }
-
-                            onRightClick {
-                                showPopover()
-                            }
-
-                            tooltip(it)
-                            paddingAll = 5
-                            vbox(alignment = Pos.CENTER) {
-                                prefHeight = 120.0
-                                paddingAll = 5
-                                imageview {
-                                    createImage(it)
-                                    effect = DropShadow(15.0, Color.LIGHTGRAY)
-                                    isCache = true
-                                    cacheHint = CacheHint.SPEED
-                                    fitHeight = 100.0
-                                    fitWidth = 100.0
-                                    isPreserveRatio = true
-                                }
-                            }
-                            label(it.name) {
-                                style {
-                                    textFill = Color.BLACK
-                                    fontSize = 14.px
-                                }
-                            }
-                        }
-                    }
+        header.text =
+                if (queryString != null)
+                    "${messages["noResultsFor"]} \"$queryString\""
+                else {
+                    messages["noResults"]
                 }
-        )
+    }
+
+    fun showError(throwable: Throwable) {
+        logger.error(throwable) { "Error showing station library" }
+        contentTop.hide()
+        headerContainer.show()
+        dataGrid.hide()
+        header.graphic = errorGlyph
+        header.text = messages["connectionError"]
+        subHeader.text = messages["connectionErrorDesc"]
+    }
+
+    fun showDataGrid(stations: List<Station>) {
+        headerContainer.hide()
+        contentTop.show()
+        dataGrid.show()
+        dataGrid.selectionModel.clearSelection()
+        stationsData.setAll(stations)
+    }
+
+    fun setContentName(libraryType: LibraryType, value: String? = null) {
+        contentName.apply {
+            text = when (libraryType) {
+                LibraryType.Favourites -> messages["favourites"]
+                LibraryType.History -> messages["history"]
+                LibraryType.TopStations -> messages["topStations"]
+                LibraryType.Search -> messages["searchResultsFor"] + " \"$value\""
+                else -> value
+            }
+        }
     }
 }

@@ -74,8 +74,12 @@ class MenuBarView : View() {
         item(messages["menu.station.favourite"], keyFavourites) {
             shouldBeDisabled(player.station)
             action {
-                player.station.value.addFavourite().subscribe { _ ->
-                    notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
+                if (player.station.value.isFavourite) {
+                    notification[FontAwesome.Glyph.WARNING] = messages["menu.station.favourite.error"]
+                } else {
+                    player.station.value.addFavourite().subscribe { _ ->
+                        notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
+                    }
                 }
             }
         }

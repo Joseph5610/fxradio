@@ -10,13 +10,16 @@ class StubMediaPlayer : MediaPlayer {
     }
 
     override fun play(url: String) {
+        logger.debug { "stub play()" }
     }
 
     override fun changeVolume(volume: Double) = false
 
     override fun cancelPlaying() {
+        logger.debug { "stub cancelPlaying()" }
     }
 
     override fun releasePlayer() {
+        logger.debug { "stub releasePlayer()" }
     }
 }
