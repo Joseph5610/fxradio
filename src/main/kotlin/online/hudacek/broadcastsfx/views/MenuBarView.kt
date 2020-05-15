@@ -188,7 +188,7 @@ class MenuBarView : View() {
                 .start("")
                 .withAppName(About.appName + " - " + About.appDesc)
                 .withCloseOnFocusLoss()
-                .withVersionString("Version ${Broadcasts.getVersion()}")
+                .withVersionString("Version ${Broadcasts.version}")
                 .withCopyright("Copyright \u00A9 " + Calendar
                         .getInstance()[Calendar.YEAR] + " " + About.author)
                 .withImage(Image(About.appLogo))

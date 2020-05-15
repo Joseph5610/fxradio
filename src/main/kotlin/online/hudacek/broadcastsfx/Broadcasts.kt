@@ -24,9 +24,11 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
- * Main class for the app
+ * Main class of the app
+ * main() method should be run to start the app
  */
 class Broadcasts : App(MainView::class, Styles::class) {
+
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.appConfig)
 
@@ -39,9 +41,12 @@ class Broadcasts : App(MainView::class, Styles::class) {
     }
 
     companion object {
-        fun getVersion(): String {
-            return Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
-        }
+        /**
+         * Get version from jar MANIFEST.MF file
+         */
+        val version: String
+            get() = Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
+
     }
 }
 

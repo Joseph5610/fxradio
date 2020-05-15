@@ -22,6 +22,7 @@ import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
+import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.extension.set
 import online.hudacek.broadcastsfx.model.PlayerModel
 import org.controlsfx.control.NotificationPane
@@ -44,7 +45,7 @@ class MainView : View() {
 
     init {
         title = About.appName
-        setStageIcon(Image(About.appIcon))
+        setStageIcon(defaultRadioLogo)
     }
 
     private val rightPane = vbox {

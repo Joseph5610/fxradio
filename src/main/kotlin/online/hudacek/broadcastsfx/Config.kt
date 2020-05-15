@@ -16,16 +16,28 @@
 
 package online.hudacek.broadcastsfx
 
+/**
+ * Basic app configuration
+ */
 object Config {
 
+    /**
+     * Contains paths to common locations
+     * All user files should be stored in $USER_HOME/.fxradio/ directory
+     */
     object Paths {
         private val appNamePath = About.appName.toLowerCase()
 
+        const val defaultRadioIcon = "Industry-Radio-Tower-icon.png"
+
         val appConfig = System.getProperty("user.home") + "/.$appNamePath/conf"
         val imageCache = System.getProperty("user.home") + "/.$appNamePath/cache"
-        val db = System.getProperty("user.home") + "/.$appNamePath/" + About.appName.toLowerCase() + ".db"
+        val db = System.getProperty("user.home") + "/.$appNamePath/$appNamePath.db"
     }
 
+    /**
+     * Keys for values stored in app.properties
+     */
     object Keys {
         const val useNativeMenuBar = "menu.native"
         const val volume = "player.volume"
@@ -35,6 +47,9 @@ object Config {
         const val playerAnimate = "player.animate"
     }
 
+    /**
+     * Flags that change app behaviour
+     */
     object Flags {
         const val addStationEnabled = false
     }
