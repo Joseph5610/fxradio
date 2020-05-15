@@ -28,7 +28,7 @@ import java.nio.file.Paths
  */
 class Broadcasts : App(MainView::class, Styles::class) {
     //override app.config path to user.home/fxradio
-    override val configBasePath: Path = Paths.get(Config.appConfigPath)
+    override val configBasePath: Path = Paths.get(Config.Paths.appConfig)
 
     override fun start(stage: Stage) {
         with(stage) {

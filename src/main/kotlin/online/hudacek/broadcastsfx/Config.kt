@@ -18,9 +18,13 @@ package online.hudacek.broadcastsfx
 
 object Config {
 
-    val appConfigPath = System.getProperty("user.home") + "/" + About.appName.toLowerCase() + "/conf"
-    val imageCachePath = System.getProperty("user.home") + "/" + About.appName.toLowerCase() + "/cache"
-    val dbPath = System.getProperty("user.home") + "/" + About.appName.toLowerCase() + "/" + About.appName.toLowerCase() + ".db"
+    object Paths {
+        private val appNamePath = About.appName.toLowerCase()
+
+        val appConfig = System.getProperty("user.home") + "/.$appNamePath/conf"
+        val imageCache = System.getProperty("user.home") + "/.$appNamePath/cache"
+        val db = System.getProperty("user.home") + "/.$appNamePath/" + About.appName.toLowerCase() + ".db"
+    }
 
     object Keys {
         const val useNativeMenuBar = "menu.native"

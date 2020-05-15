@@ -22,7 +22,7 @@ import org.nield.rxkotlinjdbc.execute
 import java.sql.Connection
 import java.sql.DriverManager
 
-val db: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.dbPath}").apply {
+val db: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
     execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
             " stationuuid VARCHAR, name VARCHAR, " +
             " url_resolved VARCHAR, homepage VARCHAR," +
