@@ -1,13 +1,13 @@
 package online.hudacek.broadcastsfx.fragments
 
-import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import online.hudacek.broadcastsfx.extension.createImage
+import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.ui.createImage
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
@@ -79,8 +79,7 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                             hyperlink(it.homepage) {
                                 addClass(Styles.primaryTextColor)
                                 action {
-                                    val hostServices = HostServicesFactory.getInstance(app)
-                                    hostServices.showDocument(it.homepage)
+                                    app.openUrl(it.homepage)
                                 }
                             }
                     )

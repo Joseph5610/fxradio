@@ -1,8 +1,6 @@
 package online.hudacek.broadcastsfx.model
 
-import tornadofx.ItemViewModel
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 
 object Attributions {
     val list = observableListOf(
@@ -28,12 +26,14 @@ class License(name: String, content: String) {
 class Attribution(name: String, version: String, license: License) {
     var name: String by property(name)
     var version: String by property(version)
-    var license: License by property(license)
+    var licenseContent: String by property(license.content)
+    var licenseName: String by property(license.name)
 }
 
 class AttributionModel : ItemViewModel<Attribution>() {
     val name = bind(Attribution::name)
-    val license = bind(Attribution::license)
+    val licenseName = bind(Attribution::licenseName)
+    val licenseContent = bind(Attribution::licenseContent)
 }
 
 private object Licenses {

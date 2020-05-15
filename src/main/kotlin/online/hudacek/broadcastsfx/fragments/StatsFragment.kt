@@ -4,15 +4,16 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*
 
 /**
  * Modal window that shows status of API server
  */
-class StatsFragment : Fragment() {
+class StatsFragment : Fragment("Statistics") {
 
     private var container = vbox {
         add(ProgressView::class)
@@ -28,7 +29,6 @@ class StatsFragment : Fragment() {
     }
 
     init {
-        title = "Statistics"
         stationsApi.getStats()
                 .subscribeOn(Schedulers.io())
                 .observeOnFx()
@@ -45,11 +45,8 @@ class StatsFragment : Fragment() {
                     container.replaceChildren(listview(list))
                 }, {
                     container.replaceChildren(
-                            vbox(alignment = Pos.CENTER) {
+                            label("Stats are not available at the moment.") {
                                 paddingAll = 20.0
-                                label("Stats are not available at the moment.") {
-                                    addClass(Styles.header)
-                                }
                             }
                     )
                 })
@@ -58,12 +55,17 @@ class StatsFragment : Fragment() {
     override val root = vbox {
         setPrefSize(300.0, 250.0)
         vbox(alignment = Pos.CENTER) {
-            paddingAll = 10.0
-            label(StationsApi.hostname) {
-                requestFocusOnSceneAvailable()
+            requestFocusOnSceneAvailable()
+
+            hyperlink(StationsApi.hostname) {
+                paddingAll = 10.0
                 addClass(Styles.header)
+
+                action {
+                    app.openUrl("http://${this.text}")
+                }
             }
+            add(container)
         }
-        add(container)
     }
 }

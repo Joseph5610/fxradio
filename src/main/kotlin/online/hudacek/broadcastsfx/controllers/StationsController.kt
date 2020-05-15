@@ -2,7 +2,6 @@ package online.hudacek.broadcastsfx.controllers
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.events.LibraryType

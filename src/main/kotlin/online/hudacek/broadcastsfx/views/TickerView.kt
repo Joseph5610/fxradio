@@ -1,4 +1,4 @@
-package online.hudacek.broadcastsfx.ui
+package online.hudacek.broadcastsfx.views
 
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
@@ -12,12 +12,12 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Text
 import javafx.util.Duration
-import mu.KotlinLogging
 import tornadofx.*
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
-//source: https://gitlab.light.kow.is/kowis-projects/deskscreen/-/blob/marquee/src/main/kotlin/is/kow/deskscreen/ticker/TickerView.kt
+//source:
+//https://gitlab.light.kow.is/kowis-projects/deskscreen/-/blob/marquee/src/main/kotlin/is/kow/deskscreen/ticker/TickerView.kt
 open class TickerEntry<T : Node>(
         var content: T,
         var reschedule: Boolean = false

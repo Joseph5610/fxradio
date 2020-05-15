@@ -6,10 +6,8 @@ import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
+import online.hudacek.broadcastsfx.extension.set
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.model.rest.Station
-import online.hudacek.broadcastsfx.ui.osNotification
-import online.hudacek.broadcastsfx.ui.set
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -39,7 +37,6 @@ class MainView : View() {
     }
 
     override fun onDock() {
-        osNotification()
         currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }

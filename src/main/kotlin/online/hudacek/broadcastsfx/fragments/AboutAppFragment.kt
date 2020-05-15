@@ -1,16 +1,18 @@
 package online.hudacek.broadcastsfx.fragments
 
-import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Broadcasts
-import online.hudacek.broadcastsfx.ui.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class AboutAppFragment : Fragment() {
+class AboutAppFragment : Fragment("${About.appName} ${Broadcasts.getVersion()}") {
 
-    private val list = observableListOf(About.appName, About.appDesc,
+    private val list = observableListOf(
+            About.appName,
+            About.appDesc,
             "${About.copyright} ${About.author}")
 
     override fun onBeforeShow() {
@@ -19,8 +21,6 @@ class AboutAppFragment : Fragment() {
 
     override val root = vbox {
         setPrefSize(300.0, 300.0)
-
-        title = "${About.appName} ${Broadcasts.getVersion()}"
 
         vbox(alignment = Pos.CENTER) {
             paddingAll = 20.0
@@ -40,8 +40,7 @@ class AboutAppFragment : Fragment() {
                         label("Data source: ")
                         hyperlink(About.dataSource) {
                             action {
-                                val hostServices = HostServicesFactory.getInstance(app)
-                                hostServices.showDocument(About.dataSource)
+                                app.openUrl(About.dataSource)
                             }
                         }
                     })

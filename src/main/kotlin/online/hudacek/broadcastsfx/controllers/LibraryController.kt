@@ -4,15 +4,14 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.events.LibrarySearchChanged
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
+import online.hudacek.broadcastsfx.events.LibrarySearchChanged
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.Library
+import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.views.LibraryView
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.Controller
-import tornadofx.observableListOf
+import tornadofx.*
 
 class LibraryController : Controller() {
 
@@ -50,7 +49,5 @@ class LibraryController : Controller() {
                     }
             )
 
-    fun loadStationsByCountry(country: String) = fire(LibraryRefreshEvent(LibraryType.Country, country))
-
-    fun loadLibrary(libraryType: LibraryType) = fire(LibraryRefreshEvent(libraryType))
+    fun loadLibrary(libraryType: LibraryType, param: String = "") = fire(LibraryRefreshEvent(libraryType, param))
 }

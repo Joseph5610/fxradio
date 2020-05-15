@@ -18,16 +18,15 @@ import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.extension.createImage
+import online.hudacek.broadcastsfx.extension.set
+import online.hudacek.broadcastsfx.extension.shouldBeDisabled
+import online.hudacek.broadcastsfx.extension.shouldBeVisible
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.StationHistoryModel
-import online.hudacek.broadcastsfx.ui.createImage
-import online.hudacek.broadcastsfx.ui.set
-import online.hudacek.broadcastsfx.ui.shouldBeDisabled
-import online.hudacek.broadcastsfx.ui.shouldBeVisible
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import java.util.*
-
 
 class MenuBarView : View() {
 
@@ -48,7 +47,7 @@ class MenuBarView : View() {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
-                if (!PlatformUtil.isMac() || !controller.shouldUseNativeMenuBar) {
+                if (!PlatformUtil.isMac() || !controller.usePlatformMenuBarProperty) {
                     graphic = imageview {
                         createImage(it)
                         fitHeight = 15.0

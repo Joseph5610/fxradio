@@ -8,10 +8,9 @@ import tornadofx.controlsfx.content
 import tornadofx.controlsfx.hyperlinklabel
 import tornadofx.controlsfx.notificationPane
 
-class AddStationFragment : Fragment() {
+class AddStationFragment : Fragment("Add new station") {
 
     override val root = notificationPane {
-        title = "Add new station"
         prefWidth = 400.0
 
         content {

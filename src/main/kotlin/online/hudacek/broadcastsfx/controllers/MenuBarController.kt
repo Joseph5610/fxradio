@@ -13,9 +13,9 @@ class MenuBarController : Controller() {
 
     private val mediaPlayer: MediaPlayerWrapper by inject()
 
-    val shouldUseNativeMenuBar = app.config.boolean(Config.Keys.useNativeMenuBar, true)
+    val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
 
-    val shouldUsePlatformMenuBar = PlatformUtil.isMac() && shouldUseNativeMenuBar
+    val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 

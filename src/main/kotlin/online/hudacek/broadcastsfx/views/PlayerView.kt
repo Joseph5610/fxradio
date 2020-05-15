@@ -13,14 +13,18 @@ import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.PlayerController
-import online.hudacek.broadcastsfx.events.*
+import online.hudacek.broadcastsfx.events.MediaMetaChanged
+import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.events.PlayerType
+import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.extension.createImage
+import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.extension.shouldBeDisabled
+import online.hudacek.broadcastsfx.extension.smallIcon
 import online.hudacek.broadcastsfx.model.Player
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.ui.*
-import online.hudacek.broadcastsfx.ui.createImage
-import online.hudacek.broadcastsfx.ui.smallIcon
 import tornadofx.*
 
 class PlayerView : View() {
@@ -188,7 +192,7 @@ class PlayerView : View() {
 
     private fun updateView(station: Station) {
         with(station) {
-            if (this.isValidStation()) {
+            if (isValidStation()) {
                 togglePlayerStatus(controller.mediaPlayer.playingStatus)
                 if (player.animate.value) radioNameTicker.updateText(name)
                 else radioNameStaticText.text = name

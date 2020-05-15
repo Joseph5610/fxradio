@@ -5,9 +5,9 @@ import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.events.LibraryType
+import online.hudacek.broadcastsfx.extension.smallLabel
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.ui.smallLabel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
@@ -52,7 +52,7 @@ class LibraryView : View() {
         addClass(Styles.noBorder)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
-            controller.loadStationsByCountry(it.name)
+            controller.loadLibrary(LibraryType.Country, it.name)
         }
     }
 
@@ -65,7 +65,6 @@ class LibraryView : View() {
             }
         }
         val savedQuery = app.config.string(Config.Keys.searchQuery)
-
         savedQuery?.let {
             if (it.isNotBlank()) {
                 text = savedQuery

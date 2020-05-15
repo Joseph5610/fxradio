@@ -1,14 +1,15 @@
 package online.hudacek.broadcastsfx.fragments
 
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.ui.set
+import online.hudacek.broadcastsfx.extension.set
+import online.hudacek.broadcastsfx.model.ApiServer
 import online.hudacek.broadcastsfx.model.ApiServerModel
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class ServerSelectionFragment : Fragment() {
+class ServerSelectionFragment : Fragment("Select API server") {
 
     private val model: ApiServerModel by inject()
 
@@ -21,8 +22,7 @@ class ServerSelectionFragment : Fragment() {
     }
 
     init {
-        model.url.value = StationsApi.hostname
-        title = "Select API server"
+        model.item = ApiServer(StationsApi.hostname)
 
         with(root) {
             setPrefSize(300.0, 110.0)

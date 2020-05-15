@@ -1,5 +1,6 @@
-package online.hudacek.broadcastsfx.ui
+package online.hudacek.broadcastsfx.extension
 
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.animation.PauseTransition
 import javafx.beans.property.Property
 import javafx.event.EventHandler
@@ -153,28 +154,10 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) =
             padding = Insets(10.0, 5.0, 10.0, 5.0)
         }
 
-internal fun osNotification() {
-    /*
-    runAsync {
-       // if(Utils.isMacOs) {
-         //   Runtime.getRuntime().exec(arrayOf("osascript", "-e", "display notification \"This is a message\" with title \"Title\" subtitle \"Subtitle\" sound name \"Funk\""))
-      //  } else {
-            if (SystemTray.isSupported()) {
-                val tray = SystemTray.getSystemTray()
-                val image: java.awt.Image = Toolkit.getDefaultToolkit().createImage("Industry-Radio-Tower-icon.png")
-                val trayIcon = TrayIcon(image, "Tray Demo")
-                trayIcon.isImageAutoSize = true
-                trayIcon.toolTip = "System tray icon demo"
-                tray.add(trayIcon)
-
-                trayIcon.displayMessage("Hello, World", "notification demo", MessageType.INFO)
-
-            } else {
-                println("not supported")
-            }
-
-
-       // }
-    }
-       */
+/**
+ * Open URL in user's internet browser
+ */
+internal fun App.openUrl(url: String) {
+    val hostServices = HostServicesFactory.getInstance(this)
+    hostServices.showDocument(url)
 }
