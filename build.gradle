@@ -16,7 +16,7 @@ plugins {
 
 apply plugin: 'javafx-gradle-plugin'
 
-version "0.1.1-SNAPSHOT"
+version "0.1.1"
 
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
