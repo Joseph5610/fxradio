@@ -32,6 +32,8 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import mu.KotlinLogging
+import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -134,7 +136,7 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
  * In case of error Industry-Radio-Tower-icon static png file is used as station logo
  */
 internal fun ImageView.createImage(station: Station) {
-    this.image = Image("Industry-Radio-Tower-icon.png")
+    this.image = defaultRadioLogo
 
     if (ImageCache.isImageInCache(station)) {
         this.image = ImageCache.getImageFromCache(station)
@@ -143,7 +145,7 @@ internal fun ImageView.createImage(station: Station) {
 
         if (station.isInvalidImage()) {
             logger.debug { "url is empty or unsupported, using default image" }
-            this.image = Image("Industry-Radio-Tower-icon.png")
+            this.image = defaultRadioLogo
             return
         }
 
@@ -159,7 +161,7 @@ internal fun ImageView.createImage(station: Station) {
             logger.error(it) {
                 "image download failed for ${station.stationuuid} "
             }
-            this.image = Image("Industry-Radio-Tower-icon.png")
+            this.image = defaultRadioLogo
         }
     }
 }
@@ -177,3 +179,5 @@ internal fun App.openUrl(url: String) {
     val hostServices = HostServicesFactory.getInstance(this)
     hostServices.showDocument(url)
 }
+
+internal val defaultRadioLogo = Image(Config.Paths.defaultRadioIcon)

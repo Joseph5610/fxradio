@@ -29,6 +29,10 @@ import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
 
+/**
+ * Main view of stations
+ * Datagrid shows radio station logo and name
+ */
 class StationsDataGridView : View() {
 
     private val playerModel: PlayerModel by inject()
@@ -84,6 +88,9 @@ class StationsDataGridView : View() {
 
     fun hide() = root.hide()
 
+    /**
+     * Change datagrid content
+     */
     fun show(stations: List<Station>) {
         root.show()
         root.selectionModel.clearSelection()

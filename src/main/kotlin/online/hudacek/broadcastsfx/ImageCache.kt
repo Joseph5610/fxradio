@@ -63,7 +63,7 @@ object ImageCache {
     }
 
     fun getImageFromCache(station: Station): Image {
-        return if (!isImageInCache(station) || station.isInvalidImage()) Image("Industry-Radio-Tower-icon.png")
+        return if (!isImageInCache(station) || station.isInvalidImage()) Image(About.appLogo)
         else {
             val imagePath = cacheBasePath.resolve(station.stationuuid)
             Image(FileInputStream(imagePath.toFile()))

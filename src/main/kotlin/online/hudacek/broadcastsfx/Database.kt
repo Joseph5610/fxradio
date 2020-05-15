@@ -19,10 +19,14 @@ package online.hudacek.broadcastsfx
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
 import org.nield.rxkotlinjdbc.execute
-import java.sql.Connection
 import java.sql.DriverManager
 
-val db: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
+/**
+ * Database helper
+ */
+internal val db = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
+
+    //Initial creation of tables
     execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
             " stationuuid VARCHAR, name VARCHAR, " +
             " url_resolved VARCHAR, homepage VARCHAR," +
