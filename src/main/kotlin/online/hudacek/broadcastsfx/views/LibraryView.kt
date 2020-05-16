@@ -45,7 +45,9 @@ class LibraryView : View() {
 
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)
-            graphic = glyph("FontAwesome", item.graphic)
+            graphic = glyph("FontAwesome", item.graphic) {
+                color(Styles.colorPrimary)
+            }
             text = when (item.type) {
                 LibraryType.Favourites -> messages["favourites"]
                 LibraryType.Search -> ""
@@ -55,7 +57,7 @@ class LibraryView : View() {
             }
             addClass(Styles.customListItem)
         }
-        addClass(Styles.noBorder)
+        addClass(Styles.libraryListView)
     }
 
     private val countriesListView = listview<Countries> {
@@ -65,7 +67,7 @@ class LibraryView : View() {
             addClass(Styles.customListItem)
         }
 
-        addClass(Styles.noBorder)
+        addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
             controller.loadLibrary(LibraryType.Country, it.name)

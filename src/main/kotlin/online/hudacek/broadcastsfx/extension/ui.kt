@@ -32,7 +32,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.events.PlayerType
@@ -137,12 +136,11 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
  */
 internal fun ImageView.createImage(station: Station) {
     this.image = defaultRadioLogo
+    logger.debug { "image of ${station.name} is from  ${station.favicon}" }
 
     if (ImageCache.isImageInCache(station)) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
-        logger.debug { "trying to download image from ${station.favicon}" }
-
         if (station.isInvalidImage()) {
             logger.debug { "url is empty or unsupported, using default image" }
             this.image = defaultRadioLogo

@@ -17,7 +17,6 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
-import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController

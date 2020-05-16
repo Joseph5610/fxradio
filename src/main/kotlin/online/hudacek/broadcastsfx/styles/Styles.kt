@@ -11,7 +11,7 @@ class Styles : Stylesheet() {
     companion object {
         val playerStationInfo by cssclass()
         val grayLabel by cssclass()
-        val noBorder by cssclass()
+        val libraryListView by cssclass()
         val primaryButton by cssclass()
         val playerControls by cssclass()
         val header by cssclass()
@@ -23,6 +23,8 @@ class Styles : Stylesheet() {
 
         private const val primaryColor = "#0097CE"
         private const val hoverColor = "#0097EA"
+
+        val colorPrimary = Color.valueOf(primaryColor)
     }
 
     init {
@@ -92,16 +94,14 @@ class Styles : Stylesheet() {
             textFill = Paint.valueOf(primaryColor)
         }
 
-        noBorder {
-            unsafe("-fx-padding", raw("0"))
-            unsafe("-fx-background-insets", raw("0"))
-            unsafe("-fx-background-color", raw("-fx-background"))
-            unsafe("-fx-border-color", raw("transparent"))
-            unsafe("-fx-faint-focus-color", raw("transparent"))
+        libraryListView {
+            backgroundColor += Color.WHITESMOKE
+            unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
         customListItem {
-            backgroundColor += Paint.valueOf("transparent")
+            textFill = Color.BLACK
+            backgroundColor += Color.WHITESMOKE
             and(hover) {
                 backgroundColor += Paint.valueOf("#E9E9E9")
                 borderColor += box(c("#E8E8E8"))
@@ -169,7 +169,7 @@ class Styles : Stylesheet() {
         }
 
         datagridCell {
-
+            padding = box(0.px, 5.px, 5.px, 5.px)
             backgroundColor += Paint.valueOf("transparent")
             borderColor += box(c("transparent"))
             backgroundRadius += box(5.px)
