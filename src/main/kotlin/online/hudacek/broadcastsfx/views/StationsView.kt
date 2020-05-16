@@ -121,6 +121,7 @@ class StationsView : View() {
         add(headerContainer)
         add(contentTop)
         add(dataGrid)
+        dataGrid.root.fitToParentHeight()
     }
 
     fun showNoResults(queryString: String? = null) {

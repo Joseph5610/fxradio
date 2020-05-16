@@ -39,8 +39,6 @@ class StationsDataGridView : View() {
     private val stationsData = observableListOf(Station.stub())
 
     override val root = datagrid(stationsData) {
-        fitToParentHeight()
-
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {
@@ -49,7 +47,6 @@ class StationsDataGridView : View() {
         }
 
         cellCache {
-            paddingAll = 5
             vbox(alignment = Pos.CENTER) {
                 popover {
                     vbox {

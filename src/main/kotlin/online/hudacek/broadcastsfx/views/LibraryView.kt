@@ -45,7 +45,9 @@ class LibraryView : View() {
 
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)
-            graphic = glyph("FontAwesome", item.graphic)
+            graphic = glyph("FontAwesome", item.graphic) {
+                color(Styles.colorPrimary)
+            }
             text = when (item.type) {
                 LibraryType.Favourites -> messages["favourites"]
                 LibraryType.Search -> ""
