@@ -24,7 +24,7 @@ import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class AboutAppFragment : Fragment("${About.appName} ${Broadcasts.getVersion()}") {
+class AboutAppFragment : Fragment("${About.appName} ${Broadcasts.version}") {
 
     private val list = observableListOf(
             About.appName,

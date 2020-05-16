@@ -129,7 +129,7 @@ class PlayerView : View() {
 
                 //Radio logo
                 vbox(alignment = Pos.CENTER_LEFT) {
-                    radioLogo = imageview(About.appIcon) {
+                    radioLogo = imageview(Config.Paths.defaultRadioIcon) {
                         effect = DropShadow(20.0, Color.WHITE)
                         fitWidth = 30.0
                         minHeight = 30.0

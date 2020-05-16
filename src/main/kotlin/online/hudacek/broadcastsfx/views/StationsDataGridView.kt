@@ -29,14 +29,16 @@ import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
 
+/**
+ * Main view of stations
+ * Datagrid shows radio station logo and name
+ */
 class StationsDataGridView : View() {
 
     private val playerModel: PlayerModel by inject()
     private val stationsData = observableListOf(Station.stub())
 
     override val root = datagrid(stationsData) {
-        fitToParentHeight()
-
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {
@@ -45,7 +47,6 @@ class StationsDataGridView : View() {
         }
 
         cellCache {
-            paddingAll = 5
             vbox(alignment = Pos.CENTER) {
                 popover {
                     vbox {
@@ -84,6 +85,9 @@ class StationsDataGridView : View() {
 
     fun hide() = root.hide()
 
+    /**
+     * Change datagrid content
+     */
     fun show(stations: List<Station>) {
         root.show()
         root.selectionModel.clearSelection()

@@ -17,7 +17,6 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Pos
-import javafx.scene.control.Label
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import mu.KotlinLogging
@@ -43,7 +42,12 @@ class StationsView : View() {
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
 
-    private var contentName: Label by singleAssign()
+    private val contentName = label {
+        paddingTop = 8.0
+        paddingBottom = 8.0
+        paddingLeft = 15.0
+        addClass(Styles.subheader)
+    }
 
     private val header = label {
         addClass(Styles.header)
@@ -64,18 +68,11 @@ class StationsView : View() {
     private val dataGrid: StationsDataGridView by inject()
 
     private val contentTop = flowpane {
-        paddingBottom = 0.0
         maxHeight = 10.0
         style {
             backgroundColor += Color.WHITESMOKE
         }
-
-        contentName = label {
-            paddingTop = 8.0
-            paddingBottom = 8.0
-            paddingLeft = 15.0
-            addClass(Styles.subheader)
-        }
+        add(contentName)
     }
 
     init {
@@ -121,6 +118,8 @@ class StationsView : View() {
         add(headerContainer)
         add(contentTop)
         add(dataGrid)
+
+        dataGrid.root.fitToParentHeight()
     }
 
     fun showNoResults(queryString: String? = null) {
@@ -156,14 +155,12 @@ class StationsView : View() {
     }
 
     fun setContentName(libraryType: LibraryType, value: String? = null) {
-        contentName.apply {
-            text = when (libraryType) {
-                LibraryType.Favourites -> messages["favourites"]
-                LibraryType.History -> messages["history"]
-                LibraryType.TopStations -> messages["topStations"]
-                LibraryType.Search -> messages["searchResultsFor"] + " \"$value\""
-                else -> value
-            }
+        contentName.text = when (libraryType) {
+            LibraryType.Favourites -> messages["favourites"]
+            LibraryType.History -> messages["history"]
+            LibraryType.TopStations -> messages["topStations"]
+            LibraryType.Search -> messages["searchResultsFor"] + " \"$value\""
+            else -> value
         }
     }
 }
