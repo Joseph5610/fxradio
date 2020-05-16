@@ -18,7 +18,9 @@ package online.hudacek.broadcastsfx.media
 
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.MediaMeta
+import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
+import uk.co.caprica.vlcj.log.NativeLog
 import uk.co.caprica.vlcj.media.Media
 import uk.co.caprica.vlcj.media.MediaEventAdapter
 import uk.co.caprica.vlcj.media.Meta
@@ -31,6 +33,15 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
     private val logger = KotlinLogging.logger {}
 
     private val mediaPlayerComponent by lazy { AudioPlayerComponent() }
+
+    //VLC Logs
+    private var nativeLog: NativeLog
+    private val nativeLogListener = LogEventListener { level, module, file, line, name, header, id, message ->
+        lastLogMessage = message
+        logger.debug { String.format("[%s] (%s) %7s: %s\n", module, name, level, message) }
+    }
+
+    private var lastLogMessage = ""
 
     private val mediaPlayerEvent = object : MediaPlayerEventAdapter() {
         override fun finished(mediaPlayer: uk.co.caprica.vlcj.player.base.MediaPlayer?) {
@@ -59,36 +70,37 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         logger.debug { "VLC player started" }
         mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(mediaPlayerEvent)
         mediaPlayerComponent.mediaPlayer().events().addMediaEventListener(mediaEvent)
+
+        nativeLog = mediaPlayerComponent.mediaPlayerFactory().application().newLog().apply {
+            level = LogLevel.NOTICE
+        }
+        nativeLog.addLogListener(nativeLogListener)
+        changeVolume(mediaPlayer.volume)
     }
 
     override fun play(url: String) {
         changeVolume(mediaPlayer.volume)
-
-        mediaPlayerComponent.mediaPlayerFactory().application().newLog().apply {
-            level = LogLevel.NOTICE
-            addLogListener { level, module, file, line, name, header, id, message ->
-                logger.debug { String.format("[%-20s] (%-20s) %7s: %s\n", module, name, level, message) }
-            }
-        }
         mediaPlayerComponent.mediaPlayer().media().play(url)
     }
 
     override fun changeVolume(volume: Double): Boolean {
-        logger.debug { "change volume to $volume" }
-
         val intVol = if (volume < -29.5) {
             0
         } else {
             ((volume + 50) * (100 / 95)).toInt()
         }
+        logger.debug { "change volume to $volume, VLC conversion is $intVol" }
         return mediaPlayerComponent.mediaPlayer().audio().setVolume(intVol)
     }
 
+    /**
+     * Called on libVLC event thread
+     */
     private fun end(result: Int) {
         logger.debug { "ending current stream if any with error status $result" }
 
         if (result == 1) {
-            mediaPlayer.handleError(RuntimeException("See app.log for more details."))
+            mediaPlayer.handleError(RuntimeException("$lastLogMessage\nSee app.log for more details."))
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,
@@ -102,13 +114,17 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         }
     }
 
-    override fun cancelPlaying() = end(0)
+    override fun cancelPlaying() = mediaPlayerComponent.mediaPlayer().controls().stop()
 
     override fun releasePlayer() {
+        logger.debug { "releasing events" }
+
         mediaPlayerComponent.mediaPlayer().events().removeMediaEventListener(mediaEvent)
         mediaPlayerComponent.mediaPlayer().events().removeMediaPlayerEventListener(mediaPlayerEvent)
+        nativeLog.removeLogListener(nativeLogListener)
 
         logger.debug { "releasing player" }
+        nativeLog.release()
         mediaPlayerComponent.release()
     }
 }

@@ -4,7 +4,7 @@
         <console name="stdout" target="SYSTEM_OUT">
             <patternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
         </console>
-        <File name="MyFile" fileName="${sys:user.home}/fxradio/app.log">
+        <File name="MyFile" fileName="${sys:user.home}/.fxradio/app.log">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
