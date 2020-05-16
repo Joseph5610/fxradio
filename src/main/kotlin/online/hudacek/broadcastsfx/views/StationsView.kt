@@ -67,12 +67,10 @@ class StationsView : View() {
     private val dataGrid: StationsDataGridView by inject()
 
     private val contentTop = flowpane {
-        paddingBottom = 0.0
         maxHeight = 10.0
         style {
             backgroundColor += Color.WHITESMOKE
         }
-
         add(contentName)
     }
 
@@ -156,5 +154,15 @@ class StationsView : View() {
         headerContainer.hide()
         contentTop.show()
         dataGrid.show(stations)
+    }
+
+    fun setContentName(libraryType: LibraryType, value: String? = null) {
+        contentName.text = when (libraryType) {
+            LibraryType.Favourites -> messages["favourites"]
+            LibraryType.History -> messages["history"]
+            LibraryType.TopStations -> messages["topStations"]
+            LibraryType.Search -> messages["searchResultsFor"] + " \"$value\""
+            else -> value
+        }
     }
 }

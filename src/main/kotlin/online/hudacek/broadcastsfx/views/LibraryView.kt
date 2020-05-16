@@ -57,7 +57,7 @@ class LibraryView : View() {
             }
             addClass(Styles.customListItem)
         }
-        addClass(Styles.noBorder)
+        addClass(Styles.libraryListView)
     }
 
     private val countriesListView = listview<Countries> {
@@ -67,7 +67,7 @@ class LibraryView : View() {
             addClass(Styles.customListItem)
         }
 
-        addClass(Styles.noBorder)
+        addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
             controller.loadLibrary(LibraryType.Country, it.name)

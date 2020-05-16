@@ -11,7 +11,7 @@ class Styles : Stylesheet() {
     companion object {
         val playerStationInfo by cssclass()
         val grayLabel by cssclass()
-        val noBorder by cssclass()
+        val libraryListView by cssclass()
         val primaryButton by cssclass()
         val playerControls by cssclass()
         val header by cssclass()
@@ -95,7 +95,7 @@ class Styles : Stylesheet() {
             textFill = Paint.valueOf(primaryColor)
         }
 
-        noBorder {
+        libraryListView {
             backgroundColor += Color.WHITESMOKE
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }

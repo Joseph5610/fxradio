@@ -47,7 +47,6 @@ class StationsDataGridView : View() {
         }
 
         cellCache {
-            println(it.url_resolved)
             vbox(alignment = Pos.CENTER) {
                 popover {
                     vbox {
