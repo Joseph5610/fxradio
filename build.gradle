@@ -33,12 +33,9 @@ dependencies {
 
     compile 'no.tornado:tornadofx:1.7.20'
     compile 'org.controlsfx:controlsfx:8.40.16'
-    compile 'org.controlsfx:controlsfx:8.40.12'
     compile 'no.tornado:tornadofx-controlsfx:0.1.1'
 
     compile 'com.squareup.retrofit2:retrofit:2.8.1'
-    compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
-    compile 'com.github.thomasnield:rxkotlinfx:2.2.2'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 
@@ -49,6 +46,8 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-core:2.9.1'
 
     compile 'commons-io:commons-io:2.6'
+
+    compile 'com.github.thomasnield:rxkotlinfx:2.2.2'
 
     compile 'org.xerial:sqlite-jdbc:3.21.0.1'
     compile 'org.nield:rxkotlin-jdbc:0.4.1'
