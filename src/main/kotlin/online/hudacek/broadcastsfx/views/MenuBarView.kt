@@ -54,13 +54,16 @@ class MenuBarView : View() {
     private var playerCheck: CheckMenuItem by singleAssign()
     private var playerAnimateCheck: CheckMenuItem by singleAssign()
 
+    private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
+    private val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
+
     private val historyMenu = Menu(messages["menu.history"]).apply {
         shouldBeDisabled(player.station)
         items.bind(stationHistory.stations.value) {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
-                if (!PlatformUtil.isMac() || !controller.usePlatformMenuBarProperty) {
+                if (!PlatformUtil.isMac() || !usePlatformMenuBarProperty) {
                     graphic = imageview {
                         createImage(it)
                         fitHeight = 15.0
@@ -165,8 +168,7 @@ class MenuBarView : View() {
         }
     }
 
-
-    override val root = if (controller.shouldUsePlatformMenuBar) {
+    override val root = if (shouldUsePlatformMenuBar) {
         platformMenuBar()
     } else {
         defaultMenuBar()

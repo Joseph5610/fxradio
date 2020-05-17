@@ -36,9 +36,7 @@ class StatsFragment : Fragment("Statistics") {
     }
 
     private val stationsApi: StationsApi
-        get() {
-            return StationsApi.client
-        }
+        get() = StationsApi.client
 
     override fun onBeforeShow() {
         currentStage?.opacity = 0.85

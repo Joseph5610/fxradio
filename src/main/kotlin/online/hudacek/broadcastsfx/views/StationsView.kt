@@ -17,13 +17,11 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Pos
-import javafx.scene.control.Label
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
-import online.hudacek.broadcastsfx.events.LibrarySearchChanged
 import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.extension.glyph
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -43,7 +41,12 @@ class StationsView : View() {
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
 
-    private var contentName: Label by singleAssign()
+    private val contentName = label {
+        paddingTop = 8.0
+        paddingBottom = 8.0
+        paddingLeft = 15.0
+        addClass(Styles.subheader)
+    }
 
     private val header = label {
         addClass(Styles.header)
@@ -70,42 +73,41 @@ class StationsView : View() {
             backgroundColor += Color.WHITESMOKE
         }
 
-        contentName = label {
-            paddingTop = 8.0
-            paddingBottom = 8.0
-            paddingLeft = 15.0
-            addClass(Styles.subheader)
-        }
+        add(contentName)
     }
 
     init {
         controller.getTopStations()
+
+        //Handle change of stations library
         subscribe<LibraryRefreshEvent> { event ->
             with(event) {
                 when (type) {
-                    LibraryType.Country -> {
-                        params?.let { controller.getStationsByCountry(it) }
-                    }
+                    LibraryType.Country -> controller.getStationsByCountry(params)
                     LibraryType.Favourites -> controller.getFavourites()
                     LibraryType.History -> controller.getHistory()
+                    LibraryType.Search -> {
+                        if (params.length > 2)
+                            controller.searchStations(params)
+                        else {
+                            contentTop.hide()
+                            headerContainer.show()
+                            header.text = messages["searchingLibrary"]
+                            header.graphic = searchGlyph
+                            subHeader.text = messages["searchingLibraryDesc"]
+                            dataGrid.hide()
+                        }
+                    }
                     else -> {
                         controller.getTopStations()
                     }
                 }
-            }
-        }
-
-        subscribe<LibrarySearchChanged> { event ->
-            with(event) {
-                if (searchString.length > 2)
-                    controller.searchStations(searchString)
-                else {
-                    contentTop.hide()
-                    headerContainer.show()
-                    header.text = messages["searchingLibrary"]
-                    header.graphic = searchGlyph
-                    subHeader.text = messages["searchingLibraryDesc"]
-                    dataGrid.hide()
+                contentName.text = when (type) {
+                    LibraryType.Favourites -> messages["favourites"]
+                    LibraryType.History -> messages["history"]
+                    LibraryType.TopStations -> messages["topStations"]
+                    LibraryType.Search -> messages["searchResultsFor"] + " \"$params\""
+                    else -> params
                 }
             }
         }
@@ -154,17 +156,5 @@ class StationsView : View() {
         headerContainer.hide()
         contentTop.show()
         dataGrid.show(stations)
-    }
-
-    fun setContentName(libraryType: LibraryType, value: String? = null) {
-        contentName.apply {
-            text = when (libraryType) {
-                LibraryType.Favourites -> messages["favourites"]
-                LibraryType.History -> messages["history"]
-                LibraryType.TopStations -> messages["topStations"]
-                LibraryType.Search -> messages["searchResultsFor"] + " \"$value\""
-                else -> value
-            }
-        }
     }
 }

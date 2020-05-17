@@ -20,7 +20,6 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.rest.SearchBody
@@ -34,9 +33,7 @@ class StationsController : Controller() {
     private val stationsHistory: StationHistoryModel by inject()
 
     private val stationsApi: StationsApi
-        get() {
-            return StationsApi.client
-        }
+        get() = StationsApi.client
 
     fun getFavourites() {
         Station.favourites()
@@ -51,7 +48,6 @@ class StationsController : Controller() {
                 }, {
                     stationsView.showError(it)
                 })
-        stationsView.setContentName(LibraryType.Favourites)
     }
 
     fun getStationsByCountry(country: String): Disposable = stationsApi
@@ -59,7 +55,6 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
-                stationsView.setContentName(LibraryType.Country, country)
                 stationsView.showDataGrid(result)
             }, {
                 stationsView.showError(it)
@@ -73,7 +68,6 @@ class StationsController : Controller() {
                 if (result.isEmpty()) {
                     stationsView.showNoResults(name)
                 } else {
-                    stationsView.setContentName(LibraryType.Search, name)
                     stationsView.showDataGrid(result)
                 }
             }, {
@@ -87,7 +81,6 @@ class StationsController : Controller() {
         } else {
             stationsView.showDataGrid(historyList)
         }
-        stationsView.setContentName(LibraryType.History)
     }
 
     fun getTopStations(): Disposable = stationsApi
@@ -95,7 +88,6 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
-                stationsView.setContentName(LibraryType.TopStations)
                 stationsView.showDataGrid(result)
             }, {
                 stationsView.showError(it)

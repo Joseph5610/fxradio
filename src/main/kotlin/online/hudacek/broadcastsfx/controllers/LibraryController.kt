@@ -21,7 +21,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
-import online.hudacek.broadcastsfx.events.LibrarySearchChanged
 import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.model.Library
 import online.hudacek.broadcastsfx.model.rest.CountriesBody
@@ -34,9 +33,7 @@ class LibraryController : Controller() {
     private val libraryView: LibraryView by inject()
 
     private val stationsApi: StationsApi
-        get() {
-            return StationsApi.client
-        }
+        get() = StationsApi.client
 
     val libraryItems by lazy {
         observableListOf(
@@ -49,8 +46,6 @@ class LibraryController : Controller() {
     init {
         getCountries()
     }
-
-    fun searchStation(searchString: String) = fire(LibrarySearchChanged(searchString))
 
     fun getCountries(): Disposable = stationsApi
             .getCountries(CountriesBody())

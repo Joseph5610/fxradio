@@ -22,6 +22,4 @@ enum class LibraryType {
     Favourites, Search, History, Country, TopStations
 }
 
-class LibrarySearchChanged(val searchString: String) : FXEvent()
-
-class LibraryRefreshEvent(val type: LibraryType, val params: String? = null) : FXEvent()
+class LibraryRefreshEvent(val type: LibraryType, val params: String = "") : FXEvent()

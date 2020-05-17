@@ -17,12 +17,10 @@
 package online.hudacek.broadcastsfx.controllers
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
-import com.sun.javafx.PlatformUtil
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.fragments.*
@@ -34,17 +32,11 @@ import tornadofx.*
 class MenuBarController : Controller() {
 
     private val stationsApi: StationsApi
-        get() {
-            return StationsApi.client
-        }
+        get() = StationsApi.client
 
     private val menuBarView: MenuBarView by inject()
 
     private val mediaPlayer: MediaPlayerWrapper by inject()
-
-    val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
-
-    val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 

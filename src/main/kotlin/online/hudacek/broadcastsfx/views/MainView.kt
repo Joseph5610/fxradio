@@ -17,7 +17,6 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
-import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.controllers.MainController
@@ -31,7 +30,7 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
-class MainView : View() {
+class MainView : View(About.appName) {
 
     private val controller: MainController by inject()
 
@@ -44,7 +43,6 @@ class MainView : View() {
     var notification: NotificationPane by singleAssign()
 
     init {
-        title = About.appName
         setStageIcon(defaultRadioLogo)
     }
 

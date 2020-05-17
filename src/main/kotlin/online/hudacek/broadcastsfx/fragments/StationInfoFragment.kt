@@ -27,7 +27,9 @@ import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(val station: Station? = null, showImage: Boolean = true, showList: Boolean = true) : Fragment() {
+class StationInfoFragment(val station: Station? = null,
+                          showImage: Boolean = true,
+                          showList: Boolean = true) : Fragment() {
 
     private val playerModel: PlayerModel by inject()
 

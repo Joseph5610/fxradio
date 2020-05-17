@@ -94,7 +94,7 @@ class LibraryView : View() {
                 if (it.length > 80) {
                     text = it.substring(0, 80)
                 } else {
-                    controller.searchStation(it.trim())
+                    controller.loadLibrary(LibraryType.Search, it.trim())
                 }
             }
 
@@ -105,7 +105,7 @@ class LibraryView : View() {
         }
 
         setOnMouseClicked {
-            controller.searchStation(text.trim())
+            controller.loadLibrary(LibraryType.Search, text.trim())
         }
     }
 
