@@ -34,10 +34,7 @@ import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.createImage
-import online.hudacek.broadcastsfx.extension.set
-import online.hudacek.broadcastsfx.extension.shouldBeDisabled
-import online.hudacek.broadcastsfx.extension.shouldBeVisible
+import online.hudacek.broadcastsfx.extension.*
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.StationHistoryModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -99,6 +96,14 @@ class MenuBarView : View() {
             }
         }
 
+        item(messages["menu.station.vote"]) {
+            shouldBeDisabled(player.station)
+            action {
+                controller.voteForStation(player.station.value)
+            }
+        }
+
+
         item(messages["menu.station.add"], keyAdd) {
             isVisible = Config.Flags.addStationEnabled
             action {
@@ -110,6 +115,10 @@ class MenuBarView : View() {
     private val viewMenu = Menu(messages["menu.view"]).apply {
         item(messages["menu.view.stats"]).action {
             controller.openStats()
+        }
+        separator()
+        item(messages["menu.view.logs"]).action {
+            app.openUrl("file://${Config.Paths.baseAppDir}")
         }
     }
 
@@ -242,6 +251,14 @@ class MenuBarView : View() {
                     notification[FontAwesome.Glyph.WARNING] = messages["cache.clear.error"]
                 }
             }
+        }
+    }
+
+    fun showVoteResult(result: Boolean) {
+        if (result) {
+            notification[FontAwesome.Glyph.CHECK] = messages["vote.ok"]
+        } else {
+            notification[FontAwesome.Glyph.WARNING] = messages["vote.error"]
         }
     }
 

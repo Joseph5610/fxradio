@@ -18,6 +18,7 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.control.Tooltip
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -26,7 +27,6 @@ import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.MediaMetaChanged
@@ -162,9 +162,17 @@ class PlayerView : View() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
-                smallIcon(volumeDownIcon)
+                smallIcon(volumeDownIcon) {
+                    setOnMouseClicked {
+                        volumeSlider.value = volumeSlider.min
+                    }
+                }
                 add(volumeSlider)
-                smallIcon(volumeUpIcon)
+                smallIcon(volumeUpIcon) {
+                    setOnMouseClicked {
+                        volumeSlider.value = volumeSlider.max
+                    }
+                }
             }
         }
     }
@@ -185,7 +193,10 @@ class PlayerView : View() {
                 .replace("\r", "")
                 .replace("\n", "")
         if (player.animate.value) radioNameTicker.updateText(nowPlaying)
-        else radioNameStaticText.text = nowPlaying
+        else {
+            radioNameStaticText.text = nowPlaying
+            radioNameStaticText.tooltip = Tooltip(nowPlaying)
+        }
 
         if (event.mediaMeta.title.isNotEmpty()) {
             nowStreamingLabel.text = event.mediaMeta.title
@@ -211,7 +222,10 @@ class PlayerView : View() {
             if (isValidStation()) {
                 togglePlayerStatus(controller.mediaPlayer.playingStatus)
                 if (player.animate.value) radioNameTicker.updateText(name)
-                else radioNameStaticText.text = name
+                else {
+                    radioNameStaticText.text = name
+                    radioNameStaticText.tooltip = null
+                }
                 radioLogo.createImage(this)
             }
         }

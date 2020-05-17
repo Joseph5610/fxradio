@@ -65,6 +65,14 @@ class StationInfoFragment(val station: Station? = null, showImage: Boolean = tru
                     }
                 }
             }
+            vbox(alignment = Pos.CENTER) {
+                label("Votes: ${it.votes}") {
+                    addClass(Styles.tag)
+                }
+                style {
+                    paddingBottom = 5.0
+                }
+            }
 
             if (tagsList.isNotEmpty()) {
                 flowpane {

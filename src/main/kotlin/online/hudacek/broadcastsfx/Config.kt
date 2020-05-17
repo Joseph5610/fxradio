@@ -30,9 +30,10 @@ object Config {
 
         const val defaultRadioIcon = "Industry-Radio-Tower-icon.png"
 
+        val baseAppDir = System.getProperty("user.home") + "/.$appNamePath/"
         val appConfig = System.getProperty("user.home") + "/.$appNamePath/conf"
         val imageCache = System.getProperty("user.home") + "/.$appNamePath/cache"
-        val db = System.getProperty("user.home") + "/.$appNamePath/$appNamePath.db"
+        val db = "$baseAppDir/$appNamePath.db"
     }
 
     /**

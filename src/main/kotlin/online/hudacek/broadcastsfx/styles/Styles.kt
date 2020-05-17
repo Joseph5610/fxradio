@@ -43,6 +43,7 @@ class Styles : Stylesheet() {
         }
 
         tag {
+            textFill = Color.BLACK
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             backgroundColor += Paint.valueOf("#E9E9E9")

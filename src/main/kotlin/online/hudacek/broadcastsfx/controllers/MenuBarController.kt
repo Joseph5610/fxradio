@@ -16,17 +16,29 @@
 
 package online.hudacek.broadcastsfx.controllers
 
+import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.sun.javafx.PlatformUtil
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.views.MenuBarView
 import tornadofx.*
 
-
 class MenuBarController : Controller() {
+
+    private val stationsApi: StationsApi
+        get() {
+            return StationsApi.client
+        }
+
+    private val menuBarView: MenuBarView by inject()
 
     private val mediaPlayer: MediaPlayerWrapper by inject()
 
@@ -52,4 +64,14 @@ class MenuBarController : Controller() {
     }
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
+
+    fun voteForStation(station: Station): Disposable = stationsApi
+            .vote(station.stationuuid)
+            .observeOnFx()
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                menuBarView.showVoteResult(it.ok)
+            }, {
+                menuBarView.showVoteResult(false)
+            })
 }

@@ -32,7 +32,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.events.PlayerType
@@ -80,8 +79,8 @@ internal fun EventTarget.smallLabel(text: String = ""): Label {
     }
 }
 
-internal fun EventTarget.smallIcon(url: String = ""): ImageView {
-    return imageview(url) {
+internal fun EventTarget.smallIcon(url: String = "", op: ImageView.() -> Unit = {}): ImageView {
+    return imageview(url, op = op).apply {
         fitWidth = 16.0
         fitHeight = 16.0
     }

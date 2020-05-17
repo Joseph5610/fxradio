@@ -17,6 +17,7 @@
 package online.hudacek.broadcastsfx
 
 import io.reactivex.Observable
+import okhttp3.OkHttpClient
 import online.hudacek.broadcastsfx.model.rest.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -57,7 +58,13 @@ interface StationsApi {
     @GET("json/stats")
     fun getStats(): Observable<Stats>
 
+    @GET("json/vote/{uuid}")
+    fun vote(@Path("uuid") uuid: String): Observable<VoteResult>
+
     companion object : Component() {
+
+        //What is app sending as a User Agent string
+        private val userAgentIdentifier = "${About.appName}/${Broadcasts.version}"
 
         //try to connect to working API server
         private val inetAddressHostname: String by lazy {
@@ -81,11 +88,24 @@ interface StationsApi {
                 }
             }
 
+        //Construct http client with custom user agent
+        private val httpClient = OkHttpClient.Builder()
+                .addNetworkInterceptor { chain ->
+                    chain.proceed(
+                            chain.request()
+                                    .newBuilder()
+                                    .header("User-Agent", userAgentIdentifier)
+                                    .build()
+                    )
+                }
+                .build()
+
         val client: StationsApi
             get() = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl("https://$hostname")
+                    .client(httpClient)
                     .build()
                     .create(StationsApi::class.java)
     }
