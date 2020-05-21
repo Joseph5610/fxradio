@@ -1,8 +1,7 @@
 package online.hudacek.broadcastsfx.model
 
 import online.hudacek.broadcastsfx.model.rest.Station
-import tornadofx.ItemViewModel
-import tornadofx.observableListOf
+import tornadofx.*
 
 class StationHistory {
     val stations = observableListOf<Station>()
@@ -14,10 +13,12 @@ class StationHistoryModel : ItemViewModel<StationHistory>() {
     fun add(station: Station) {
         if (!station.isValidStation()) return
         with(stations.value) {
-            if (size > 10) {
-                removeAt(0)
+            if (!contains(station)) {
+                if (size > 10) {
+                    removeAt(0)
+                }
+                add(station)
             }
-            add(station)
         }
     }
 }

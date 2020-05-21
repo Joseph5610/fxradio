@@ -13,17 +13,19 @@ object Attributions {
             Attribution("log4j", "2.9.1", Licenses.apache20),
             Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
             Attribution("appdmg", "0.6.0", Licenses.appdmg),
-            Attribution("macOS install disk background", "", Licenses.bg),
-            Attribution("Application logo, radio station icon, play, pause, volume icons", "", Licenses.iconArchive)
+            Attribution("TickerView", license = Licenses.tickerView),
+            Attribution("macOS install disk background", license = Licenses.bg),
+            Attribution("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
+
     )
 }
 
-class License(name: String, content: String) {
+class License(name: String = "", content: String) {
     var name: String by property(name)
     var content: String by property(content)
 }
 
-class Attribution(name: String, version: String, license: License) {
+class Attribution(name: String, version: String = "", license: License) {
     var name: String by property(name)
     var version: String by property(version)
     var licenseContent: String by property(license.content)
@@ -37,8 +39,8 @@ class AttributionModel : ItemViewModel<Attribution>() {
 }
 
 private object Licenses {
-    val bg = License("", "Designed by xb100 / Freepik")
-    val iconArchive = License("", "Obtained from http://iconarchive.com")
+    val bg = License(content = "Designed by xb100 / Freepik")
+    val iconArchive = License(content = "Obtained from http://iconarchive.com")
     val retrofit = License("Apache License 2.0", "Copyright 2013 Square, Inc.\n" +
             "\n" +
             "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
@@ -118,6 +120,7 @@ private object Licenses {
             "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\n" +
             "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.")
 
+    val tickerView = License(content = "https://gitlab.light.kow.is/kowis-projects/deskscreen")
     val controlsfx = License("BSD 3-Clause license", "BSD 3-Clause License\n" +
             "\n" +
             "Copyright (c) 2013, ControlsFX\n" +

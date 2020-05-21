@@ -69,6 +69,7 @@ class StationInfoFragment(val station: Station? = null,
             }
             vbox(alignment = Pos.CENTER) {
                 label("Votes: ${it.votes}") {
+                    addClass(Styles.grayLabel)
                     addClass(Styles.tag)
                 }
                 style {

@@ -44,9 +44,9 @@ class Broadcasts : App(MainView::class, Styles::class) {
         /**
          * Get version from jar MANIFEST.MF file
          */
-        val version: String
-            get() = Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
-
+        val version: String by lazy {
+            Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
+        }
     }
 }
 

@@ -21,22 +21,18 @@ import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.Broadcasts
 import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
 class AboutAppFragment : Fragment("${About.appName} ${Broadcasts.version}") {
-
-    private val list = observableListOf(
-            About.appName,
-            About.appDesc,
-            "${About.copyright} ${About.author}")
 
     override fun onBeforeShow() {
         currentStage?.isResizable = false
     }
 
     override val root = vbox {
-        setPrefSize(300.0, 300.0)
+        prefWidth = 300.0
 
         vbox(alignment = Pos.CENTER) {
             paddingAll = 20.0
@@ -46,14 +42,17 @@ class AboutAppFragment : Fragment("${About.appName} ${Broadcasts.version}") {
                 fitHeight = 100.0
                 isPreserveRatio = true
             }
+            label("${About.appName} - ${About.appDesc}")
+            label("${About.copyright} ${About.author}") {
+                addClass(Styles.grayLabel)
+            }
         }
 
-        listview(list)
         statusbar {
             rightItems.add(
                     hbox {
                         alignment = Pos.CENTER_LEFT
-                        label("Data source: ")
+                        label("Data source:")
                         hyperlink(About.dataSource) {
                             action {
                                 app.openUrl(About.dataSource)

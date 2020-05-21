@@ -31,7 +31,7 @@ class AttributionsFragment : Fragment("Third Party software used by ${About.appN
     private val model: AttributionModel by inject()
 
     override val root = vbox {
-        setPrefSize(500.0, 300.0)
+        prefWidth = 500.0
 
         vbox {
             paddingAll = 10.0
