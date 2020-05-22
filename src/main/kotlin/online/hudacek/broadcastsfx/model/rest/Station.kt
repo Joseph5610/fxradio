@@ -9,7 +9,6 @@ import org.nield.rxkotlinjdbc.select
  * Stations json structure
  */
 data class Station(
-        val changeuuid: String,
         val stationuuid: String,
         val name: String,
         val url_resolved: String?,
@@ -22,21 +21,20 @@ data class Station(
         val language: String = "",
         val codec: String = "",
         val bitrate: Int = 0,
-        val hls: Int = 0,
-        val votes: Int = 0
+        var votes: Int = 0
 ) {
 
-    val isFavourite: Boolean
+    val isFavourite: Single<Boolean>
         get() =
             db.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
                     .parameter("uuid", stationuuid)
-                    .blockingFirst { it.getInt(1) } > 0
+                    .toSingle { it.getInt(1) > 0 }
 
 
-    fun addFavourite(): Single<Int> =
+    fun addFavourite(): Single<Boolean> =
             db.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
-                    "homepage, country, countrycode, state, language, favicon, tags) " +
-                    "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags )")
+                    "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
+                    "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
                     .parameter("name", name)
                     .parameter("stationuuid", stationuuid)
                     .parameter("url_resolved", url_resolved)
@@ -47,7 +45,9 @@ data class Station(
                     .parameter("language", language)
                     .parameter("favicon", favicon)
                     .parameter("tags", tags)
-                    .toSingle { it.getInt(1) }
+                    .parameter("codec", codec)
+                    .parameter("bitrate", bitrate)
+                    .toSingle { it.getInt(1) > 0 }
 
     fun isValidStation() = stationuuid != "0"
 
@@ -64,7 +64,6 @@ data class Station(
     companion object {
         fun stub() = Station(
                 "0",
-                "0",
                 "Not playing",
                 "none",
                 "",
@@ -74,8 +73,7 @@ data class Station(
         fun favourites(): Single<MutableList<Station>> =
                 db.select("SELECT * FROM FAVOURITES")
                         .toObservable {
-                            Station("0",
-                                    it.getString("stationuuid"),
+                            Station(it.getString("stationuuid"),
                                     it.getString("name"),
                                     it.getString("url_resolved"),
                                     it.getString("homepage"),
@@ -85,9 +83,11 @@ data class Station(
                                     it.getString("countrycode"),
                                     it.getString("state"),
                                     it.getString("language"),
-                                    "")
+                                    it.getString("codec"),
+                                    it.getInt("bitrate"))
                         }
                         .toList()
+
 
     }
 }

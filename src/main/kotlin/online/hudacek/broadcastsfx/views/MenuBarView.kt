@@ -19,6 +19,7 @@ package online.hudacek.broadcastsfx.views
 import com.sun.javafx.PlatformUtil
 import de.codecentric.centerdevice.MenuToolkit
 import de.codecentric.centerdevice.dialogs.about.AboutStageBuilder
+import io.reactivex.Single
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
@@ -89,13 +90,24 @@ class MenuBarView : View() {
         item(messages["menu.station.favourite"], keyFavourites) {
             shouldBeDisabled(player.station)
             action {
-                if (player.station.value.isFavourite) {
-                    notification[FontAwesome.Glyph.WARNING] = messages["menu.station.favourite.error"]
-                } else {
-                    player.station.value.addFavourite().subscribe { _ ->
-                        notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
-                    }
-                }
+                player.station.value
+                        .isFavourite
+                        .flatMap {
+                            if (it) {
+                                Single.just(false)
+                            } else {
+                                player.station.value.addFavourite()
+                            }
+                        }
+                        .subscribe({
+                            if (it) {
+                                notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.added"]
+                            } else {
+                                notification[FontAwesome.Glyph.WARNING] = messages["menu.station.favourite.addedAlready"]
+                            }
+                        }, {
+                            notification[FontAwesome.Glyph.WARNING] = messages["menu.station.favourite.error"]
+                        })
             }
         }
 

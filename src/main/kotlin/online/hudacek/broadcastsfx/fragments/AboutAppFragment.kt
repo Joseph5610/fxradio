@@ -27,10 +27,6 @@ import tornadofx.controlsfx.statusbar
 
 class AboutAppFragment : Fragment("${About.appName} ${Broadcasts.version}") {
 
-    override fun onBeforeShow() {
-        currentStage?.isResizable = false
-    }
-
     override val root = vbox {
         prefWidth = 300.0
 

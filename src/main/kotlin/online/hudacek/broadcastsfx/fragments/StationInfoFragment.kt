@@ -16,102 +16,125 @@
 
 package online.hudacek.broadcastsfx.fragments
 
+import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.extension.createImage
 import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
+import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(val station: Station? = null,
-                          showImage: Boolean = true,
-                          showList: Boolean = true) : Fragment() {
+class StationInfoFragment(val station: Station? = null) : Fragment() {
 
     private val playerModel: PlayerModel by inject()
 
-    private val showStation: Station = station ?: playerModel.station.value
+    private val shownStation: Station = station ?: playerModel.station.value
+
+    private val stationsApi: StationsApi
+        get() = StationsApi.client
+
+    private var container = vbox {
+        add(ProgressView::class)
+    }
 
     override fun onBeforeShow() {
         currentStage?.opacity = 0.85
     }
 
     override val root = vbox {
-        if (showList) {
-            setPrefSize(300.0, 300.0)
-        } else {
-            prefWidth = 300.0
-        }
+        prefWidth = 300.0
+        title = shownStation.name
+        add(container)
+    }
 
-        showStation.let {
-            title = it.name
+    init {
+        stationsApi.getStationInfo(shownStation.stationuuid)
+                .observeOnFx()
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    //Update station data from real time
+                    showStationData(it.last())
+                }, {
+                    showStationData(shownStation)
+                })
+    }
+
+    private fun showStationData(station: Station) {
+        station.let {
 
             val tagsList = it.tags.split(",")
                     .map { tag -> tag.trim() }
                     .filter { tag -> tag.isNotEmpty() }
 
             val codecBitrateInfo = it.codec + " (" + it.bitrate + " kbps)"
-
-            if (showImage) {
-                vbox(alignment = Pos.CENTER) {
-                    paddingAll = 10.0
-                    imageview {
-                        createImage(it)
-                        effect = DropShadow(30.0, Color.LIGHTGRAY)
-                        fitHeight = 100.0
-                        fitHeight = 100.0
-                        isPreserveRatio = true
-                    }
-                }
-            }
-            vbox(alignment = Pos.CENTER) {
-                label("Votes: ${it.votes}") {
-                    addClass(Styles.grayLabel)
-                    addClass(Styles.tag)
-                }
-                style {
-                    paddingBottom = 5.0
-                }
-            }
-
-            if (tagsList.isNotEmpty()) {
-                flowpane {
-                    hgap = 5.0
-                    vgap = 5.0
-                    alignment = Pos.CENTER
-                    paddingAll = 5.0
-                    tagsList.forEach { tag ->
-                        label(tag) {
-                            addClass(Styles.tag)
-                            addClass(Styles.grayLabel)
+            container.replaceChildren(
+                    vbox {
+                        vbox(alignment = Pos.CENTER) {
+                            paddingAll = 10.0
+                            imageview {
+                                createImage(it)
+                                effect = DropShadow(30.0, Color.LIGHTGRAY)
+                                fitHeight = 100.0
+                                fitHeight = 100.0
+                                isPreserveRatio = true
+                            }
                         }
-                    }
-                }
-            }
 
-            if (showList) {
-                val list = observableListOf(
-                        codecBitrateInfo,
-                        "Country: ${it.country}",
-                        "Language: ${it.language}")
-                listview(list)
-            }
+                        flowpane {
+                            hgap = 5.0
+                            vgap = 5.0
+                            alignment = Pos.CENTER
+                            paddingAll = 5.0
+                            observableListOf(
+                                    "Votes: ${it.votes}",
+                                    codecBitrateInfo,
+                                    "Country: ${it.country}",
+                                    "Language: ${it.language}")
+                                    .forEach { info ->
+                                        label(info) {
+                                            addClass(Styles.grayLabel)
+                                            addClass(Styles.tag)
+                                        }
+                                    }
+                        }
 
-            if (it.homepage.isNotEmpty()) {
-                statusbar {
-                    rightItems.add(
-                            hyperlink(it.homepage) {
-                                addClass(Styles.primaryTextColor)
-                                action {
-                                    app.openUrl(it.homepage)
+                        if (tagsList.isNotEmpty()) {
+                            flowpane {
+                                hgap = 5.0
+                                vgap = 5.0
+                                alignment = Pos.CENTER
+                                paddingAll = 5.0
+                                tagsList.forEach { tag ->
+                                    label(tag) {
+                                        addClass(Styles.tag)
+                                        addClass(Styles.grayLabel)
+                                    }
                                 }
                             }
-                    )
-                }
-            }
+                        }
+
+                        if (it.homepage.isNotEmpty()) {
+                            statusbar {
+                                rightItems.add(
+                                        hyperlink(it.homepage) {
+                                            addClass(Styles.primaryTextColor)
+                                            action {
+                                                app.openUrl(it.homepage)
+                                            }
+                                        }
+                                )
+                            }
+                        }
+                    }
+            )
+            currentStage?.sizeToScene()
         }
     }
 }

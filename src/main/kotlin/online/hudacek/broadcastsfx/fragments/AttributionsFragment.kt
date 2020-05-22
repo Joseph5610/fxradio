@@ -37,7 +37,7 @@ class AttributionsFragment : Fragment("Third Party software used by ${About.appN
             paddingAll = 10.0
             requestFocusOnSceneAvailable()
 
-            tableview(Attributions.list) {
+            tableview(Attributions.all) {
                 columnResizePolicy = SmartResize.POLICY
                 readonlyColumn("Name", Attribution::name).remainingWidth()
                 readonlyColumn("Version", Attribution::version)

@@ -47,10 +47,11 @@ class StationsDataGridView : View() {
         }
 
         cellCache {
+            println(it.url_resolved)
             vbox(alignment = Pos.CENTER) {
                 popover {
                     vbox {
-                        add(StationInfoFragment(it, showList = false))
+                        add(StationInfoFragment(it))
                     }
                 }
 

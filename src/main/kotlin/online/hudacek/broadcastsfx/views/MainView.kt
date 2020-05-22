@@ -30,6 +30,7 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
+
 class MainView : View(About.appName) {
 
     private val controller: MainController by inject()

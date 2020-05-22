@@ -28,15 +28,8 @@ internal val db = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").
     execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
             " stationuuid VARCHAR, name VARCHAR, " +
             " url_resolved VARCHAR, homepage VARCHAR," +
-            " favicon VARCHAR, tags VARCHAR, country VARCHAR, countrycode VARCHAR, state VARCHAR, language VARCHAR" +
-            " )")
-            .toSingle()
-            .subscribe()
-
-    execute("CREATE TABLE IF NOT EXISTS HISTORY (ID INTEGER PRIMARY KEY," +
-            " stationuuid VARCHAR, name VARCHAR, " +
-            " url_resolved VARCHAR, homepage VARCHAR," +
-            " favicon VARCHAR, tags VARCHAR, country VARCHAR, countrycode VARCHAR, state VARCHAR, language VARCHAR" +
+            " favicon VARCHAR, tags VARCHAR, country VARCHAR, " +
+            " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
             " )")
             .toSingle()
             .subscribe()

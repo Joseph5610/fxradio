@@ -3,21 +3,22 @@ package online.hudacek.broadcastsfx.model
 import tornadofx.*
 
 object Attributions {
-    val list = observableListOf(
-            Attribution("tornadofx", "1.7.20", Licenses.apache20),
-            Attribution("controlsfx", "8.40.16", Licenses.controlsfx),
-            Attribution("vlcj", "4.0", Licenses.gpl3),
-            Attribution("humble video", "0.3.0", Licenses.gpl3),
-            Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
-            Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
-            Attribution("log4j", "2.9.1", Licenses.apache20),
-            Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
-            Attribution("appdmg", "0.6.0", Licenses.appdmg),
-            Attribution("TickerView", license = Licenses.tickerView),
-            Attribution("macOS install disk background", license = Licenses.bg),
-            Attribution("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
-
-    )
+    val all by lazy {
+        observableListOf(
+                Attribution("tornadofx", "1.7.20", Licenses.apache20),
+                Attribution("controlsfx", "8.40.16", Licenses.controlsfx),
+                Attribution("vlcj", "4.0", Licenses.gpl3),
+                Attribution("humble video", "0.3.0", Licenses.gpl3),
+                Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
+                Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
+                Attribution("log4j", "2.9.1", Licenses.apache20),
+                Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
+                Attribution("appdmg", "0.6.0", Licenses.appdmg),
+                Attribution("TickerView", license = Licenses.tickerView),
+                Attribution("macOS install disk background", license = Licenses.bg),
+                Attribution("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
+        )
+    }
 }
 
 class License(name: String = "", content: String) {

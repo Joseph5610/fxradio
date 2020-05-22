@@ -42,9 +42,9 @@ class MenuBarController : Controller() {
 
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun openAbout() = find<AboutAppFragment>().openModal(stageStyle = StageStyle.UTILITY)
+    fun openAbout() = find<AboutAppFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
-    fun openServerSelect() = find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UTILITY)
+    fun openServerSelect() = find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 

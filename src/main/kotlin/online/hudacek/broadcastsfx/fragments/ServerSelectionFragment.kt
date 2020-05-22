@@ -33,10 +33,6 @@ class ServerSelectionFragment : Fragment("Select API server") {
 
     override val root = Form()
 
-    override fun onBeforeShow() {
-        currentStage?.isResizable = false
-    }
-
     init {
         model.item = ApiServer(StationsApi.hostname)
 

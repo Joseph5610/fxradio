@@ -58,6 +58,7 @@ dependencies {
     compile 'uk.co.caprica:vlcj:4.4.0'
 }
 
+
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin/'
 }
