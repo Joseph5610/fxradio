@@ -30,7 +30,6 @@ deploy:
   on:
     repo: Joseph5610/broadcastsFX
     branch: master
-    tags: true
 branches:
   only:
     - master
