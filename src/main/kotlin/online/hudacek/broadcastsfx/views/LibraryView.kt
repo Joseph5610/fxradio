@@ -106,6 +106,8 @@ class LibraryView : View() {
 
         setOnMouseClicked {
             controller.loadLibrary(LibraryType.Search, text.trim())
+            countriesListView.selectionModel.clearSelection()
+            libraryListView.selectionModel.clearSelection()
         }
     }
 
