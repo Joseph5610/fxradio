@@ -110,6 +110,10 @@ class LibraryView : View() {
     }
 
     init {
+        //set default view
+        libraryListView.selectionModel.select(0)
+        controller.loadLibrary(LibraryType.TopStations)
+
         libraryListView.onUserSelect(1) {
             countriesListView.selectionModel.clearSelection()
             controller.loadLibrary(it.type)

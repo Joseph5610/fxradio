@@ -93,7 +93,7 @@ class StationInfoFragment(val station: Station? = null) : Fragment() {
                             alignment = Pos.CENTER
                             paddingAll = 5.0
                             observableListOf(
-                                    "Votes: ${it.votes}",
+                                    "${it.votes} votes",
                                     codecBitrateInfo,
                                     "Country: ${it.country}",
                                     "Language: ${it.language}")
