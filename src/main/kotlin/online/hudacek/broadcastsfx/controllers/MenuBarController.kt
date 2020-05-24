@@ -21,8 +21,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import online.hudacek.broadcastsfx.About
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -66,4 +68,8 @@ class MenuBarController : Controller() {
             }, {
                 menuBarView.showVoteResult(false)
             })
+
+    fun openWebsite() {
+        app.openUrl(About.appUrl)
+    }
 }

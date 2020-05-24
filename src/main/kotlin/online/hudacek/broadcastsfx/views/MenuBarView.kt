@@ -127,16 +127,6 @@ class MenuBarView : View() {
         }
     }
 
-    private val viewMenu = Menu(messages["menu.view"]).apply {
-        item(messages["menu.view.stats"]).action {
-            controller.openStats()
-        }
-        separator()
-        item(messages["menu.view.logs"]).action {
-            app.openUrl("file://${Config.Paths.baseAppDir}")
-        }
-    }
-
     private val playerMenu = Menu(messages["menu.player.controls"]).apply {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
             shouldBeVisible(player.station)
@@ -174,6 +164,29 @@ class MenuBarView : View() {
         }
     }
 
+    private val helpMenu = Menu(messages["menu.help"]).apply {
+        item(messages["menu.view.stats"]).action {
+            controller.openStats()
+        }
+        separator()
+        item(messages["menu.view.openhomepage"]) {
+
+            graphic = imageview("browser-web-icon.png") {
+                fitHeight = 15.0
+                fitWidth = 15.0
+                isPreserveRatio = true
+            }
+
+            action {
+                controller.openWebsite()
+            }
+        }
+        separator()
+        item(messages["menu.view.logs"]).action {
+            app.openUrl("file://${Config.Paths.baseAppDir}")
+        }
+    }
+
     init {
         player.playerType.onChange {
             playerCheck.isSelected = it == PlayerType.Native
@@ -194,7 +207,7 @@ class MenuBarView : View() {
                 controller.closeApp(currentStage)
             }
         }
-        menus.addAll(stationMenu, playerMenu, historyMenu, viewMenu)
+        menus.addAll(stationMenu, playerMenu, historyMenu, helpMenu)
     }
 
     /**
@@ -224,7 +237,7 @@ class MenuBarView : View() {
                     SeparatorMenuItem(), tk.createQuitMenuItem(About.appName))
         }
 
-        val windowMenu = Menu("Window").apply {
+        val windowMenu = Menu(messages["macos.menu.window"]).apply {
             items.addAll(
                     tk.createMinimizeMenuItem(),
                     tk.createZoomMenuItem(),
@@ -233,7 +246,8 @@ class MenuBarView : View() {
                     tk.createBringAllToFrontItem())
         }
 
-        menus.addAll(stationMenu, playerMenu, historyMenu, viewMenu, windowMenu)
+
+        menus.addAll(stationMenu, playerMenu, historyMenu, windowMenu, helpMenu)
 
         tk.setApplicationMenu(appMenu)
         tk.autoAddWindowMenuItems(windowMenu)
@@ -250,12 +264,14 @@ class MenuBarView : View() {
         }
 
         separator()
+
         item(messages["menu.app.server"]).action {
             controller.openServerSelect()
         }
         item(messages["menu.app.attributions"]).action {
             controller.openAttributions()
         }
+
         separator()
         item(messages["menu.app.clearCache"]).action {
             confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {

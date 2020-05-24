@@ -24,6 +24,7 @@ object About {
     const val appName = "FXRadio"
     const val appDesc = "Internet radio directory"
     const val appLogo = "radio-icon.png"
+    const val appUrl = "https://hudacek.online/fxradio"
     const val author = "Jozef Hudáček"
     const val copyright = "Copyright (c) 2020"
     const val dataSource = "https://api.radio-browser.info"
