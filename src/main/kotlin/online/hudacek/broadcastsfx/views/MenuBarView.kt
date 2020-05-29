@@ -37,7 +37,7 @@ import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.extension.*
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.model.StationHistoryModel
+import online.hudacek.broadcastsfx.model.StationsHistoryModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import java.util.*
@@ -47,7 +47,7 @@ class MenuBarView : View() {
     private val controller: MenuBarController by inject()
     private val notification by lazy { find(MainView::class).notification }
 
-    private val stationHistory: StationHistoryModel by inject()
+    private val stationsHistory: StationsHistoryModel by inject()
     private val player: PlayerModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
@@ -60,7 +60,7 @@ class MenuBarView : View() {
 
     private val historyMenu = Menu(messages["menu.history"]).apply {
         shouldBeDisabled(player.station)
-        items.bind(stationHistory.stations.value) {
+        items.bind(stationsHistory.stations.value) {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
@@ -88,7 +88,9 @@ class MenuBarView : View() {
         }
 
         item(messages["menu.station.favourite"], keyFavourites) {
-            shouldBeDisabled(player.station)
+            disableWhen(booleanBinding(player.station) {
+                value == null || !value.isValidStation() || value.isFavourite.blockingGet()
+            })
             action {
                 player.station.value
                         .isFavourite
@@ -107,6 +109,24 @@ class MenuBarView : View() {
                             }
                         }, {
                             notification[FontAwesome.Glyph.WARNING] = messages["menu.station.favourite.error"]
+                        })
+            }
+        }
+
+        item(messages["menu.station.favourite.remove"]) {
+            visibleWhen(booleanBinding(player.station) {
+                value != null && value.isValidStation() && value.isFavourite.blockingGet()
+            })
+            action {
+                player.station.value
+                        .isFavourite
+                        .flatMap {
+                            if (!it) Single.just(false) else player.station.value.removeFavourite()
+                        }
+                        .subscribe({
+                            notification[FontAwesome.Glyph.CHECK] = messages["menu.station.favourite.removed"]
+                        }, {
+                            notification[FontAwesome.Glyph.WARNING] = messages["menu.station.favourite.remove.error"]
                         })
             }
         }
@@ -167,6 +187,15 @@ class MenuBarView : View() {
     private val helpMenu = Menu(messages["menu.help"]).apply {
         item(messages["menu.view.stats"]).action {
             controller.openStats()
+        }
+        item(messages["menu.app.clearCache"]).action {
+            confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
+                if (controller.clearCache()) {
+                    notification[FontAwesome.Glyph.CHECK] = messages["cache.clear.ok"]
+                } else {
+                    notification[FontAwesome.Glyph.WARNING] = messages["cache.clear.error"]
+                }
+            }
         }
         separator()
         item(messages["menu.view.openhomepage"]) {
@@ -270,17 +299,6 @@ class MenuBarView : View() {
         }
         item(messages["menu.app.attributions"]).action {
             controller.openAttributions()
-        }
-
-        separator()
-        item(messages["menu.app.clearCache"]).action {
-            confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
-                if (controller.clearCache()) {
-                    notification[FontAwesome.Glyph.CHECK] = messages["cache.clear.ok"]
-                } else {
-                    notification[FontAwesome.Glyph.WARNING] = messages["cache.clear.error"]
-                }
-            }
         }
     }
 

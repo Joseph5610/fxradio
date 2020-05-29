@@ -49,6 +49,11 @@ data class Station(
                     .parameter("bitrate", bitrate)
                     .toSingle { it.getInt(1) > 0 }
 
+    fun removeFavourite(): Single<Boolean> =
+            db.insert("delete from favourites where stationuuid = :stationuuid")
+                    .parameter("stationuuid", stationuuid)
+                    .toSingle { it.getInt(1) > 0 }
+
     fun isValidStation() = stationuuid != "0"
 
     fun isInvalidImage() = favicon.isNullOrEmpty() || favicon!!.contains(".ico")

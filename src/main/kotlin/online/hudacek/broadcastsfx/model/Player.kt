@@ -17,7 +17,7 @@ class Player(animate: Boolean = true, station: Station = Station.stub(),
 
 class PlayerModel : ItemViewModel<Player>() {
 
-    private val stationHistory: StationHistoryModel by inject()
+    private val stationsHistory: StationsHistoryModel by inject()
 
     val animate = bind(Player::animate)
     val station = bind(Player::actualStation)
@@ -25,7 +25,7 @@ class PlayerModel : ItemViewModel<Player>() {
 
     init {
         station.onChange {
-            it?.let(stationHistory::add)
+            it?.let(stationsHistory::add)
         }
     }
 

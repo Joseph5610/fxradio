@@ -24,7 +24,8 @@ import online.hudacek.broadcastsfx.extension.createImage
 import online.hudacek.broadcastsfx.extension.tooltip
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.StationsList
+import online.hudacek.broadcastsfx.model.StationsListModel
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -36,9 +37,19 @@ import tornadofx.controlsfx.showPopover
 class StationsDataGridView : View() {
 
     private val playerModel: PlayerModel by inject()
-    private val stationsData = observableListOf(Station.stub())
+    private val stationsList: StationsListModel by inject()
 
-    override val root = datagrid(stationsData) {
+    init {
+        stationsList.item = StationsList()
+
+        stationsList.stations.onChange {
+            it?.let {
+                root.items = it
+            }
+        }
+    }
+
+    override val root = datagrid(stationsList.item.stations) {
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {
@@ -47,7 +58,6 @@ class StationsDataGridView : View() {
         }
 
         cellCache {
-            println(it.url_resolved)
             vbox(alignment = Pos.CENTER) {
                 popover {
                     vbox {
@@ -89,9 +99,8 @@ class StationsDataGridView : View() {
     /**
      * Change datagrid content
      */
-    fun show(stations: List<Station>) {
-        root.show()
-        root.selectionModel.clearSelection()
-        stationsData.setAll(stations)
+    fun show() = root.apply {
+        show()
+        selectionModel.clearSelection()
     }
 }

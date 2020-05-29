@@ -24,7 +24,6 @@ import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
 import online.hudacek.broadcastsfx.events.LibraryType
 import online.hudacek.broadcastsfx.extension.glyph
-import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -77,8 +76,6 @@ class StationsView : View() {
     }
 
     init {
-        controller.getTopStations()
-
         //Handle change of stations library
         subscribe<LibraryRefreshEvent> { event ->
             with(event) {
@@ -114,7 +111,6 @@ class StationsView : View() {
     }
 
     override val root = vbox {
-
         style {
             backgroundColor += Color.WHITE
         }
@@ -152,9 +148,9 @@ class StationsView : View() {
         subHeader.text = messages["connectionErrorDesc"]
     }
 
-    fun showDataGrid(stations: List<Station>) {
+    fun showStations() {
         headerContainer.hide()
         contentTop.show()
-        dataGrid.show(stations)
+        dataGrid.show()
     }
 }

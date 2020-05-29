@@ -20,7 +20,8 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.model.StationHistoryModel
+import online.hudacek.broadcastsfx.model.StationsHistoryModel
+import online.hudacek.broadcastsfx.model.StationsListModel
 import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.rest.SearchBody
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -30,7 +31,8 @@ import tornadofx.*
 class StationsController : Controller() {
 
     private val stationsView: StationsView by inject()
-    private val stationsHistory: StationHistoryModel by inject()
+    private val stationsHistory: StationsHistoryModel by inject()
+    private val stationsList: StationsListModel by inject()
 
     private val stationsApi: StationsApi
         get() = StationsApi.client
@@ -43,7 +45,8 @@ class StationsController : Controller() {
                     if (it.isEmpty()) {
                         stationsView.showNoResults()
                     } else {
-                        stationsView.showDataGrid(it)
+                        stationsView.showStations()
+                        stationsList.stations.value = it.asObservable()
                     }
                 }, {
                     stationsView.showError(it)
@@ -55,7 +58,8 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
-                stationsView.showDataGrid(result)
+                stationsView.showStations()
+                stationsList.stations.value = result.asObservable()
             }, {
                 stationsView.showError(it)
             })
@@ -68,7 +72,8 @@ class StationsController : Controller() {
                 if (result.isEmpty()) {
                     stationsView.showNoResults(name)
                 } else {
-                    stationsView.showDataGrid(result)
+                    stationsView.showStations()
+                    stationsList.stations.value = result.asObservable()
                 }
             }, {
                 stationsView.showError(it)
@@ -79,7 +84,8 @@ class StationsController : Controller() {
         if (historyList.isEmpty()) {
             stationsView.showNoResults()
         } else {
-            stationsView.showDataGrid(historyList)
+            stationsView.showStations()
+            stationsList.stations.value = historyList.asObservable()
         }
     }
 
@@ -88,7 +94,8 @@ class StationsController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({ result ->
-                stationsView.showDataGrid(result)
+                stationsView.showStations()
+                stationsList.stations.value = result.asObservable()
             }, {
                 stationsView.showError(it)
             })
