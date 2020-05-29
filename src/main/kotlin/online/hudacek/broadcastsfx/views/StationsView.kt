@@ -18,7 +18,6 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import javafx.scene.paint.Color
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
@@ -68,9 +67,7 @@ class StationsView : View() {
     private val contentTop = flowpane {
         paddingBottom = 0.0
         maxHeight = 10.0
-        style {
-            backgroundColor += Color.WHITESMOKE
-        }
+        addClass(Styles.backgroundWhiteSmoke)
 
         add(contentName)
     }
@@ -111,10 +108,7 @@ class StationsView : View() {
     }
 
     override val root = vbox {
-        style {
-            backgroundColor += Color.WHITE
-        }
-
+        addClass(Styles.backgroundWhite)
         vgrow = Priority.ALWAYS
         add(headerContainer)
         add(contentTop)

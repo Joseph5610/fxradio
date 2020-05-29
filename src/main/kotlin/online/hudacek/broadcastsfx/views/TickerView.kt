@@ -5,7 +5,6 @@ import io.reactivex.disposables.Disposable
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
-import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.layout.Pane
@@ -111,7 +110,7 @@ class MarqueeView : View() {
         val subscriptions = HashMap<TickerEntry<Node>, Disposable>()
 
         //Could also update this things speed time so that stuff scrolls faster
-        val updateFrame = KeyFrame(Duration.millis(35.0), EventHandler<ActionEvent> {
+        val updateFrame = KeyFrame(Duration.millis(35.0), EventHandler {
 
             //There's possible some thread bugs in there, but only on the very first creation
             if (activeTicks.isEmpty() || lastOneCleared()) {

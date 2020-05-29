@@ -55,19 +55,19 @@ class LibraryView : View() {
                 LibraryType.Country -> ""
                 LibraryType.TopStations -> messages["topStations"]
             }
-            addClass(Styles.customListItem)
+            addClass(Styles.libraryListItem)
         }
-        addClass(Styles.noBorder)
+        addClass(Styles.libraryListView)
     }
 
     private val countriesListView = listview<Countries> {
         cellFormat {
             padding = Insets(5.0, 10.0, 5.0, 15.0)
             text = "${item.name} (${item.stationcount})"
-            addClass(Styles.customListItem)
+            addClass(Styles.libraryListItem)
         }
 
-        addClass(Styles.noBorder)
+        addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
             controller.loadLibrary(LibraryType.Country, it.name)

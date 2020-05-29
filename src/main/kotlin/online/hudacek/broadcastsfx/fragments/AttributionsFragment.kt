@@ -76,9 +76,6 @@ class AttributionsFragment : Fragment("Third Party software used by ${About.appN
             textarea {
                 bind(model.licenseContent)
                 vgrow = Priority.ALWAYS
-                style {
-                    fontFamily = "monospace"
-                }
             }
         }
     }

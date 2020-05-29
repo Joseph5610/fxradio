@@ -23,18 +23,15 @@ import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.geometry.Insets
 import javafx.scene.Node
-import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.VBox
-import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.ImageCache
-import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.control.NotificationPane
@@ -72,9 +69,7 @@ internal fun VBox.tooltip(station: Station): VBox {
 internal fun EventTarget.smallLabel(text: String = ""): Label {
     return label(text) {
         paddingLeft = 10.0
-        style {
-            fontWeight = FontWeight.BOLD
-        }
+        addClass(Styles.boldText)
         addClass(Styles.grayLabel)
     }
 }
@@ -89,28 +84,10 @@ internal fun EventTarget.smallIcon(url: String = "", op: ImageView.() -> Unit = 
 /**
  * Convenience methods for boolean bindings
  */
-internal fun Node.shouldBeVisible(station: Property<Station>) {
-    visibleWhen(booleanBinding(station) {
-        value != null
-    })
-}
-
 internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
     visibleWhen(booleanBinding(station) {
         value != null && value.isValidStation()
     })
-}
-
-internal fun CheckMenuItem.shouldBeSelected(playerType: Property<PlayerType>) {
-    selectedProperty().booleanBinding(playerType) {
-        playerType.value == PlayerType.Native
-    }
-}
-
-internal fun CheckMenuItem.select(booleanProperty: Property<Boolean>) {
-    selectedProperty().booleanBinding(booleanProperty) {
-        it == true
-    }
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {

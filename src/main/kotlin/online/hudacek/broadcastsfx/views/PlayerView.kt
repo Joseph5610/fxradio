@@ -105,13 +105,7 @@ class PlayerView : View() {
     }
 
     override val root = vbox {
-        paddingTop = 10.0
-        paddingBottom = 10.0
-
-        style {
-            borderColor += box(c("transparent"), c("transparent"), c("#E8E8E8"), c("transparent"))
-        }
-
+        addClass(Styles.playerMainBox)
         hbox(15) {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
@@ -125,7 +119,7 @@ class PlayerView : View() {
 
             //Player box
             hbox(5) {
-                addClass(Styles.playerStationInfo)
+                addClass(Styles.playerStationBox)
 
                 //Radio logo
                 vbox(alignment = Pos.CENTER_LEFT) {
