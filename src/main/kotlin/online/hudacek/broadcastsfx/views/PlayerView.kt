@@ -78,7 +78,7 @@ class PlayerView : View() {
         value = controller.getVolume()
         majorTickUnit = 8.0
         isSnapToTicks = true
-        // isShowTickMarks = true
+       // isShowTickMarks = true
         valueProperty().onChange { newVolume ->
             controller.changeVolume(newVolume)
         }

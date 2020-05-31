@@ -20,6 +20,7 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.extension.copyMenu
 import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
@@ -56,7 +57,12 @@ class StatsFragment : Fragment("Statistics") {
                             "Countries: ${it.countries}",
                             "Broken stations: ${it.stations_broken}",
                             "Tags: ${it.tags}")
-                    container.replaceChildren(listview(list))
+                    container.replaceChildren(listview(list) {
+                        cellFormat {
+                            text = item
+                            copyMenu(clipboard, item)
+                        }
+                    })
                 }, {
                     container.replaceChildren(
                             label("Stats are not available at the moment.") {
@@ -70,11 +76,9 @@ class StatsFragment : Fragment("Statistics") {
         setPrefSize(300.0, 250.0)
         vbox(alignment = Pos.CENTER) {
             requestFocusOnSceneAvailable()
-
             hyperlink(StationsApi.hostname) {
                 paddingAll = 10.0
                 addClass(Styles.header)
-
                 action {
                     app.openUrl("http://${this.text}")
                 }

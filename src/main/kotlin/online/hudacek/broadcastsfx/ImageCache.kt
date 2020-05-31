@@ -52,7 +52,7 @@ object ImageCache {
             true
         } catch (e: IOException) {
             logger.error(e) {
-                "IOException when clearing cache: "
+                "IOException when clearing cache"
             }
             false
         }
@@ -64,18 +64,15 @@ object ImageCache {
     }
 
     fun getImageFromCache(station: Station): Image {
-        return if (!isImageInCache(station) || station.isInvalidImage()) defaultRadioLogo
-        else {
-            val imagePath = cacheBasePath.resolve(station.stationuuid)
-            val image = Image(FileInputStream(imagePath.toFile()))
-            if (image.isError) {
-                logger.error {
-                    "image showing failed for ${station.name} (${image.exception.localizedMessage}) "
-                }
-                defaultRadioLogo
-            } else {
-                image
+        val imagePath = cacheBasePath.resolve(station.stationuuid)
+        val image = Image(FileInputStream(imagePath.toFile()))
+        return if (image.isError) {
+            logger.error {
+                "image showing failed for ${station.name} (${image.exception.localizedMessage}) "
             }
+            defaultRadioLogo
+        } else {
+            image
         }
     }
 

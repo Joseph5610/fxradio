@@ -22,6 +22,7 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.extension.copyMenu
 import online.hudacek.broadcastsfx.extension.createImage
 import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.model.PlayerModel
@@ -31,7 +32,7 @@ import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(val station: Station? = null) : Fragment() {
+class StationInfoFragment(val station: Station? = null, val showImage: Boolean = true) : Fragment() {
 
     private val playerModel: PlayerModel by inject()
 
@@ -74,16 +75,22 @@ class StationInfoFragment(val station: Station? = null) : Fragment() {
                     .filter { tag -> tag.isNotEmpty() }
 
             val codecBitrateInfo = it.codec + " (" + it.bitrate + " kbps)"
+
+            val votes =
+                    if (it.votes == 0) "No" else it.votes
+
             container.replaceChildren(
                     vbox {
-                        vbox(alignment = Pos.CENTER) {
-                            paddingAll = 10.0
-                            imageview {
-                                createImage(it)
-                                effect = DropShadow(30.0, Color.LIGHTGRAY)
-                                fitHeight = 100.0
-                                fitHeight = 100.0
-                                isPreserveRatio = true
+                        if (showImage) {
+                            vbox(alignment = Pos.CENTER) {
+                                paddingAll = 10.0
+                                imageview {
+                                    createImage(it)
+                                    effect = DropShadow(30.0, Color.LIGHTGRAY)
+                                    fitHeight = 100.0
+                                    fitHeight = 100.0
+                                    isPreserveRatio = true
+                                }
                             }
                         }
 
@@ -93,7 +100,7 @@ class StationInfoFragment(val station: Station? = null) : Fragment() {
                             alignment = Pos.CENTER
                             paddingAll = 5.0
                             observableListOf(
-                                    "${it.votes} votes",
+                                    "$votes votes",
                                     codecBitrateInfo,
                                     "Country: ${it.country}",
                                     "Language: ${it.language}")
@@ -101,11 +108,15 @@ class StationInfoFragment(val station: Station? = null) : Fragment() {
                                         label(info) {
                                             addClass(Styles.grayLabel)
                                             addClass(Styles.tag)
+                                            copyMenu(clipboard, info)
                                         }
                                     }
                         }
 
                         if (tagsList.isNotEmpty()) {
+                            vbox(alignment = Pos.CENTER) {
+                                label("#Tags: ")
+                            }
                             flowpane {
                                 hgap = 5.0
                                 vgap = 5.0
@@ -115,6 +126,7 @@ class StationInfoFragment(val station: Station? = null) : Fragment() {
                                     label(tag) {
                                         addClass(Styles.tag)
                                         addClass(Styles.grayLabel)
+                                        copyMenu(clipboard, tag)
                                     }
                                 }
                             }
@@ -128,6 +140,7 @@ class StationInfoFragment(val station: Station? = null) : Fragment() {
                                             action {
                                                 app.openUrl(it.homepage)
                                             }
+                                            copyMenu(clipboard, it.homepage)
                                         }
                                 )
                             }

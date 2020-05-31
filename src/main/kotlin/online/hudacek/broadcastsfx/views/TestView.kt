@@ -16,12 +16,13 @@
 
 package online.hudacek.broadcastsfx.views
 
-import javafx.geometry.Pos
+import online.hudacek.broadcastsfx.extension.downloadImage
 import tornadofx.*
 
-class ProgressView : View() {
-    override val root = vbox(alignment = Pos.CENTER) {
-        paddingAll = 30.0
-        progressindicator()
+class TestView : View("TestView") {
+    override val root = vbox {
+        imageview {
+            downloadImage("https://www.reyfm.de/img/fav.png")
+        }
     }
 }

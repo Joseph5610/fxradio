@@ -21,9 +21,11 @@ import javafx.animation.PauseTransition
 import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.event.EventTarget
+import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
 import javafx.util.Duration
 import mu.KotlinLogging
@@ -140,8 +142,6 @@ internal fun ImageView.downloadImage(url: String) = runAsync {
     this.image = it.getInputStream().use { stream ->
         Image(stream)
     }
-    //println(this.image.isError)
-    this.image.exception.printStackTrace()
 } fail {
     this.image = defaultRadioLogo
 }
@@ -160,6 +160,24 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) =
 internal fun App.openUrl(url: String) {
     val hostServices = HostServicesFactory.getInstance(this)
     hostServices.showDocument(url)
+}
+
+internal fun EventTarget.copyMenu(clipboard: Clipboard, value: String): ContextMenu {
+    return contextmenu {
+        item("Copy").action {
+            clipboard.setContent {
+                putString(value)
+            }
+        }
+    }
+}
+
+internal fun ContextMenu.updateClipboard(clipboard: Clipboard, value: String) {
+    items[0].action {
+        clipboard.setContent {
+            putString(value)
+        }
+    }
 }
 
 internal val defaultRadioLogo = Image(Config.Paths.defaultRadioIcon)

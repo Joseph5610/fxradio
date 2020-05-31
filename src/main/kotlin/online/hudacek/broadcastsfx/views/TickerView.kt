@@ -7,10 +7,13 @@ import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.EventHandler
 import javafx.scene.Node
+import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Text
 import javafx.util.Duration
+import online.hudacek.broadcastsfx.extension.copyMenu
+import online.hudacek.broadcastsfx.extension.updateClipboard
 import tornadofx.*
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -31,19 +34,23 @@ open class TickerEntry<T : Node>(
 class TickerView : View() {
 
     private val marqueeView: MarqueeView by inject()
+    private var copyMenu: ContextMenu by singleAssign()
 
     override val root = hbox {
         prefHeight = 15.0
         marqueeView.inside(this)
+        copyMenu = copyMenu(clipboard, "")
         this.add(marqueeView)
     }
 
     fun updateText(text: String) {
+        copyMenu.updateClipboard(clipboard, text)
         marqueeView.clear()
         marqueeView.enqueueTickEntry(TickerEntry(content = createText(text), reschedule = true))
     }
 
     private fun createText(content: String): Text {
+        copyMenu.updateClipboard(clipboard, content)
         val text = Text(content)
         text.layoutY = 12.0
         return text
