@@ -21,9 +21,6 @@ import javafx.animation.PauseTransition
 import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.event.EventTarget
-import javafx.geometry.Insets
-import javafx.scene.Node
-import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -39,7 +36,6 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
 import java.net.URL
-import java.net.URLConnection
 
 /*
  * Helper extension functions for UI
@@ -60,26 +56,23 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
     delay.play()
 }
 
-internal fun VBox.tooltip(station: Station): VBox {
-    return onHover {
-        tooltip(station.name)
-    }
-}
+internal fun VBox.tooltip(station: Station) =
+        onHover {
+            tooltip(station.name)
+        }
 
-internal fun EventTarget.smallLabel(text: String = ""): Label {
-    return label(text) {
-        paddingLeft = 10.0
-        addClass(Styles.boldText)
-        addClass(Styles.grayLabel)
-    }
-}
+internal fun EventTarget.smallLabel(text: String = "") =
+        label(text) {
+            paddingLeft = 10.0
+            addClass(Styles.boldText)
+            addClass(Styles.grayLabel)
+        }
 
-internal fun EventTarget.smallIcon(url: String = "", op: ImageView.() -> Unit = {}): ImageView {
-    return imageview(url, op = op).apply {
-        fitWidth = 16.0
-        fitHeight = 16.0
-    }
-}
+internal fun EventTarget.smallIcon(url: String = "", op: ImageView.() -> Unit = {}) =
+        imageview(url, op = op).apply {
+            fitWidth = 14.0
+            fitHeight = 14.0
+        }
 
 /**
  * Convenience methods for boolean bindings
@@ -96,11 +89,6 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     })
 }
 
-internal fun Node.shouldBeDisabled(station: Property<Station>) {
-    disableWhen(booleanBinding(station) {
-        value == null || !value.isValidStation()
-    })
-}
 
 /**
  * This method is used for custom downloading of station's logo
@@ -114,38 +102,56 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
 internal fun ImageView.createImage(station: Station) {
     this.image = defaultRadioLogo
 
+    if (!station.isValidStation()) return
+
     if (ImageCache.isImageInCache(station)) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
-        logger.debug { "trying to download image from ${station.favicon}" }
-
         if (station.isInvalidImage()) {
-            logger.debug { "url is empty or unsupported, using default image" }
-            this.image = defaultRadioLogo
+            logger.debug { "Image for ${station.name} is invalid." }
             return
         }
 
+        logger.debug { "downloading logo of ${station.name} from ${station.favicon}" }
+
         runAsync {
-            val conn: URLConnection = URL(station.favicon).openConnection()
-            conn.setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
-            conn.getInputStream().use { stream ->
-                ImageCache.saveImage(station, stream)
+            URL(station.favicon).openConnection().apply {
+                setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
+                getInputStream().use { stream ->
+                    ImageCache.saveImage(station, stream)
+                }
             }
         } success {
             this.image = ImageCache.getImageFromCache(station)
         } fail {
-            logger.error(it) {
-                "image download failed for ${station.stationuuid} "
+            logger.error {
+                "image download failed for ${station.name} (${it.localizedMessage}) "
             }
             this.image = defaultRadioLogo
         }
     }
 }
 
+internal fun ImageView.downloadImage(url: String) = runAsync {
+    URL(url).openConnection().apply {
+        setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
+    }
+} success {
+    this.image = it.getInputStream().use { stream ->
+        Image(stream)
+    }
+    //println(this.image.isError)
+    this.image.exception.printStackTrace()
+} fail {
+    this.image = defaultRadioLogo
+}
+
 internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) =
         glyph("FontAwesome", glyph) {
             size(35.0)
-            padding = Insets(10.0, 5.0, 10.0, 5.0)
+            style {
+                padding = box(10.px, 5.px)
+            }
         }
 
 /**

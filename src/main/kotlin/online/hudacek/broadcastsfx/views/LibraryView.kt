@@ -16,7 +16,6 @@
 
 package online.hudacek.broadcastsfx.views
 
-import javafx.geometry.Insets
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
@@ -44,10 +43,7 @@ class LibraryView : View() {
         prefHeight = items.size * 30.0 + 5
 
         cellFormat {
-            padding = Insets(5.0, 10.0, 5.0, 15.0)
-            graphic = glyph("FontAwesome", item.graphic) {
-                color(Styles.colorPrimary)
-            }
+            graphic = glyph("FontAwesome", item.graphic)
             text = when (item.type) {
                 LibraryType.Favourites -> messages["favourites"]
                 LibraryType.Search -> ""
@@ -62,8 +58,16 @@ class LibraryView : View() {
 
     private val countriesListView = listview<Countries> {
         cellFormat {
-            padding = Insets(5.0, 10.0, 5.0, 15.0)
-            text = "${item.name} (${item.stationcount})"
+            graphic = hbox(5) {
+                val stationWord = if (item.stationcount > 1)
+                    messages["stations"] else messages["station"]
+
+                alignment = Pos.CENTER_LEFT
+                label(item.name.split("(")[0])
+                label("${item.stationcount} $stationWord") {
+                    addClass(Styles.libraryListItemTag)
+                }
+            }
             addClass(Styles.libraryListItem)
         }
 
@@ -79,13 +83,15 @@ class LibraryView : View() {
 
         left = label {
             graphic = glyph("FontAwesome", FontAwesome.Glyph.SEARCH) {
-                padding = Insets(10.0, 5.0, 10.0, 5.0)
+                style {
+                    padding = box(10.px, 5.px)
+                }
             }
         }
-        val savedQuery = app.config.string(Config.Keys.searchQuery)
-        savedQuery?.let {
+
+        app.config.string(Config.Keys.searchQuery)?.let {
             if (it.isNotBlank()) {
-                text = savedQuery
+                text = it
             }
         }
 

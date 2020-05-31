@@ -18,6 +18,7 @@ package online.hudacek.broadcastsfx
 
 import javafx.scene.image.Image
 import mu.KotlinLogging
+import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.model.rest.Station
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
@@ -63,10 +64,18 @@ object ImageCache {
     }
 
     fun getImageFromCache(station: Station): Image {
-        return if (!isImageInCache(station) || station.isInvalidImage()) Image(About.appLogo)
+        return if (!isImageInCache(station) || station.isInvalidImage()) defaultRadioLogo
         else {
             val imagePath = cacheBasePath.resolve(station.stationuuid)
-            Image(FileInputStream(imagePath.toFile()))
+            val image = Image(FileInputStream(imagePath.toFile()))
+            if (image.isError) {
+                logger.error {
+                    "image showing failed for ${station.name} (${image.exception.localizedMessage}) "
+                }
+                defaultRadioLogo
+            } else {
+                image
+            }
         }
     }
 

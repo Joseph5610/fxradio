@@ -28,9 +28,8 @@ import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.broadcastsfx.About
-import online.hudacek.broadcastsfx.Broadcasts
 import online.hudacek.broadcastsfx.Config
+import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
@@ -229,7 +228,7 @@ class MenuBarView : View() {
     }
 
     private fun defaultMenuBar() = menubar {
-        menu(About.appName) {
+        menu(FxRadio.appName) {
             addAboutMenu()
             separator()
             item(messages["menu.app.quit"]).action {
@@ -245,25 +244,25 @@ class MenuBarView : View() {
      */
     private fun platformMenuBar() = menubar {
         val tk = MenuToolkit.toolkit(Locale.getDefault())
-        tk.setApplicationMenu(tk.createDefaultApplicationMenu(About.appName))
+        tk.setApplicationMenu(tk.createDefaultApplicationMenu(FxRadio.appName))
 
         useSystemMenuBarProperty().set(true)
 
         val aboutStageBuilder = AboutStageBuilder
                 .start("")
-                .withAppName(About.appName + " - " + About.appDesc)
+                .withAppName(FxRadio.appName + " - " + FxRadio.appDesc)
                 .withCloseOnFocusLoss()
-                .withVersionString("Version ${Broadcasts.version}")
+                .withVersionString("Version ${FxRadio.version}")
                 .withCopyright("Copyright \u00A9 " + Calendar
-                        .getInstance()[Calendar.YEAR] + " " + About.author)
-                .withImage(Image(About.appLogo))
+                        .getInstance()[Calendar.YEAR] + " " + FxRadio.author)
+                .withImage(Image(FxRadio.appLogo))
 
-        val appMenu = Menu(About.appName).apply {
-            addAboutMenu(tk.createAboutMenuItem(About.appName, aboutStageBuilder.build()))
+        val appMenu = Menu(FxRadio.appName).apply {
+            addAboutMenu(tk.createAboutMenuItem(FxRadio.appName, aboutStageBuilder.build()))
             separator()
             items.addAll(
-                    tk.createHideMenuItem(About.appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
-                    SeparatorMenuItem(), tk.createQuitMenuItem(About.appName))
+                    tk.createHideMenuItem(FxRadio.appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
+                    SeparatorMenuItem(), tk.createQuitMenuItem(FxRadio.appName))
         }
 
         val windowMenu = Menu(messages["macos.menu.window"]).apply {

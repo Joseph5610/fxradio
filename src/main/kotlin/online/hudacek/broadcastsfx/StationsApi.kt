@@ -64,7 +64,7 @@ interface StationsApi {
     companion object : Component() {
 
         //What is app sending as a User Agent string
-        private val userAgentIdentifier = "${About.appName}/${Broadcasts.version}"
+        private val userAgentIdentifier = "${FxRadio.appName}/${FxRadio.version}"
 
         //try to connect to working API server
         private val inetAddressHostname: String by lazy {

@@ -19,14 +19,14 @@ package online.hudacek.broadcastsfx.fragments
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
-import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.model.Attribution
 import online.hudacek.broadcastsfx.model.AttributionModel
 import online.hudacek.broadcastsfx.model.Attributions
 import tornadofx.*
 
-class AttributionsFragment : Fragment("Third Party software used by ${About.appName}") {
+class AttributionsFragment : Fragment("Third Party software used by ${FxRadio.appName}") {
 
     private val model: AttributionModel by inject()
 

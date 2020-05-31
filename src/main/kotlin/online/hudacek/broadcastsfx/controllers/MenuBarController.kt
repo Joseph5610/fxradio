@@ -21,7 +21,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.extension.openUrl
@@ -69,7 +69,5 @@ class MenuBarController : Controller() {
                 menuBarView.showVoteResult(false)
             })
 
-    fun openWebsite() {
-        app.openUrl(About.appUrl)
-    }
+    fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

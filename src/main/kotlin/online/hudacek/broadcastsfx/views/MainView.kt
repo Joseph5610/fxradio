@@ -18,7 +18,8 @@ package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
 import javafx.scene.layout.Priority
-import online.hudacek.broadcastsfx.About
+import online.hudacek.broadcastsfx.Config
+import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.extension.defaultRadioLogo
@@ -30,7 +31,7 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
-class MainView : View(About.appName) {
+class MainView : View(FxRadio.appName) {
 
     private val controller: MainController by inject()
 
@@ -41,6 +42,12 @@ class MainView : View(About.appName) {
     private val stationsView: StationsView by inject()
 
     var notification: NotificationPane by singleAssign()
+
+    private val userPrefWidth
+        get() = app.config.double(Config.Keys.windowWidth, 800.0)
+
+    private val userPrefHeight
+        get() = app.config.double(Config.Keys.windowHeight, 600.0)
 
     init {
         setStageIcon(defaultRadioLogo)
@@ -62,7 +69,8 @@ class MainView : View(About.appName) {
     }
 
     override val root = vbox {
-        setPrefSize(800.0, 600.0)
+        setPrefSize(userPrefWidth, userPrefHeight)
+
         vgrow = Priority.ALWAYS
         add(MenuBarView::class)
         notificationPane {
@@ -73,7 +81,7 @@ class MainView : View(About.appName) {
                 splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
-                    setDividerPositions(0.33)
+                    setDividerPositions(0.30)
                 }
             }
         }

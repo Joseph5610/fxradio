@@ -26,11 +26,11 @@ import org.testfx.framework.junit5.Start
 @ExtendWith(ApplicationExtension::class)
 class ApiTest {
 
-    private lateinit var app: Broadcasts
+    private lateinit var app: FxRadio
 
     @Start
     fun start(stage: Stage) {
-        app = Broadcasts()
+        app = FxRadio()
         app.start(stage)
     }
 

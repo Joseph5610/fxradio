@@ -19,7 +19,6 @@ package online.hudacek.broadcastsfx.controllers
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import tornadofx.*
 
-
 class MainController : Controller() {
 
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()

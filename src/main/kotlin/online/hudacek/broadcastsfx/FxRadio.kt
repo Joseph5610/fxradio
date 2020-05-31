@@ -27,7 +27,7 @@ import java.nio.file.Paths
  * Main class of the app
  * main() method should be run to start the app
  */
-class Broadcasts : App(MainView::class, Styles::class) {
+class FxRadio : App(MainView::class, Styles::class) {
 
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.appConfig)
@@ -40,14 +40,25 @@ class Broadcasts : App(MainView::class, Styles::class) {
         }
     }
 
+    /**
+     * Basic info about the app
+     */
     companion object {
+        const val appName = "FXRadio"
+        const val appDesc = "Internet radio directory"
+        const val appLogo = "radio-icon.png"
+        const val appUrl = "https://hudacek.online/fxradio"
+        const val author = "Jozef Hudáček"
+        const val copyright = "Copyright (c) 2020"
+        const val dataSource = "https://api.radio-browser.info"
+
         /**
          * Get version from jar MANIFEST.MF file
          */
         val version: String by lazy {
-            Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
         }
     }
 }
 
-fun main(args: Array<String>) = launch<Broadcasts>(args)
+fun main(args: Array<String>) = launch<FxRadio>(args)

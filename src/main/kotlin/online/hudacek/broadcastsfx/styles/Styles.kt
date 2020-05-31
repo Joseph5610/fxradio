@@ -1,6 +1,7 @@
 package online.hudacek.broadcastsfx.styles
 
 import javafx.scene.paint.Color
+import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
@@ -16,7 +17,11 @@ class Styles : Stylesheet() {
         const val background = "#E9E9E9"
         const val backgroundBorder = "#E8E8E8"
 
+        const val label = "#2b2b2b"
+        const val grayLabel = "#8B8B8B"
+
         const val transparent = "transparent"
+
     }
 
     companion object {
@@ -29,6 +34,7 @@ class Styles : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
+        val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
 
@@ -42,11 +48,14 @@ class Styles : Stylesheet() {
 
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
-
-        val colorPrimary: Color = Color.valueOf(ColorValues.primary)
     }
 
     init {
+        label {
+            textFill = c(ColorValues.label)
+            fontSmoothingType = FontSmoothingType.GRAY
+        }
+
         searchBoxLabel {
             padding = box(0.px, 2.px, 0.px, 7.px)
         }
@@ -99,7 +108,7 @@ class Styles : Stylesheet() {
 
         grayLabel {
             fontSize = 11.px
-            textFill = Color.GRAY
+            textFill = c(ColorValues.grayLabel)
         }
 
         splitPaneDivider {
@@ -125,7 +134,8 @@ class Styles : Stylesheet() {
         }
 
         libraryListItem {
-            textFill = Color.BLACK
+            fontSize = 12.px
+            textFill = c(ColorValues.label)
             backgroundColor += Color.WHITESMOKE
             and(hover) {
                 backgroundColor += c(ColorValues.background)
@@ -136,10 +146,17 @@ class Styles : Stylesheet() {
                 backgroundColor += c(ColorValues.background)
                 borderColor += box(c(ColorValues.backgroundBorder))
                 textFill = Color.BLACK
-                graphicContainer {
-                    backgroundColor += Color.BLACK
-                }
             }
+            padding = box(5.px, 10.px, 5.px, 15.px)
+        }
+
+        libraryListItemTag {
+            padding = box(2.px)
+            textFill = Color.BLACK
+            backgroundRadius += box(3.px)
+            backgroundColor += Color.GHOSTWHITE
+            borderRadius += box(3.px)
+            borderColor += box(c(ColorValues.backgroundBorder))
         }
 
         boldText {
@@ -228,6 +245,26 @@ class Styles : Stylesheet() {
 
         textArea {
             fontFamily = "monospace"
+        }
+
+        slider {
+            and(focused) {
+                thumb {
+                    unsafe("-fx-background-color", raw("-fx-outer-border, -fx-inner-border, -fx-body-color"))
+                }
+            }
+            and(selected) {
+                thumb {
+                    unsafe("-fx-color", raw("lightgray"))
+                }
+            }
+
+            and(hover) {
+                thumb {
+                    unsafe("-fx-color", raw("lightgray"))
+                }
+            }
+            //unsafe("-fx-control-inner-background", raw("palegreen"))
         }
     }
 }

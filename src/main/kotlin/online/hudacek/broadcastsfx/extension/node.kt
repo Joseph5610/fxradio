@@ -16,17 +16,19 @@
 
 package online.hudacek.broadcastsfx.extension
 
-
+import javafx.beans.property.Property
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.scene.Node
 import javafx.scene.Scene
+import online.hudacek.broadcastsfx.model.rest.Station
+import tornadofx.*
 
 /**
  * This is to overcome a bug that sometimes
  * scene is not available when requesting focus
  */
-fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
+internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
     val listener = object : ChangeListener<Scene> {
         override fun changed(observable: ObservableValue<out Scene>?, oldValue: Scene?, newValue: Scene?) {
             if (newValue != null) {
@@ -38,4 +40,10 @@ fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
     sceneProperty().addListener(listener)
 } else {
     requestFocus()
+}
+
+internal fun Node.shouldBeDisabled(station: Property<Station>) {
+    disableWhen(booleanBinding(station) {
+        value == null || !value.isValidStation()
+    })
 }

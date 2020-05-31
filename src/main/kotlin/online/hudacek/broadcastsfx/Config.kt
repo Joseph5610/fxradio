@@ -26,7 +26,7 @@ object Config {
      * All user files should be stored in $USER_HOME/.fxradio/ directory
      */
     object Paths {
-        private val appNamePath = About.appName.toLowerCase()
+        private val appNamePath = FxRadio.appName.toLowerCase()
 
         const val defaultRadioIcon = "Industry-Radio-Tower-icon.png"
 
@@ -46,6 +46,8 @@ object Config {
         const val apiServer = "app.server"
         const val searchQuery = "search.query"
         const val playerAnimate = "player.animate"
+        const val windowWidth = "window.width"
+        const val windowHeight = "window.height"
     }
 
     /**

@@ -86,7 +86,6 @@ class StationsDataGridView : View() {
                 }
                 label(it.name) {
                     style {
-                        textFill = Color.BLACK
                         fontSize = 14.px
                     }
                 }

@@ -76,6 +76,9 @@ class PlayerView : View() {
 
     private val volumeSlider = slider(-30..5) {
         value = controller.getVolume()
+        majorTickUnit = 8.0
+        isSnapToTicks = true
+        // isShowTickMarks = true
         valueProperty().onChange { newVolume ->
             controller.changeVolume(newVolume)
         }
