@@ -21,9 +21,11 @@ import mu.KotlinLogging
 import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.model.rest.Station
 import org.apache.commons.io.FileUtils
+import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -73,6 +75,16 @@ object ImageCache {
             defaultRadioLogo
         } else {
             image
+        }
+    }
+
+    fun getImageFromCacheAsFile(station: Station): File {
+        val imagePath = cacheBasePath.resolve(station.stationuuid)
+        val file = imagePath.toFile()
+        return if (!file.exists()) {
+            File(URI.create(javaClass.classLoader.getResource(Config.Paths.defaultRadioIcon).toString()))
+        } else {
+            file
         }
     }
 

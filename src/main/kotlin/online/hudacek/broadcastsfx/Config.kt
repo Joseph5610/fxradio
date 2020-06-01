@@ -48,6 +48,7 @@ object Config {
         const val playerAnimate = "player.animate"
         const val windowWidth = "window.width"
         const val windowHeight = "window.height"
+        const val notifications = "notifications"
     }
 
     /**

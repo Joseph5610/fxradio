@@ -8,9 +8,10 @@ import tornadofx.onChange
 import tornadofx.property
 
 class Player(animate: Boolean = true, station: Station = Station.stub(),
-             playerType: PlayerType) {
+             playerType: PlayerType, notifications: Boolean = true) {
 
     var animate: Boolean by property(animate)
+    var notifications: Boolean by property(notifications)
     var actualStation: Station by property(station)
     var playerType: PlayerType by property(playerType)
 }
@@ -20,6 +21,7 @@ class PlayerModel : ItemViewModel<Player>() {
     private val stationsHistory: StationsHistoryModel by inject()
 
     val animate = bind(Player::animate)
+    val notifications = bind(Player::notifications)
     val station = bind(Player::actualStation)
     val playerType = bind(Player::playerType)
 
@@ -34,6 +36,7 @@ class PlayerModel : ItemViewModel<Player>() {
         with(app.config) {
             set(Config.Keys.playerAnimate to animate.value)
             set(Config.Keys.playerType to playerType.value)
+            set(Config.Keys.notifications to notifications.value)
             save()
         }
     }

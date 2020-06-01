@@ -53,6 +53,8 @@ class MenuBarView : View() {
     private var playerStop: MenuItem by singleAssign()
     private var playerCheck: CheckMenuItem by singleAssign()
     private var playerAnimateCheck: CheckMenuItem by singleAssign()
+    private var playerNotificationsCheck: CheckMenuItem by singleAssign()
+
 
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
     private val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
@@ -178,6 +180,13 @@ class MenuBarView : View() {
             isSelected = player.animate.value
             action {
                 player.animate.value = !player.animate.value
+                player.commit()
+            }
+        }
+        playerNotificationsCheck = checkmenuitem(messages["menu.player.notifications"]) {
+            isSelected = player.notifications.value
+            action {
+                player.notifications.value = !player.notifications.value
                 player.commit()
             }
         }

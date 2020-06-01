@@ -26,6 +26,9 @@ dependencies {
     // Align versions of all Kotlin components
     compile platform('org.jetbrains.kotlin:kotlin-bom')
 
+    //local jars
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
     // Use the Kotlin JDK 8 standard library.
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     runtime group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.3.70'

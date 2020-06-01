@@ -16,6 +16,7 @@
 
 package online.hudacek.broadcastsfx.views
 
+import com.sun.javafx.PlatformUtil
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.Tooltip
@@ -28,15 +29,13 @@ import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.Config
+import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.MediaMetaChanged
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.createImage
-import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
-import online.hudacek.broadcastsfx.extension.shouldBeDisabled
-import online.hudacek.broadcastsfx.extension.smallIcon
+import online.hudacek.broadcastsfx.extension.*
 import online.hudacek.broadcastsfx.model.Player
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -78,16 +77,20 @@ class PlayerView : View() {
         value = controller.getVolume()
         majorTickUnit = 8.0
         isSnapToTicks = true
-       // isShowTickMarks = true
+        // isShowTickMarks = true
         valueProperty().onChange { newVolume ->
             controller.changeVolume(newVolume)
         }
     }
 
     init {
-        val animateName = app.config.boolean(Config.Keys.playerAnimate, true)
+        val animate = app.config.boolean(Config.Keys.playerAnimate, true)
+        val notifications = app.config.boolean(Config.Keys.notifications, true)
         val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
-        player.item = Player(animateName, playerType = playerType)
+        player.item = Player(
+                animate = animate,
+                playerType = playerType,
+                notifications = notifications)
 
         keyboard {
             addEventHandler(KeyEvent.KEY_PRESSED) {
@@ -189,6 +192,14 @@ class PlayerView : View() {
         val nowPlaying = event.mediaMeta.nowPlaying
                 .replace("\r", "")
                 .replace("\n", "")
+
+        if (PlatformUtil.isMac() && player.notifications.value) {
+            macNotification(
+                    title = nowPlaying,
+                    subtitle = event.mediaMeta.title,
+                    image = ImageCache.getImageFromCacheAsFile(player.station.value))
+        }
+
         if (player.animate.value) radioNameTicker.updateText(nowPlaying)
         else {
             radioNameStaticText.text = nowPlaying

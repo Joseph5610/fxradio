@@ -16,6 +16,7 @@
 
 package online.hudacek.broadcastsfx.extension
 
+import airsquared.JMacNotification.NSUserNotification
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.animation.PauseTransition
 import javafx.beans.property.Property
@@ -37,6 +38,7 @@ import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
+import java.io.File
 import java.net.URL
 
 /*
@@ -179,5 +181,13 @@ internal fun ContextMenu.updateClipboard(clipboard: Clipboard, value: String) {
         }
     }
 }
+
+internal fun EventTarget.macNotification(title: String, subtitle: String, image: File) = NSUserNotification().apply {
+    this.title = title
+    this.subtitle = subtitle
+    this.setContentImage(image)
+    show()
+}
+
 
 internal val defaultRadioLogo = Image(Config.Paths.defaultRadioIcon)
