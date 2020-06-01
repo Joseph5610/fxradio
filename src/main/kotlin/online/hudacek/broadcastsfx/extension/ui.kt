@@ -182,10 +182,12 @@ internal fun ContextMenu.updateClipboard(clipboard: Clipboard, value: String) {
     }
 }
 
-internal fun EventTarget.macNotification(title: String, subtitle: String, image: File) = NSUserNotification().apply {
+internal fun EventTarget.macNotification(title: String, subtitle: String, image: File?) = NSUserNotification().apply {
     this.title = title
     this.subtitle = subtitle
-    this.setContentImage(image)
+    image?.let {
+        this.setContentImage(it)
+    }
     show()
 }
 

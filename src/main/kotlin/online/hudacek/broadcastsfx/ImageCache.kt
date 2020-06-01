@@ -78,13 +78,18 @@ object ImageCache {
         }
     }
 
-    fun getImageFromCacheAsFile(station: Station): File {
-        val imagePath = cacheBasePath.resolve(station.stationuuid)
-        val file = imagePath.toFile()
-        return if (!file.exists()) {
-            File(URI.create(javaClass.classLoader.getResource(Config.Paths.defaultRadioIcon).toString()))
-        } else {
-            file
+    fun getImageFromCacheAsFile(station: Station): File? {
+        return try {
+            val imagePath = cacheBasePath.resolve(station.stationuuid)
+            val file = imagePath.toFile()
+
+            if (!file.exists()) {
+                File(URI.create(javaClass.classLoader.getResource(Config.Paths.defaultRadioIcon).toString()))
+            } else {
+                file
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
