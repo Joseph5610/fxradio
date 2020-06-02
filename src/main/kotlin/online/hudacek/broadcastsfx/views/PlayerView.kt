@@ -23,8 +23,6 @@ import javafx.scene.control.Tooltip
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
@@ -87,27 +85,23 @@ class PlayerView : View() {
         val animate = app.config.boolean(Config.Keys.playerAnimate, true)
         val notifications = app.config.boolean(Config.Keys.notifications, true)
         val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
+
         player.item = Player(
                 animate = animate,
                 playerType = playerType,
                 notifications = notifications)
 
-        keyboard {
-            addEventHandler(KeyEvent.KEY_PRESSED) {
-                if (it.code == KeyCode.SPACE) {
-                    controller.togglePlaying()
-                }
-            }
+        setOnSpacePressed {
+            controller.togglePlaying()
         }
 
-        subscribe<PlaybackChangeEvent> { event ->
-            togglePlayerStatus(event.playingStatus)
-        }
+        //subscribe to events
+        subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
+        subscribe<MediaMetaChanged> { it.let(::onMetaDataUpdated) }
 
-        subscribe<MediaMetaChanged> { event -> event.let(::updateMetaData) }
-
-        player.station.onChange { it?.let(::updateView) }
-        player.animate.onChange { it?.let(::updateRadioName) }
+        //Subscribe to property changes
+        player.station.onChange { it?.let(::onStationChange) }
+        player.animate.onChange { it?.let(::onAnimatePropertyChanged) }
     }
 
     override val root = vbox {
@@ -177,7 +171,12 @@ class PlayerView : View() {
         }
     }
 
-    private fun togglePlayerStatus(playingStatus: PlayingStatus) {
+    /**
+     * Called when playback status is changed,
+     * usually by pressing button in PlayerView or externally (e.g change of player type)
+     * @param playingStatus new Playing status (Playing/Stopped)
+     */
+    private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
             playImage.image = Image(playIcon)
             nowStreamingLabel.text = messages["streamingStopped"]
@@ -187,34 +186,37 @@ class PlayerView : View() {
         }
     }
 
-    private fun updateMetaData(event: MediaMetaChanged) {
-        //Why would somebody put newlines in now playing string is beyond me ..
-        val nowPlaying = event.mediaMeta.nowPlaying
-                .replace("\r", "")
-                .replace("\n", "")
+    /**
+     * Called when new song starts playing or other metadata of stream changes
+     * @param event new stream Meta Data
+     */
+    private fun onMetaDataUpdated(event: MediaMetaChanged) {
+        val newSongName = event.mediaMeta.nowPlaying
+        val newStreamTitle = event.mediaMeta.title
 
         if (PlatformUtil.isMac() && player.notifications.value) {
             macNotification(
-                    title = nowPlaying,
-                    subtitle = event.mediaMeta.title,
+                    title = newSongName,
+                    subtitle = newStreamTitle,
                     image = ImageCache.getImageFromCacheAsFile(player.station.value))
         }
 
-        if (player.animate.value) radioNameTicker.updateText(nowPlaying)
+        if (player.animate.value) radioNameTicker.updateText(newSongName)
         else {
-            radioNameStaticText.text = nowPlaying
-            radioNameStaticText.tooltip = Tooltip(nowPlaying)
+            radioNameStaticText.text = newSongName
+            radioNameStaticText.tooltip = Tooltip(newSongName)
         }
 
-        if (event.mediaMeta.title.isNotEmpty()) {
-            nowStreamingLabel.text = event.mediaMeta.title
+        if (newStreamTitle.isNotEmpty()) {
+            nowStreamingLabel.text = newStreamTitle
         }
     }
 
     /**
      * Show/Hide ticker with radio name / Now playing details
+     * Called when user changes the settings in Player menu
      */
-    private fun updateRadioName(shouldAnimate: Boolean) {
+    private fun onAnimatePropertyChanged(shouldAnimate: Boolean) {
         if (shouldAnimate) {
             radioNameTicker.play()
             radioNameContainer.replaceChildren(radioNameTicker)
@@ -222,13 +224,13 @@ class PlayerView : View() {
             radioNameTicker.stop()
             radioNameContainer.replaceChildren(radioNameStaticText)
         }
-        updateView(player.station.value)
+        onStationChange(player.station.value)
     }
 
-    private fun updateView(station: Station) {
+    private fun onStationChange(station: Station) {
         with(station) {
             if (isValidStation()) {
-                togglePlayerStatus(controller.mediaPlayer.playingStatus)
+                onPlaybackStatusChanged(controller.mediaPlayer.playingStatus)
                 if (player.animate.value) radioNameTicker.updateText(name)
                 else {
                     radioNameStaticText.text = name
@@ -239,7 +241,6 @@ class PlayerView : View() {
         }
     }
 
-    //Icon constants
     private companion object {
         private const val playIcon = "Media-Controls-Play-icon.png"
         private const val stopIcon = "Media-Controls-Stop-icon.png"

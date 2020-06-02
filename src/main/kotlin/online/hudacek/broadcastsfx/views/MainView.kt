@@ -82,6 +82,9 @@ class MainView : View(FxRadio.appName) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
                     setDividerPositions(0.30)
+
+                    //Constrain max width of left pane
+                    leftPaneView.root.maxWidthProperty().bind(this.widthProperty().multiply(0.35))
                 }
             }
         }

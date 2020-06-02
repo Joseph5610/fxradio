@@ -60,7 +60,11 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                         && it[Meta.TITLE] != null
                         && it[Meta.GENRE] != null) {
                     mediaPlayer.mediaMetaChanged(
-                            MediaMeta(it[Meta.TITLE], it[Meta.GENRE], it[Meta.NOW_PLAYING]))
+                            MediaMeta(it[Meta.TITLE],
+                                    it[Meta.GENRE],
+                                    it[Meta.NOW_PLAYING]
+                                            .replace("\r", "")
+                                            .replace("\n", "")))
                 }
             }
         }

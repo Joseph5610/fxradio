@@ -53,14 +53,12 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             }
         }
 
-        subscribe<PlaybackChangeEvent> { event ->
-            playingStatus = event.playingStatus
-            with(event) {
-                if (playingStatus == PlayingStatus.Playing) {
-                    play(playerModel.station.value.url_resolved)
-                } else {
-                    mediaPlayer.cancelPlaying()
-                }
+        subscribe<PlaybackChangeEvent> {
+            playingStatus = it.playingStatus
+            if (it.playingStatus == PlayingStatus.Playing) {
+                play(playerModel.station.value.url_resolved)
+            } else {
+                mediaPlayer.cancelPlaying()
             }
         }
 

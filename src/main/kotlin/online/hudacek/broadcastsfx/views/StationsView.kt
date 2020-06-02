@@ -74,35 +74,32 @@ class StationsView : View() {
 
     init {
         //Handle change of stations library
-        subscribe<LibraryRefreshEvent> { event ->
-            with(event) {
-                when (type) {
-                    LibraryType.Country -> controller.getStationsByCountry(params)
-                    LibraryType.Favourites -> controller.getFavourites()
-                    LibraryType.History -> controller.getHistory()
-                    LibraryType.Search -> {
-                        if (params.length > 2)
-                            controller.searchStations(params)
-                        else {
-                            contentTop.hide()
-                            headerContainer.show()
-                            header.text = messages["searchingLibrary"]
-                            header.graphic = searchGlyph
-                            subHeader.text = messages["searchingLibraryDesc"]
-                            dataGrid.hide()
-                        }
-                    }
-                    else -> {
-                        controller.getTopStations()
+        subscribe<LibraryRefreshEvent> {
+            when (it.type) {
+                LibraryType.Country -> controller.getStationsByCountry(it.params)
+                LibraryType.Favourites -> controller.getFavourites()
+                LibraryType.History -> controller.getHistory()
+                LibraryType.Search -> {
+                    if (it.params.length > 2)
+                        controller.searchStations(it.params)
+                    else {
+                        contentTop.hide()
+                        headerContainer.show()
+                        header.text = messages["searchingLibrary"]
+                        header.graphic = searchGlyph
+                        subHeader.text = messages["searchingLibraryDesc"]
+                        dataGrid.hide()
                     }
                 }
-                contentName.text = when (type) {
-                    LibraryType.Favourites -> messages["favourites"]
-                    LibraryType.History -> messages["history"]
-                    LibraryType.TopStations -> messages["topStations"]
-                    LibraryType.Search -> messages["searchResultsFor"] + " \"$params\""
-                    else -> params
-                }
+                else -> controller.getTopStations()
+            }
+
+            contentName.text = when (it.type) {
+                LibraryType.Favourites -> messages["favourites"]
+                LibraryType.History -> messages["history"]
+                LibraryType.TopStations -> messages["topStations"]
+                LibraryType.Search -> messages["searchResultsFor"] + " \"$params\""
+                else -> it.params
             }
         }
     }

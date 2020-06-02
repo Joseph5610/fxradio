@@ -27,6 +27,8 @@ import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.VBox
 import javafx.util.Duration
 import mu.KotlinLogging
@@ -189,6 +191,16 @@ internal fun EventTarget.macNotification(title: String, subtitle: String, image:
         this.setContentImage(it)
     }
     show()
+}
+
+internal fun EventTarget.setOnSpacePressed(action: () -> Unit) {
+    keyboard {
+        addEventHandler(KeyEvent.KEY_PRESSED) {
+            if (it.code == KeyCode.SPACE) {
+                action.invoke()
+            }
+        }
+    }
 }
 
 
