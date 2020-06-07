@@ -52,7 +52,7 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) = glyph("FontAwesome", 
 }
 
 internal fun EventTarget.copyMenu(clipboard: Clipboard,
-                                  name: String = "Copy",
+                                  name: String,
                                   value: String = "", op: ContextMenu.() -> Unit = {}) = contextmenu {
     item(name) {
         action {

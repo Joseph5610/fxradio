@@ -22,6 +22,10 @@ import online.hudacek.broadcastsfx.extension.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
+/***
+ * Simple Information about the app
+ * shows only on platforms other than macOS (macos uses own About stage)
+ */
 class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
 
     override val root = vbox {

@@ -84,7 +84,9 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                     label(info) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
-                        copyMenu(clipboard, value = info)
+                        copyMenu(clipboard,
+                                name = messages["copy"],
+                                value = info)
                     }
                 }
             }
@@ -99,7 +101,9 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                         label(tag) {
                             addClass(Styles.tag)
                             addClass(Styles.grayLabel)
-                            copyMenu(clipboard, value = tag)
+                            copyMenu(clipboard,
+                                    name = messages["copy"],
+                                    value = tag)
                         }
                     }
                 }
@@ -114,7 +118,9 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                                 action {
                                     app.openUrl(it.homepage)
                                 }
-                                copyMenu(clipboard, value = it.homepage)
+                                copyMenu(clipboard,
+                                        name = messages["copy"],
+                                        value = it.homepage)
                             }
                     )
                 }

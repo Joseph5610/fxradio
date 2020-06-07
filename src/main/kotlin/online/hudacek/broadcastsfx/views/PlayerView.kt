@@ -235,7 +235,7 @@ class PlayerView : View() {
                 }
                 radioLogo.createImage(this)
                 radioLogo.copyMenu(clipboard,
-                        name = "Copy URL",
+                        name = messages["copy.image.url"],
                         value = this.favicon ?: "")
             }
         }

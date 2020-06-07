@@ -60,7 +60,9 @@ class StatsFragment : Fragment("Statistics") {
                     container.replaceChildren(listview(list) {
                         cellFormat {
                             text = item
-                            copyMenu(clipboard, value = item)
+                            copyMenu(clipboard,
+                                    name = messages["copy"],
+                                    value = item)
                         }
                     })
                 }, {

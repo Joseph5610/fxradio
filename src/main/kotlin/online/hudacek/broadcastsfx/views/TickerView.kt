@@ -35,10 +35,12 @@ class TickerView : View() {
     private val marqueeView: MarqueeView by inject()
     private var copyMenu: ContextMenu by singleAssign()
 
+    private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
+
     override val root = hbox {
         prefHeight = 15.0
         marqueeView.inside(this)
-        copyMenu = copyMenu(clipboard) {
+        copyMenu = copyMenu(clipboard, name = messages["copy"]) {
             item("Search on Youtube") {
                 isDisable = true
             }
@@ -57,7 +59,7 @@ class TickerView : View() {
             items[1].apply {
                 isDisable = false
                 action {
-                    app.openUrl("https://www.youtube.com/results?search_query=", text)
+                    app.openUrl(youtubeSearchUrl, text)
                 }
             }
         }
