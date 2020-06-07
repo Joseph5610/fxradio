@@ -49,6 +49,7 @@ object Config {
         const val notifications = "notifications"
 
         const val windowDivider = "window.divider"
+        const val logLevel = "log.level"
     }
 
     /**

@@ -234,6 +234,9 @@ class PlayerView : View() {
                     radioNameStaticText.tooltip = null
                 }
                 radioLogo.createImage(this)
+                radioLogo.copyMenu(clipboard,
+                        name = "Copy URL",
+                        value = this.favicon ?: "")
             }
         }
     }

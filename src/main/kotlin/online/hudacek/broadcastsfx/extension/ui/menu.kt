@@ -17,9 +17,7 @@
 package online.hudacek.broadcastsfx.extension.ui
 
 import javafx.beans.property.Property
-import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
-import javafx.scene.input.Clipboard
 import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.*
 
@@ -36,12 +34,4 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     disableWhen(booleanBinding(station) {
         value == null || !value.isValidStation()
     })
-}
-
-internal fun ContextMenu.updateClipboard(clipboard: Clipboard, value: String) {
-    items[0].action {
-        clipboard.setContent {
-            putString(value)
-        }
-    }
 }

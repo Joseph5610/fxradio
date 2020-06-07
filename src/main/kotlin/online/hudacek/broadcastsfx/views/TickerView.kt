@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle
 import javafx.scene.text.Text
 import javafx.util.Duration
 import online.hudacek.broadcastsfx.extension.ui.copyMenu
-import online.hudacek.broadcastsfx.extension.ui.updateClipboard
+import online.hudacek.broadcastsfx.extension.ui.openUrl
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -38,18 +38,34 @@ class TickerView : View() {
     override val root = hbox {
         prefHeight = 15.0
         marqueeView.inside(this)
-        copyMenu = copyMenu(clipboard, value = "")
+        copyMenu = copyMenu(clipboard) {
+            item("Search on Youtube") {
+                isDisable = true
+            }
+        }
         this.add(marqueeView)
     }
 
     fun updateText(text: String) {
-        copyMenu.updateClipboard(clipboard, text)
+        copyMenu.apply {
+            items[0].action {
+                clipboard.setContent {
+                    putString(text)
+                }
+            }
+
+            items[1].apply {
+                isDisable = false
+                action {
+                    app.openUrl("https://www.youtube.com/results?search_query=", text)
+                }
+            }
+        }
         marqueeView.clear()
         marqueeView.enqueueTickEntry(TickerEntry(content = createText(text), reschedule = true))
     }
 
     private fun createText(content: String): Text {
-        copyMenu.updateClipboard(clipboard, content)
         val text = Text(content)
         text.layoutY = 12.0
         return text

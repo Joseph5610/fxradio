@@ -264,7 +264,23 @@ class Styles : Stylesheet() {
                     unsafe("-fx-color", raw("lightgray"))
                 }
             }
-            //unsafe("-fx-control-inner-background", raw("palegreen"))
+        }
+
+        contextMenu {
+            backgroundColor += Color.WHITESMOKE
+            borderColor += box(c(ColorValues.backgroundBorder))
+
+            menuItem {
+                and(hover) {
+                    backgroundColor += c(ColorValues.background)
+                }
+                and(focused) {
+                    backgroundColor += c(ColorValues.background)
+                }
+                and(selected) {
+                    backgroundColor += c(ColorValues.background)
+                }
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ package online.hudacek.broadcastsfx.extension.ui
 
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.event.EventTarget
+import javafx.scene.control.ContextMenu
 import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
@@ -26,6 +27,7 @@ import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
+import java.net.URLEncoder
 
 /*
  * Helper extension functions for UI
@@ -51,12 +53,15 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) = glyph("FontAwesome", 
 
 internal fun EventTarget.copyMenu(clipboard: Clipboard,
                                   name: String = "Copy",
-                                  value: String) = contextmenu {
-    item(name).action {
-        clipboard.setContent {
-            putString(value)
+                                  value: String = "", op: ContextMenu.() -> Unit = {}) = contextmenu {
+    item(name) {
+        action {
+            clipboard.setContent {
+                putString(value)
+            }
         }
     }
+    op(this)
 }
 
 internal fun EventTarget.setOnSpacePressed(action: () -> Unit) {
@@ -72,7 +77,8 @@ internal fun EventTarget.setOnSpacePressed(action: () -> Unit) {
 /**
  * Open URL in user's internet browser
  */
-internal fun App.openUrl(url: String) {
+internal fun App.openUrl(url: String, query: String = "") {
+    val queryEncoded = URLEncoder.encode(query, "UTF-8")
     val hostServices = HostServicesFactory.getInstance(this)
-    hostServices.showDocument(url)
+    hostServices.showDocument(url + queryEncoded)
 }

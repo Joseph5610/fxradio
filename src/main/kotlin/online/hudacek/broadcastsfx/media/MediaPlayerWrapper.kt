@@ -105,7 +105,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     fun handleError(t: Throwable) {
         Platform.runLater {
             fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-            error("Stream can't be played", t.localizedMessage)
+            fire(NotificationEvent("Stream can't be played: ${t.localizedMessage}"))
             logger.error(t) {
                 "Stream can't be played"
             }

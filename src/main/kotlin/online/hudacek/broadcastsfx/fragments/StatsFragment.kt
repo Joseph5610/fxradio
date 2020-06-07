@@ -40,7 +40,7 @@ class StatsFragment : Fragment("Statistics") {
         get() = StationsApi.client
 
     override fun onBeforeShow() {
-        currentStage?.opacity = 0.85
+        currentWindow?.opacity = 0.85
     }
 
     init {
@@ -74,6 +74,7 @@ class StatsFragment : Fragment("Statistics") {
 
     override val root = vbox {
         setPrefSize(300.0, 250.0)
+
         vbox(alignment = Pos.CENTER) {
             requestFocusOnSceneAvailable()
             hyperlink(StationsApi.hostname) {

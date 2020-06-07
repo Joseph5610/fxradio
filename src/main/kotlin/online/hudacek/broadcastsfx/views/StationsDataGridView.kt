@@ -60,7 +60,7 @@ class StationsDataGridView : View() {
             vbox(alignment = Pos.CENTER) {
                 popover {
                     vbox {
-                        add(StationInfoFragment(it, showImage = false))
+                        add(StationInfoFragment(it))
                     }
                 }
 

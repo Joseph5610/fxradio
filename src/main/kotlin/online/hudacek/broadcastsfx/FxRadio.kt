@@ -17,8 +17,13 @@
 package online.hudacek.broadcastsfx
 
 import javafx.stage.Stage
+import online.hudacek.broadcastsfx.model.LogLevel
+import online.hudacek.broadcastsfx.model.LogLevelModel
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.MainView
+import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -32,14 +37,18 @@ class FxRadio : App(MainView::class, Styles::class) {
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.appConfig)
 
+    private val logLevel: LogLevelModel by inject()
+
     override fun start(stage: Stage) {
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0
-            width = 800.0
-            height = 600.0
             super.start(this)
         }
+
+        //init logger
+        logLevel.item = LogLevel(Level.valueOf(config.string(Config.Keys.logLevel, "INFO")))
+        Configurator.setAllLevels(LogManager.getRootLogger().name, logLevel.level.value)
     }
 
     /**
@@ -52,7 +61,6 @@ class FxRadio : App(MainView::class, Styles::class) {
         const val appUrl = "https://hudacek.online/fxradio"
         const val author = "Jozef Hudáček"
         const val copyright = "Copyright (c) 2020"
-        const val dataSource = "https://api.radio-browser.info"
 
         /**
          * Get version from jar MANIFEST.MF file

@@ -17,14 +17,15 @@
 package online.hudacek.broadcastsfx.views
 
 import javafx.geometry.Orientation
-import javafx.scene.layout.Priority
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.controllers.MainController
+import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.extension.ui.defaultRadioLogo
 import online.hudacek.broadcastsfx.extension.ui.set
 import online.hudacek.broadcastsfx.model.PlayerModel
+import online.hudacek.broadcastsfx.views.menubar.MenuBarView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -41,10 +42,13 @@ class MainView : View(FxRadio.appName) {
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
 
-    var notification: NotificationPane by singleAssign()
+    private var notification: NotificationPane by singleAssign()
 
     init {
         setStageIcon(defaultRadioLogo)
+        subscribe<NotificationEvent> {
+            notification[it.glyph] = it.text
+        }
     }
 
     private val rightPane = vbox {
@@ -63,7 +67,7 @@ class MainView : View(FxRadio.appName) {
     }
 
     override val root = vbox {
-        vgrow = Priority.ALWAYS
+        setPrefSize(800.0, 600.0)
         add(MenuBarView::class)
         notificationPane {
             notification = this
@@ -71,9 +75,9 @@ class MainView : View(FxRadio.appName) {
 
             content {
                 splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
+                    setDividerPositions(app.config.double(Config.Keys.windowDivider, 0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
-                    setDividerPositions(app.config.double(Config.Keys.windowDivider, 0.30))
 
                     dividers[0].positionProperty().onChange {
                         with(app.config) {

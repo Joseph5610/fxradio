@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.controllers
+package online.hudacek.broadcastsfx.controllers.menubar
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
@@ -28,7 +28,7 @@ import online.hudacek.broadcastsfx.extension.ui.openUrl
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.Station
-import online.hudacek.broadcastsfx.views.MenuBarView
+import online.hudacek.broadcastsfx.views.menubar.MenuBarView
 import tornadofx.*
 
 class MenuBarController : Controller() {

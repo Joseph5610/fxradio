@@ -16,6 +16,7 @@
 
 package online.hudacek.broadcastsfx.events
 
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 enum class LibraryType {
@@ -23,3 +24,5 @@ enum class LibraryType {
 }
 
 class LibraryRefreshEvent(val type: LibraryType, val params: String = "") : FXEvent()
+
+class NotificationEvent(val text: String, val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING) : FXEvent()
