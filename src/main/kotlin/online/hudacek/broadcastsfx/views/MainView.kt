@@ -43,12 +43,6 @@ class MainView : View(FxRadio.appName) {
 
     var notification: NotificationPane by singleAssign()
 
-    private val userPrefWidth
-        get() = app.config.double(Config.Keys.windowWidth, 800.0)
-
-    private val userPrefHeight
-        get() = app.config.double(Config.Keys.windowHeight, 600.0)
-
     init {
         setStageIcon(defaultRadioLogo)
     }
@@ -69,8 +63,6 @@ class MainView : View(FxRadio.appName) {
     }
 
     override val root = vbox {
-        setPrefSize(userPrefWidth, userPrefHeight)
-
         vgrow = Priority.ALWAYS
         add(MenuBarView::class)
         notificationPane {
@@ -81,7 +73,14 @@ class MainView : View(FxRadio.appName) {
                 splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
-                    setDividerPositions(0.30)
+                    setDividerPositions(app.config.double(Config.Keys.windowDivider, 0.30))
+
+                    dividers[0].positionProperty().onChange {
+                        with(app.config) {
+                            set(Config.Keys.windowDivider to it)
+                            save()
+                        }
+                    }
 
                     //Constrain max width of left pane
                     leftPaneView.root.maxWidthProperty().bind(this.widthProperty().multiply(0.35))

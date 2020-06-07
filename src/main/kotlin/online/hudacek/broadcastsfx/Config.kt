@@ -46,9 +46,9 @@ object Config {
         const val apiServer = "app.server"
         const val searchQuery = "search.query"
         const val playerAnimate = "player.animate"
-        const val windowWidth = "window.width"
-        const val windowHeight = "window.height"
         const val notifications = "notifications"
+
+        const val windowDivider = "window.divider"
     }
 
     /**

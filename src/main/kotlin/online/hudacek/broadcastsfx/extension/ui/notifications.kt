@@ -57,6 +57,6 @@ internal fun EventTarget.notification(title: String,
 private fun macNotification(title: String, subtitle: String) =
         NSUserNotification().apply {
             this.title = title
-            this.subtitle = subtitle
+            this.informativeText = subtitle
             show()
         }
