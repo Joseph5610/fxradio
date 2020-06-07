@@ -16,7 +16,6 @@
 
 package online.hudacek.broadcastsfx.views
 
-import com.sun.javafx.PlatformUtil
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.Tooltip
@@ -27,13 +26,12 @@ import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.Config
-import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.MediaMetaChanged
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.*
+import online.hudacek.broadcastsfx.extension.ui.*
 import online.hudacek.broadcastsfx.model.Player
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -76,8 +74,8 @@ class PlayerView : View() {
         majorTickUnit = 8.0
         isSnapToTicks = true
         // isShowTickMarks = true
-        valueProperty().onChange { newVolume ->
-            controller.changeVolume(newVolume)
+        valueProperty().onChange {
+            controller.changeVolume(it)
         }
     }
 
@@ -194,11 +192,10 @@ class PlayerView : View() {
         val newSongName = event.mediaMeta.nowPlaying
         val newStreamTitle = event.mediaMeta.title
 
-        if (PlatformUtil.isMac() && player.notifications.value) {
-            macNotification(
+        if (player.notifications.value) {
+            notification(
                     title = newSongName,
-                    subtitle = newStreamTitle,
-                    image = ImageCache.getImageFromCacheAsFile(player.station.value))
+                    subtitle = newStreamTitle)
         }
 
         if (player.animate.value) radioNameTicker.updateText(newSongName)

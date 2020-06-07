@@ -43,22 +43,15 @@ class LibraryController : Controller() {
         )
     }
 
-    init {
-        getCountries()
-    }
-
     fun getCountries(): Disposable = stationsApi
             .getCountries(CountriesBody())
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe(
-                    {
-                        libraryView.showCountries(it)
-                    },
-                    {
-                        libraryView.showError()
-                    }
-            )
+            .subscribe({
+                libraryView.showCountries(it)
+            }, {
+                libraryView.showError()
+            })
 
     fun loadLibrary(libraryType: LibraryType, param: String = "") = fire(LibraryRefreshEvent(libraryType, param))
 }

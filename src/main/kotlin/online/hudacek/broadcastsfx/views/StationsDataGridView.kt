@@ -20,8 +20,7 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.extension.createImage
-import online.hudacek.broadcastsfx.extension.tooltip
+import online.hudacek.broadcastsfx.extension.ui.createImage
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.StationsList
@@ -65,11 +64,9 @@ class StationsDataGridView : View() {
                     }
                 }
 
-                onRightClick {
-                    showPopover()
-                }
+                onRightClick { showPopover() }
+                onHover { _ -> tooltip(it.name) }
 
-                tooltip(it)
                 paddingAll = 5
                 vbox(alignment = Pos.CENTER) {
                     prefHeight = 120.0

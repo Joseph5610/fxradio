@@ -24,7 +24,7 @@ import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.ui.openUrl
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -44,11 +44,11 @@ class MenuBarController : Controller() {
 
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun openAbout() = find<AboutAppFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
-
-    fun openServerSelect() = find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
+    fun openServerSelect() = find<ChangeServerFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
+
+    fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun clearCache() = ImageCache.clearCache()
 

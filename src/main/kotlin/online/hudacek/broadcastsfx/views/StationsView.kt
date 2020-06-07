@@ -22,7 +22,7 @@ import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.extension.glyph
+import online.hudacek.broadcastsfx.extension.ui.glyph
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -68,7 +68,6 @@ class StationsView : View() {
         paddingBottom = 0.0
         maxHeight = 10.0
         addClass(Styles.backgroundWhiteSmoke)
-
         add(contentName)
     }
 
@@ -98,7 +97,7 @@ class StationsView : View() {
                 LibraryType.Favourites -> messages["favourites"]
                 LibraryType.History -> messages["history"]
                 LibraryType.TopStations -> messages["topStations"]
-                LibraryType.Search -> messages["searchResultsFor"] + " \"$params\""
+                LibraryType.Search -> messages["searchResultsFor"] + " \"${it.params}\""
                 else -> it.params
             }
         }

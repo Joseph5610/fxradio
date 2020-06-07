@@ -18,14 +18,12 @@ package online.hudacek.broadcastsfx
 
 import javafx.scene.image.Image
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.extension.defaultRadioLogo
+import online.hudacek.broadcastsfx.extension.ui.defaultRadioLogo
 import online.hudacek.broadcastsfx.model.rest.Station
 import org.apache.commons.io.FileUtils
-import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -43,7 +41,6 @@ object ImageCache {
     init {
         //prepare cache directory
         if (!Files.isDirectory(cacheBasePath)) {
-            logger.debug { "init cache directory" }
             Files.createDirectories(cacheBasePath)
         }
     }
@@ -60,10 +57,7 @@ object ImageCache {
         }
     }
 
-    fun isImageInCache(station: Station): Boolean {
-        val imagePath = cacheBasePath.resolve(station.stationuuid)
-        return Files.exists(imagePath)
-    }
+    fun isImageInCache(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
 
     fun getImageFromCache(station: Station): Image {
         val imagePath = cacheBasePath.resolve(station.stationuuid)
@@ -75,21 +69,6 @@ object ImageCache {
             defaultRadioLogo
         } else {
             image
-        }
-    }
-
-    fun getImageFromCacheAsFile(station: Station): File? {
-        return try {
-            val imagePath = cacheBasePath.resolve(station.stationuuid)
-            val file = imagePath.toFile()
-
-            if (!file.exists()) {
-                File(URI.create(javaClass.classLoader.getResource(Config.Paths.defaultRadioIcon).toString()))
-            } else {
-                file
-            }
-        } catch (e: Exception) {
-            null
         }
     }
 

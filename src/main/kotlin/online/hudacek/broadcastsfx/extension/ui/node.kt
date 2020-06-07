@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.extension
+package online.hudacek.broadcastsfx.extension.ui
 
 import javafx.beans.property.Property
 import javafx.beans.value.ChangeListener

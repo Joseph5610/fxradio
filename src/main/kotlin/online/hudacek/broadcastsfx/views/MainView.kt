@@ -22,8 +22,8 @@ import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.extension.defaultRadioLogo
-import online.hudacek.broadcastsfx.extension.set
+import online.hudacek.broadcastsfx.extension.ui.defaultRadioLogo
+import online.hudacek.broadcastsfx.extension.ui.set
 import online.hudacek.broadcastsfx.model.PlayerModel
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -34,11 +34,11 @@ import tornadofx.controlsfx.notificationPane
 class MainView : View(FxRadio.appName) {
 
     private val controller: MainController by inject()
-
     private val playerModel: PlayerModel by inject()
 
-    private val playerView: PlayerView by inject()
     private val leftPaneView: LibraryView by inject()
+
+    private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
 
     var notification: NotificationPane by singleAssign()

@@ -12,10 +12,9 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Text
 import javafx.util.Duration
-import online.hudacek.broadcastsfx.extension.copyMenu
-import online.hudacek.broadcastsfx.extension.updateClipboard
+import online.hudacek.broadcastsfx.extension.ui.copyMenu
+import online.hudacek.broadcastsfx.extension.ui.updateClipboard
 import tornadofx.*
-import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 //source:
@@ -39,7 +38,7 @@ class TickerView : View() {
     override val root = hbox {
         prefHeight = 15.0
         marqueeView.inside(this)
-        copyMenu = copyMenu(clipboard, "")
+        copyMenu = copyMenu(clipboard, value = "")
         this.add(marqueeView)
     }
 
@@ -93,9 +92,7 @@ class MarqueeView : View() {
         startAnimation() //Fire up the animation process
     }
 
-    fun enqueueTickEntry(entry: TickerEntry<Node>) {
-        queuedTicks.add(entry)
-    }
+    fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
 
     //Fire up the animation process for the ticker
     private fun startAnimation() {

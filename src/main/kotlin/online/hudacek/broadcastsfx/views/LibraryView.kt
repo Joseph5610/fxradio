@@ -20,7 +20,7 @@ import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.extension.smallLabel
+import online.hudacek.broadcastsfx.extension.ui.smallLabel
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
@@ -40,7 +40,7 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 30.0 + 5
+        prefHeight = items.size * 30.0 + 10
 
         cellFormat {
             graphic = glyph("FontAwesome", item.graphic)
@@ -118,6 +118,9 @@ class LibraryView : View() {
     }
 
     init {
+        //Load Countries List
+        controller.getCountries()
+
         //set default view
         libraryListView.selectionModel.select(0)
         controller.loadLibrary(LibraryType.TopStations)
@@ -130,25 +133,19 @@ class LibraryView : View() {
 
     override val root = vbox {
         vbox {
-            prefHeight = 20.0
-        }
-        vbox {
-            paddingAll = 10.0
             add(searchField)
+            style {
+                padding = box(20.px, 10.px, 20.px, 10.px)
+            }
         }
 
-        vbox {
-            prefHeight = 20.0
-        }
         smallLabel(messages["library"])
-
         add(libraryListView)
         vbox {
             prefHeight = 20.0
         }
 
         smallLabel(messages["countries"])
-
         vbox(alignment = Pos.CENTER) {
             add(retryLink)
             add(countriesListView)

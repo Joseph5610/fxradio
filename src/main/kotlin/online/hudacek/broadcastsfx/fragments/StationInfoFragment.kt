@@ -22,9 +22,9 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.extension.copyMenu
-import online.hudacek.broadcastsfx.extension.createImage
-import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.ui.copyMenu
+import online.hudacek.broadcastsfx.extension.ui.createImage
+import online.hudacek.broadcastsfx.extension.ui.openUrl
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
@@ -108,7 +108,7 @@ class StationInfoFragment(val station: Station? = null, val showImage: Boolean =
                                         label(info) {
                                             addClass(Styles.grayLabel)
                                             addClass(Styles.tag)
-                                            copyMenu(clipboard, info)
+                                            copyMenu(clipboard, value = info)
                                         }
                                     }
                         }
@@ -126,7 +126,7 @@ class StationInfoFragment(val station: Station? = null, val showImage: Boolean =
                                     label(tag) {
                                         addClass(Styles.tag)
                                         addClass(Styles.grayLabel)
-                                        copyMenu(clipboard, tag)
+                                        copyMenu(clipboard, value = tag)
                                     }
                                 }
                             }
@@ -140,7 +140,7 @@ class StationInfoFragment(val station: Station? = null, val showImage: Boolean =
                                             action {
                                                 app.openUrl(it.homepage)
                                             }
-                                            copyMenu(clipboard, it.homepage)
+                                            copyMenu(clipboard, value = it.homepage)
                                         }
                                 )
                             }

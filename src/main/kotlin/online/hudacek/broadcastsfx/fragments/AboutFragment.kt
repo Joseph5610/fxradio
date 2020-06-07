@@ -18,42 +18,26 @@ package online.hudacek.broadcastsfx.fragments
 
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.FxRadio
-import online.hudacek.broadcastsfx.extension.openUrl
-import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.extension.ui.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
-import tornadofx.controlsfx.statusbar
 
-class AboutAppFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
+class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
 
     override val root = vbox {
         prefWidth = 300.0
 
         vbox(alignment = Pos.CENTER) {
-            paddingAll = 20.0
-
             imageview(FxRadio.appLogo) {
                 requestFocusOnSceneAvailable()
-                fitHeight = 100.0
+                fitHeight = 80.0
                 isPreserveRatio = true
+                paddingAll = 20.0
             }
             label("${FxRadio.appName} - ${FxRadio.appDesc}")
             label("${FxRadio.copyright} ${FxRadio.author}") {
                 addClass(Styles.grayLabel)
             }
-        }
-
-        statusbar {
-            rightItems.add(
-                    hbox {
-                        alignment = Pos.CENTER_LEFT
-                        label("Data source:")
-                        hyperlink(FxRadio.dataSource) {
-                            action {
-                                app.openUrl(FxRadio.dataSource)
-                            }
-                        }
-                    })
         }
     }
 }

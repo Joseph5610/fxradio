@@ -17,7 +17,7 @@
 package online.hudacek.broadcastsfx.fragments
 
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.extension.set
+import online.hudacek.broadcastsfx.extension.ui.set
 import online.hudacek.broadcastsfx.model.ApiServer
 import online.hudacek.broadcastsfx.model.ApiServerModel
 import online.hudacek.broadcastsfx.styles.Styles
@@ -25,13 +25,13 @@ import online.hudacek.broadcastsfx.views.MainView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class ServerSelectionFragment : Fragment("Select API server") {
+class ChangeServerFragment : Fragment("Select API server") {
 
     private val model: ApiServerModel by inject()
 
     private val notification by lazy { find(MainView::class).notification }
 
-    override val root = Form()
+    override val root = form()
 
     init {
         model.item = ApiServer(StationsApi.hostname)

@@ -34,7 +34,11 @@ import online.hudacek.broadcastsfx.controllers.MenuBarController
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.*
+import online.hudacek.broadcastsfx.extension.ui.createImage
+import online.hudacek.broadcastsfx.extension.ui.openUrl
+import online.hudacek.broadcastsfx.extension.ui.set
+import online.hudacek.broadcastsfx.extension.ui.shouldBeDisabled
+import online.hudacek.broadcastsfx.extension.ui.shouldBeVisible
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.StationsHistoryModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -54,7 +58,6 @@ class MenuBarView : View() {
     private var playerCheck: CheckMenuItem by singleAssign()
     private var playerAnimateCheck: CheckMenuItem by singleAssign()
     private var playerNotificationsCheck: CheckMenuItem by singleAssign()
-
 
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
     private val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
@@ -238,8 +241,10 @@ class MenuBarView : View() {
 
     private fun defaultMenuBar() = menubar {
         menu(FxRadio.appName) {
-            addAboutMenu()
-            separator()
+            item(messages["menu.app.about"]).action {
+                controller.openAbout()
+            }
+            addAboutMenuContent()
             item(messages["menu.app.quit"]).action {
                 controller.closeApp(currentStage)
             }
@@ -257,7 +262,7 @@ class MenuBarView : View() {
 
         useSystemMenuBarProperty().set(true)
 
-        val aboutStageBuilder = AboutStageBuilder
+        val macAboutStage = AboutStageBuilder
                 .start("")
                 .withAppName(FxRadio.appName + " - " + FxRadio.appDesc)
                 .withCloseOnFocusLoss()
@@ -265,10 +270,12 @@ class MenuBarView : View() {
                 .withCopyright("Copyright \u00A9 " + Calendar
                         .getInstance()[Calendar.YEAR] + " " + FxRadio.author)
                 .withImage(Image(FxRadio.appLogo))
+                .build()
 
-        val appMenu = Menu(FxRadio.appName).apply {
-            addAboutMenu(tk.createAboutMenuItem(FxRadio.appName, aboutStageBuilder.build()))
+        val aboutMenu = Menu(FxRadio.appName).apply {
+            items.add(tk.createAboutMenuItem(FxRadio.appName, macAboutStage))
             separator()
+            addAboutMenuContent()
             items.addAll(
                     tk.createHideMenuItem(FxRadio.appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
                     SeparatorMenuItem(), tk.createQuitMenuItem(FxRadio.appName))
@@ -283,31 +290,22 @@ class MenuBarView : View() {
                     tk.createBringAllToFrontItem())
         }
 
-
         menus.addAll(stationMenu, playerMenu, historyMenu, windowMenu, helpMenu)
 
-        tk.setApplicationMenu(appMenu)
+        tk.setApplicationMenu(aboutMenu)
         tk.autoAddWindowMenuItems(windowMenu)
         tk.setMenuBar(this)
     }
 
-    private fun Menu.addAboutMenu(aboutMenuItem: MenuItem? = null) {
-        if (aboutMenuItem != null) {
-            items.add(aboutMenuItem)
-        } else {
-            item(messages["menu.app.about"]).action {
-                controller.openAbout()
-            }
-        }
-
+    private fun Menu.addAboutMenuContent() {
         separator()
-
         item(messages["menu.app.server"]).action {
             controller.openServerSelect()
         }
         item(messages["menu.app.attributions"]).action {
             controller.openAttributions()
         }
+        separator()
     }
 
     fun showVoteResult(result: Boolean) {
