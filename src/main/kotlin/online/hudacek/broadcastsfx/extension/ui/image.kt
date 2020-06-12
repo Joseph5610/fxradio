@@ -47,7 +47,7 @@ internal fun ImageView.createImage(station: Station) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
         if (station.isInvalidImage()) {
-            logger.debug { "Image for ${station.name} is invalid." }
+            logger.info { "Image for ${station.name} is invalid." }
             return
         }
 

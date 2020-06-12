@@ -114,20 +114,20 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                 mediaPlayerComponent.mediaPlayer().controls().stop()
             }
         } catch (e: Exception) {
-            logger.debug { "stop failed, probably already stopped, whatever" }
+            logger.debug { "stop failed, probably already stopped" }
         }
     }
 
     override fun cancelPlaying() = mediaPlayerComponent.mediaPlayer().controls().stop()
 
     override fun releasePlayer() {
-        logger.debug { "releasing events" }
+        logger.debug { "Releasing events" }
 
         mediaPlayerComponent.mediaPlayer().events().removeMediaEventListener(mediaEvent)
         mediaPlayerComponent.mediaPlayer().events().removeMediaPlayerEventListener(mediaPlayerEvent)
         nativeLog.removeLogListener(nativeLogListener)
 
-        logger.debug { "releasing player" }
+        logger.info { "Releasing player" }
         nativeLog.release()
         mediaPlayerComponent.release()
     }

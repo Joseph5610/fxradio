@@ -64,6 +64,10 @@ internal fun EventTarget.copyMenu(clipboard: Clipboard,
     op(this)
 }
 
+internal fun Clipboard.update(newValue: String) = setContent {
+    putString(newValue)
+}
+
 internal fun EventTarget.setOnSpacePressed(action: () -> Unit) {
     keyboard {
         addEventHandler(KeyEvent.KEY_PRESSED) {

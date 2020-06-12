@@ -10,10 +10,10 @@ import javafx.scene.Node
 import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
-import javafx.scene.text.Text
 import javafx.util.Duration
 import online.hudacek.broadcastsfx.extension.ui.copyMenu
 import online.hudacek.broadcastsfx.extension.ui.openUrl
+import online.hudacek.broadcastsfx.extension.ui.update
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -51,9 +51,7 @@ class TickerView : View() {
     fun updateText(text: String) {
         copyMenu.apply {
             items[0].action {
-                clipboard.setContent {
-                    putString(text)
-                }
+                clipboard.update(text)
             }
 
             items[1].apply {
@@ -67,10 +65,8 @@ class TickerView : View() {
         marqueeView.enqueueTickEntry(TickerEntry(content = createText(text), reschedule = true))
     }
 
-    private fun createText(content: String): Text {
-        val text = Text(content)
-        text.layoutY = 12.0
-        return text
+    private fun createText(content: String) = text(content) {
+        layoutY = 12.0
     }
 
     fun stop() = marqueeView.stop()

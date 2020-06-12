@@ -47,7 +47,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     init {
         playerModel.playerType.onChange {
             if (it != null) {
-                logger.debug { "player type changed: $it" }
+                logger.info { "player type changed: $it" }
                 mediaPlayer.releasePlayer()
                 mediaPlayer = initMediaPlayer(it)
             }
@@ -73,7 +73,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
-        logger.debug { "initMediaPlayer $playerType" }
         return if (playerType == PlayerType.Native) {
             logger.debug { "trying to init native player.. " }
             NativeMediaPlayer(this)
@@ -91,7 +90,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     private fun play(url: String?) {
-        logger.debug { "play() called" }
         url?.let {
             mediaPlayer.apply {
                 cancelPlaying()

@@ -80,7 +80,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                             MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
                             samples)
                     audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
-                    logger.debug { "Stream started" }
 
                     changeVolume(mediaPlayer.volume)
                     var rawAudio: ByteBuffer? = null
