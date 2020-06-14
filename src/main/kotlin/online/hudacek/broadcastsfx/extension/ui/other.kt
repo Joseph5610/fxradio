@@ -23,11 +23,13 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.stage.Window
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
 import java.net.URLEncoder
+import java.util.*
 
 /*
  * Helper extension functions for UI
@@ -68,12 +70,10 @@ internal fun Clipboard.update(newValue: String) = setContent {
     putString(newValue)
 }
 
-internal fun EventTarget.setOnSpacePressed(action: () -> Unit) {
-    keyboard {
-        addEventHandler(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.SPACE) {
-                action.invoke()
-            }
+internal fun Window.setOnSpacePressed(action: () -> Unit) {
+    addEventHandler(KeyEvent.KEY_PRESSED) {
+        if (it.code == KeyCode.SPACE) {
+            action.invoke()
         }
     }
 }
@@ -86,3 +86,5 @@ internal fun App.openUrl(url: String, query: String = "") {
     val hostServices = HostServicesFactory.getInstance(this)
     hostServices.showDocument(url + queryEncoded)
 }
+
+internal fun String.asBase64() = Base64.getEncoder().encodeToString(this.toByteArray())

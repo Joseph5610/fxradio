@@ -40,22 +40,10 @@ class StationsDataGridView : View() {
 
     init {
         stationsList.item = StationsList()
-
-        stationsList.stations.onChange {
-            it?.let {
-                root.items = it
-            }
-        }
     }
 
-    override val root = datagrid(stationsList.item.stations) {
-        selectionModel.selectedItemProperty().onChange {
-            //Update model on selected item
-            it?.let {
-                playerModel.station.value = it
-            }
-        }
-
+    override val root = datagrid(stationsList.stations) {
+        playerModel.station.bind(selectionModel.selectedItemProperty())
         cellCache {
             vbox(alignment = Pos.CENTER) {
                 popover {

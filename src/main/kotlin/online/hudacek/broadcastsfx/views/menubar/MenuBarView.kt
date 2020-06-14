@@ -54,7 +54,6 @@ class MenuBarView : View() {
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
     private val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
 
-    private val historyMenu = HistoryMenu().menu
     private val stationMenu = StationMenu().menu
     private val helpMenu = HelpMenu().menu
 
@@ -91,16 +90,14 @@ class MenuBarView : View() {
         }
 
         playerAnimateCheck = checkmenuitem(messages["menu.player.animate"]) {
-            isSelected = player.animate.value
+            bind(player.animate)
             action {
-                player.animate.value = !player.animate.value
                 player.commit()
             }
         }
         playerNotificationsCheck = checkmenuitem(messages["menu.player.notifications"]) {
-            isSelected = player.notifications.value
+            bind(player.notifications)
             action {
-                player.notifications.value = !player.notifications.value
                 player.commit()
             }
         }
@@ -128,7 +125,7 @@ class MenuBarView : View() {
                 controller.closeApp(currentStage)
             }
         }
-        menus.addAll(stationMenu, playerMenu, historyMenu, helpMenu)
+        menus.addAll(stationMenu, playerMenu, helpMenu)
     }
 
     /**
@@ -172,7 +169,7 @@ class MenuBarView : View() {
                     tk.createBringAllToFrontItem())
         }
 
-        menus.addAll(stationMenu, playerMenu, historyMenu, windowMenu, helpMenu)
+        menus.addAll(stationMenu, playerMenu, windowMenu, helpMenu)
 
         tk.setApplicationMenu(aboutMenu)
         tk.autoAddWindowMenuItems(windowMenu)

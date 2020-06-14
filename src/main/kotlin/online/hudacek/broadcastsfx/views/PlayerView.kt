@@ -26,12 +26,12 @@ import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.Config
-import online.hudacek.broadcastsfx.controllers.PlayerController
 import online.hudacek.broadcastsfx.events.MediaMetaChanged
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.extension.ui.*
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.Player
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -40,8 +40,8 @@ import tornadofx.*
 
 class PlayerView : View() {
 
-    private val controller: PlayerController by inject()
     private val player: PlayerModel by inject()
+    private val mediaPlayer: MediaPlayerWrapper by inject()
 
     private val radioNameTicker = TickerView()
     private val radioNameStaticText = label()
@@ -65,17 +65,7 @@ class PlayerView : View() {
         add(playImage)
         addClass(Styles.playerControls)
         action {
-            controller.togglePlaying()
-        }
-    }
-
-    private val volumeSlider = slider(-30..5) {
-        value = controller.getVolume()
-        majorTickUnit = 8.0
-        isSnapToTicks = true
-        // isShowTickMarks = true
-        valueProperty().onChange {
-            controller.changeVolume(it)
+            mediaPlayer.togglePlaying()
         }
     }
 
@@ -83,15 +73,13 @@ class PlayerView : View() {
         val animate = app.config.boolean(Config.Keys.playerAnimate, true)
         val notifications = app.config.boolean(Config.Keys.notifications, true)
         val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
+        val volume = app.config.double(Config.Keys.volume, 0.0)
 
         player.item = Player(
                 animate = animate,
                 playerType = playerType,
-                notifications = notifications)
-
-        setOnSpacePressed {
-            controller.togglePlaying()
-        }
+                notifications = notifications,
+                volume = volume)
 
         //subscribe to events
         subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
@@ -99,7 +87,17 @@ class PlayerView : View() {
 
         //Subscribe to property changes
         player.station.onChange { it?.let(::onStationChange) }
-        player.animate.onChange { it?.let(::onAnimatePropertyChanged) }
+        player.animate.onChange(::onAnimatePropertyChanged)
+    }
+
+    private val volumeSlider = slider(-30..5) {
+        bind(player.volumeProperty)
+        majorTickUnit = 8.0
+        isSnapToTicks = true
+        // isShowTickMarks = true
+        valueProperty().onChange {
+            player.commit()
+        }
     }
 
     override val root = vbox {
@@ -194,6 +192,7 @@ class PlayerView : View() {
 
         if (player.notifications.value) {
             notification(
+                    identifier = event.mediaMeta.title.asBase64(),
                     title = newSongName,
                     subtitle = newStreamTitle)
         }
@@ -227,7 +226,7 @@ class PlayerView : View() {
     private fun onStationChange(station: Station) {
         with(station) {
             if (isValidStation()) {
-                onPlaybackStatusChanged(controller.mediaPlayer.playingStatus)
+                onPlaybackStatusChanged(mediaPlayer.playingStatus)
                 if (player.animate.value) radioNameTicker.updateText(name)
                 else {
                     radioNameStaticText.text = name

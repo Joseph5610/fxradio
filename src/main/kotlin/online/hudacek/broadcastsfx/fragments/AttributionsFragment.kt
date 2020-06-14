@@ -71,7 +71,7 @@ class AttributionsFragment : Fragment("Third Party software used by ${FxRadio.ap
 
         override val root = vbox {
             setPrefSize(600.0, 400.0)
-            titleProperty.bindBidirectional(model.licenseName)
+            titleProperty.bind(model.licenseName)
 
             textarea {
                 bind(model.licenseContent)

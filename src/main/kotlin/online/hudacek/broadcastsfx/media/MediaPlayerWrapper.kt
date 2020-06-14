@@ -18,7 +18,6 @@ package online.hudacek.broadcastsfx.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.*
 import online.hudacek.broadcastsfx.model.PlayerModel
 import tornadofx.*
@@ -31,18 +30,9 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     var playingStatus = PlayingStatus.Stopped
 
-    var volume: Double
-        get() = app.config.double(Config.Keys.volume, -15.0)
-        set(value) {
-            if (mediaPlayer.changeVolume(value)) {
-                with(app.config) {
-                    set(Config.Keys.volume to value)
-                    save()
-                }
-            }
-        }
-
     private var mediaPlayer: MediaPlayer = StubMediaPlayer()
+
+    private var internalVolume = 0.0
 
     init {
         playerModel.playerType.onChange {
@@ -51,6 +41,12 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 mediaPlayer.releasePlayer()
                 mediaPlayer = initMediaPlayer(it)
             }
+        }
+
+        playerModel.volumeProperty.onChange {
+            logger.info { "volume changed: $it" }
+            internalVolume = it
+            mediaPlayer.changeVolume(it)
         }
 
         subscribe<PlaybackChangeEvent> {
@@ -72,18 +68,24 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         }
     }
 
+    fun init() {
+
+    }
+
     private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
         return if (playerType == PlayerType.Native) {
-            logger.debug { "trying to init native player.. " }
+            logger.debug { "trying to init native player " }
             NativeMediaPlayer(this)
         } else {
             try {
                 logger.debug { "trying to init VLC media player " }
                 VLCMediaPlayer(this)
-            } catch (e: RuntimeException) {
+            } catch (e: Exception) {
+                playerModel.playerType.value = PlayerType.Native
                 logger.error(e) {
                     "VLC init failed, init native library "
                 }
+                fire(NotificationEvent("Player can't be initialized. Library is not installed on the system."))
                 NativeMediaPlayer(this)
             }
         }
@@ -92,6 +94,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     private fun play(url: String?) {
         url?.let {
             mediaPlayer.apply {
+                changeVolume(internalVolume)
                 cancelPlaying()
                 play(url)
             }

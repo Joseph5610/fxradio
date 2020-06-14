@@ -81,7 +81,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                             samples)
                     audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
 
-                    changeVolume(mediaPlayer.volume)
                     var rawAudio: ByteBuffer? = null
 
                     val packet = MediaPacket.make()
@@ -115,7 +114,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
             }
         }
     }
-
 
     override fun changeVolume(volume: Double): Boolean {
         return try {

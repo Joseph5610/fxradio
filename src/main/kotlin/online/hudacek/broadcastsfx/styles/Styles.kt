@@ -111,11 +111,6 @@ class Styles : Stylesheet() {
             textFill = c(ColorValues.grayLabel)
         }
 
-        splitPaneDivider {
-            padding = box(0.px, 0.01.em)
-            borderColor += box(c(ColorValues.transparent))
-        }
-
         primaryButton {
             backgroundColor += c(ColorValues.primary)
             textFill = Color.WHITESMOKE
@@ -221,6 +216,12 @@ class Styles : Stylesheet() {
             }
         }
 
+        splitPaneDivider {
+            padding = box(0.px, 0.001.em)
+            backgroundColor += Color.TRANSPARENT
+            borderColor += box(c(ColorValues.backgroundBorder))
+        }
+
         datagrid {
             padding = box(0.px)
         }
@@ -281,6 +282,10 @@ class Styles : Stylesheet() {
                     backgroundColor += c(ColorValues.background)
                 }
             }
+        }
+
+        progressIndicator {
+            progressColor = Color.BLACK
         }
     }
 }

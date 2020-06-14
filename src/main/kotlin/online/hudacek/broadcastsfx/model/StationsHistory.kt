@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.model
 
+import javafx.beans.property.ListProperty
 import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.*
 
@@ -8,7 +9,7 @@ class StationsHistory {
 }
 
 class StationsHistoryModel : ItemViewModel<StationsHistory>() {
-    val stations = bind(StationsHistory::stations)
+    val stations = bind(StationsHistory::stations) as ListProperty
 
     fun add(station: Station) {
         if (!station.isValidStation()) return

@@ -24,6 +24,8 @@ import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.extension.ui.defaultRadioLogo
 import online.hudacek.broadcastsfx.extension.ui.set
+import online.hudacek.broadcastsfx.extension.ui.setOnSpacePressed
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.views.menubar.MenuBarView
 import org.controlsfx.control.NotificationPane
@@ -36,6 +38,7 @@ class MainView : View(FxRadio.appName) {
 
     private val controller: MainController by inject()
     private val playerModel: PlayerModel by inject()
+    private val mediaPlayer: MediaPlayerWrapper by inject()
 
     private val leftPaneView: LibraryView by inject()
 
@@ -45,6 +48,7 @@ class MainView : View(FxRadio.appName) {
     private var notification: NotificationPane by singleAssign()
 
     init {
+        mediaPlayer.init()
         setStageIcon(defaultRadioLogo)
         subscribe<NotificationEvent> {
             notification[it.glyph] = it.text
@@ -57,6 +61,10 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
+        currentWindow?.setOnSpacePressed {
+            mediaPlayer.togglePlaying()
+        }
+
         currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }
@@ -86,7 +94,8 @@ class MainView : View(FxRadio.appName) {
                         }
                     }
 
-                    //Constrain max width of left pane
+                    //Constrains width of left pane
+                    leftPaneView.root.minWidthProperty().bind(this.widthProperty().divide(5))
                     leftPaneView.root.maxWidthProperty().bind(this.widthProperty().multiply(0.35))
                 }
             }

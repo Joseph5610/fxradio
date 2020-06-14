@@ -44,19 +44,22 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
  * Show Native OS notification
  *
  */
-internal fun EventTarget.notification(title: String,
-                                      subtitle: String) {
+
+fun EventTarget.notification(identifier: String,
+                             title: String,
+                             subtitle: String) {
     if (PlatformUtil.isMac()) {
-        macNotification(title, subtitle)
+        macNotification(identifier, title, subtitle)
     } else {
         //not implemented
     }
 }
 
 //MacOS native notification
-private fun macNotification(title: String, subtitle: String) =
+private fun macNotification(identifier: String, title: String, subtitle: String) =
         NSUserNotification().apply {
             this.title = title
             this.informativeText = subtitle
+            this.identifier = identifier
             show()
         }
