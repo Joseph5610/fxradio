@@ -19,9 +19,9 @@ package online.hudacek.broadcastsfx.fragments
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.extension.ui.copyMenu
-import online.hudacek.broadcastsfx.extension.ui.createImage
-import online.hudacek.broadcastsfx.extension.ui.openUrl
+import online.hudacek.broadcastsfx.extension.copyMenu
+import online.hudacek.broadcastsfx.extension.createImage
+import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles

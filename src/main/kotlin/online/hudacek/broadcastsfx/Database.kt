@@ -16,8 +16,10 @@
 
 package online.hudacek.broadcastsfx
 
+import io.reactivex.Single
 import mu.KotlinLogging
 import org.nield.rxkotlinjdbc.execute
+import java.sql.Connection
 import java.sql.DriverManager
 
 /**
@@ -26,7 +28,7 @@ import java.sql.DriverManager
 object Database {
     private val logger = KotlinLogging.logger {}
 
-    val connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
+    val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
 
         //Initial creation of tables
         execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
@@ -43,5 +45,5 @@ object Database {
                 })
     }
 
-    fun cleanup() = connection.execute("delete from favourites").toSingle()
+    fun cleanup(): Single<Int> = connection.execute("delete from favourites").toSingle()
 }

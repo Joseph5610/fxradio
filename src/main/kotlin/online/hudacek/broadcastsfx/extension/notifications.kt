@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.extension.ui
+package online.hudacek.broadcastsfx.extension
 
 import airsquared.JMacNotification.NSUserNotification
 import com.sun.javafx.PlatformUtil

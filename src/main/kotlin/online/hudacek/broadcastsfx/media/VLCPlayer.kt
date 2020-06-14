@@ -27,7 +27,7 @@ import uk.co.caprica.vlcj.media.Meta
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
+internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
     : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
@@ -115,7 +115,8 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         logger.debug { "ending current stream if any with error status $result" }
 
         if (result == 1) {
-            mediaPlayer.handleError(RuntimeException("$lastLogMessage\nSee app.log for more details."))
+            val errorMsg = if (lastLogMessage.isEmpty()) "Error opening stream. See app.log for details." else lastLogMessage
+            mediaPlayer.handleError(RuntimeException(errorMsg))
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,

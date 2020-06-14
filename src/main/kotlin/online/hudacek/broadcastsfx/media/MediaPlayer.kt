@@ -21,4 +21,16 @@ interface MediaPlayer {
     fun changeVolume(volume: Double): Boolean
     fun cancelPlaying()
     fun releasePlayer()
+
+    companion object {
+        val stub = object : MediaPlayer {
+            override fun play(url: String) {}
+
+            override fun changeVolume(volume: Double) = false
+
+            override fun cancelPlaying() {}
+
+            override fun releasePlayer() {}
+        }
+    }
 }

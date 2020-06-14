@@ -20,10 +20,9 @@ import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
-import online.hudacek.broadcastsfx.Database
 import online.hudacek.broadcastsfx.controllers.menubar.MenuBarController
 import online.hudacek.broadcastsfx.events.NotificationEvent
-import online.hudacek.broadcastsfx.extension.ui.openUrl
+import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.model.LogLevelModel
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
@@ -60,20 +59,6 @@ class HelpMenu : Component() {
                 } else {
                     fire(NotificationEvent(messages["cache.clear.error"]))
                 }
-            }
-        }
-        item(messages["menu.help.clearDatabase"]).action {
-            confirm(messages["database.clear.confirm"], messages["database.clear.text"]) {
-                Database
-                        .cleanup()
-                        .subscribe({
-                            fire(NotificationEvent(messages["database.clear.ok"]))
-                        }, {
-                            logger.error(it) {
-                                "Can't remove favourites!"
-                            }
-                            fire(NotificationEvent(messages["database.clear.error"]))
-                        })
             }
         }
         separator()

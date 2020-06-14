@@ -13,7 +13,7 @@ class StationsHistoryModel : ItemViewModel<StationsHistory>() {
 
     fun add(station: Station) {
         if (!station.isValidStation()) return
-        with(stations.value) {
+        with(stations) {
             if (!contains(station)) {
                 if (size > 10) {
                     removeAt(0)

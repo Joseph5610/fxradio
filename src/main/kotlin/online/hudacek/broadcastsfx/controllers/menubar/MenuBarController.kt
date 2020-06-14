@@ -24,7 +24,7 @@ import javafx.stage.StageStyle
 import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.extension.ui.openUrl
+import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -38,7 +38,7 @@ class MenuBarController : Controller() {
 
     private val menuBarView: MenuBarView by inject()
 
-    private val mediaPlayer: MediaPlayerWrapper by inject()
+    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -54,7 +54,7 @@ class MenuBarController : Controller() {
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()
-        mediaPlayer.release()
+        mediaPlayerWrapper.release()
     }
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)

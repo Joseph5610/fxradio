@@ -11,9 +11,9 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
-import online.hudacek.broadcastsfx.extension.ui.copyMenu
-import online.hudacek.broadcastsfx.extension.ui.openUrl
-import online.hudacek.broadcastsfx.extension.ui.update
+import online.hudacek.broadcastsfx.extension.copyMenu
+import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.update
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -37,7 +37,7 @@ class TickerView : View() {
 
     private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
 
-    override val root = hbox {
+    override val root = pane {
         prefHeight = 15.0
         marqueeView.inside(this)
         copyMenu = copyMenu(clipboard, name = messages["copy"]) {

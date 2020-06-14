@@ -34,7 +34,7 @@ import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
-import online.hudacek.broadcastsfx.extension.ui.shouldBeVisible
+import online.hudacek.broadcastsfx.extension.shouldBeVisible
 import online.hudacek.broadcastsfx.model.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -43,7 +43,7 @@ import java.util.*
 class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
-    private val player: PlayerModel by inject()
+    private val playerModel: PlayerModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
     private var playerStop: MenuItem by singleAssign()
@@ -62,50 +62,50 @@ class MenuBarView : View() {
 
     private val playerMenu = Menu(messages["menu.player.controls"]).apply {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
-            shouldBeVisible(player.station)
+            shouldBeVisible(playerModel.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
         playerStop = item(messages["menu.player.stop"], keyStop) {
-            shouldBeVisible(player.station)
+            shouldBeVisible(playerModel.station)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
         }
 
         playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-            isSelected = player.playerType.value == PlayerType.Native
+            isSelected = playerModel.playerType.value == PlayerType.FFmpeg
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-                player.playerType.value =
-                        if (player.playerType.value == PlayerType.Native) {
+                playerModel.playerType.value =
+                        if (playerModel.playerType.value == PlayerType.FFmpeg) {
                             PlayerType.VLC
                         } else {
-                            PlayerType.Native
+                            PlayerType.FFmpeg
                         }
-                player.commit()
+                playerModel.commit()
             }
         }
 
         playerAnimateCheck = checkmenuitem(messages["menu.player.animate"]) {
-            bind(player.animate)
+            bind(playerModel.animate)
             action {
-                player.commit()
+                playerModel.commit()
             }
         }
         playerNotificationsCheck = checkmenuitem(messages["menu.player.notifications"]) {
-            bind(player.notifications)
+            bind(playerModel.notifications)
             action {
-                player.commit()
+                playerModel.commit()
             }
         }
     }
 
     init {
-        player.playerType.onChange {
-            playerCheck.isSelected = it == PlayerType.Native
+        playerModel.playerType.onChange {
+            playerCheck.isSelected = it == PlayerType.FFmpeg
         }
     }
 

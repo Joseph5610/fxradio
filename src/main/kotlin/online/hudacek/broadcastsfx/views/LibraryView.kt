@@ -20,7 +20,7 @@ import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.extension.ui.smallLabel
+import online.hudacek.broadcastsfx.extension.smallLabel
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome

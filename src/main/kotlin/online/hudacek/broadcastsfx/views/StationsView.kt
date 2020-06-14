@@ -16,15 +16,11 @@
 
 package online.hudacek.broadcastsfx.views
 
-import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import mu.KotlinLogging
 import online.hudacek.broadcastsfx.controllers.StationsController
 import online.hudacek.broadcastsfx.events.LibraryRefreshEvent
 import online.hudacek.broadcastsfx.events.LibraryType
-import online.hudacek.broadcastsfx.extension.ui.glyph
 import online.hudacek.broadcastsfx.styles.Styles
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 /**
@@ -34,71 +30,22 @@ class StationsView : View() {
 
     private val controller: StationsController by inject()
 
-    private val logger = KotlinLogging.logger {}
-
-    private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
-    private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
-
-    private val contentName = label {
-        paddingTop = 8.0
-        paddingBottom = 8.0
-        paddingLeft = 15.0
-        addClass(Styles.subheader)
-    }
-
-    private val header = label {
-        addClass(Styles.header)
-    }
-
-    private val subHeader = label {
-        addClass(Styles.grayLabel)
-    }
-
-    private val headerContainer = vbox(alignment = Pos.CENTER) {
-        paddingTop = 120.0
-        paddingLeft = 10.0
-        paddingRight = 10.0
-        add(header)
-        add(subHeader)
-    }
-
-    private val dataGrid: StationsDataGridView by inject()
-
-    private val contentTop = flowpane {
-        paddingBottom = 0.0
-        maxHeight = 10.0
-        addClass(Styles.backgroundWhiteSmoke)
-        add(contentName)
-    }
+    private val dataGridView: StationsDataGridView by inject()
+    private val headerView: StationsHeaderView by inject()
+    private val infoErrorView: StationsInfoErrorView by inject()
 
     init {
+        showLoading()
+
         //Handle change of stations library
         subscribe<LibraryRefreshEvent> {
+            showLoading()
             when (it.type) {
                 LibraryType.Country -> controller.getStationsByCountry(it.params)
                 LibraryType.Favourites -> controller.getFavourites()
                 LibraryType.History -> controller.getHistory()
-                LibraryType.Search -> {
-                    if (it.params.length > 2)
-                        controller.searchStations(it.params)
-                    else {
-                        contentTop.hide()
-                        headerContainer.show()
-                        header.text = messages["searchingLibrary"]
-                        header.graphic = searchGlyph
-                        subHeader.text = messages["searchingLibraryDesc"]
-                        dataGrid.hide()
-                    }
-                }
+                LibraryType.Search -> handleSearch(it.params)
                 else -> controller.getTopStations()
-            }
-
-            contentName.text = when (it.type) {
-                LibraryType.Favourites -> messages["favourites"]
-                LibraryType.History -> messages["history"]
-                LibraryType.TopStations -> messages["topStations"]
-                LibraryType.Search -> messages["searchResultsFor"] + " \"${it.params}\""
-                else -> it.params
             }
         }
     }
@@ -106,41 +53,43 @@ class StationsView : View() {
     override val root = vbox {
         addClass(Styles.backgroundWhite)
         vgrow = Priority.ALWAYS
-        add(headerContainer)
-        add(contentTop)
-        add(dataGrid)
-        dataGrid.root.fitToParentHeight()
+        add(infoErrorView)
+        add(headerView)
+        add(dataGridView)
+        dataGridView.root.fitToParentHeight()
     }
 
     fun showNoResults(queryString: String? = null) {
-        contentTop.hide()
-        headerContainer.show()
-        dataGrid.hide()
-        if (queryString != null) {
-            subHeader.text = messages["noResultsDesc"]
-        }
-        header.graphic = null
-        header.text =
-                if (queryString != null)
-                    "${messages["noResultsFor"]} \"$queryString\""
-                else {
-                    messages["noResults"]
-                }
+        headerView.hide()
+        dataGridView.hide()
+        infoErrorView.showNoResultsInfo(queryString)
     }
 
-    fun showError(throwable: Throwable) {
-        logger.error(throwable) { "Error showing station library" }
-        contentTop.hide()
-        headerContainer.show()
-        dataGrid.hide()
-        header.graphic = errorGlyph
-        header.text = messages["connectionError"]
-        subHeader.text = messages["connectionErrorDesc"]
+    fun showError() {
+        headerView.hide()
+        dataGridView.hide()
+        infoErrorView.showError()
     }
 
     fun showStations() {
-        headerContainer.hide()
-        contentTop.show()
-        dataGrid.show()
+        infoErrorView.hide()
+        headerView.show()
+        dataGridView.show()
+    }
+
+    private fun handleSearch(query: String) {
+        if (query.length > 2)
+            controller.searchStations(query)
+        else {
+            headerView.hide()
+            dataGridView.hide()
+            infoErrorView.showShortSearchInfo()
+        }
+    }
+
+    private fun showLoading() {
+        headerView.hide()
+        dataGridView.hide()
+        infoErrorView.showLoading()
     }
 }

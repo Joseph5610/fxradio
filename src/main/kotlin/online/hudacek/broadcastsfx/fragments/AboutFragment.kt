@@ -18,7 +18,7 @@ package online.hudacek.broadcastsfx.fragments
 
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.FxRadio
-import online.hudacek.broadcastsfx.extension.ui.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 

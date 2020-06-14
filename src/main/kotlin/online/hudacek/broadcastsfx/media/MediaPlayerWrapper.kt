@@ -30,7 +30,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     var playingStatus = PlayingStatus.Stopped
 
-    private var mediaPlayer: MediaPlayer = StubMediaPlayer()
+    private var mediaPlayer: MediaPlayer = MediaPlayer.stub
 
     private var internalVolume = 0.0
 
@@ -73,20 +73,20 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
-        return if (playerType == PlayerType.Native) {
+        return if (playerType == PlayerType.FFmpeg) {
             logger.debug { "trying to init native player " }
-            NativeMediaPlayer(this)
+            FFmpegPlayer(this)
         } else {
             try {
                 logger.debug { "trying to init VLC media player " }
-                VLCMediaPlayer(this)
+                VLCPlayer(this)
             } catch (e: Exception) {
-                playerModel.playerType.value = PlayerType.Native
+                playerModel.playerType.value = PlayerType.FFmpeg
                 logger.error(e) {
                     "VLC init failed, init native library "
                 }
                 fire(NotificationEvent("Player can't be initialized. Library is not installed on the system."))
-                NativeMediaPlayer(this)
+                FFmpegPlayer(this)
             }
         }
     }
@@ -106,7 +106,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     fun handleError(t: Throwable) {
         Platform.runLater {
             fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-            fire(NotificationEvent("Stream can't be played: ${t.localizedMessage}"))
+            fire(NotificationEvent(t.localizedMessage))
             logger.error(t) {
                 "Stream can't be played"
             }

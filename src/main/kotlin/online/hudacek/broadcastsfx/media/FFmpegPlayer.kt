@@ -28,17 +28,13 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
+internal class FFmpegPlayer(private val mediaPlayer: MediaPlayerWrapper)
     : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
-
-    init {
-        logger.debug { "Native player started" }
-    }
 
     private val handler = CoroutineExceptionHandler { _, exception ->
         mediaPlayer.handleError(exception)

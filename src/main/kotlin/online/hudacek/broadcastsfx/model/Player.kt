@@ -2,6 +2,7 @@ package online.hudacek.broadcastsfx.model
 
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
+import javafx.beans.property.ObjectProperty
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -25,8 +26,8 @@ class PlayerModel : ItemViewModel<Player>() {
 
     val animate = bind(Player::animate) as BooleanProperty
     val notifications = bind(Player::notifications) as BooleanProperty
-    val station = bind(Player::actualStation)
-    val playerType = bind(Player::playerType)
+    val station = bind(Player::actualStation) as ObjectProperty
+    val playerType = bind(Player::playerType) as ObjectProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
 
     init {

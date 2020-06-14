@@ -20,7 +20,7 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.extension.ui.createImage
+import online.hudacek.broadcastsfx.extension.createImage
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.StationsList
@@ -42,8 +42,14 @@ class StationsDataGridView : View() {
         stationsList.item = StationsList()
     }
 
-    override val root = datagrid(stationsList.stations) {
-        playerModel.station.bind(selectionModel.selectedItemProperty())
+    override val root = datagrid(stationsList.shown) {
+        selectionModel.selectedItemProperty().onChange {
+            //Update model on selected item
+            it?.let {
+                playerModel.station.value = it
+            }
+        }
+
         cellCache {
             vbox(alignment = Pos.CENTER) {
                 popover {

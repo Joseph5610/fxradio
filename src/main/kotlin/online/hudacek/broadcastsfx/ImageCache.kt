@@ -18,7 +18,7 @@ package online.hudacek.broadcastsfx
 
 import javafx.scene.image.Image
 import mu.KotlinLogging
-import online.hudacek.broadcastsfx.extension.ui.defaultRadioLogo
+import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.model.rest.Station
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream

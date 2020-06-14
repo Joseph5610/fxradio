@@ -24,7 +24,7 @@ import javafx.scene.input.KeyCombination
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.menubar.MenuBarController
 import online.hudacek.broadcastsfx.events.NotificationEvent
-import online.hudacek.broadcastsfx.extension.ui.shouldBeDisabled
+import online.hudacek.broadcastsfx.extension.shouldBeDisabled
 import online.hudacek.broadcastsfx.model.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -32,7 +32,7 @@ import tornadofx.*
 class StationMenu : Component() {
 
     private val controller: MenuBarController by inject()
-    private val player: PlayerModel by inject()
+    private val playerModel: PlayerModel by inject()
 
     private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
     private val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
@@ -40,24 +40,24 @@ class StationMenu : Component() {
 
     val menu = Menu(messages["menu.station"]).apply {
         item(messages["menu.station.info"], keyInfo) {
-            shouldBeDisabled(player.station)
+            shouldBeDisabled(playerModel.station)
             action {
                 controller.openStationInfo()
             }
         }
 
         item(messages["menu.station.favourite"], keyFavourites) {
-            disableWhen(booleanBinding(player.station) {
+            disableWhen(booleanBinding(playerModel.station) {
                 value == null || !value.isValidStation() || value.isFavourite.blockingGet()
             })
             action {
-                player.station.value
+                playerModel.station.value
                         .isFavourite
                         .flatMap {
                             if (it) {
                                 Single.just(false)
                             } else {
-                                player.station.value.addFavourite()
+                                playerModel.station.value.addFavourite()
                             }
                         }
                         .subscribe({
@@ -73,14 +73,14 @@ class StationMenu : Component() {
         }
 
         item(messages["menu.station.favourite.remove"]) {
-            visibleWhen(booleanBinding(player.station) {
+            visibleWhen(booleanBinding(playerModel.station) {
                 value != null && value.isValidStation() && value.isFavourite.blockingGet()
             })
             action {
-                player.station.value
+                playerModel.station.value
                         .isFavourite
                         .flatMap {
-                            if (!it) Single.just(false) else player.station.value.removeFavourite()
+                            if (!it) Single.just(false) else playerModel.station.value.removeFavourite()
                         }
                         .subscribe({
                             fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
@@ -91,9 +91,9 @@ class StationMenu : Component() {
         }
 
         item(messages["menu.station.vote"]) {
-            shouldBeDisabled(player.station)
+            shouldBeDisabled(playerModel.station)
             action {
-                controller.voteForStation(player.station.value)
+                controller.voteForStation(playerModel.station.value)
             }
         }
 

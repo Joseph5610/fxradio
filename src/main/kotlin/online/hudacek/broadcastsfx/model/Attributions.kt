@@ -22,6 +22,7 @@ object Attributions {
     }
 }
 
+//Data classes
 class License(name: String = "", content: String) {
     var name: String by property(name)
     var content: String by property(content)
@@ -34,6 +35,7 @@ class Attribution(name: String, version: String = "", license: License) {
     var licenseName: String by property(license.name)
 }
 
+//Model
 class AttributionModel : ItemViewModel<Attribution>() {
     val name = bind(Attribution::name) as StringProperty
     val licenseName = bind(Attribution::licenseName) as StringProperty

@@ -20,9 +20,9 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.StationsApi
-import online.hudacek.broadcastsfx.extension.ui.copyMenu
-import online.hudacek.broadcastsfx.extension.ui.openUrl
-import online.hudacek.broadcastsfx.extension.ui.requestFocusOnSceneAvailable
+import online.hudacek.broadcastsfx.extension.copyMenu
+import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*

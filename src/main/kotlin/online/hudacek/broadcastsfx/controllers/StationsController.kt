@@ -19,6 +19,7 @@ package online.hudacek.broadcastsfx.controllers
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import mu.KotlinLogging
 import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.model.StationsHistoryModel
 import online.hudacek.broadcastsfx.model.StationsListModel
@@ -29,6 +30,8 @@ import online.hudacek.broadcastsfx.views.StationsView
 import tornadofx.*
 
 class StationsController : Controller() {
+
+    private val logger = KotlinLogging.logger {}
 
     private val stationsView: StationsView by inject()
     private val stationsHistory: StationsHistoryModel by inject()
@@ -46,11 +49,9 @@ class StationsController : Controller() {
                         stationsView.showNoResults()
                     } else {
                         stationsView.showStations()
-                        stationsList.stations.value = it.asObservable()
+                        stationsList.shown.value = it.asObservable()
                     }
-                }, {
-                    stationsView.showError(it)
-                })
+                }, ::handleError)
     }
 
     fun getStationsByCountry(country: String): Disposable = stationsApi
@@ -59,10 +60,8 @@ class StationsController : Controller() {
             .observeOnFx()
             .subscribe({ result ->
                 stationsView.showStations()
-                stationsList.stations.value = result.asObservable()
-            }, {
-                stationsView.showError(it)
-            })
+                stationsList.shown.value = result.asObservable()
+            }, ::handleError)
 
     fun searchStations(name: String): Disposable = stationsApi
             .searchStationByName(SearchBody(name))
@@ -73,19 +72,17 @@ class StationsController : Controller() {
                     stationsView.showNoResults(name)
                 } else {
                     stationsView.showStations()
-                    stationsList.stations.value = result.asObservable()
+                    stationsList.shown.value = result.asObservable()
                 }
-            }, {
-                stationsView.showError(it)
-            })
+            }, ::handleError)
 
     fun getHistory() {
-        val historyList = stationsHistory.stations.value.distinct()
+        val historyList = stationsHistory.stations
         if (historyList.isEmpty()) {
             stationsView.showNoResults()
         } else {
             stationsView.showStations()
-            stationsList.stations.value = historyList.asObservable()
+            stationsList.shown.value = historyList
         }
     }
 
@@ -95,8 +92,11 @@ class StationsController : Controller() {
             .observeOnFx()
             .subscribe({ result ->
                 stationsView.showStations()
-                stationsList.stations.value = result.asObservable()
-            }, {
-                stationsView.showError(it)
-            })
+                stationsList.shown.value = result.asObservable()
+            }, ::handleError)
+
+    private fun handleError(throwable: Throwable) {
+        logger.error(throwable) { "Error showing station library" }
+        stationsView.showError()
+    }
 }

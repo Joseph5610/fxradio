@@ -16,6 +16,7 @@
 
 package online.hudacek.broadcastsfx.model
 
+import javafx.beans.property.ObjectProperty
 import online.hudacek.broadcastsfx.Config
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
@@ -27,7 +28,7 @@ class LogLevel(level: Level) {
 }
 
 class LogLevelModel : ItemViewModel<LogLevel>() {
-    val level = bind(LogLevel::level)
+    val level = bind(LogLevel::level) as ObjectProperty
 
     override fun onCommit() {
         super.onCommit()

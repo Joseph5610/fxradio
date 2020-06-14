@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.extension.ui
+package online.hudacek.broadcastsfx.extension
 
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import javafx.event.EventTarget

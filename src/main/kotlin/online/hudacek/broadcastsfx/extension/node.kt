@@ -14,23 +14,35 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.extension.ui
+package online.hudacek.broadcastsfx.extension
 
 import javafx.beans.property.Property
-import javafx.scene.control.MenuItem
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.scene.Node
+import javafx.scene.Scene
 import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.*
 
 /**
- * Convenience methods for boolean bindings
+ * This is to overcome a bug that sometimes
+ * scene is not available when requesting focus
  */
-internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
-    visibleWhen(booleanBinding(station) {
-        value != null && value.isValidStation()
-    })
+internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
+    val listener = object : ChangeListener<Scene> {
+        override fun changed(observable: ObservableValue<out Scene>?, oldValue: Scene?, newValue: Scene?) {
+            if (newValue != null) {
+                sceneProperty().removeListener(this)
+                requestFocus()
+            }
+        }
+    }
+    sceneProperty().addListener(listener)
+} else {
+    requestFocus()
 }
 
-internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
+internal fun Node.shouldBeDisabled(station: Property<Station>) {
     disableWhen(booleanBinding(station) {
         value == null || !value.isValidStation()
     })

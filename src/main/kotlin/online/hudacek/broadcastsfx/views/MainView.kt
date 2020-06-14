@@ -22,9 +22,9 @@ import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.controllers.MainController
 import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.events.PlayerType
-import online.hudacek.broadcastsfx.extension.ui.defaultRadioLogo
-import online.hudacek.broadcastsfx.extension.ui.set
-import online.hudacek.broadcastsfx.extension.ui.setOnSpacePressed
+import online.hudacek.broadcastsfx.extension.defaultRadioLogo
+import online.hudacek.broadcastsfx.extension.set
+import online.hudacek.broadcastsfx.extension.setOnSpacePressed
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.views.menubar.MenuBarView
@@ -38,7 +38,7 @@ class MainView : View(FxRadio.appName) {
 
     private val controller: MainController by inject()
     private val playerModel: PlayerModel by inject()
-    private val mediaPlayer: MediaPlayerWrapper by inject()
+    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     private val leftPaneView: LibraryView by inject()
 
@@ -48,7 +48,7 @@ class MainView : View(FxRadio.appName) {
     private var notification: NotificationPane by singleAssign()
 
     init {
-        mediaPlayer.init()
+        mediaPlayerWrapper.init()
         setStageIcon(defaultRadioLogo)
         subscribe<NotificationEvent> {
             notification[it.glyph] = it.text
@@ -62,14 +62,14 @@ class MainView : View(FxRadio.appName) {
 
     override fun onDock() {
         currentWindow?.setOnSpacePressed {
-            mediaPlayer.togglePlaying()
+            mediaPlayerWrapper.togglePlaying()
         }
 
         currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }
 
-        if (playerModel.playerType.value == PlayerType.Native) {
+        if (playerModel.playerType.value == PlayerType.FFmpeg) {
             notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
         }
     }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.extension.ui
+package online.hudacek.broadcastsfx.extension
 
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
