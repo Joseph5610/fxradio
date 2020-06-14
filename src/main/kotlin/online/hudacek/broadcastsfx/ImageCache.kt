@@ -18,6 +18,7 @@ package online.hudacek.broadcastsfx
 
 import javafx.scene.image.Image
 import mu.KotlinLogging
+import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.model.rest.Station
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
@@ -40,7 +41,6 @@ object ImageCache {
     init {
         //prepare cache directory
         if (!Files.isDirectory(cacheBasePath)) {
-            logger.debug { "init cache directory" }
             Files.createDirectories(cacheBasePath)
         }
     }
@@ -51,22 +51,24 @@ object ImageCache {
             true
         } catch (e: IOException) {
             logger.error(e) {
-                "IOException when clearing cache: "
+                "IOException when clearing cache"
             }
             false
         }
     }
 
-    fun isImageInCache(station: Station): Boolean {
-        val imagePath = cacheBasePath.resolve(station.stationuuid)
-        return Files.exists(imagePath)
-    }
+    fun isImageInCache(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
 
     fun getImageFromCache(station: Station): Image {
-        return if (!isImageInCache(station) || station.isInvalidImage()) Image(About.appLogo)
-        else {
-            val imagePath = cacheBasePath.resolve(station.stationuuid)
-            Image(FileInputStream(imagePath.toFile()))
+        val imagePath = cacheBasePath.resolve(station.stationuuid)
+        val image = Image(FileInputStream(imagePath.toFile()))
+        return if (image.isError) {
+            logger.error {
+                "image showing failed for ${station.name} (${image.exception.localizedMessage}) "
+            }
+            defaultRadioLogo
+        } else {
+            image
         }
     }
 

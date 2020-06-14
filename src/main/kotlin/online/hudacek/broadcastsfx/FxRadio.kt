@@ -17,8 +17,13 @@
 package online.hudacek.broadcastsfx
 
 import javafx.stage.Stage
+import online.hudacek.broadcastsfx.model.LogLevel
+import online.hudacek.broadcastsfx.model.LogLevelModel
 import online.hudacek.broadcastsfx.styles.Styles
 import online.hudacek.broadcastsfx.views.MainView
+import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -27,10 +32,12 @@ import java.nio.file.Paths
  * Main class of the app
  * main() method should be run to start the app
  */
-class Broadcasts : App(MainView::class, Styles::class) {
+class FxRadio : App(MainView::class, Styles::class) {
 
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.appConfig)
+
+    private val logLevel: LogLevelModel by inject()
 
     override fun start(stage: Stage) {
         with(stage) {
@@ -38,16 +45,30 @@ class Broadcasts : App(MainView::class, Styles::class) {
             minHeight = 400.0
             super.start(this)
         }
+
+        //init logger
+        logLevel.item = LogLevel(Level.valueOf(config.string(Config.Keys.logLevel, "INFO")))
+        Configurator.setAllLevels(LogManager.getRootLogger().name, logLevel.level.value)
     }
 
+    /**
+     * Basic info about the app
+     */
     companion object {
+        const val appName = "FXRadio"
+        const val appDesc = "Internet radio directory"
+        const val appLogo = "radio-icon.png"
+        const val appUrl = "https://hudacek.online/fxradio"
+        const val author = "Jozef Hudáček"
+        const val copyright = "Copyright (c) 2020"
+
         /**
          * Get version from jar MANIFEST.MF file
          */
         val version: String by lazy {
-            Broadcasts::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
         }
     }
 }
 
-fun main(args: Array<String>) = launch<Broadcasts>(args)
+fun main(args: Array<String>) = launch<FxRadio>(args)

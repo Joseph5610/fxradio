@@ -16,7 +16,6 @@
 
 package online.hudacek.broadcastsfx.views
 
-import javafx.geometry.Insets
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
@@ -41,13 +40,10 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(controller.libraryItems) {
-        prefHeight = items.size * 30.0 + 5
+        prefHeight = items.size * 30.0 + 10
 
         cellFormat {
-            padding = Insets(5.0, 10.0, 5.0, 15.0)
-            graphic = glyph("FontAwesome", item.graphic) {
-                color(Styles.colorPrimary)
-            }
+            graphic = glyph("FontAwesome", item.graphic)
             text = when (item.type) {
                 LibraryType.Favourites -> messages["favourites"]
                 LibraryType.Search -> ""
@@ -55,16 +51,24 @@ class LibraryView : View() {
                 LibraryType.Country -> ""
                 LibraryType.TopStations -> messages["topStations"]
             }
-            addClass(Styles.customListItem)
+            addClass(Styles.libraryListItem)
         }
         addClass(Styles.libraryListView)
     }
 
     private val countriesListView = listview<Countries> {
         cellFormat {
-            padding = Insets(5.0, 10.0, 5.0, 15.0)
-            text = "${item.name} (${item.stationcount})"
-            addClass(Styles.customListItem)
+            graphic = hbox(5) {
+                val stationWord = if (item.stationcount > 1)
+                    messages["stations"] else messages["station"]
+
+                alignment = Pos.CENTER_LEFT
+                label(item.name.split("(")[0])
+                label("${item.stationcount} $stationWord") {
+                    addClass(Styles.libraryListItemTag)
+                }
+            }
+            addClass(Styles.libraryListItem)
         }
 
         addClass(Styles.libraryListView)
@@ -79,13 +83,15 @@ class LibraryView : View() {
 
         left = label {
             graphic = glyph("FontAwesome", FontAwesome.Glyph.SEARCH) {
-                padding = Insets(10.0, 5.0, 10.0, 5.0)
+                style {
+                    padding = box(10.px, 5.px)
+                }
             }
         }
-        val savedQuery = app.config.string(Config.Keys.searchQuery)
-        savedQuery?.let {
+
+        app.config.string(Config.Keys.searchQuery)?.let {
             if (it.isNotBlank()) {
-                text = savedQuery
+                text = it
             }
         }
 
@@ -112,6 +118,9 @@ class LibraryView : View() {
     }
 
     init {
+        //Load Countries List
+        controller.getCountries()
+
         //set default view
         libraryListView.selectionModel.select(0)
         controller.loadLibrary(LibraryType.TopStations)
@@ -124,25 +133,19 @@ class LibraryView : View() {
 
     override val root = vbox {
         vbox {
-            prefHeight = 20.0
-        }
-        vbox {
-            paddingAll = 10.0
             add(searchField)
+            style {
+                padding = box(20.px, 10.px, 20.px, 10.px)
+            }
         }
 
-        vbox {
-            prefHeight = 20.0
-        }
         smallLabel(messages["library"])
-
         add(libraryListView)
         vbox {
             prefHeight = 20.0
         }
 
         smallLabel(messages["countries"])
-
         vbox(alignment = Pos.CENTER) {
             add(retryLink)
             add(countriesListView)

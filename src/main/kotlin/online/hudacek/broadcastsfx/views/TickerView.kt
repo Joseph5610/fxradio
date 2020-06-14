@@ -5,15 +5,16 @@ import io.reactivex.disposables.Disposable
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
-import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Node
+import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
-import javafx.scene.text.Text
 import javafx.util.Duration
+import online.hudacek.broadcastsfx.extension.copyMenu
+import online.hudacek.broadcastsfx.extension.openUrl
+import online.hudacek.broadcastsfx.extension.update
 import tornadofx.*
-import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 //source:
@@ -32,22 +33,40 @@ open class TickerEntry<T : Node>(
 class TickerView : View() {
 
     private val marqueeView: MarqueeView by inject()
+    private var copyMenu: ContextMenu by singleAssign()
 
-    override val root = hbox {
+    private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
+
+    override val root = pane {
         prefHeight = 15.0
         marqueeView.inside(this)
+        copyMenu = copyMenu(clipboard, name = messages["copy"]) {
+            item("Search on Youtube") {
+                isDisable = true
+            }
+        }
         this.add(marqueeView)
     }
 
     fun updateText(text: String) {
+        copyMenu.apply {
+            items[0].action {
+                clipboard.update(text)
+            }
+
+            items[1].apply {
+                isDisable = false
+                action {
+                    app.openUrl(youtubeSearchUrl, text)
+                }
+            }
+        }
         marqueeView.clear()
         marqueeView.enqueueTickEntry(TickerEntry(content = createText(text), reschedule = true))
     }
 
-    private fun createText(content: String): Text {
-        val text = Text(content)
-        text.layoutY = 12.0
-        return text
+    private fun createText(content: String) = text(content) {
+        layoutY = 12.0
     }
 
     fun stop() = marqueeView.stop()
@@ -87,9 +106,7 @@ class MarqueeView : View() {
         startAnimation() //Fire up the animation process
     }
 
-    fun enqueueTickEntry(entry: TickerEntry<Node>) {
-        queuedTicks.add(entry)
-    }
+    fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
 
     //Fire up the animation process for the ticker
     private fun startAnimation() {
@@ -111,7 +128,7 @@ class MarqueeView : View() {
         val subscriptions = HashMap<TickerEntry<Node>, Disposable>()
 
         //Could also update this things speed time so that stuff scrolls faster
-        val updateFrame = KeyFrame(Duration.millis(35.0), EventHandler<ActionEvent> {
+        val updateFrame = KeyFrame(Duration.millis(35.0), EventHandler {
 
             //There's possible some thread bugs in there, but only on the very first creation
             if (activeTicks.isEmpty() || lastOneCleared()) {

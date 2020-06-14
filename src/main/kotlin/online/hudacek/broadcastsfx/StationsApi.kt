@@ -64,28 +64,28 @@ interface StationsApi {
     companion object : Component() {
 
         //What is app sending as a User Agent string
-        private val userAgentIdentifier = "${About.appName}/${Broadcasts.version}"
+        private val userAgentIdentifier = "${FxRadio.appName}/${FxRadio.version}"
+
+        private const val defaultApiServer = "de1.api.radio-browser.info"
+        private const val defaultDnsHost = "all.api.radio-browser.info"
 
         //try to connect to working API server
         private val inetAddressHostname: String by lazy {
             try {
-                InetAddress.getAllByName("all.api.radio-browser.info")[0].canonicalHostName
+                InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
             } catch (e: Exception) {
                 //fallback
-                //tornadofx.error("Can't connect to server", "We are unable to connect to API server. Are you sure you are connected to internet?")
-                app.config.string(Config.Keys.apiServer, "de1.api.radio-browser.info")
+                app.config.string(Config.Keys.apiServer, defaultApiServer)
             }
         }
 
         //API server URL property which is actually used for requests
         //Can be changed in app: About -> server selection
         var hostname: String = ""
-            get() {
-                return when {
-                    app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
-                    field.isEmpty() -> inetAddressHostname
-                    else -> field
-                }
+            get() = when {
+                app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
+                field.isEmpty() -> inetAddressHostname
+                else -> field
             }
 
         //Construct http client with custom user agent

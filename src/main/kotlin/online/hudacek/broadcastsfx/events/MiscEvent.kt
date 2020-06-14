@@ -14,17 +14,15 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx
+package online.hudacek.broadcastsfx.events
 
-/**
- * Basic information about the app
- * mostly for displaying in About dialog
- */
-object About {
-    const val appName = "FXRadio"
-    const val appDesc = "Internet radio directory"
-    const val appLogo = "radio-icon.png"
-    const val author = "Jozef Hudáček"
-    const val copyright = "Copyright (c) 2020"
-    const val dataSource = "https://api.radio-browser.info"
+import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.*
+
+enum class LibraryType {
+    Favourites, Search, History, Country, TopStations
 }
+
+class LibraryRefreshEvent(val type: LibraryType, val params: String = "") : FXEvent()
+
+class NotificationEvent(val text: String, val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING) : FXEvent()

@@ -1,5 +1,6 @@
 package online.hudacek.broadcastsfx.model
 
+import javafx.beans.property.StringProperty
 import tornadofx.*
 
 object Attributions {
@@ -21,6 +22,7 @@ object Attributions {
     }
 }
 
+//Data classes
 class License(name: String = "", content: String) {
     var name: String by property(name)
     var content: String by property(content)
@@ -33,10 +35,11 @@ class Attribution(name: String, version: String = "", license: License) {
     var licenseName: String by property(license.name)
 }
 
+//Model
 class AttributionModel : ItemViewModel<Attribution>() {
-    val name = bind(Attribution::name)
-    val licenseName = bind(Attribution::licenseName)
-    val licenseContent = bind(Attribution::licenseContent)
+    val name = bind(Attribution::name) as StringProperty
+    val licenseName = bind(Attribution::licenseName) as StringProperty
+    val licenseContent = bind(Attribution::licenseContent) as StringProperty
 }
 
 private object Licenses {

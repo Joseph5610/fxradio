@@ -21,10 +21,10 @@ import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.extension.createImage
-import online.hudacek.broadcastsfx.extension.tooltip
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.StationsList
+import online.hudacek.broadcastsfx.model.StationsListModel
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -36,9 +36,13 @@ import tornadofx.controlsfx.showPopover
 class StationsDataGridView : View() {
 
     private val playerModel: PlayerModel by inject()
-    private val stationsData = observableListOf(Station.stub())
+    private val stationsList: StationsListModel by inject()
 
-    override val root = datagrid(stationsData) {
+    init {
+        stationsList.item = StationsList()
+    }
+
+    override val root = datagrid(stationsList.shown) {
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {
@@ -54,11 +58,9 @@ class StationsDataGridView : View() {
                     }
                 }
 
-                onRightClick {
-                    showPopover()
-                }
+                onRightClick { showPopover() }
+                onHover { _ -> tooltip(it.name) }
 
-                tooltip(it)
                 paddingAll = 5
                 vbox(alignment = Pos.CENTER) {
                     prefHeight = 120.0
@@ -75,7 +77,6 @@ class StationsDataGridView : View() {
                 }
                 label(it.name) {
                     style {
-                        textFill = Color.BLACK
                         fontSize = 14.px
                     }
                 }
@@ -88,9 +89,8 @@ class StationsDataGridView : View() {
     /**
      * Change datagrid content
      */
-    fun show(stations: List<Station>) {
-        root.show()
-        root.selectionModel.clearSelection()
-        stationsData.setAll(stations)
+    fun show() = root.apply {
+        show()
+        selectionModel.clearSelection()
     }
 }

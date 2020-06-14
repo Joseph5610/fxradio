@@ -16,21 +16,34 @@
 
 package online.hudacek.broadcastsfx
 
+import io.reactivex.Single
+import mu.KotlinLogging
 import org.nield.rxkotlinjdbc.execute
+import java.sql.Connection
 import java.sql.DriverManager
 
 /**
  * Database helper
  */
-internal val db = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
+object Database {
+    private val logger = KotlinLogging.logger {}
 
-    //Initial creation of tables
-    execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
-            " stationuuid VARCHAR, name VARCHAR, " +
-            " url_resolved VARCHAR, homepage VARCHAR," +
-            " favicon VARCHAR, tags VARCHAR, country VARCHAR, " +
-            " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
-            " )")
-            .toSingle()
-            .subscribe()
+    val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
+
+        //Initial creation of tables
+        execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
+                " stationuuid VARCHAR, name VARCHAR, " +
+                " url_resolved VARCHAR, homepage VARCHAR," +
+                " favicon VARCHAR, tags VARCHAR, country VARCHAR, " +
+                " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
+                " )")
+                .toSingle()
+                .subscribe({}, {
+                    logger.error(it) {
+                        "There was an error creating database!"
+                    }
+                })
+    }
+
+    fun cleanup(): Single<Int> = connection.execute("delete from favourites").toSingle()
 }

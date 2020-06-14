@@ -14,19 +14,21 @@
  *    limitations under the License.
  */
 
-package online.hudacek.broadcastsfx.controllers
+package online.hudacek.broadcastsfx.controllers.menubar
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import online.hudacek.broadcastsfx.FxRadio
 import online.hudacek.broadcastsfx.ImageCache
 import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.rest.Station
-import online.hudacek.broadcastsfx.views.MenuBarView
+import online.hudacek.broadcastsfx.views.menubar.MenuBarView
 import tornadofx.*
 
 class MenuBarController : Controller() {
@@ -36,23 +38,23 @@ class MenuBarController : Controller() {
 
     private val menuBarView: MenuBarView by inject()
 
-    private val mediaPlayer: MediaPlayerWrapper by inject()
+    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun openAbout() = find<AboutAppFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
-
-    fun openServerSelect() = find<ServerSelectionFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
+    fun openServerSelect() = find<ChangeServerFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
+
+    fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun clearCache() = ImageCache.clearCache()
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()
-        mediaPlayer.release()
+        mediaPlayerWrapper.release()
     }
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -66,4 +68,6 @@ class MenuBarController : Controller() {
             }, {
                 menuBarView.showVoteResult(false)
             })
+
+    fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

@@ -16,125 +16,115 @@
 
 package online.hudacek.broadcastsfx.fragments
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.broadcastsfx.StationsApi
+import online.hudacek.broadcastsfx.extension.copyMenu
 import online.hudacek.broadcastsfx.extension.createImage
 import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
-import online.hudacek.broadcastsfx.views.ProgressView
 import tornadofx.*
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(val station: Station? = null) : Fragment() {
+class StationInfoFragment(station: Station? = null) : Fragment() {
 
     private val playerModel: PlayerModel by inject()
 
     private val shownStation: Station = station ?: playerModel.station.value
 
-    private val stationsApi: StationsApi
-        get() = StationsApi.client
-
-    private var container = vbox {
-        add(ProgressView::class)
-    }
+    private val items = observableListOf<String>()
 
     override fun onBeforeShow() {
-        currentStage?.opacity = 0.85
+        currentWindow?.opacity = 0.85
     }
 
     override val root = vbox {
         prefWidth = 300.0
         title = shownStation.name
-        add(container)
-    }
-
-    init {
-        stationsApi.getStationInfo(shownStation.stationuuid)
-                .observeOnFx()
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    //Update station data from real time
-                    showStationData(it.last())
-                }, {
-                    showStationData(shownStation)
-                })
-    }
-
-    private fun showStationData(station: Station) {
-        station.let {
-
+        shownStation.let {
             val tagsList = it.tags.split(",")
                     .map { tag -> tag.trim() }
                     .filter { tag -> tag.isNotEmpty() }
 
-            val codecBitrateInfo = it.codec + " (" + it.bitrate + " kbps)"
-            container.replaceChildren(
-                    vbox {
-                        vbox(alignment = Pos.CENTER) {
-                            paddingAll = 10.0
-                            imageview {
-                                createImage(it)
-                                effect = DropShadow(30.0, Color.LIGHTGRAY)
-                                fitHeight = 100.0
-                                fitHeight = 100.0
-                                isPreserveRatio = true
-                            }
-                        }
+            vbox {
+                vbox(alignment = Pos.CENTER) {
+                    paddingAll = 10.0
+                    imageview {
+                        createImage(it)
+                        effect = DropShadow(30.0, Color.LIGHTGRAY)
+                        fitHeight = 100.0
+                        fitHeight = 100.0
+                        isPreserveRatio = true
+                    }
+                }
+            }
 
-                        flowpane {
-                            hgap = 5.0
-                            vgap = 5.0
-                            alignment = Pos.CENTER
-                            paddingAll = 5.0
-                            observableListOf(
-                                    "${it.votes} votes",
-                                    codecBitrateInfo,
-                                    "Country: ${it.country}",
-                                    "Language: ${it.language}")
-                                    .forEach { info ->
-                                        label(info) {
-                                            addClass(Styles.grayLabel)
-                                            addClass(Styles.tag)
-                                        }
-                                    }
-                        }
+            flowpane {
+                hgap = 5.0
+                vgap = 5.0
+                alignment = Pos.CENTER
+                paddingAll = 5.0
 
-                        if (tagsList.isNotEmpty()) {
-                            flowpane {
-                                hgap = 5.0
-                                vgap = 5.0
-                                alignment = Pos.CENTER
-                                paddingAll = 5.0
-                                tagsList.forEach { tag ->
-                                    label(tag) {
-                                        addClass(Styles.tag)
-                                        addClass(Styles.grayLabel)
-                                    }
-                                }
-                            }
-                        }
+                if (it.votes != 0) items.add("${it.votes} votes")
 
-                        if (it.homepage.isNotEmpty()) {
-                            statusbar {
-                                rightItems.add(
-                                        hyperlink(it.homepage) {
-                                            addClass(Styles.primaryTextColor)
-                                            action {
-                                                app.openUrl(it.homepage)
-                                            }
-                                        }
-                                )
-                            }
+                val codec = if (it.bitrate != 0) {
+                    it.codec + " (${it.bitrate} kbps)"
+                } else {
+                    it.codec
+                }
+
+                items.addAll(
+                        codec,
+                        "Country: ${it.country}",
+                        "Language: ${it.language}"
+                )
+                items.forEach { info ->
+                    label(info) {
+                        addClass(Styles.grayLabel)
+                        addClass(Styles.tag)
+                        copyMenu(clipboard,
+                                name = messages["copy"],
+                                value = info)
+                    }
+                }
+            }
+
+            if (tagsList.isNotEmpty()) {
+                flowpane {
+                    hgap = 5.0
+                    vgap = 5.0
+                    alignment = Pos.CENTER
+                    paddingAll = 5.0
+                    tagsList.forEach { tag ->
+                        label(tag) {
+                            addClass(Styles.tag)
+                            addClass(Styles.grayLabel)
+                            copyMenu(clipboard,
+                                    name = messages["copy"],
+                                    value = tag)
                         }
                     }
-            )
-            currentStage?.sizeToScene()
+                }
+            }
+
+            if (it.homepage.isNotEmpty()) {
+                statusbar {
+                    alignment = Pos.BOTTOM_RIGHT
+                    rightItems.add(
+                            hyperlink(it.homepage) {
+                                addClass(Styles.primaryTextColor)
+                                action {
+                                    app.openUrl(it.homepage)
+                                }
+                                copyMenu(clipboard,
+                                        name = messages["copy"],
+                                        value = it.homepage)
+                            }
+                    )
+                }
+            }
         }
     }
 }

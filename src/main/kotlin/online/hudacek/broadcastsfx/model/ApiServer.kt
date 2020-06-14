@@ -1,16 +1,16 @@
 package online.hudacek.broadcastsfx.model
 
+import javafx.beans.property.StringProperty
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.StationsApi
-import tornadofx.ItemViewModel
-import tornadofx.property
+import tornadofx.*
 
 class ApiServer(url: String) {
     var url: String by property(url)
 }
 
 class ApiServerModel : ItemViewModel<ApiServer>() {
-    val url = bind(ApiServer::url)
+    val url = bind(ApiServer::url) as StringProperty
 
     override fun onCommit() {
         super.onCommit()

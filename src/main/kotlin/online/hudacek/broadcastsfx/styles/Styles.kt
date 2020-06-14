@@ -1,43 +1,77 @@
 package online.hudacek.broadcastsfx.styles
 
 import javafx.scene.paint.Color
-import javafx.scene.paint.Paint
+import javafx.scene.text.FontSmoothingType
+import javafx.scene.text.FontWeight
 import tornadofx.*
 
 /**
  * Type-safe CSS classes used around the app
  */
 class Styles : Stylesheet() {
+
+    private object ColorValues {
+        const val primary = "#0097CE"
+        const val primaryHover = "#0097EA"
+
+        const val background = "#E9E9E9"
+        const val backgroundBorder = "#E8E8E8"
+
+        const val label = "#2b2b2b"
+        const val grayLabel = "#8B8B8B"
+
+        const val transparent = "transparent"
+
+    }
+
     companion object {
-        val playerStationInfo by cssclass()
+
         val grayLabel by cssclass()
-        val libraryListView by cssclass()
-        val primaryButton by cssclass()
+
+        val playerMainBox by cssclass()
+        val playerStationBox by cssclass()
+
         val playerControls by cssclass()
+
+        val libraryListView by cssclass()
+        val libraryListItem by cssclass()
+        val libraryListItemTag by cssclass()
+
+        val primaryButton by cssclass()
+
         val header by cssclass()
         val subheader by cssclass()
+
         val tag by cssclass()
         val searchBoxLabel by cssclass()
         val primaryTextColor by cssclass()
-        val customListItem by cssclass()
+        val boldText by cssclass()
 
-        private const val primaryColor = "#0097CE"
-        private const val hoverColor = "#0097EA"
-
-        val colorPrimary = Color.valueOf(primaryColor)
+        val backgroundWhite by cssclass()
+        val backgroundWhiteSmoke by cssclass()
     }
 
     init {
+        label {
+            textFill = c(ColorValues.label)
+            fontSmoothingType = FontSmoothingType.GRAY
+        }
+
         searchBoxLabel {
             padding = box(0.px, 2.px, 0.px, 7.px)
         }
 
-        playerStationInfo {
+        playerMainBox {
+            padding = box(10.0.px, 0.0.px)
+            borderColor += box(c(ColorValues.transparent), c(ColorValues.transparent), c(ColorValues.backgroundBorder), c(ColorValues.transparent))
+        }
+
+        playerStationBox {
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             borderRadius += box(3.px)
-            backgroundColor += Paint.valueOf("#E9E9E9")
-            borderColor += box(c("#E8E8E8"))
+            backgroundColor += c(ColorValues.background)
+            borderColor += box(c(ColorValues.backgroundBorder))
             maxWidth = 260.px
             prefWidth = 260.px
         }
@@ -46,9 +80,9 @@ class Styles : Stylesheet() {
             textFill = Color.BLACK
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
-            backgroundColor += Paint.valueOf("#E9E9E9")
+            backgroundColor += c(ColorValues.background)
             borderRadius += box(3.px)
-            borderColor += box(c("#E8E8E8"))
+            borderColor += box(c(ColorValues.backgroundBorder))
 
             and(hover) {
                 textFill = Color.BLACK
@@ -75,24 +109,19 @@ class Styles : Stylesheet() {
 
         grayLabel {
             fontSize = 11.px
-            textFill = Color.GRAY
-        }
-
-        splitPaneDivider {
-            padding = box(0.px, 0.01.em)
-            borderColor += box(c("transparent"))
+            textFill = c(ColorValues.grayLabel)
         }
 
         primaryButton {
-            backgroundColor += c(primaryColor)
+            backgroundColor += c(ColorValues.primary)
             textFill = Color.WHITESMOKE
             and(hover) {
-                backgroundColor += c(hoverColor)
+                backgroundColor += c(ColorValues.primaryHover)
             }
         }
 
         primaryTextColor {
-            textFill = Paint.valueOf(primaryColor)
+            textFill = c(ColorValues.primary)
         }
 
         libraryListView {
@@ -100,37 +129,60 @@ class Styles : Stylesheet() {
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
-        customListItem {
-            textFill = Color.BLACK
+        libraryListItem {
+            fontSize = 12.px
+            textFill = c(ColorValues.label)
             backgroundColor += Color.WHITESMOKE
             and(hover) {
-                backgroundColor += Paint.valueOf("#E9E9E9")
-                borderColor += box(c("#E8E8E8"))
+                backgroundColor += c(ColorValues.background)
+                borderColor += box(c(ColorValues.backgroundBorder))
                 textFill = Color.BLACK
             }
             and(selected) {
-                backgroundColor += Paint.valueOf("#E9E9E9")
-                borderColor += box(c("#E8E8E8"))
+                backgroundColor += c(ColorValues.background)
+                borderColor += box(c(ColorValues.backgroundBorder))
                 textFill = Color.BLACK
-                graphicContainer {
-                    backgroundColor += Color.BLACK
-                }
             }
+            padding = box(5.px, 10.px, 5.px, 15.px)
         }
 
+        libraryListItemTag {
+            padding = box(2.px)
+            textFill = Color.BLACK
+            backgroundRadius += box(3.px)
+            backgroundColor += Color.GHOSTWHITE
+            borderRadius += box(3.px)
+            borderColor += box(c(ColorValues.backgroundBorder))
+        }
+
+        boldText {
+            fontWeight = FontWeight.BOLD
+        }
+
+        backgroundWhiteSmoke {
+            backgroundColor += Color.WHITESMOKE
+        }
+
+        backgroundWhite {
+            backgroundColor += Color.WHITE
+        }
+
+        // ===================================================================
+        // Restyled default compontents
+        // ===================================================================
 
         scrollBar {
-            backgroundColor += Paint.valueOf("transparent")
-            borderColor += box(c("transparent"))
+            backgroundColor += c(ColorValues.transparent)
+            borderColor += box(c(ColorValues.transparent))
 
             incrementButton {
-                backgroundColor += Paint.valueOf("transparent")
+                backgroundColor += c(ColorValues.transparent)
                 backgroundRadius += box(0.em)
                 padding = box(0.px, 10.px, 0.px, 0.px)
             }
 
             decrementButton {
-                backgroundColor += Paint.valueOf("transparent")
+                backgroundColor += c(ColorValues.transparent)
                 backgroundRadius += box(0.em)
                 padding = box(0.px, 10.px, 0.px, 0.px)
             }
@@ -146,8 +198,8 @@ class Styles : Stylesheet() {
             }
 
             track {
-                backgroundColor += Paint.valueOf("transparent")
-                borderColor += box(c("transparent"))
+                backgroundColor += c(ColorValues.transparent)
+                borderColor += box(c(ColorValues.transparent))
                 unsafe("-fx-background-radius", raw("0.0em"))
                 unsafe("-fx-border-radius", raw("2.0em"))
             }
@@ -165,26 +217,76 @@ class Styles : Stylesheet() {
             }
         }
 
+        splitPaneDivider {
+            padding = box(0.px, 0.001.em)
+            backgroundColor += Color.TRANSPARENT
+            borderColor += box(c(ColorValues.backgroundBorder))
+        }
+
         datagrid {
             padding = box(0.px)
         }
 
         datagridCell {
             padding = box(0.px, 5.px, 5.px, 5.px)
-            backgroundColor += Paint.valueOf("transparent")
-            borderColor += box(c("transparent"))
+            backgroundColor += c(ColorValues.transparent)
+            borderColor += box(c(ColorValues.transparent))
             backgroundRadius += box(5.px)
             borderRadius += box(5.px)
 
             and(hover) {
-                backgroundColor += Paint.valueOf("#E9E9E9")
-                borderColor += box(c("#E8E8E8"))
+                backgroundColor += c(ColorValues.background)
+                borderColor += box(c(ColorValues.backgroundBorder))
             }
 
             and(selected) {
-                backgroundColor += Paint.valueOf("#E9E9E9")
-                borderColor += box(c("#E8E8E8"))
+                backgroundColor += c(ColorValues.background)
+                borderColor += box(c(ColorValues.backgroundBorder))
             }
+        }
+
+        textArea {
+            fontFamily = "monospace"
+        }
+
+        slider {
+            and(focused) {
+                thumb {
+                    unsafe("-fx-background-color", raw("-fx-outer-border, -fx-inner-border, -fx-body-color"))
+                }
+            }
+            and(selected) {
+                thumb {
+                    unsafe("-fx-color", raw("lightgray"))
+                }
+            }
+
+            and(hover) {
+                thumb {
+                    unsafe("-fx-color", raw("lightgray"))
+                }
+            }
+        }
+
+        contextMenu {
+            backgroundColor += Color.WHITESMOKE
+            borderColor += box(c(ColorValues.backgroundBorder))
+
+            menuItem {
+                and(hover) {
+                    backgroundColor += c(ColorValues.background)
+                }
+                and(focused) {
+                    backgroundColor += c(ColorValues.background)
+                }
+                and(selected) {
+                    backgroundColor += c(ColorValues.background)
+                }
+            }
+        }
+
+        progressIndicator {
+            progressColor = Color.BLACK
         }
     }
 }

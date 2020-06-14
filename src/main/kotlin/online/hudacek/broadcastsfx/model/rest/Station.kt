@@ -1,7 +1,7 @@
 package online.hudacek.broadcastsfx.model.rest
 
 import io.reactivex.Single
-import online.hudacek.broadcastsfx.db
+import online.hudacek.broadcastsfx.Database
 import org.nield.rxkotlinjdbc.insert
 import org.nield.rxkotlinjdbc.select
 
@@ -26,13 +26,13 @@ data class Station(
 
     val isFavourite: Single<Boolean>
         get() =
-            db.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
+            Database.connection.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
                     .parameter("uuid", stationuuid)
                     .toSingle { it.getInt(1) > 0 }
 
 
     fun addFavourite(): Single<Boolean> =
-            db.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
+            Database.connection.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
                     "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
                     "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
                     .parameter("name", name)
@@ -47,6 +47,11 @@ data class Station(
                     .parameter("tags", tags)
                     .parameter("codec", codec)
                     .parameter("bitrate", bitrate)
+                    .toSingle { it.getInt(1) > 0 }
+
+    fun removeFavourite(): Single<Boolean> =
+            Database.connection.insert("delete from favourites where stationuuid = :stationuuid")
+                    .parameter("stationuuid", stationuuid)
                     .toSingle { it.getInt(1) > 0 }
 
     fun isValidStation() = stationuuid != "0"
@@ -71,7 +76,7 @@ data class Station(
 
         //get data about station from db and return latest info from API about it
         fun favourites(): Single<MutableList<Station>> =
-                db.select("SELECT * FROM FAVOURITES")
+                Database.connection.select("SELECT * FROM FAVOURITES")
                         .toObservable {
                             Station(it.getString("stationuuid"),
                                     it.getString("name"),

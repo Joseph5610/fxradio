@@ -28,17 +28,13 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
+internal class FFmpegPlayer(private val mediaPlayer: MediaPlayerWrapper)
     : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
-
-    init {
-        logger.debug { "Native player started" }
-    }
 
     private val handler = CoroutineExceptionHandler { _, exception ->
         mediaPlayer.handleError(exception)
@@ -80,9 +76,7 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                             MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
                             samples)
                     audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
-                    logger.debug { "Stream started" }
 
-                    changeVolume(mediaPlayer.volume)
                     var rawAudio: ByteBuffer? = null
 
                     val packet = MediaPacket.make()
@@ -116,7 +110,6 @@ internal class NativeMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
             }
         }
     }
-
 
     override fun changeVolume(volume: Double): Boolean {
         return try {

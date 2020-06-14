@@ -16,7 +16,7 @@ plugins {
 
 apply plugin: 'javafx-gradle-plugin'
 
-version "0.1.1.003"
+version "0.1.1.004"
 
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
@@ -25,6 +25,9 @@ compileKotlin {
 dependencies {
     // Align versions of all Kotlin components
     compile platform('org.jetbrains.kotlin:kotlin-bom')
+
+    //local jars
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Use the Kotlin JDK 8 standard library.
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
@@ -81,7 +84,7 @@ jfx {
     appName = "FXRadio"
     // minimal requirement for jfxJar-task
     manifestAttributes = attributes
-    mainClass = 'online.hudacek.broadcastsfx.BroadcastsKt'
+    mainClass = 'online.hudacek.broadcastsfx.FxRadioKt'
 
     // minimal requirement for jfxNative-task
     vendor = 'FXRadio'

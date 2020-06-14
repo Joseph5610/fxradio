@@ -27,15 +27,21 @@ import uk.co.caprica.vlcj.media.Meta
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
+internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
     : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
-    private val mediaPlayerComponent by lazy { AudioPlayerComponent() }
+    private val audioPlayerComponent: AudioPlayerComponent? by lazy {
+        try {
+            AudioPlayerComponent()
+        } catch (e: UnsatisfiedLinkError) {
+            null
+        }
+    }
 
     //VLC Logs
-    private var nativeLog: NativeLog
+    private lateinit var nativeLog: NativeLog
     private val nativeLogListener = LogEventListener { level, module, file, line, name, header, id, message ->
         lastLogMessage = message
         logger.debug { String.format("[%s] (%s) %7s: %s\n", module, name, level, message) }
@@ -60,37 +66,46 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
                         && it[Meta.TITLE] != null
                         && it[Meta.GENRE] != null) {
                     mediaPlayer.mediaMetaChanged(
-                            MediaMeta(it[Meta.TITLE], it[Meta.GENRE], it[Meta.NOW_PLAYING]))
+                            MediaMeta(it[Meta.TITLE],
+                                    it[Meta.GENRE],
+                                    it[Meta.NOW_PLAYING]
+                                            .replace("\r", "")
+                                            .replace("\n", "")))
                 }
             }
         }
     }
 
     init {
-        logger.debug { "VLC player started" }
-        mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(mediaPlayerEvent)
-        mediaPlayerComponent.mediaPlayer().events().addMediaEventListener(mediaEvent)
-
-        nativeLog = mediaPlayerComponent.mediaPlayerFactory().application().newLog().apply {
-            level = LogLevel.NOTICE
+        if (audioPlayerComponent == null) {
+            throw RuntimeException("VLClib cannot be found on the system.")
         }
-        nativeLog.addLogListener(nativeLogListener)
-        changeVolume(mediaPlayer.volume)
+
+        audioPlayerComponent?.let {
+            it.mediaPlayer().events().addMediaPlayerEventListener(mediaPlayerEvent)
+            it.mediaPlayer().events().addMediaEventListener(mediaEvent)
+            nativeLog = it.mediaPlayerFactory().application().newLog().apply {
+                level = LogLevel.NOTICE
+                addLogListener(nativeLogListener)
+            }
+        }
     }
 
     override fun play(url: String) {
-        changeVolume(mediaPlayer.volume)
-        mediaPlayerComponent.mediaPlayer().media().play(url)
+        audioPlayerComponent?.let {
+            it.mediaPlayer().media().play(url)
+        }
     }
 
     override fun changeVolume(volume: Double): Boolean {
-        val intVol = if (volume < -29.5) {
-            0
-        } else {
-            ((volume + 50) * (100 / 95)).toInt()
-        }
-        logger.debug { "change volume to $volume, VLC conversion is $intVol" }
-        return mediaPlayerComponent.mediaPlayer().audio().setVolume(intVol)
+        val vlcVolume: Int =
+                if (volume < -29.5) {
+                    0
+                } else {
+                    ((volume + 50) * (100 / 95)).toInt()
+                }
+
+        return audioPlayerComponent!!.mediaPlayer().audio().setVolume(vlcVolume)
     }
 
     /**
@@ -100,31 +115,38 @@ internal class VLCMediaPlayer(private val mediaPlayer: MediaPlayerWrapper)
         logger.debug { "ending current stream if any with error status $result" }
 
         if (result == 1) {
-            mediaPlayer.handleError(RuntimeException("$lastLogMessage\nSee app.log for more details."))
+            val errorMsg = if (lastLogMessage.isEmpty()) "Error opening stream. See app.log for details." else lastLogMessage
+            mediaPlayer.handleError(RuntimeException(errorMsg))
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,
         // so submit() is used
         try {
-            mediaPlayerComponent.mediaPlayer().submit {
-                mediaPlayerComponent.mediaPlayer().controls().stop()
+            audioPlayerComponent?.let {
+                it.mediaPlayer().submit {
+                    it.mediaPlayer().controls().stop()
+                }
             }
         } catch (e: Exception) {
-            logger.debug { "stop failed, probably already stopped, whatever" }
+            logger.debug { "stop failed, probably already stopped" }
         }
     }
 
-    override fun cancelPlaying() = mediaPlayerComponent.mediaPlayer().controls().stop()
+    override fun cancelPlaying() {
+        audioPlayerComponent?.mediaPlayer()?.controls()?.stop()
+    }
 
     override fun releasePlayer() {
-        logger.debug { "releasing events" }
+        audioPlayerComponent?.let {
+            logger.debug { "Releasing events" }
 
-        mediaPlayerComponent.mediaPlayer().events().removeMediaEventListener(mediaEvent)
-        mediaPlayerComponent.mediaPlayer().events().removeMediaPlayerEventListener(mediaPlayerEvent)
-        nativeLog.removeLogListener(nativeLogListener)
+            it.mediaPlayer().events().removeMediaEventListener(mediaEvent)
+            it.mediaPlayer().events().removeMediaPlayerEventListener(mediaPlayerEvent)
+            nativeLog.removeLogListener(nativeLogListener)
 
-        logger.debug { "releasing player" }
-        nativeLog.release()
-        mediaPlayerComponent.release()
+            logger.info { "Releasing player" }
+            nativeLog.release()
+            it.release()
+        }
     }
 }
