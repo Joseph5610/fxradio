@@ -30,6 +30,7 @@ class Styles : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
+
         val playerControls by cssclass()
 
         val libraryListView by cssclass()
