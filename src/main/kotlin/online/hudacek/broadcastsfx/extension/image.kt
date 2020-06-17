@@ -64,7 +64,7 @@ internal fun ImageView.createImage(station: Station) {
             this.image = ImageCache.getImageFromCache(station)
         } fail {
             logger.error {
-                "image download failed for ${station.name} (${it.localizedMessage}) "
+                "image download failed for ${station.name} (${it::class} : ${it.localizedMessage}) "
             }
             this.image = defaultRadioLogo
         }

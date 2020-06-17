@@ -22,7 +22,7 @@ import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.model.StationsHistoryModel
-import online.hudacek.broadcastsfx.model.StationsListModel
+import online.hudacek.broadcastsfx.model.StationsModel
 import online.hudacek.broadcastsfx.model.rest.CountriesBody
 import online.hudacek.broadcastsfx.model.rest.SearchBody
 import online.hudacek.broadcastsfx.model.rest.Station
@@ -35,24 +35,22 @@ class StationsController : Controller() {
 
     private val stationsView: StationsView by inject()
     private val stationsHistory: StationsHistoryModel by inject()
-    private val stationsList: StationsListModel by inject()
+    private val stationsModel: StationsModel by inject()
 
     private val stationsApi: StationsApi
         get() = StationsApi.client
 
-    fun getFavourites() {
-        Station.favourites()
-                .observeOnFx()
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    if (it.isEmpty()) {
-                        stationsView.showNoResults()
-                    } else {
-                        stationsView.showStations()
-                        stationsList.shown.value = it.asObservable()
-                    }
-                }, ::handleError)
-    }
+    fun getFavourites(): Disposable = Station.favourites()
+            .observeOnFx()
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                if (it.isEmpty()) {
+                    stationsView.showNoResults()
+                } else {
+                    stationsView.showStations()
+                    stationsModel.stationsProperty.set(it.asObservable())
+                }
+            }, ::handleError)
 
     fun getStationsByCountry(country: String): Disposable = stationsApi
             .getStationsByCountry(CountriesBody(), country)
@@ -60,7 +58,7 @@ class StationsController : Controller() {
             .observeOnFx()
             .subscribe({ result ->
                 stationsView.showStations()
-                stationsList.shown.value = result.asObservable()
+                stationsModel.stationsProperty.set(result.asObservable())
             }, ::handleError)
 
     fun searchStations(name: String): Disposable = stationsApi
@@ -72,17 +70,16 @@ class StationsController : Controller() {
                     stationsView.showNoResults(name)
                 } else {
                     stationsView.showStations()
-                    stationsList.shown.value = result.asObservable()
+                    stationsModel.stationsProperty.set(result.asObservable())
                 }
             }, ::handleError)
 
-    fun getHistory() {
-        val historyList = stationsHistory.stations
-        if (historyList.isEmpty()) {
+    fun getHistory() = stationsHistory.stations.let {
+        if (it.isEmpty()) {
             stationsView.showNoResults()
         } else {
             stationsView.showStations()
-            stationsList.shown.value = historyList
+            stationsModel.stationsProperty.set(it)
         }
     }
 
@@ -92,7 +89,7 @@ class StationsController : Controller() {
             .observeOnFx()
             .subscribe({ result ->
                 stationsView.showStations()
-                stationsList.shown.value = result.asObservable()
+                stationsModel.stationsProperty.set(result.asObservable())
             }, ::handleError)
 
     private fun handleError(throwable: Throwable) {

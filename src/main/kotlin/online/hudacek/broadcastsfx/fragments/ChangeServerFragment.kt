@@ -20,7 +20,6 @@ import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.model.ApiServer
 import online.hudacek.broadcastsfx.model.ApiServerModel
-import online.hudacek.broadcastsfx.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -50,7 +49,6 @@ class ChangeServerFragment : Fragment("Select API server") {
             hbox(5) {
                 button("Save") {
                     isDefaultButton = true
-                    addClass(Styles.primaryButton)
                     action {
                         model.commit {
                             fire(NotificationEvent("API server saved!", FontAwesome.Glyph.CHECK))

@@ -16,6 +16,7 @@
 
 package online.hudacek.broadcastsfx.media
 
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.*
@@ -52,20 +53,19 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         subscribe<PlaybackChangeEvent> {
             playingStatus = it.playingStatus
             if (it.playingStatus == PlayingStatus.Playing) {
-                play(playerModel.station.value.url_resolved)
+                play(playerModel.stationProperty.value.url_resolved)
             } else {
                 mediaPlayer.cancelPlaying()
             }
         }
 
-        playerModel.station.onChange {
-            it?.let {
-                if (it.isValidStation()) {
+        playerModel.stationProperty.toObservableChanges()
+                .filter { it.newVal != null && it.newVal.isValidStation() }
+                .map { it.newVal }
+                .subscribe {
                     play(it.url_resolved)
                     playingStatus = PlayingStatus.Playing
                 }
-            }
-        }
     }
 
     fun init() {
@@ -81,7 +81,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 logger.debug { "trying to init VLC media player " }
                 VLCPlayer(this)
             } catch (e: Exception) {
-                playerModel.playerType.value = PlayerType.FFmpeg
+                playerModel.playerType.set(PlayerType.FFmpeg)
                 logger.error(e) {
                     "VLC init failed, init native library "
                 }
@@ -113,7 +113,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         }
     }
 
-    fun mediaMetaChanged(mediaMeta: MediaMeta) = fire(MediaMetaChanged(mediaMeta))
+    fun mediaMetaChanged(mediaMeta: MediaMeta) = fire(PlaybackMetaChangedEvent(mediaMeta))
 
     fun togglePlaying() {
         if (playingStatus == PlayingStatus.Playing) {

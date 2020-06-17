@@ -15,7 +15,7 @@ class Player(animate: Boolean = true, station: Station = Station.stub(),
 
     var animate: Boolean by property(animate)
     var notifications: Boolean by property(notifications)
-    var actualStation: Station by property(station)
+    var station: Station by property(station)
     var playerType: PlayerType by property(playerType)
     var volume: Double by property(volume)
 }
@@ -26,12 +26,12 @@ class PlayerModel : ItemViewModel<Player>() {
 
     val animate = bind(Player::animate) as BooleanProperty
     val notifications = bind(Player::notifications) as BooleanProperty
-    val station = bind(Player::actualStation) as ObjectProperty
+    val stationProperty = bind(Player::station) as ObjectProperty
     val playerType = bind(Player::playerType) as ObjectProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
 
     init {
-        station.onChange {
+        stationProperty.onChange {
             it?.let(stationsHistory::add)
         }
     }

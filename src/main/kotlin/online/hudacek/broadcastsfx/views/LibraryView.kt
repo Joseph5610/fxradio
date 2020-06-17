@@ -16,6 +16,8 @@
 
 package online.hudacek.broadcastsfx.views
 
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
+import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
@@ -27,6 +29,8 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
 import tornadofx.controlsfx.glyph
+import tornadofx.controlsfx.left
+import tornadofx.controlsfx.statusbar
 
 class LibraryView : View() {
 
@@ -68,6 +72,7 @@ class LibraryView : View() {
                     addClass(Styles.libraryListItemTag)
                 }
             }
+
             addClass(Styles.libraryListItem)
         }
 
@@ -95,20 +100,17 @@ class LibraryView : View() {
             }
         }
 
-        textProperty().onChange {
-            it?.let {
-                if (it.length > 80) {
-                    text = it.substring(0, 80)
-                } else {
-                    controller.loadLibrary(LibraryType.Search, it.trim())
+        //Fire up search results after input is written to text field
+        textProperty().toObservableChanges()
+                .filter { it.newVal.length < 80 }
+                .map { it.newVal.trim() }
+                .subscribe {
+                    controller.loadLibrary(LibraryType.Search, it)
+                    with(app.config) {
+                        set(Config.Keys.searchQuery to text)
+                        save()
+                    }
                 }
-            }
-
-            with(app.config) {
-                set(Config.Keys.searchQuery to text)
-                save()
-            }
-        }
 
         setOnMouseClicked {
             controller.loadLibrary(LibraryType.Search, text.trim())
@@ -150,12 +152,23 @@ class LibraryView : View() {
             add(retryLink)
             add(countriesListView)
         }
+
+        statusbar {
+            left {
+                label {
+                    countriesListView.itemsProperty().onChange {
+                        text = "${it?.size} ${messages["countries"]}"
+                    }
+                    addClass(Styles.grayLabel)
+                }
+            }
+        }
     }
 
-    fun showCountries(countries: List<Countries>) {
+    fun showCountries(countries: ObservableList<Countries>) {
         retryLink.hide()
         countriesListView.show()
-        countriesListView.items.setAll(countries)
+        countriesListView.itemsProperty().set(countries)
     }
 
     fun showError() {

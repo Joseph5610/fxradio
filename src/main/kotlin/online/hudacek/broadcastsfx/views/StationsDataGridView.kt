@@ -20,11 +20,12 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import mu.KotlinLogging
 import online.hudacek.broadcastsfx.extension.createImage
 import online.hudacek.broadcastsfx.fragments.StationInfoFragment
 import online.hudacek.broadcastsfx.model.PlayerModel
-import online.hudacek.broadcastsfx.model.StationsList
-import online.hudacek.broadcastsfx.model.StationsListModel
+import online.hudacek.broadcastsfx.model.Stations
+import online.hudacek.broadcastsfx.model.StationsModel
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -36,17 +37,27 @@ import tornadofx.controlsfx.showPopover
 class StationsDataGridView : View() {
 
     private val playerModel: PlayerModel by inject()
-    private val stationsList: StationsListModel by inject()
+    private val stationsModel: StationsModel by inject()
+
+    private val logger = KotlinLogging.logger {}
+
 
     init {
-        stationsList.item = StationsList()
+        stationsModel.item = Stations()
     }
 
-    override val root = datagrid(stationsList.shown) {
+    override val root = datagrid(stationsModel.stationsProperty) {
+
+        itemsProperty.addListener { _, oldValue, newValue ->
+            logger.debug {
+                "Content change: $oldValue -> $newValue"
+            }
+        }
+
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {
-                playerModel.station.value = it
+                playerModel.stationProperty.value = it
             }
         }
 

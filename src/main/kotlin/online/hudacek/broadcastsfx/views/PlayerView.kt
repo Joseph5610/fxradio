@@ -26,8 +26,8 @@ import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import online.hudacek.broadcastsfx.Config
-import online.hudacek.broadcastsfx.events.MediaMetaChanged
 import online.hudacek.broadcastsfx.events.PlaybackChangeEvent
+import online.hudacek.broadcastsfx.events.PlaybackMetaChangedEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.events.PlayingStatus
 import online.hudacek.broadcastsfx.extension.*
@@ -61,7 +61,7 @@ class PlayerView : View() {
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
-        shouldBeDisabled(playerModel.station)
+        shouldBeDisabled(playerModel.stationProperty)
         add(playImage)
         addClass(Styles.playerControls)
         action {
@@ -83,10 +83,10 @@ class PlayerView : View() {
 
         //subscribe to events
         subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
-        subscribe<MediaMetaChanged> { it.let(::onMetaDataUpdated) }
+        subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataUpdated) }
 
         //Subscribe to property changes
-        playerModel.station.onChange { it?.let(::onStationChange) }
+        playerModel.stationProperty.onChange { it?.let(::onStationChange) }
         playerModel.animate.onChange(::onAnimatePropertyChanged)
     }
 
@@ -192,25 +192,32 @@ class PlayerView : View() {
      * Called when new song starts playing or other metadata of stream changes
      * @param event new stream Meta Data
      */
-    private fun onMetaDataUpdated(event: MediaMetaChanged) {
-        val newSongName = event.mediaMeta.nowPlaying
-        val newStreamTitle = event.mediaMeta.title
+    private fun onMetaDataUpdated(event: PlaybackMetaChangedEvent) {
+        val newSongName = event.mediaMeta.nowPlaying.trim()
+        val newStreamTitle = event.mediaMeta.title.trim()
 
-        if (playerModel.notifications.value) {
-            notification(
-                    identifier = event.mediaMeta.title.asBase64(),
-                    title = newSongName,
-                    subtitle = newStreamTitle)
-        }
+        //Do not update if song name is too short
+        if (newSongName.length > 1) {
 
-        if (playerModel.animate.value) radioNameTicker.updateText(newSongName)
-        else {
-            radioNameStaticText.text = newSongName
-            radioNameStaticText.tooltip = Tooltip(newSongName)
-        }
+            val actualTitle = if (newStreamTitle.isNotEmpty()) {
+                newStreamTitle
+            } else {
+                playerModel.stationProperty.value.name
+            }
 
-        if (newStreamTitle.isNotEmpty()) {
-            nowStreamingLabel.text = newStreamTitle
+            if (playerModel.notifications.value) {
+                notification(
+                        identifier = event.mediaMeta.title.asBase64(),
+                        title = newSongName,
+                        subtitle = actualTitle)
+            }
+
+            if (playerModel.animate.value) radioNameTicker.updateText(newSongName)
+            else {
+                radioNameStaticText.text = newSongName
+                radioNameStaticText.tooltip = Tooltip(newSongName)
+            }
+            nowStreamingLabel.text = actualTitle
         }
     }
 
@@ -226,7 +233,7 @@ class PlayerView : View() {
             radioNameTicker.stop()
             radioNameContainer.replaceChildren(radioNameStaticText)
         }
-        onStationChange(playerModel.station.value)
+        onStationChange(playerModel.stationProperty.value)
     }
 
     private fun onStationChange(station: Station) {
@@ -240,9 +247,12 @@ class PlayerView : View() {
                     radioNameStaticText.tooltip = null
                 }
                 radioLogo.createImage(this)
-                radioLogo.copyMenu(clipboard,
-                        name = messages["copy.image.url"],
-                        value = this.favicon ?: "")
+
+                if (this.favicon != null) {
+                    radioLogo.copyMenu(clipboard,
+                            name = messages["copy.image.url"],
+                            value = this.favicon ?: "")
+                }
             }
         }
     }

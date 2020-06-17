@@ -56,20 +56,21 @@ class MenuBarView : View() {
 
     private val stationMenu = StationMenu().menu
     private val helpMenu = HelpMenu().menu
+    private val historyMenu = HistoryMenu().menu
 
     private val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
     private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
 
     private val playerMenu = Menu(messages["menu.player.controls"]).apply {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
-            shouldBeVisible(playerModel.station)
+            shouldBeVisible(playerModel.stationProperty)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
         playerStop = item(messages["menu.player.stop"], keyStop) {
-            shouldBeVisible(playerModel.station)
+            shouldBeVisible(playerModel.stationProperty)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
@@ -125,7 +126,7 @@ class MenuBarView : View() {
                 controller.closeApp(currentStage)
             }
         }
-        menus.addAll(stationMenu, playerMenu, helpMenu)
+        menus.addAll(stationMenu, playerMenu, historyMenu, helpMenu)
     }
 
     /**
@@ -169,7 +170,7 @@ class MenuBarView : View() {
                     tk.createBringAllToFrontItem())
         }
 
-        menus.addAll(stationMenu, playerMenu, windowMenu, helpMenu)
+        menus.addAll(stationMenu, playerMenu, historyMenu, windowMenu, helpMenu)
 
         tk.setApplicationMenu(aboutMenu)
         tk.autoAddWindowMenuItems(windowMenu)

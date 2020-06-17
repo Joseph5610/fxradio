@@ -27,7 +27,7 @@ import online.hudacek.broadcastsfx.StationsApi
 import online.hudacek.broadcastsfx.extension.openUrl
 import online.hudacek.broadcastsfx.fragments.*
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
-import online.hudacek.broadcastsfx.model.rest.Station
+import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.views.menubar.MenuBarView
 import tornadofx.*
 
@@ -39,6 +39,7 @@ class MenuBarController : Controller() {
     private val menuBarView: MenuBarView by inject()
 
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
+    private val playerModel: PlayerModel by inject()
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -59,8 +60,8 @@ class MenuBarController : Controller() {
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun voteForStation(station: Station): Disposable = stationsApi
-            .vote(station.stationuuid)
+    fun voteForStation(): Disposable = stationsApi
+            .vote(playerModel.stationProperty.value.stationuuid)
             .observeOnFx()
             .subscribeOn(Schedulers.io())
             .subscribe({

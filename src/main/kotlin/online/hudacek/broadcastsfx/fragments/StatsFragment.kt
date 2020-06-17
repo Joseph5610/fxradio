@@ -32,6 +32,8 @@ import tornadofx.*
  */
 class StatsFragment : Fragment("Statistics") {
 
+    data class StatsList(val key: String, val value: String)
+
     private var container = vbox {
         add(ProgressView::class)
     }
@@ -49,21 +51,29 @@ class StatsFragment : Fragment("Statistics") {
                 .observeOnFx()
                 .subscribe({
 
-                    val list = observableListOf(
-                            "Status: ${it.status}",
-                            "API version: ${it.software_version}",
-                            "Supported version: ${it.supported_version}",
-                            "Stations: ${it.stations}",
-                            "Countries: ${it.countries}",
-                            "Broken stations: ${it.stations_broken}",
-                            "Tags: ${it.tags}")
-                    container.replaceChildren(listview(list) {
+                    val mappedValuesList = observableListOf(
+                            StatsList("Status", it.status),
+                            StatsList("API version", it.software_version),
+                            StatsList("Supported version", it.supported_version.toString()),
+                            StatsList("Stations", it.stations.toString()),
+                            StatsList("Countries", it.countries.toString()),
+                            StatsList("Broken stations", it.stations_broken.toString()),
+                            StatsList("Tags", it.tags.toString())
+                    )
+
+                    container.replaceChildren(listview(mappedValuesList) {
                         cellFormat {
-                            text = item
+                            paddingAll = 0.0
+                            graphic = hbox(5) {
+                                label(item.key)
+                                label(item.value)
+                                addClass(Styles.libraryListItem)
+                            }
                             copyMenu(clipboard,
                                     name = messages["copy"],
-                                    value = item)
+                                    value = "${item.key} ${item.value}")
                         }
+                        addClass(Styles.libraryListView)
                     })
                 }, {
                     container.replaceChildren(

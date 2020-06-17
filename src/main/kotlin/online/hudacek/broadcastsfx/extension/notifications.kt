@@ -58,8 +58,8 @@ fun EventTarget.notification(identifier: String,
 //MacOS native notification
 private fun macNotification(identifier: String, title: String, subtitle: String) =
         NSUserNotification().apply {
+            this.identifier = identifier
             this.title = title
             this.informativeText = subtitle
-            this.identifier = identifier
             show()
         }

@@ -48,7 +48,7 @@ class LibraryController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({
-                libraryView.showCountries(it)
+                libraryView.showCountries(it.toObservable())
             }, {
                 libraryView.showError()
             })

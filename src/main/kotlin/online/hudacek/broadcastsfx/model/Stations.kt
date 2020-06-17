@@ -4,10 +4,10 @@ import javafx.beans.property.ListProperty
 import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.*
 
-class StationsList {
+class Stations {
     val stations = observableListOf(Station.stub())
 }
 
-class StationsListModel : ItemViewModel<StationsList>() {
-    val shown = bind(StationsList::stations) as ListProperty
+class StationsModel : ItemViewModel<Stations>() {
+    val stationsProperty = bind(Stations::stations) as ListProperty
 }

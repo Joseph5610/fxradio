@@ -40,24 +40,24 @@ class StationMenu : Component() {
 
     val menu = Menu(messages["menu.station"]).apply {
         item(messages["menu.station.info"], keyInfo) {
-            shouldBeDisabled(playerModel.station)
+            shouldBeDisabled(playerModel.stationProperty)
             action {
                 controller.openStationInfo()
             }
         }
 
         item(messages["menu.station.favourite"], keyFavourites) {
-            disableWhen(booleanBinding(playerModel.station) {
+            disableWhen(booleanBinding(playerModel.stationProperty) {
                 value == null || !value.isValidStation() || value.isFavourite.blockingGet()
             })
             action {
-                playerModel.station.value
+                playerModel.stationProperty.value
                         .isFavourite
                         .flatMap {
                             if (it) {
                                 Single.just(false)
                             } else {
-                                playerModel.station.value.addFavourite()
+                                playerModel.stationProperty.value.addFavourite()
                             }
                         }
                         .subscribe({
@@ -73,14 +73,14 @@ class StationMenu : Component() {
         }
 
         item(messages["menu.station.favourite.remove"]) {
-            visibleWhen(booleanBinding(playerModel.station) {
+            visibleWhen(booleanBinding(playerModel.stationProperty) {
                 value != null && value.isValidStation() && value.isFavourite.blockingGet()
             })
             action {
-                playerModel.station.value
+                playerModel.stationProperty.value
                         .isFavourite
                         .flatMap {
-                            if (!it) Single.just(false) else playerModel.station.value.removeFavourite()
+                            if (!it) Single.just(false) else playerModel.stationProperty.value.removeFavourite()
                         }
                         .subscribe({
                             fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
@@ -91,9 +91,9 @@ class StationMenu : Component() {
         }
 
         item(messages["menu.station.vote"]) {
-            shouldBeDisabled(playerModel.station)
+            shouldBeDisabled(playerModel.stationProperty)
             action {
-                controller.voteForStation(playerModel.station.value)
+                controller.voteForStation()
             }
         }
 

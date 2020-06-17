@@ -26,13 +26,14 @@ import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.model.rest.Station
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
+import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment(station: Station? = null) : Fragment() {
 
     private val playerModel: PlayerModel by inject()
 
-    private val shownStation: Station = station ?: playerModel.station.value
+    private val shownStation: Station = station ?: playerModel.stationProperty.value
 
     private val items = observableListOf<String>()
 
@@ -75,7 +76,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                     it.codec
                 }
 
-                items.addAll(
+                items.setAll(
                         codec,
                         "Country: ${it.country}",
                         "Language: ${it.language}"
@@ -111,18 +112,17 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
 
             if (it.homepage.isNotEmpty()) {
                 statusbar {
-                    alignment = Pos.BOTTOM_RIGHT
-                    rightItems.add(
-                            hyperlink(it.homepage) {
-                                addClass(Styles.primaryTextColor)
-                                action {
-                                    app.openUrl(it.homepage)
-                                }
-                                copyMenu(clipboard,
-                                        name = messages["copy"],
-                                        value = it.homepage)
+                    right {
+                        hyperlink(it.homepage) {
+                            addClass(Styles.primaryTextColor)
+                            action {
+                                app.openUrl(it.homepage)
                             }
-                    )
+                            copyMenu(clipboard,
+                                    name = messages["copy"],
+                                    value = it.homepage)
+                        }
+                    }
                 }
             }
         }
