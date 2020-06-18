@@ -17,11 +17,20 @@
 package online.hudacek.broadcastsfx
 
 import javafx.stage.Stage
+import online.hudacek.broadcastsfx.events.PlayingStatus
+import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
+import online.hudacek.broadcastsfx.model.rest.Station
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.testfx.api.FxAssert.verifyThat
+import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
 import org.testfx.framework.junit5.Start
+import org.testfx.matcher.control.LabeledMatchers
+import org.testfx.util.WaitForAsyncUtils
+import tornadofx.*
+import java.util.concurrent.TimeUnit
 
 @ExtendWith(ApplicationExtension::class)
 class ApiTest {
@@ -34,14 +43,39 @@ class ApiTest {
         app.start(stage)
     }
 
+    /**
+     * Basic interactions test
+     * macOS: enable IntelliJ in Settings > Privacy > Accesibility to make it work
+     */
     @Test
-    fun testTopStations() {
+    fun basicTest(robot: FxRobot) {
+        val mediaPlayerWrapper = find<MediaPlayerWrapper>()
+
+        verifyThat("#nowStreaming", LabeledMatchers.hasText("Streaming stopped"))
+
+        //Wait for stations to load
+        val stations = robot.lookup("#stations").query<DataGrid<Station>>()
+        WaitForAsyncUtils.waitFor(10, TimeUnit.SECONDS) {
+            stations.isVisible && stations.items.size > 1
+        }
+
+        //wait until loaded
+        WaitForAsyncUtils.sleep(2, TimeUnit.SECONDS)
+        robot.clickOn(stations.items[0].name)
+
+        WaitForAsyncUtils.sleep(5, TimeUnit.SECONDS)
+        Assertions.assertTrue(mediaPlayerWrapper.playingStatus == PlayingStatus.Playing)
+    }
+
+    @Test
+    fun apiTest() {
         StationsApi.client
                 .getTopStations()
                 .subscribe { stations ->
                     Assertions.assertEquals(50, stations.size)
                     stations.forEach {
-                        //top 50 stations should not have empty URL
+                        //top 50 stations should not have empty URL and have name
+                        Assertions.assertTrue(it.name.isNotEmpty())
                         Assertions.assertTrue(it.url_resolved != null)
                     }
                 }.dispose()

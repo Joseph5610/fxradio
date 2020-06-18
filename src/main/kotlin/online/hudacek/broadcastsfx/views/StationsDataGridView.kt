@@ -47,6 +47,7 @@ class StationsDataGridView : View() {
     }
 
     override val root = datagrid(stationsModel.stationsProperty) {
+        id = "stations"
 
         itemsProperty.addListener { _, oldValue, newValue ->
             logger.debug {

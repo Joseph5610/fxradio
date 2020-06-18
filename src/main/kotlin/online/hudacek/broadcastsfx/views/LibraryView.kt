@@ -85,6 +85,7 @@ class LibraryView : View() {
 
     private val searchField = customTextfield {
         promptText = messages["search"]
+        id = "search"
 
         left = label {
             graphic = glyph("FontAwesome", FontAwesome.Glyph.SEARCH) {

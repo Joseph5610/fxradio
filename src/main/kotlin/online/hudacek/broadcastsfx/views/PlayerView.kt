@@ -50,6 +50,7 @@ class PlayerView : View() {
     private var radioLogo: ImageView by singleAssign()
 
     private val nowStreamingLabel = label(messages["streamingStopped"]) {
+        id = "nowStreaming"
         addClass(Styles.grayLabel)
     }
 
