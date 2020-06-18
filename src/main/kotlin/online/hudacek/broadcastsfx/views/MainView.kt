@@ -24,7 +24,6 @@ import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.events.PlayerType
 import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.extension.set
-import online.hudacek.broadcastsfx.extension.setOnSpacePressed
 import online.hudacek.broadcastsfx.media.MediaPlayerWrapper
 import online.hudacek.broadcastsfx.model.PlayerModel
 import online.hudacek.broadcastsfx.views.menubar.MenuBarView
@@ -61,10 +60,6 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
-        currentWindow?.setOnSpacePressed {
-            mediaPlayerWrapper.togglePlaying()
-        }
-
         currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }

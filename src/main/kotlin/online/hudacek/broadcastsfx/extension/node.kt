@@ -21,6 +21,8 @@ import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.scene.Node
 import javafx.scene.Scene
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import online.hudacek.broadcastsfx.model.rest.Station
 import tornadofx.*
 
@@ -46,4 +48,12 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
     disableWhen(booleanBinding(station) {
         value == null || !value.isValidStation()
     })
+}
+
+internal fun Node.setOnSpacePressed(action: () -> Unit) {
+    addEventHandler(KeyEvent.KEY_PRESSED) {
+        if (it.code == KeyCode.SPACE) {
+            action.invoke()
+        }
+    }
 }

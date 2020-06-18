@@ -174,6 +174,12 @@ class PlayerView : View() {
         }
     }
 
+    override fun onDock() {
+        currentWindow?.setOnSpacePressed {
+            mediaPlayerWrapper.togglePlaying()
+        }
+    }
+
     /**
      * Called when playback status is changed,
      * usually by pressing button in PlayerView or externally (e.g change of player type)
