@@ -40,6 +40,7 @@ class StationsController : Controller() {
     private val stationsApi: StationsApi
         get() = StationsApi.client
 
+    //retrieve favourites from DB
     fun getFavourites(): Disposable = Station.favourites()
             .observeOnFx()
             .subscribeOn(Schedulers.io())
@@ -52,28 +53,31 @@ class StationsController : Controller() {
                 }
             }, ::handleError)
 
+    //retrieve all stations from given country from endpoint
     fun getStationsByCountry(country: String): Disposable = stationsApi
             .getStationsByCountry(CountriesBody(), country)
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe({ result ->
+            .subscribe({
                 stationsView.showStations()
-                stationsModel.stationsProperty.set(result.asObservable())
+                stationsModel.stationsProperty.set(it.asObservable())
             }, ::handleError)
 
+    //search for station name on endpoint
     fun searchStations(name: String): Disposable = stationsApi
             .searchStationByName(SearchBody(name))
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe({ result ->
-                if (result.isEmpty()) {
+            .subscribe({
+                if (it.isEmpty()) {
                     stationsView.showNoResults(name)
                 } else {
                     stationsView.showStations()
-                    stationsModel.stationsProperty.set(result.asObservable())
+                    stationsModel.stationsProperty.set(it.asObservable())
                 }
             }, ::handleError)
 
+    //retrieve history list
     fun getHistory() = stationsHistory.stations.let {
         if (it.isEmpty()) {
             stationsView.showNoResults()
@@ -83,14 +87,16 @@ class StationsController : Controller() {
         }
     }
 
+    //retrieve top voted stations list from endpoint
     fun getTopStations(): Disposable = stationsApi
             .getTopStations()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe({ result ->
+            .subscribe({
                 stationsView.showStations()
-                stationsModel.stationsProperty.set(result.asObservable())
+                stationsModel.stationsProperty.set(it.asObservable())
             }, ::handleError)
+
 
     private fun handleError(throwable: Throwable) {
         logger.error(throwable) { "Error showing station library" }

@@ -35,6 +35,7 @@ class LibraryController : Controller() {
     private val stationsApi: StationsApi
         get() = StationsApi.client
 
+    //Default items shown in library ListView
     val libraryItems by lazy {
         observableListOf(
                 Library(LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP),
@@ -48,7 +49,7 @@ class LibraryController : Controller() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe({
-                libraryView.showCountries(it.toObservable())
+                libraryView.showCountries(it.asObservable())
             }, {
                 libraryView.showError()
             })

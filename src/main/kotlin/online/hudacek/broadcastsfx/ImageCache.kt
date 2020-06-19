@@ -22,7 +22,6 @@ import online.hudacek.broadcastsfx.extension.defaultRadioLogo
 import online.hudacek.broadcastsfx.model.rest.Station
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
-import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -45,16 +44,12 @@ object ImageCache {
         }
     }
 
-    fun clearCache(): Boolean {
-        return try {
-            FileUtils.cleanDirectory(cacheBasePath.toFile())
-            true
-        } catch (e: IOException) {
-            logger.error(e) {
-                "IOException when clearing cache"
-            }
-            false
-        }
+    fun clearCache() = try {
+        FileUtils.cleanDirectory(cacheBasePath.toFile())
+        true
+    } catch (e: Exception) {
+        logger.error(e) { "Exception when clearing cache" }
+        false
     }
 
     fun isImageInCache(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))

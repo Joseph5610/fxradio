@@ -18,7 +18,6 @@ package online.hudacek.broadcastsfx.views.menubar
 
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
-import mu.KotlinLogging
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.menubar.MenuBarController
 import online.hudacek.broadcastsfx.events.NotificationEvent
@@ -29,8 +28,6 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class HelpMenu : Component() {
-
-    private val logger = KotlinLogging.logger {}
 
     private val controller: MenuBarController by inject()
 

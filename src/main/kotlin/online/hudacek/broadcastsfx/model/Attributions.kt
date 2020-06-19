@@ -14,7 +14,6 @@ object Attributions {
                 Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
                 Attribution("log4j", "2.9.1", Licenses.apache20),
                 Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
-                Attribution("appdmg", "0.6.0", Licenses.appdmg),
                 Attribution("TickerView", license = Licenses.tickerView),
                 Attribution("macOS install disk background", license = Licenses.bg),
                 Attribution("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
@@ -102,27 +101,6 @@ private object Licenses {
             "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
             "See the License for the specific language governing permissions and\n" +
             "limitations under the License.")
-
-    val appdmg = License("MIT", "The MIT License (MIT)\n" +
-            "\n" +
-            "Copyright (c) 2013 Linus Unnebäck\n" +
-            "\n" +
-            "Permission is hereby granted, free of charge, to any person obtaining a copy of\n" +
-            "this software and associated documentation files (the \"Software\"), to deal in\n" +
-            "the Software without restriction, including without limitation the rights to\n" +
-            "use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\n" +
-            "the Software, and to permit persons to whom the Software is furnished to do so,\n" +
-            "subject to the following conditions:\n" +
-            "\n" +
-            "The above copyright notice and this permission notice shall be included in all\n" +
-            "copies or substantial portions of the Software.\n" +
-            "\n" +
-            "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" +
-            "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\n" +
-            "FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\n" +
-            "COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\n" +
-            "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\n" +
-            "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.")
 
     val tickerView = License(content = "https://gitlab.light.kow.is/kowis-projects/deskscreen")
     val controlsfx = License("BSD 3-Clause license", "BSD 3-Clause License\n" +

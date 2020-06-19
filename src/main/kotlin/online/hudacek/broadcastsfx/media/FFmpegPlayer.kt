@@ -20,7 +20,7 @@ import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
 import io.humble.video.javaxsound.MediaAudioConverterFactory
 import kotlinx.coroutines.*
-import mu.KotlinLogging
+import tornadofx.*
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
 import javax.sound.sampled.LineUnavailableException
@@ -28,19 +28,19 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-internal class FFmpegPlayer(private val mediaPlayer: MediaPlayerWrapper)
-    : MediaPlayer {
+internal class FFmpegPlayer : MediaPlayer {
 
-    private val logger = KotlinLogging.logger {}
+    private var mediaPlayerWrapper = find<MediaPlayerWrapper>()
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
 
     private val handler = CoroutineExceptionHandler { _, exception ->
-        mediaPlayer.handleError(exception)
+        mediaPlayerWrapper.handleError(exception)
     }
 
     override fun play(url: String) {
+        cancelPlaying() //this player should stop itself before playing new stream
         mediaPlayerCoroutine = GlobalScope.launch(handler) {
             val demuxer = Demuxer.make()
             try {
@@ -113,6 +113,8 @@ internal class FFmpegPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     override fun changeVolume(volume: Double): Boolean {
         return try {
+            //Dirty hack, since the api does not provide direct access to field,
+            //we use reflection to get access to line field to change volume
             AudioFrame::class.memberProperties
                     .filter { it.name == "mLine" }[0].apply {
                 isAccessible = true
@@ -127,7 +129,6 @@ internal class FFmpegPlayer(private val mediaPlayer: MediaPlayerWrapper)
     }
 
     override fun cancelPlaying() {
-        logger.debug { "ending current stream if any" }
         mediaPlayerCoroutine?.isActive.let {
             mediaPlayerCoroutine?.cancel()
         }

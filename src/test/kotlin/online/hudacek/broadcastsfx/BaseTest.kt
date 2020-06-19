@@ -27,15 +27,15 @@ import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
 import org.testfx.framework.junit5.Start
-import org.testfx.matcher.control.LabeledMatchers
-import org.testfx.util.WaitForAsyncUtils
 import tornadofx.*
-import java.util.concurrent.TimeUnit
 
 @ExtendWith(ApplicationExtension::class)
-class ApiTest {
+class BaseTest {
 
     private lateinit var app: FxRadio
+
+    private val nowPlayingLabel = "#nowStreaming"
+    private val stationsDataGrid = "#stations"
 
     @Start
     fun start(stage: Stage) {
@@ -45,26 +45,27 @@ class ApiTest {
 
     /**
      * Basic interactions test
-     * macOS: enable IntelliJ in Settings > Privacy > Accesibility to make it work
+     * macOS: enable IntelliJ in Settings > Privacy > Accessibility to make it work
      */
     @Test
     fun basicTest(robot: FxRobot) {
         val mediaPlayerWrapper = find<MediaPlayerWrapper>()
 
-        verifyThat("#nowStreaming", LabeledMatchers.hasText("Streaming stopped"))
+        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
 
         //Wait for stations to load
-        val stations = robot.lookup("#stations").query<DataGrid<Station>>()
-        WaitForAsyncUtils.waitFor(10, TimeUnit.SECONDS) {
+        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
+        waitFor(10) {
             stations.isVisible && stations.items.size > 1
         }
 
         //wait until loaded
-        WaitForAsyncUtils.sleep(2, TimeUnit.SECONDS)
+        sleep(2)
         robot.clickOn(stations.items[0].name)
 
-        WaitForAsyncUtils.sleep(5, TimeUnit.SECONDS)
-        Assertions.assertTrue(mediaPlayerWrapper.playingStatus == PlayingStatus.Playing)
+        waitFor(10) {
+            mediaPlayerWrapper.playingStatus == PlayingStatus.Playing
+        }
     }
 
     @Test

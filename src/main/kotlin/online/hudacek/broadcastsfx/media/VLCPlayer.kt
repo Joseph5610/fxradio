@@ -18,6 +18,7 @@ package online.hudacek.broadcastsfx.media
 
 import mu.KotlinLogging
 import online.hudacek.broadcastsfx.events.MediaMeta
+import tornadofx.*
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
@@ -27,10 +28,11 @@ import uk.co.caprica.vlcj.media.Meta
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
-    : MediaPlayer {
+internal class VLCPlayer : MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
+
+    private var mediaPlayerWrapper = find<MediaPlayerWrapper>()
 
     private val audioPlayerComponent: AudioPlayerComponent? by lazy {
         try {
@@ -65,7 +67,7 @@ internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
                 if (it[Meta.NOW_PLAYING] != null
                         && it[Meta.TITLE] != null
                         && it[Meta.GENRE] != null) {
-                    mediaPlayer.mediaMetaChanged(
+                    mediaPlayerWrapper.mediaMetaChanged(
                             MediaMeta(it[Meta.TITLE],
                                     it[Meta.GENRE],
                                     it[Meta.NOW_PLAYING]
@@ -78,7 +80,7 @@ internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
     init {
         if (audioPlayerComponent == null) {
-            throw RuntimeException("VLClib cannot be found on the system.")
+            throw RuntimeException("VLCLib cannot be found on the system.")
         }
 
         audioPlayerComponent?.let {
@@ -92,9 +94,7 @@ internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
     }
 
     override fun play(url: String) {
-        audioPlayerComponent?.let {
-            it.mediaPlayer().media().play(url)
-        }
+        audioPlayerComponent?.mediaPlayer()?.media()?.play(url)
     }
 
     override fun changeVolume(volume: Double): Boolean {
@@ -105,7 +105,7 @@ internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
                     ((volume + 50) * (100 / 95)).toInt()
                 }
 
-        return audioPlayerComponent!!.mediaPlayer().audio().setVolume(vlcVolume)
+        return audioPlayerComponent?.mediaPlayer()?.audio()?.setVolume(vlcVolume) ?: false
     }
 
     /**
@@ -116,7 +116,7 @@ internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
 
         if (result == 1) {
             val errorMsg = if (lastLogMessage.isEmpty()) "Error opening stream. See app.log for details." else lastLogMessage
-            mediaPlayer.handleError(RuntimeException(errorMsg))
+            mediaPlayerWrapper.handleError(RuntimeException(errorMsg))
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,
@@ -133,7 +133,11 @@ internal class VLCPlayer(private val mediaPlayer: MediaPlayerWrapper)
     }
 
     override fun cancelPlaying() {
-        audioPlayerComponent?.mediaPlayer()?.controls()?.stop()
+        audioPlayerComponent?.mediaPlayer()?.let {
+            if (it.status().isPlaying) {
+                it.controls().stop()
+            }
+        }
     }
 
     override fun releasePlayer() {

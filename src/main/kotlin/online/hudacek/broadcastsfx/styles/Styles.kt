@@ -49,6 +49,7 @@ class Styles : Stylesheet() {
 
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
+        val statusBar by cssclass()
     }
 
     init {
@@ -287,6 +288,14 @@ class Styles : Stylesheet() {
 
         progressIndicator {
             progressColor = Color.BLACK
+        }
+
+        statusBar {
+            padding = box(5.px)
+            borderRadius += box(0.px)
+            borderWidth += box(1.px, 0.px, 0.px, 0.px)
+            borderColor += box(c(ColorValues.backgroundBorder), c(ColorValues.transparent), c(ColorValues.transparent), c(ColorValues.transparent))
+            unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
     }
 }

@@ -23,6 +23,7 @@ interface MediaPlayer {
     fun releasePlayer()
 
     companion object {
+        //Dummy media player object
         val stub = object : MediaPlayer {
             override fun play(url: String) {}
 

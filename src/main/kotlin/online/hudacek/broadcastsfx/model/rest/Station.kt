@@ -56,7 +56,7 @@ data class Station(
 
     fun isValidStation() = stationuuid != "0"
 
-    fun isInvalidImage() = favicon.isNullOrEmpty() || favicon!!.contains(".ico")
+    fun isInvalidImage() = favicon.isNullOrEmpty()
 
     override fun equals(other: Any?): Boolean {
         return if (other is Station) {

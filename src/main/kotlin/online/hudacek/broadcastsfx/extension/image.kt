@@ -27,7 +27,7 @@ import java.net.URL
 
 private val logger = KotlinLogging.logger {}
 
-internal val defaultRadioLogo = Image(Config.Paths.defaultRadioIcon)
+internal val defaultRadioLogo by lazy { Image(Config.Paths.defaultRadioIcon) }
 
 /**
  * This method is used for custom downloading of station's logo
@@ -47,7 +47,7 @@ internal fun ImageView.createImage(station: Station) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
         if (station.isInvalidImage()) {
-            logger.info { "Image for ${station.name} is invalid." }
+            logger.info { "Image for ${station.name} is null or empty." }
             return
         }
 

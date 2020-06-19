@@ -21,7 +21,6 @@ import javafx.geometry.Pos
 import javafx.scene.control.Tooltip
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
@@ -47,7 +46,12 @@ class PlayerView : View() {
     private val radioNameStaticText = label()
 
     private var radioNameContainer: VBox by singleAssign()
-    private var radioLogo: ImageView by singleAssign()
+
+    private var radioLogo = imageview(Config.Paths.defaultRadioIcon) {
+        effect = DropShadow(20.0, Color.WHITE)
+        fitWidth = 30.0
+        isPreserveRatio = true
+    }
 
     private val nowStreamingLabel = label(messages["streamingStopped"]) {
         id = "nowStreaming"
@@ -120,13 +124,9 @@ class PlayerView : View() {
 
                 //Radio logo
                 vbox(alignment = Pos.CENTER_LEFT) {
-                    radioLogo = imageview(Config.Paths.defaultRadioIcon) {
-                        effect = DropShadow(20.0, Color.WHITE)
-                        fitWidth = 30.0
-                        minHeight = 30.0
-                        maxHeight = 30.0
-                        isPreserveRatio = true
-                    }
+                    minHeight = 30.0
+                    maxHeight = 30.0
+                    add(radioLogo)
                 }
 
                 separator(Orientation.VERTICAL)

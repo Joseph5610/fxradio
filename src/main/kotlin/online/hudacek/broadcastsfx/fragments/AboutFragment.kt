@@ -18,7 +18,6 @@ package online.hudacek.broadcastsfx.fragments
 
 import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.FxRadio
-import online.hudacek.broadcastsfx.extension.requestFocusOnSceneAvailable
 import online.hudacek.broadcastsfx.styles.Styles
 import tornadofx.*
 
@@ -33,7 +32,6 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
 
         vbox(alignment = Pos.CENTER) {
             imageview(FxRadio.appLogo) {
-                requestFocusOnSceneAvailable()
                 fitHeight = 80.0
                 isPreserveRatio = true
                 paddingAll = 20.0

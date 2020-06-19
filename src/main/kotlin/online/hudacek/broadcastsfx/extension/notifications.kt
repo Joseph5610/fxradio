@@ -20,7 +20,6 @@ import airsquared.JMacNotification.NSUserNotification
 import com.sun.javafx.PlatformUtil
 import javafx.animation.PauseTransition
 import javafx.event.EventHandler
-import javafx.event.EventTarget
 import javafx.util.Duration
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -45,9 +44,9 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
  *
  */
 
-fun EventTarget.notification(identifier: String,
-                             title: String,
-                             subtitle: String) {
+fun notification(identifier: String,
+                 title: String,
+                 subtitle: String) {
     if (PlatformUtil.isMac()) {
         macNotification(identifier, title, subtitle)
     } else {

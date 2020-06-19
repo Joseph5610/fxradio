@@ -22,6 +22,7 @@ import javafx.geometry.Pos
 import online.hudacek.broadcastsfx.Config
 import online.hudacek.broadcastsfx.controllers.LibraryController
 import online.hudacek.broadcastsfx.events.LibraryType
+import online.hudacek.broadcastsfx.events.NotificationEvent
 import online.hudacek.broadcastsfx.extension.smallLabel
 import online.hudacek.broadcastsfx.model.rest.Countries
 import online.hudacek.broadcastsfx.styles.Styles
@@ -134,33 +135,44 @@ class LibraryView : View() {
         }
     }
 
-    override val root = vbox {
-        vbox {
-            add(searchField)
-            style {
-                padding = box(20.px, 10.px, 20.px, 10.px)
+    override val root = borderpane {
+        top {
+            vbox {
+                vbox {
+                    add(searchField)
+                    style {
+                        padding = box(20.px, 10.px, 20.px, 10.px)
+                    }
+                }
+
+                smallLabel(messages["library"])
+                add(libraryListView)
             }
         }
 
-        smallLabel(messages["library"])
-        add(libraryListView)
-        vbox {
-            prefHeight = 20.0
+        center {
+            vbox {
+                smallLabel(messages["countries"])
+                vbox(alignment = Pos.CENTER) {
+                    add(countriesListView)
+                }
+            }
         }
 
-        smallLabel(messages["countries"])
-        vbox(alignment = Pos.CENTER) {
-            add(retryLink)
-            add(countriesListView)
-        }
-
-        statusbar {
-            left {
-                label {
-                    countriesListView.itemsProperty().onChange {
-                        text = "${it?.size} ${messages["countries"]}"
+        bottom {
+            vbox(alignment = Pos.CENTER) {
+                maxHeight = 14.0
+                statusbar {
+                    addClass(Styles.statusBar)
+                    left {
+                        label {
+                            countriesListView.itemsProperty().onChange {
+                                text = "${it?.size} ${messages["countries"]}"
+                            }
+                            addClass(Styles.grayLabel)
+                        }
+                        add(retryLink)
                     }
-                    addClass(Styles.grayLabel)
                 }
             }
         }
@@ -168,12 +180,11 @@ class LibraryView : View() {
 
     fun showCountries(countries: ObservableList<Countries>) {
         retryLink.hide()
-        countriesListView.show()
         countriesListView.itemsProperty().set(countries)
     }
 
     fun showError() {
+        fire(NotificationEvent(messages["downloadError"]))
         retryLink.show()
-        countriesListView.hide()
     }
 }

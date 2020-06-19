@@ -41,7 +41,6 @@ class StationsDataGridView : View() {
 
     private val logger = KotlinLogging.logger {}
 
-
     init {
         stationsModel.item = Stations()
     }

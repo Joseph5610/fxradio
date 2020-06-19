@@ -36,6 +36,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     private var internalVolume = 0.0
 
     init {
+        //Update internal player type
         playerModel.playerType.onChange {
             if (it != null) {
                 logger.info { "player type changed: $it" }
@@ -44,12 +45,14 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             }
         }
 
+        //Set volume for current player
         playerModel.volumeProperty.onChange {
             logger.info { "volume changed: $it" }
             internalVolume = it
             mediaPlayer.changeVolume(it)
         }
 
+        //Toggle playing
         subscribe<PlaybackChangeEvent> {
             playingStatus = it.playingStatus
             if (it.playingStatus == PlayingStatus.Playing) {
@@ -68,25 +71,19 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 }
     }
 
-    fun init() {
-
-    }
+    fun init() {}
 
     private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
         return if (playerType == PlayerType.FFmpeg) {
-            logger.debug { "trying to init native player " }
-            FFmpegPlayer(this)
+            FFmpegPlayer()
         } else {
             try {
-                logger.debug { "trying to init VLC media player " }
-                VLCPlayer(this)
+                VLCPlayer()
             } catch (e: Exception) {
                 playerModel.playerType.set(PlayerType.FFmpeg)
-                logger.error(e) {
-                    "VLC init failed, init native library "
-                }
+                logger.error(e) { "VLC init failed, init native library " }
                 fire(NotificationEvent("Player can't be initialized. Library is not installed on the system."))
-                FFmpegPlayer(this)
+                FFmpegPlayer()
             }
         }
     }
@@ -95,7 +92,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         url?.let {
             mediaPlayer.apply {
                 changeVolume(internalVolume)
-                cancelPlaying()
                 play(url)
             }
         }
