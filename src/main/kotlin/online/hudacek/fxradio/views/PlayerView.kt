@@ -24,6 +24,7 @@ import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
@@ -38,6 +39,8 @@ import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 
 class PlayerView : View() {
+
+    private val logger = KotlinLogging.logger {}
 
     private val playerModel: PlayerModel by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
@@ -213,8 +216,8 @@ class PlayerView : View() {
             }
 
             if (playerModel.notifications.value) {
+                logger.debug { "sending notification for $newSongName $actualTitle" }
                 notification(
-                        identifier = event.mediaMeta.title.asBase64(),
                         title = newSongName,
                         subtitle = actualTitle)
             }
@@ -234,10 +237,8 @@ class PlayerView : View() {
      */
     private fun onAnimatePropertyChanged(shouldAnimate: Boolean) {
         if (shouldAnimate) {
-            radioNameTicker.play()
             radioNameContainer.replaceChildren(radioNameTicker)
         } else {
-            radioNameTicker.stop()
             radioNameContainer.replaceChildren(radioNameStaticText)
         }
         onStationChange(playerModel.stationProperty.value)

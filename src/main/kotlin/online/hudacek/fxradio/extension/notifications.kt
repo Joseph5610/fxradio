@@ -44,20 +44,17 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
  *
  */
 
-fun notification(identifier: String,
-                 title: String,
-                 subtitle: String) {
+fun notification(title: String, subtitle: String) {
     if (PlatformUtil.isMac()) {
-        macNotification(identifier, title, subtitle)
+        macNotification(title, subtitle)
     } else {
         //not implemented
     }
 }
 
 //MacOS native notification
-private fun macNotification(identifier: String, title: String, subtitle: String) =
+private fun macNotification(title: String, subtitle: String) =
         NSUserNotification().apply {
-            this.identifier = identifier
             this.title = title
             this.informativeText = subtitle
             show()

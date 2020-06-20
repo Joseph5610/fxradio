@@ -91,11 +91,19 @@ jfx {
     mainClass = 'online.hudacek.fxradio.FxRadioKt'
 
     // minimal requirement for jfxNative-task
+    identifier = "FXRadio"
     vendor = 'FXRadio'
     jfxMainAppJarName = "fxRadio.jar"
     deployDir = "src/main/deploy"
     nativeOutputDir = "build/jfx/native"
     nativeReleaseVersion = version
+    needShortcut = true
+
+    additionalAppResources = 'src/main/deploy/additional'
+    bundleArguments = [
+            licenseType: 'ASL 2.0',
+            licenseFile: 'LICENSE'
+    ]
 }
 
 test {

@@ -45,7 +45,7 @@ class TickerView : View() {
                 isDisable = true
             }
         }
-        this.add(marqueeView)
+        add(marqueeView)
     }
 
     fun updateText(text: String) {
@@ -83,16 +83,15 @@ class MarqueeView : View() {
     private val activeTicks = ConcurrentLinkedQueue<ActiveTick>() //This might not need to be threadsafe, only one thing is adding/removing it
     private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Node>>() //This one does, multiple threads!
 
-    private val pane: Pane = pane()
     private val timeline = Timeline() //Timeline is up here in case I need to pause, play the animation
 
-    override val root = pane
+    override val root = pane()
 
     //This is needed to make sure the pane fills up the entire space of whatever we've been put in.
     fun inside(of: Pane) {
         //I need this guy to autofill to max size
-        pane.prefWidthProperty().bind(of.widthProperty())
-        pane.prefHeightProperty().bind(of.heightProperty())
+        root.prefWidthProperty().bind(of.widthProperty())
+        root.prefHeightProperty().bind(of.heightProperty())
     }
 
     init {
