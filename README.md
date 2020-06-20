@@ -10,10 +10,10 @@ This app is using http://radio-browser.info public API
 
 # Download
 
-Download the latest release from [Releases](https://github.com/Joseph5610/broadcastsFX/releases) page in this repository.
+Download the latest release from [Releases](https://github.com/Joseph5610/fxradio-main/releases) page in this repository.
 Currently we provide several release files:
 - If you live on the edge, you can download plain JAR file, but beware, the JAR file can only be run using **Java 1.8**.
-- Otherwise, we currently provide native .app file for macOS
+- Otherwise, we currently provide native .dmg file for macOS
 
 :warning: **Native format for Windows/Unix OS is currently not built** 
 Those builds have not been tested, but you can still try and build it yourself.

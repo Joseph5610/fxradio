@@ -88,7 +88,7 @@ jfx {
     appName = "FXRadio"
     // minimal requirement for jfxJar-task
     manifestAttributes = attributes
-    mainClass = 'online.hudacek.broadcastsfx.FxRadioKt'
+    mainClass = 'online.hudacek.fxradio.FxRadioKt'
 
     // minimal requirement for jfxNative-task
     vendor = 'FXRadio'
