@@ -76,9 +76,7 @@ object ImageCache {
                     imagePath,
                     StandardCopyOption.REPLACE_EXISTING)
         } catch (e: FileAlreadyExistsException) {
-            logger.error(e) {
-                "FileAlreadyExists. Probably downloaded on some different thread?"
-            }
+            logger.error(e) { "FileAlreadyExists. Should not happen." }
         }
     }
 }

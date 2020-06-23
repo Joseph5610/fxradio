@@ -68,7 +68,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                 alignment = Pos.CENTER
                 paddingAll = 5.0
 
-                if (it.votes != 0) items.add("${it.votes} votes")
+                if (it.votes != 0) items.add("${it.votes} ${messages["votes"]}")
 
                 val codec = if (it.bitrate != 0) {
                     it.codec + " (${it.bitrate} kbps)"
@@ -76,10 +76,10 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                     it.codec
                 }
 
-                items.setAll(
+                items.addAll(
                         codec,
-                        "Country: ${it.country}",
-                        "Language: ${it.language}"
+                        "${messages["country"]}: ${it.country}",
+                        "${messages["language"]}: ${it.language}"
                 )
                 items.forEach { info ->
                     label(info) {

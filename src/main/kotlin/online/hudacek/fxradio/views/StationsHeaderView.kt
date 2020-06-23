@@ -95,9 +95,7 @@ class StationsHeaderView : View() {
                         fire(NotificationEvent(messages["database.clear.ok"]))
                         fire(LibraryRefreshEvent(LibraryType.Favourites))
                     }, {
-                        logger.error(it) {
-                            "Can't remove favourites!"
-                        }
+                        logger.error(it) { "Can't remove favourites!" }
                         fire(NotificationEvent(messages["database.clear.error"]))
                     })
         }

@@ -30,7 +30,7 @@ import tornadofx.*
 /**
  * Modal window that shows status of API server
  */
-class StatsFragment : Fragment("Statistics") {
+class StatsFragment : Fragment() {
 
     data class StatsList(val key: String, val value: String)
 
@@ -46,40 +46,45 @@ class StatsFragment : Fragment("Statistics") {
     }
 
     init {
+        title = messages["title"]
         stationsApi.getStats()
                 .subscribeOn(Schedulers.io())
                 .observeOnFx()
                 .subscribe({
 
                     val mappedValuesList = observableListOf(
-                            StatsList("Status", it.status),
-                            StatsList("API version", it.software_version),
-                            StatsList("Supported version", it.supported_version.toString()),
-                            StatsList("Stations", it.stations.toString()),
-                            StatsList("Countries", it.countries.toString()),
-                            StatsList("Broken stations", it.stations_broken.toString()),
-                            StatsList("Tags", it.tags.toString())
+                            StatsList(messages["stats.status"], it.status),
+                            StatsList(messages["stats.apiVersion"], it.software_version),
+                            StatsList(messages["stats.supportedVersion"], it.supported_version.toString()),
+                            StatsList(messages["stats.stations"], it.stations.toString()),
+                            StatsList(messages["stats.countries"], it.countries.toString()),
+                            StatsList(messages["stats.brokenStations"], it.stations_broken.toString()),
+                            StatsList(messages["stats.tags"], it.tags.toString())
                     )
 
                     container.replaceChildren(listview(mappedValuesList) {
                         cellFormat {
                             paddingAll = 0.0
                             graphic = hbox(5) {
-                                label(item.key)
+                                label(item.key + ":")
                                 label(item.value)
                                 addClass(Styles.libraryListItem)
                             }
                             copyMenu(clipboard,
                                     name = messages["copy"],
-                                    value = "${item.key} ${item.value}")
+                                    value = "${item.key}: ${item.value}")
                         }
                         addClass(Styles.libraryListView)
                     })
                 }, {
                     container.replaceChildren(
-                            label("Stats are not available at the moment.") {
-                                paddingAll = 20.0
+                            vbox {
+                                alignment = Pos.BASELINE_CENTER
+                                label(messages["statsUnavailable"]) {
+                                    paddingAll = 20.0
+                                }
                             }
+
                     )
                 })
     }

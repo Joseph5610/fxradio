@@ -41,6 +41,9 @@ class TickerView : View() {
         prefHeight = 15.0
         marqueeView.inside(this)
         copyMenu = copyMenu(clipboard, name = messages["copy"]) {
+            items[0].apply {
+                isDisable = true
+            }
             item("Search on Youtube") {
                 isDisable = true
             }
@@ -50,8 +53,11 @@ class TickerView : View() {
 
     fun updateText(text: String) {
         copyMenu.apply {
-            items[0].action {
-                clipboard.update(text)
+            items[0].apply {
+                isDisable = false
+                action {
+                    clipboard.update(text)
+                }
             }
 
             items[1].apply {

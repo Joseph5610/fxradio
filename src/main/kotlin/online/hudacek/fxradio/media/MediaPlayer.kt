@@ -32,6 +32,8 @@ interface MediaPlayer {
             override fun cancelPlaying() {}
 
             override fun releasePlayer() {}
+
+            override fun toString() = "Stub Player"
         }
     }
 }

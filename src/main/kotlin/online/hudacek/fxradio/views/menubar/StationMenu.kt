@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.views.menubar
 
-import io.reactivex.Single
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.control.Menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
@@ -50,44 +50,32 @@ class StationMenu : Component() {
             disableWhen(booleanBinding(playerModel.stationProperty) {
                 value == null || !value.isValidStation() || value.isFavourite.blockingGet()
             })
-            action {
-                playerModel.stationProperty.value
-                        .isFavourite
-                        .flatMap {
-                            if (it) {
-                                Single.just(false)
-                            } else {
-                                playerModel.stationProperty.value.addFavourite()
-                            }
-                        }
-                        .subscribe({
-                            if (it) {
-                                fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
-                            } else {
-                                fire(NotificationEvent(messages["menu.station.favourite.addedAlready"]))
-                            }
-                        }, {
-                            fire(NotificationEvent(messages["menu.station.favourite.error"]))
-                        })
-            }
+
+            actionEvents()
+                    .flatMapSingle { playerModel.stationProperty.value.isFavourite }
+                    .filter { !it }
+                    .flatMapSingle { playerModel.stationProperty.value.addFavourite() }
+                    .subscribe({
+                        fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
+                    }, {
+                        fire(NotificationEvent(messages["menu.station.favourite.error"]))
+                    })
         }
 
         item(messages["menu.station.favourite.remove"]) {
             visibleWhen(booleanBinding(playerModel.stationProperty) {
                 value != null && value.isValidStation() && value.isFavourite.blockingGet()
             })
-            action {
-                playerModel.stationProperty.value
-                        .isFavourite
-                        .flatMap {
-                            if (!it) Single.just(false) else playerModel.stationProperty.value.removeFavourite()
-                        }
-                        .subscribe({
-                            fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
-                        }, {
-                            fire(NotificationEvent(messages["menu.station.favourite.remove.error"], FontAwesome.Glyph.WARNING))
-                        })
-            }
+
+            actionEvents()
+                    .flatMapSingle { playerModel.stationProperty.value.isFavourite }
+                    .filter { it }
+                    .flatMapSingle { playerModel.stationProperty.value.removeFavourite() }
+                    .subscribe({
+                        fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
+                    }, {
+                        fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
+                    })
         }
 
         item(messages["menu.station.vote"]) {

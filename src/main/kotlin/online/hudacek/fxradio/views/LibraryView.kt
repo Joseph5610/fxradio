@@ -16,7 +16,8 @@
 
 package online.hudacek.fxradio.views
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
+import com.github.thomasnield.rxkotlinfx.onChangedObservable
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import online.hudacek.fxradio.Config
@@ -103,7 +104,7 @@ class LibraryView : View() {
         }
 
         //Fire up search results after input is written to text field
-        textProperty().toObservableChanges()
+        textProperty().toObservableChangesNonNull()
                 .filter { it.newVal.length < 80 }
                 .map { it.newVal.trim() }
                 .subscribe {
@@ -126,7 +127,7 @@ class LibraryView : View() {
         controller.getCountries()
 
         //set default view
-        libraryListView.selectionModel.select(0)
+        libraryListView.selectionModel.select(controller.libraryItems[0])
         controller.loadLibrary(LibraryType.TopStations)
 
         libraryListView.onUserSelect(1) {
@@ -166,9 +167,12 @@ class LibraryView : View() {
                     addClass(Styles.statusBar)
                     left {
                         label {
-                            countriesListView.itemsProperty().onChange {
-                                text = "${it?.size} ${messages["countries"]}"
-                            }
+                            countriesListView.items
+                                    .onChangedObservable()
+                                    .subscribe {
+                                        text = "${it.size} ${messages["countries"]}"
+                                    }
+
                             addClass(Styles.grayLabel)
                         }
                         add(retryLink)
@@ -180,7 +184,7 @@ class LibraryView : View() {
 
     fun showCountries(countries: ObservableList<Countries>) {
         retryLink.hide()
-        countriesListView.itemsProperty().set(countries)
+        countriesListView.items.setAll(countries)
     }
 
     fun showError() {

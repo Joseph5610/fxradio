@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.views
 
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
@@ -48,11 +49,10 @@ class StationsDataGridView : View() {
     override val root = datagrid(stationsModel.stationsProperty) {
         id = "stations"
 
-        itemsProperty.addListener { _, oldValue, newValue ->
-            logger.debug {
-                "Content change: $oldValue -> $newValue"
-            }
-        }
+        itemsProperty.toObservableChangesNonNull()
+                .subscribe {
+                    logger.debug { "Content change: ${it.oldVal} -> ${it.newVal}" }
+                }
 
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item

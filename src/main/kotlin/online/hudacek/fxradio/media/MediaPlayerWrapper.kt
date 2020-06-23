@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.media
 
 import com.github.thomasnield.rxkotlinfx.toObservableChanges
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.*
@@ -37,20 +38,22 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     init {
         //Update internal player type
-        playerModel.playerType.onChange {
-            if (it != null) {
-                logger.info { "player type changed: $it" }
-                mediaPlayer.releasePlayer()
-                mediaPlayer = initMediaPlayer(it)
-            }
-        }
+        playerModel.playerType.toObservableChanges()
+                .map { it.newVal }
+                .subscribe {
+                    logger.info { "player type changed: $it" }
+                    mediaPlayer.releasePlayer()
+                    mediaPlayer = initMediaPlayer(it)
+                }
 
         //Set volume for current player
-        playerModel.volumeProperty.onChange {
-            logger.info { "volume changed: $it" }
-            internalVolume = it
-            mediaPlayer.changeVolume(it)
-        }
+        playerModel.volumeProperty.toObservableChangesNonNull()
+                .map { it.newVal.toDouble() }
+                .subscribe {
+                    logger.info { "volume changed: $it" }
+                    internalVolume = it
+                    mediaPlayer.changeVolume(it)
+                }
 
         //Toggle playing
         subscribe<PlaybackChangeEvent> {
@@ -62,8 +65,8 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             }
         }
 
-        playerModel.stationProperty.toObservableChanges()
-                .filter { it.newVal != null && it.newVal.isValidStation() }
+        playerModel.stationProperty.toObservableChangesNonNull()
+                .filter { it.newVal.isValidStation() }
                 .map { it.newVal }
                 .subscribe {
                     play(it.url_resolved)
@@ -71,7 +74,9 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 }
     }
 
-    fun init() {}
+    fun init() {
+        logger.info { "init MediaPlayerWrapper with MediaPlayer $mediaPlayer" }
+    }
 
     private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
         return if (playerType == PlayerType.FFmpeg) {
@@ -103,9 +108,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         Platform.runLater {
             fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             fire(NotificationEvent(t.localizedMessage))
-            logger.error(t) {
-                "Stream can't be played"
-            }
+            logger.error(t) { "Stream can't be played" }
         }
     }
 

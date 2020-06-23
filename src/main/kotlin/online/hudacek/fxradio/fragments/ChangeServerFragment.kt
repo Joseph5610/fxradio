@@ -23,42 +23,43 @@ import online.hudacek.fxradio.model.ApiServerModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class ChangeServerFragment : Fragment("Select API server") {
+class ChangeServerFragment : Fragment() {
 
     private val model: ApiServerModel by inject()
 
     override val root = form()
 
     init {
+        title = messages["title"]
         model.item = ApiServer(StationsApi.hostname)
 
         with(root) {
             setPrefSize(300.0, 110.0)
 
-            fieldset("Set server address") {
-                field("URL") {
+            fieldset(messages["title"]) {
+                field(messages["url"]) {
                     textfield(model.url) {
                         required()
                         validator {
                             if (!model.url.value.contains("."))
-                                error("Invalid server address") else null
+                                error(messages["invalidAddress"]) else null
                         }
                     }
                 }
             }
             hbox(5) {
-                button("Save") {
+                button(messages["save"]) {
                     isDefaultButton = true
                     action {
                         model.commit {
-                            fire(NotificationEvent("API server saved!", FontAwesome.Glyph.CHECK))
+                            fire(NotificationEvent(messages["serverSaved"], FontAwesome.Glyph.CHECK))
                             close()
                         }
                     }
                     enableWhen(model.valid)
                 }
 
-                button("Cancel") {
+                button(messages["cancel"]) {
                     isCancelButton = true
                     action {
                         close()

@@ -26,11 +26,12 @@ import online.hudacek.fxradio.model.AttributionModel
 import online.hudacek.fxradio.model.Attributions
 import tornadofx.*
 
-class AttributionsFragment : Fragment("Third Party software used by ${FxRadio.appName}") {
+class AttributionsFragment : Fragment() {
 
     private val model: AttributionModel by inject()
 
     override val root = vbox {
+        title = "${messages["title"]} ${FxRadio.appName}"
         prefWidth = 500.0
 
         vbox {
@@ -39,8 +40,8 @@ class AttributionsFragment : Fragment("Third Party software used by ${FxRadio.ap
 
             tableview(Attributions.all) {
                 columnResizePolicy = SmartResize.POLICY
-                readonlyColumn("Name", Attribution::name).remainingWidth()
-                readonlyColumn("Version", Attribution::version)
+                readonlyColumn(messages["name"], Attribution::name).remainingWidth()
+                readonlyColumn(messages["version"], Attribution::version)
 
                 bindSelected(model)
 
@@ -52,7 +53,7 @@ class AttributionsFragment : Fragment("Third Party software used by ${FxRadio.ap
 
         vbox(alignment = Pos.CENTER_RIGHT) {
             paddingAll = 10.0
-            button("Close") {
+            button(messages["close"]) {
                 isCancelButton = true
                 action {
                     close()

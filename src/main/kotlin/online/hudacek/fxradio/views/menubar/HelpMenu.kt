@@ -38,11 +38,7 @@ class HelpMenu : Component() {
     private var checkLoggerAll: CheckMenuItem by singleAssign()
 
     init {
-        logLevel.level.onChange {
-            if (it != null) {
-                updateSelectedLoggerLevel(it)
-            }
-        }
+        logLevel.level.onChange { it?.let(::updateSelectedLoggerLevel) }
     }
 
     val menu = Menu(messages["menu.help"]).apply {

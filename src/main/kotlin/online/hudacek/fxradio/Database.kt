@@ -39,9 +39,7 @@ object Database {
                 " )")
                 .toSingle()
                 .subscribe({}, {
-                    logger.error(it) {
-                        "There was an error creating database!"
-                    }
+                    logger.error(it) { "There was an error creating database!" }
                 })
     }
 
