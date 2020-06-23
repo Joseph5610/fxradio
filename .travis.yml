@@ -28,7 +28,6 @@ deploy:
   skip_cleanup: true
   cleanup: true
   on:
-    repo: Joseph5610/fxradio-main
     branch: master
 branches:
   only:
