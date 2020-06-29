@@ -17,7 +17,7 @@ cache:
 before_deploy:
   - ls -all build/jfx/*
   - zip -r releaseJar.zip build/jfx/app
-  - zip -r release_${TRAVIS_OS_NAME}.zip build/jfx/native/FXRadio-*.dmg
+  - zip -r release_${TRAVIS_OS_NAME}.zip build/jfx/native/FXRadio.app
 deploy:
   provider: releases
   api_key:
