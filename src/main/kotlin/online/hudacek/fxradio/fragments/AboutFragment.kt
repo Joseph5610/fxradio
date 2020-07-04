@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
@@ -31,7 +32,7 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
         prefWidth = 300.0
 
         vbox(alignment = Pos.CENTER) {
-            imageview(FxRadio.appLogo) {
+            imageview(Config.R.appLogo) {
                 fitHeight = 80.0
                 isPreserveRatio = true
                 paddingAll = 20.0

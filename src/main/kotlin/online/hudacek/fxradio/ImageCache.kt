@@ -34,7 +34,7 @@ import java.nio.file.StandardCopyOption
  * and loaded using fileInputStream
  */
 object ImageCache {
-    private val cacheBasePath: Path = Paths.get(Config.Paths.imageCache)
+    private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
     private val logger = KotlinLogging.logger {}
 
     init {

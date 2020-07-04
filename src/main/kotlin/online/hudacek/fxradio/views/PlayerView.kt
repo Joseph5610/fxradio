@@ -16,52 +16,34 @@
 
 package online.hudacek.fxradio.views
 
-import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.control.Tooltip
-import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
-import javafx.scene.paint.Color
-import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.events.PlayingStatus
-import online.hudacek.fxradio.extension.*
+import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.extension.setOnSpacePressed
+import online.hudacek.fxradio.extension.shouldBeDisabled
+import online.hudacek.fxradio.extension.smallIcon
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.model.Player
 import online.hudacek.fxradio.model.PlayerModel
-import online.hudacek.fxradio.model.rest.Station
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 
+/**
+ * Main player view above stations
+ * Play/pause, volume controls
+ */
 class PlayerView : View() {
-
-    private val logger = KotlinLogging.logger {}
 
     private val playerModel: PlayerModel by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
+    private val playerStationBoxView: PlayerStationBoxView by inject()
 
-    private val radioNameTicker = TickerView()
-    private val radioNameStaticText = label()
-
-    private var radioNameContainer: VBox by singleAssign()
-
-    private var radioLogo = imageview(Config.Paths.defaultRadioIcon) {
-        effect = DropShadow(20.0, Color.WHITE)
-        fitWidth = 30.0
-        isPreserveRatio = true
-    }
-
-    private val nowStreamingLabel = label(messages["streamingStopped"]) {
-        id = "nowStreaming"
-        addClass(Styles.grayLabel)
-    }
-
-    private val playImage = imageview(playIcon) {
+    private val playerControlsIcon = imageview(playIcon) {
         fitWidth = 30.0
         fitHeight = 30.0
         isPreserveRatio = true
@@ -70,7 +52,7 @@ class PlayerView : View() {
     private val playerControls = button {
         requestFocusOnSceneAvailable()
         shouldBeDisabled(playerModel.stationProperty)
-        add(playImage)
+        add(playerControlsIcon)
         addClass(Styles.playerControls)
         action {
             mediaPlayerWrapper.togglePlaying()
@@ -91,11 +73,6 @@ class PlayerView : View() {
 
         //subscribe to events
         subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
-        subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataUpdated) }
-
-        //Subscribe to property changes
-        playerModel.stationProperty.onChange { it?.let(::onStationChange) }
-        playerModel.animate.onChange(::onAnimatePropertyChanged)
     }
 
     private val volumeSlider = slider(-30..5) {
@@ -121,38 +98,8 @@ class PlayerView : View() {
                 hgrow = Priority.ALWAYS
             }
 
-            //Player box
-            hbox(5) PlayerMain@{
-                addClass(Styles.playerStationBox)
-
-                //Radio logo
-                vbox(alignment = Pos.CENTER_LEFT) {
-                    minHeight = 30.0
-                    maxHeight = 30.0
-                    add(radioLogo)
-                }
-
-                separator(Orientation.VERTICAL)
-
-                //Radio name and label
-                borderpane {
-                    prefWidthProperty().bind(this@PlayerMain.maxWidthProperty())
-                    top {
-                        radioNameContainer = vbox(alignment = Pos.CENTER) {
-                            if (playerModel.animate.value) {
-                                add(radioNameTicker)
-                            } else {
-                                add(radioNameStaticText)
-                            }
-                        }
-                    }
-                    bottom {
-                        vbox(alignment = Pos.CENTER) {
-                            add(nowStreamingLabel)
-                        }
-                    }
-                }
-            }
+            //Station info box
+            add(playerStationBoxView)
 
             region {
                 hgrow = Priority.ALWAYS
@@ -190,81 +137,15 @@ class PlayerView : View() {
      */
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
-            playImage.image = Image(playIcon)
-            nowStreamingLabel.text = messages["streamingStopped"]
+            playerControlsIcon.image = Image(playIcon)
+            playerStationBoxView.nowStreamingLabel.text = messages["player.streamingStopped"]
         } else {
-            playImage.image = Image(stopIcon)
-            nowStreamingLabel.text = messages["nowStreaming"]
+            playerControlsIcon.image = Image(stopIcon)
+            playerStationBoxView.nowStreamingLabel.text = messages["player.nowStreaming"]
         }
     }
 
-    /**
-     * Called when new song starts playing or other metadata of stream changes
-     * @param event new stream Meta Data
-     */
-    private fun onMetaDataUpdated(event: PlaybackMetaChangedEvent) {
-        val newSongName = event.mediaMeta.nowPlaying.trim()
-        val newStreamTitle = event.mediaMeta.title.trim()
-
-        //Do not update if song name is too short
-        if (newSongName.length > 1) {
-
-            val actualTitle = if (newStreamTitle.isNotEmpty()) {
-                newStreamTitle
-            } else {
-                playerModel.stationProperty.value.name
-            }
-
-            if (playerModel.notifications.value) {
-                logger.debug { "sending notification for $newSongName $actualTitle" }
-                notification(
-                        title = newSongName,
-                        subtitle = actualTitle)
-            }
-
-            if (playerModel.animate.value) radioNameTicker.updateText(newSongName)
-            else {
-                radioNameStaticText.text = newSongName
-                radioNameStaticText.tooltip = Tooltip(newSongName)
-            }
-            nowStreamingLabel.text = actualTitle
-        }
-    }
-
-    /**
-     * Show/Hide ticker with radio name / Now playing details
-     * Called when user changes the settings in Player menu
-     */
-    private fun onAnimatePropertyChanged(shouldAnimate: Boolean) {
-        if (shouldAnimate) {
-            radioNameContainer.replaceChildren(radioNameTicker)
-        } else {
-            radioNameContainer.replaceChildren(radioNameStaticText)
-        }
-        onStationChange(playerModel.stationProperty.value)
-    }
-
-    private fun onStationChange(station: Station) {
-        with(station) {
-            if (isValidStation()) {
-                onPlaybackStatusChanged(mediaPlayerWrapper.playingStatus)
-                if (playerModel.animate.value) radioNameTicker.updateText(name)
-                else {
-                    radioNameStaticText.text = name
-                    //Reset tooltip, we don't know the name of the song at this time
-                    radioNameStaticText.tooltip = null
-                }
-                radioLogo.createImage(this)
-
-                if (this.favicon != null) {
-                    radioLogo.copyMenu(clipboard,
-                            name = messages["copy.image.url"],
-                            value = this.favicon ?: "")
-                }
-            }
-        }
-    }
-
+    //Player resources
     private companion object {
         private const val playIcon = "Media-Controls-Play-icon.png"
         private const val stopIcon = "Media-Controls-Stop-icon.png"

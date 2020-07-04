@@ -16,8 +16,10 @@
 
 package online.hudacek.fxradio.views
 
+import io.reactivex.subjects.BehaviorSubject
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.controllers.StationsController
+import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
 import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.styles.Styles
@@ -34,18 +36,27 @@ class StationsView : View() {
     private val headerView: StationsHeaderView by inject()
     private val infoErrorView: StationsInfoErrorView by inject()
 
+    private val currentLibType = BehaviorSubject.create<LibraryType>()
+    private val currentLibParams = BehaviorSubject.create<String>()
+
     init {
         showLoading()
 
+        currentLibType.startWith(LibraryType.TopStations)
+        currentLibParams.startWith("")
+
         //Handle change of stations library
         subscribe<LibraryRefreshEvent> {
-            showLoading()
-            when (it.type) {
-                LibraryType.Country -> controller.getStationsByCountry(it.params)
-                LibraryType.Favourites -> controller.getFavourites()
-                LibraryType.History -> controller.getHistory()
-                LibraryType.Search -> handleSearch(it.params)
-                else -> controller.getTopStations()
+            currentLibParams.onNext(it.params)
+            currentLibType.onNext(it.type)
+            showLibraryType(it.type, it.params)
+        }
+
+        subscribe<LibraryRefreshConditionalEvent> {
+            currentLibType.value?.let { value ->
+                if (it.onlyWhen == value) {
+                    showLibraryType(value, currentLibParams.value ?: "")
+                }
             }
         }
     }
@@ -91,5 +102,16 @@ class StationsView : View() {
         headerView.hide()
         dataGridView.hide()
         infoErrorView.showLoading()
+    }
+
+    private fun showLibraryType(libraryType: LibraryType, params: String) {
+        showLoading()
+        when (libraryType) {
+            LibraryType.Country -> controller.getStationsByCountry(params)
+            LibraryType.Favourites -> controller.getFavourites()
+            LibraryType.History -> controller.getHistory()
+            LibraryType.Search -> handleSearch(params)
+            else -> controller.getTopStations()
+        }
     }
 }

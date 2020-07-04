@@ -34,6 +34,7 @@ import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.events.PlayingStatus
+import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
 import online.hudacek.fxradio.model.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -61,7 +62,7 @@ class MenuBarView : View() {
     private val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
     private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
 
-    private val playerMenu = Menu(messages["menu.player.controls"]).apply {
+    private val playerMenu = menu(messages["menu.player.controls"]) {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
             shouldBeVisible(playerModel.stationProperty)
             action {
@@ -146,7 +147,7 @@ class MenuBarView : View() {
                 .withVersionString("Version ${FxRadio.version}")
                 .withCopyright("Copyright \u00A9 " + Calendar
                         .getInstance()[Calendar.YEAR] + " " + FxRadio.author)
-                .withImage(Image(FxRadio.appLogo))
+                .withImage(Image(Config.R.appLogo))
                 .build()
 
         val aboutMenu = Menu(FxRadio.appName).apply {

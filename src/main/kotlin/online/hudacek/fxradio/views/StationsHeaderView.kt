@@ -19,6 +19,7 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Pos
 import mu.KotlinLogging
 import online.hudacek.fxradio.Database
+import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
 import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
@@ -93,7 +94,7 @@ class StationsHeaderView : View() {
                     .cleanup()
                     .subscribe({
                         fire(NotificationEvent(messages["database.clear.ok"]))
-                        fire(LibraryRefreshEvent(LibraryType.Favourites))
+                        fire(LibraryRefreshConditionalEvent(LibraryType.Favourites))
                     }, {
                         logger.error(it) { "Can't remove favourites!" }
                         fire(NotificationEvent(messages["database.clear.error"]))

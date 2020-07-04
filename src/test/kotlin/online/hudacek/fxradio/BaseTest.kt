@@ -17,7 +17,6 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.model.rest.Station
 import org.junit.jupiter.api.Assertions
@@ -62,10 +61,6 @@ class BaseTest {
         //wait until loaded
         sleep(2)
         robot.clickOn(stations.items[0].name)
-
-        waitFor(10) {
-            mediaPlayerWrapper.playingStatus == PlayingStatus.Playing
-        }
     }
 
     @Test

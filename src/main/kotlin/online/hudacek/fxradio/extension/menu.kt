@@ -18,6 +18,7 @@ package online.hudacek.fxradio.extension
 
 import javafx.beans.property.Property
 import javafx.scene.control.CheckMenuItem
+import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.model.rest.Station
@@ -42,4 +43,10 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     disableWhen(booleanBinding(station) {
         value == null || !value.isValidStation()
     })
+}
+
+internal fun menu(name: String, op: Menu.() -> Unit = {}): Menu {
+    return Menu(name).apply {
+        op.invoke(this)
+    }
 }

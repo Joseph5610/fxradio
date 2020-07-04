@@ -169,10 +169,10 @@ class LibraryView : View() {
                         label {
                             countriesListView.items
                                     .onChangedObservable()
+                                    .map { it.size }
                                     .subscribe {
-                                        text = "${it.size} ${messages["countries"]}"
+                                        text = "$it ${messages["countries"]}"
                                     }
-
                             addClass(Styles.grayLabel)
                         }
                         add(retryLink)

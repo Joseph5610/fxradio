@@ -20,20 +20,22 @@ import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.*
+import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.events.PlaybackChangeEvent
+import online.hudacek.fxradio.events.PlayerType
+import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.model.PlayerModel
 import tornadofx.*
+
+private val logger = KotlinLogging.logger {}
 
 //TODO get rid of this class in its current form
 class MediaPlayerWrapper : Component(), ScopedInstance {
 
-    private val logger = KotlinLogging.logger {}
     private val playerModel: PlayerModel by inject()
 
-    var playingStatus = PlayingStatus.Stopped
-
-    private var mediaPlayer: MediaPlayer = MediaPlayer.stub
-
+    private var internalMediaPlayer: MediaPlayer = MediaPlayer.stub
+    private var internalPlayingStatus = PlayingStatus.Stopped
     private var internalVolume = 0.0
 
     init {
@@ -42,8 +44,8 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 .map { it.newVal }
                 .subscribe {
                     logger.info { "player type changed: $it" }
-                    mediaPlayer.releasePlayer()
-                    mediaPlayer = initMediaPlayer(it)
+                    internalMediaPlayer.releasePlayer()
+                    internalMediaPlayer = changePlayer(it)
                 }
 
         //Set volume for current player
@@ -52,16 +54,16 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 .subscribe {
                     logger.info { "volume changed: $it" }
                     internalVolume = it
-                    mediaPlayer.changeVolume(it)
+                    internalMediaPlayer.changeVolume(it)
                 }
 
         //Toggle playing
         subscribe<PlaybackChangeEvent> {
-            playingStatus = it.playingStatus
+            internalPlayingStatus = it.playingStatus
             if (it.playingStatus == PlayingStatus.Playing) {
                 play(playerModel.stationProperty.value.url_resolved)
             } else {
-                mediaPlayer.cancelPlaying()
+                internalMediaPlayer.cancelPlaying()
             }
         }
 
@@ -69,16 +71,15 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 .filter { it.newVal.isValidStation() }
                 .map { it.newVal }
                 .subscribe {
-                    play(it.url_resolved)
-                    playingStatus = PlayingStatus.Playing
+                    fire(PlaybackChangeEvent(PlayingStatus.Playing))
                 }
     }
 
     fun init() {
-        logger.info { "init MediaPlayerWrapper with MediaPlayer $mediaPlayer" }
+        logger.info { "init MediaPlayerWrapper with MediaPlayer $internalMediaPlayer" }
     }
 
-    private fun initMediaPlayer(playerType: PlayerType): MediaPlayer {
+    private fun changePlayer(playerType: PlayerType): MediaPlayer {
         return if (playerType == PlayerType.FFmpeg) {
             FFmpegPlayer()
         } else {
@@ -86,7 +87,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 VLCPlayer()
             } catch (e: Exception) {
                 playerModel.playerType.set(PlayerType.FFmpeg)
-                logger.error(e) { "VLC init failed, init native library " }
+                logger.error(e) { "VLC init failed, init native library" }
                 fire(NotificationEvent("Player can't be initialized. Library is not installed on the system."))
                 FFmpegPlayer()
             }
@@ -94,31 +95,31 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     private fun play(url: String?) {
-        url?.let {
-            mediaPlayer.apply {
+        if (url != null) {
+            internalMediaPlayer.apply {
                 changeVolume(internalVolume)
                 play(url)
             }
         }
     }
 
-    fun release() = mediaPlayer.releasePlayer()
-
-    fun handleError(t: Throwable) {
-        Platform.runLater {
-            fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-            fire(NotificationEvent(t.localizedMessage))
-            logger.error(t) { "Stream can't be played" }
-        }
-    }
-
-    fun mediaMetaChanged(mediaMeta: MediaMeta) = fire(PlaybackMetaChangedEvent(mediaMeta))
+    fun release() = internalMediaPlayer.releasePlayer()
 
     fun togglePlaying() {
-        if (playingStatus == PlayingStatus.Playing) {
+        if (internalPlayingStatus == PlayingStatus.Playing) {
             fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         } else {
             fire(PlaybackChangeEvent(PlayingStatus.Playing))
+        }
+    }
+
+    companion object : Component() {
+        fun handleError(t: Throwable) {
+            Platform.runLater {
+                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+                fire(NotificationEvent(t.localizedMessage))
+                logger.error(t) { "Stream can't be played" }
+            }
         }
     }
 }

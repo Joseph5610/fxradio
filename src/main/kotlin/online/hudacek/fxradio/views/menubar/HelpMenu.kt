@@ -17,10 +17,10 @@
 package online.hudacek.fxradio.views.menubar
 
 import javafx.scene.control.CheckMenuItem
-import javafx.scene.control.Menu
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.controllers.menubar.MenuBarController
 import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.model.LogLevelModel
 import org.apache.logging.log4j.Level
@@ -41,7 +41,7 @@ class HelpMenu : Component() {
         logLevel.level.onChange { it?.let(::updateSelectedLoggerLevel) }
     }
 
-    val menu = Menu(messages["menu.help"]).apply {
+    val menu = menu(messages["menu.help"]) {
         item(messages["menu.help.stats"]).action {
             controller.openStats()
         }
@@ -56,7 +56,7 @@ class HelpMenu : Component() {
         }
         separator()
         item(messages["menu.help.openhomepage"]) {
-            graphic = imageview("browser-web-icon.png") {
+            graphic = imageview(Config.R.appWebsiteIcon) {
                 fitHeight = 15.0
                 fitWidth = 15.0
                 isPreserveRatio = true
@@ -90,7 +90,7 @@ class HelpMenu : Component() {
             }
         }
         item(messages["menu.help.logs"]).action {
-            app.openUrl("file://${Config.Paths.baseAppDir}")
+            app.openUrl("file://${Config.Paths.baseAppPath}")
         }
     }
 

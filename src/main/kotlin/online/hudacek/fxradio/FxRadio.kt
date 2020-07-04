@@ -35,7 +35,7 @@ import java.nio.file.Paths
 class FxRadio : App(MainView::class, Styles::class) {
 
     //override app.config path to user.home/fxradio
-    override val configBasePath: Path = Paths.get(Config.Paths.appConfig)
+    override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
     private val logLevel: LogLevelModel by inject()
 
@@ -57,7 +57,6 @@ class FxRadio : App(MainView::class, Styles::class) {
     companion object {
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
-        const val appLogo = "radio-icon.png"
         const val appUrl = "https://hudacek.online/fxradio"
         const val author = "Jozef Hudáček"
         const val copyright = "Copyright (c) 2020"

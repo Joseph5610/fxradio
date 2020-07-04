@@ -84,7 +84,6 @@ class StatsFragment : Fragment() {
                                     paddingAll = 20.0
                                 }
                             }
-
                     )
                 })
     }

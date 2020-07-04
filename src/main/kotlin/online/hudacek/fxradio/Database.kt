@@ -28,7 +28,7 @@ import java.sql.DriverManager
 object Database {
     private val logger = KotlinLogging.logger {}
 
-    val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.db}").apply {
+    val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.dbPath}").apply {
 
         //Initial creation of tables
         execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +

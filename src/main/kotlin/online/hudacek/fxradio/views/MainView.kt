@@ -65,7 +65,7 @@ class MainView : View(FxRadio.appName) {
         }
 
         if (playerModel.playerType.value == PlayerType.FFmpeg) {
-            notification[FontAwesome.Glyph.WARNING] = messages["nativePlayerInfo"]
+            notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
     }
 

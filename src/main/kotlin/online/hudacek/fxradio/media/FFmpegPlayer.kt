@@ -28,15 +28,13 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-internal class FFmpegPlayer : MediaPlayer {
-
-    private var mediaPlayerWrapper = find<MediaPlayerWrapper>()
+internal class FFmpegPlayer : Component(), MediaPlayer {
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
 
     private val handler = CoroutineExceptionHandler { _, exception ->
-        mediaPlayerWrapper.handleError(exception)
+        MediaPlayerWrapper.handleError(exception)
     }
 
     override fun play(url: String) {

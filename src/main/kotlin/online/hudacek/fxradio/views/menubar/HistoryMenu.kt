@@ -17,9 +17,9 @@
 package online.hudacek.fxradio.views.menubar
 
 import com.sun.javafx.PlatformUtil
-import javafx.scene.control.Menu
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.extension.createImage
+import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.model.PlayerModel
 import online.hudacek.fxradio.model.StationsHistoryModel
@@ -32,7 +32,7 @@ class HistoryMenu : Component() {
 
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
 
-    val menu = Menu(messages["menu.history"]).apply {
+    val menu = menu(messages["menu.history"]) {
         shouldBeDisabled(player.stationProperty)
         items.bind(stationsHistory.stations) {
             item("${it.name} (${it.countrycode})") {

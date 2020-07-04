@@ -25,6 +25,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.Window
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.views.TickerView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
@@ -50,6 +51,12 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) = glyph("FontAwesome", 
     size(35.0)
     style {
         padding = box(10.px, 5.px)
+    }
+}
+
+internal fun EventTarget.tickerView(op: TickerView.() -> Unit = {}): TickerView {
+    return TickerView().apply {
+        op.invoke(this)
     }
 }
 

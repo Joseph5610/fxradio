@@ -44,7 +44,7 @@ class TickerView : View() {
             items[0].apply {
                 isDisable = true
             }
-            item("Search on Youtube") {
+            item(messages["search.on.youtube"]) {
                 isDisable = true
             }
         }

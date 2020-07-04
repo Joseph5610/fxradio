@@ -18,6 +18,7 @@ package online.hudacek.fxradio.media
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.MediaMeta
+import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import tornadofx.*
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
@@ -28,11 +29,9 @@ import uk.co.caprica.vlcj.media.Meta
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-internal class VLCPlayer : MediaPlayer {
+internal class VLCPlayer : Component(), MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
-
-    private var mediaPlayerWrapper = find<MediaPlayerWrapper>()
 
     private val audioPlayerComponent: AudioPlayerComponent? by lazy {
         try {
@@ -67,12 +66,12 @@ internal class VLCPlayer : MediaPlayer {
                 if (it[Meta.NOW_PLAYING] != null
                         && it[Meta.TITLE] != null
                         && it[Meta.GENRE] != null) {
-                    mediaPlayerWrapper.mediaMetaChanged(
-                            MediaMeta(it[Meta.TITLE],
-                                    it[Meta.GENRE],
-                                    it[Meta.NOW_PLAYING]
-                                            .replace("\r", "")
-                                            .replace("\n", "")))
+                    val metaData = MediaMeta(it[Meta.TITLE],
+                            it[Meta.GENRE],
+                            it[Meta.NOW_PLAYING]
+                                    .replace("\r", "")
+                                    .replace("\n", ""))
+                    fire(PlaybackMetaChangedEvent(metaData))
                 }
             }
         }
@@ -116,7 +115,7 @@ internal class VLCPlayer : MediaPlayer {
 
         if (result == 1) {
             val errorMsg = if (lastLogMessage.isEmpty()) "Error opening stream. See app.log for details." else lastLogMessage
-            mediaPlayerWrapper.handleError(RuntimeException(errorMsg))
+            MediaPlayerWrapper.handleError(RuntimeException(errorMsg))
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,

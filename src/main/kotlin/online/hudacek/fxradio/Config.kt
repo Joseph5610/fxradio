@@ -21,6 +21,12 @@ package online.hudacek.fxradio
  */
 object Config {
 
+    object R {
+        const val appLogo = "appLogo.png"
+        const val defaultRadioIcon = "Industry-Radio-Tower-icon.png"
+        const val appWebsiteIcon = "browser-web-icon.png"
+    }
+
     /**
      * Contains paths to common locations
      * All user files should be stored in $USER_HOME/.fxradio/ directory
@@ -28,12 +34,10 @@ object Config {
     object Paths {
         private val appNamePath = FxRadio.appName.toLowerCase()
 
-        const val defaultRadioIcon = "Industry-Radio-Tower-icon.png"
-
-        val baseAppDir = System.getProperty("user.home") + "/.$appNamePath/"
-        val appConfig = System.getProperty("user.home") + "/.$appNamePath/conf"
-        val imageCache = System.getProperty("user.home") + "/.$appNamePath/cache"
-        val db = "$baseAppDir/$appNamePath.db"
+        val baseAppPath = System.getProperty("user.home") + "/.$appNamePath/"
+        val confDirPath = "$baseAppPath/conf"
+        val cacheDirPath = "$baseAppPath/cache"
+        val dbPath = "$baseAppPath/$appNamePath.db"
     }
 
     /**

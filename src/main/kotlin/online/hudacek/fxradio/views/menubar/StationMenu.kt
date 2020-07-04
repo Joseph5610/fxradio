@@ -17,13 +17,15 @@
 package online.hudacek.fxradio.views.menubar
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
-import javafx.scene.control.Menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.controllers.menubar.MenuBarController
+import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
+import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.model.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -38,7 +40,7 @@ class StationMenu : Component() {
     private val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
     private val keyFavourites = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
 
-    val menu = Menu(messages["menu.station"]).apply {
+    val menu = menu(messages["menu.station"]) {
         item(messages["menu.station.info"], keyInfo) {
             shouldBeDisabled(playerModel.stationProperty)
             action {
@@ -73,6 +75,7 @@ class StationMenu : Component() {
                     .flatMapSingle { playerModel.stationProperty.value.removeFavourite() }
                     .subscribe({
                         fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
+                        fire(LibraryRefreshConditionalEvent(LibraryType.Favourites))
                     }, {
                         fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
                     })
