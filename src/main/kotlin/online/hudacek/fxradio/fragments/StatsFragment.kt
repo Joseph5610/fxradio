@@ -24,7 +24,6 @@ import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.views.ProgressView
 import tornadofx.*
 
 /**
@@ -35,7 +34,7 @@ class StatsFragment : Fragment() {
     data class StatsList(val key: String, val value: String)
 
     private var container = vbox {
-        add(ProgressView::class)
+        add<ProgressFragment>()
     }
 
     private val stationsApi: StationsApi
@@ -62,20 +61,24 @@ class StatsFragment : Fragment() {
                             StatsList(messages["stats.tags"], it.tags.toString())
                     )
 
-                    container.replaceChildren(listview(mappedValuesList) {
-                        cellFormat {
-                            paddingAll = 0.0
-                            graphic = hbox(5) {
-                                label(item.key + ":")
-                                label(item.value)
-                                addClass(Styles.libraryListItem)
+                    container.replaceChildren(
+                            vbox {
+                                listview(mappedValuesList) {
+                                    cellFormat {
+                                        paddingAll = 0.0
+                                        graphic = hbox(5) {
+                                            label(item.key + ":")
+                                            label(item.value)
+                                            addClass(Styles.libraryListItem)
+                                        }
+                                        copyMenu(clipboard,
+                                                name = messages["copy"],
+                                                value = "${item.key}: ${item.value}")
+                                    }
+                                    addClass(Styles.libraryListView)
+                                }
                             }
-                            copyMenu(clipboard,
-                                    name = messages["copy"],
-                                    value = "${item.key}: ${item.value}")
-                        }
-                        addClass(Styles.libraryListView)
-                    })
+                    )
                 }, {
                     container.replaceChildren(
                             vbox {

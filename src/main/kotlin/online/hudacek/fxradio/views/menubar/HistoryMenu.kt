@@ -16,13 +16,13 @@
 
 package online.hudacek.fxradio.views.menubar
 
-import com.sun.javafx.PlatformUtil
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.model.PlayerModel
 import online.hudacek.fxradio.model.StationsHistoryModel
+import org.controlsfx.tools.Platform
 import tornadofx.*
 
 class HistoryMenu : Component() {
@@ -38,7 +38,7 @@ class HistoryMenu : Component() {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
-                if (!PlatformUtil.isMac() || !usePlatformMenuBarProperty) {
+                if (Platform.getCurrent() != Platform.OSX || !usePlatformMenuBarProperty) {
                     graphic = imageview {
                         createImage(it)
                         fitHeight = 15.0

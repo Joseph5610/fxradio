@@ -7,7 +7,7 @@ object Attributions {
     val all by lazy {
         observableListOf(
                 Attribution("tornadofx", "1.7.20", Licenses.apache20),
-                Attribution("controlsfx", "8.40.16", Licenses.controlsfx),
+                Attribution("controlsfx", "8.40.17", Licenses.controlsfx),
                 Attribution("vlcj", "4.0", Licenses.gpl3),
                 Attribution("humble video", "0.3.0", Licenses.gpl3),
                 Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),

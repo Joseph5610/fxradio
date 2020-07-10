@@ -14,12 +14,12 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
 import tornadofx.*
 
-class ProgressView : View() {
+class ProgressFragment : Fragment() {
     override val root = vbox(alignment = Pos.CENTER) {
         paddingAll = 30.0
         progressindicator()

@@ -17,6 +17,7 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.extension.glyph
+import online.hudacek.fxradio.fragments.ProgressFragment
 import online.hudacek.fxradio.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -28,7 +29,7 @@ class StationsInfoErrorView : View() {
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
-    private var progressView: ProgressView by singleAssign()
+    private var progressFragment: ProgressFragment by singleAssign()
 
     private val header = label {
         addClass(Styles.header)
@@ -44,15 +45,15 @@ class StationsInfoErrorView : View() {
         paddingRight = 10.0
         add(header)
         add(subHeader)
-        add<ProgressView> {
-            progressView = this
+        add<ProgressFragment> {
+            progressFragment = this
             hide()
         }
     }
 
     fun showShortSearchInfo() {
         root.show()
-        progressView.root.hide()
+        progressFragment.root.hide()
         header.text = messages["searchingLibrary"]
         header.graphic = searchGlyph
         subHeader.text = messages["searchingLibraryDesc"]
@@ -60,7 +61,7 @@ class StationsInfoErrorView : View() {
 
     fun showNoResultsInfo(query: String?) {
         root.show()
-        progressView.root.hide()
+        progressFragment.root.hide()
         if (query != null) {
             subHeader.text = messages["noResultsDesc"]
         }
@@ -76,7 +77,7 @@ class StationsInfoErrorView : View() {
 
     fun showError() {
         root.show()
-        progressView.root.hide()
+        progressFragment.root.hide()
         header.graphic = errorGlyph
         header.text = messages["connectionError"]
         subHeader.text = messages["connectionErrorDesc"]
@@ -87,7 +88,7 @@ class StationsInfoErrorView : View() {
         header.graphic = null
         header.text = ""
         subHeader.text = ""
-        progressView.root.show()
+        progressFragment.root.show()
     }
 
     fun hide() = root.hide()

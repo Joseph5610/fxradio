@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.views.menubar
 
-import com.sun.javafx.PlatformUtil
 import de.codecentric.centerdevice.MenuToolkit
 import de.codecentric.centerdevice.dialogs.about.AboutStageBuilder
 import javafx.scene.control.CheckMenuItem
@@ -38,6 +37,7 @@ import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
 import online.hudacek.fxradio.model.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.tools.Platform
 import tornadofx.*
 import java.util.*
 
@@ -53,7 +53,7 @@ class MenuBarView : View() {
     private var playerNotificationsCheck: CheckMenuItem by singleAssign()
 
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
-    private val shouldUsePlatformMenuBar = PlatformUtil.isMac() && usePlatformMenuBarProperty
+    private val shouldUsePlatformMenuBar = Platform.getCurrent() == Platform.OSX && usePlatformMenuBarProperty
 
     private val stationMenu = StationMenu().menu
     private val helpMenu = HelpMenu().menu

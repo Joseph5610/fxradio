@@ -64,6 +64,9 @@ class StationsDataGridView : View() {
         cellCache {
             vbox(alignment = Pos.CENTER) {
                 popover {
+                    title = it.name
+                    isCloseButtonEnabled = true
+                    isHeaderAlwaysVisible = true
                     vbox {
                         add(StationInfoFragment(it))
                     }

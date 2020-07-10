@@ -38,7 +38,7 @@ class LibraryController : Controller() {
     //Default items shown in library ListView
     val libraryItems by lazy {
         observableListOf(
-                LibraryItem(LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP),
+                LibraryItem(LibraryType.TopStations, FontAwesome.Glyph.TROPHY),
                 LibraryItem(LibraryType.Favourites, FontAwesome.Glyph.STAR),
                 LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
         )

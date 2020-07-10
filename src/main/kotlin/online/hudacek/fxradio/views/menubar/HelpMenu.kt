@@ -71,21 +71,18 @@ class HelpMenu : Component() {
                 isSelected = logLevel.level.value == Level.OFF
                 action {
                     saveNewLogger(Level.OFF)
-                    updateSelectedLoggerLevel(Level.OFF)
                 }
             }
             checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
                 isSelected = logLevel.level.value == Level.INFO
                 action {
                     saveNewLogger(Level.INFO)
-                    updateSelectedLoggerLevel(Level.INFO)
                 }
             }
             checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
                 isSelected = logLevel.level.value == Level.DEBUG
                 action {
                     saveNewLogger(Level.ALL)
-                    updateSelectedLoggerLevel(Level.ALL)
                 }
             }
         }
@@ -95,6 +92,7 @@ class HelpMenu : Component() {
     }
 
     private fun saveNewLogger(level: Level) {
+        updateSelectedLoggerLevel(level)
         logLevel.level.value = level
         logLevel.commit()
     }
