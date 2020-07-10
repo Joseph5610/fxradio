@@ -28,7 +28,7 @@ class StationsInfoErrorView : View() {
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
-    private val loadingGlyph = glyph(FontAwesome.Glyph.SPINNER)
+    private var progressView: ProgressView by singleAssign()
 
     private val header = label {
         addClass(Styles.header)
@@ -44,10 +44,15 @@ class StationsInfoErrorView : View() {
         paddingRight = 10.0
         add(header)
         add(subHeader)
+        add<ProgressView> {
+            progressView = this
+            hide()
+        }
     }
 
     fun showShortSearchInfo() {
         root.show()
+        progressView.root.hide()
         header.text = messages["searchingLibrary"]
         header.graphic = searchGlyph
         subHeader.text = messages["searchingLibraryDesc"]
@@ -55,6 +60,7 @@ class StationsInfoErrorView : View() {
 
     fun showNoResultsInfo(query: String?) {
         root.show()
+        progressView.root.hide()
         if (query != null) {
             subHeader.text = messages["noResultsDesc"]
         }
@@ -70,6 +76,7 @@ class StationsInfoErrorView : View() {
 
     fun showError() {
         root.show()
+        progressView.root.hide()
         header.graphic = errorGlyph
         header.text = messages["connectionError"]
         subHeader.text = messages["connectionErrorDesc"]
@@ -77,9 +84,10 @@ class StationsInfoErrorView : View() {
 
     fun showLoading() {
         root.show()
-        header.graphic = loadingGlyph
-        header.text = messages["library.loading"]
+        header.graphic = null
+        header.text = ""
         subHeader.text = ""
+        progressView.root.show()
     }
 
     fun hide() = root.hide()

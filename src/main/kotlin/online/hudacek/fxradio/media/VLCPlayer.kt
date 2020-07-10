@@ -43,7 +43,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
 
     //VLC Logs
     private lateinit var nativeLog: NativeLog
-    private val nativeLogListener = LogEventListener { level, module, file, line, name, header, id, message ->
+    private val nativeLogListener = LogEventListener { level, module, _, _, name, _, _, message ->
         lastLogMessage = message
         logger.debug { String.format("[%s] (%s) %7s: %s\n", module, name, level, message) }
     }

@@ -22,6 +22,7 @@ import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.controllers.LibraryController
+import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.smallLabel
@@ -81,7 +82,7 @@ class LibraryView : View() {
         addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
-            controller.loadLibrary(LibraryType.Country, it.name)
+            fire(LibraryRefreshEvent(LibraryType.Country, it.name))
         }
     }
 
@@ -108,7 +109,7 @@ class LibraryView : View() {
                 .filter { it.newVal.length < 80 }
                 .map { it.newVal.trim() }
                 .subscribe {
-                    controller.loadLibrary(LibraryType.Search, it)
+                    fire(LibraryRefreshEvent(LibraryType.Search, it))
                     with(app.config) {
                         set(Config.Keys.searchQuery to text)
                         save()
@@ -116,7 +117,7 @@ class LibraryView : View() {
                 }
 
         setOnMouseClicked {
-            controller.loadLibrary(LibraryType.Search, text.trim())
+            fire(LibraryRefreshEvent(LibraryType.Search, text.trim()))
             countriesListView.selectionModel.clearSelection()
             libraryListView.selectionModel.clearSelection()
         }
@@ -128,11 +129,11 @@ class LibraryView : View() {
 
         //set default view
         libraryListView.selectionModel.select(controller.libraryItems[0])
-        controller.loadLibrary(LibraryType.TopStations)
+        fire(LibraryRefreshEvent(LibraryType.TopStations))
 
         libraryListView.onUserSelect(1) {
             countriesListView.selectionModel.clearSelection()
-            controller.loadLibrary(it.type)
+            fire(LibraryRefreshEvent(it.type))
         }
     }
 
@@ -170,6 +171,7 @@ class LibraryView : View() {
                             countriesListView.items
                                     .onChangedObservable()
                                     .map { it.size }
+                                    .filter { it > 0 }
                                     .subscribe {
                                         text = "$it ${messages["countries"]}"
                                     }

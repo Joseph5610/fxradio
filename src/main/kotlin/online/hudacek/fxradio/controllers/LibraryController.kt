@@ -20,13 +20,13 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.fxradio.StationsApi
-import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.model.Library
 import online.hudacek.fxradio.model.rest.CountriesBody
 import online.hudacek.fxradio.views.LibraryView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+
+data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 
 class LibraryController : Controller() {
 
@@ -38,9 +38,9 @@ class LibraryController : Controller() {
     //Default items shown in library ListView
     val libraryItems by lazy {
         observableListOf(
-                Library(LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP),
-                Library(LibraryType.Favourites, FontAwesome.Glyph.STAR),
-                Library(LibraryType.History, FontAwesome.Glyph.HISTORY)
+                LibraryItem(LibraryType.TopStations, FontAwesome.Glyph.THUMBS_UP),
+                LibraryItem(LibraryType.Favourites, FontAwesome.Glyph.STAR),
+                LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
         )
     }
 
@@ -48,11 +48,14 @@ class LibraryController : Controller() {
             .getCountries(CountriesBody())
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe({
-                libraryView.showCountries(it.asObservable())
+            .subscribe({ response ->
+                //Ignore invalid states
+                val result = response.filter {
+                    it.name.length > 1 && !it.name.contains(".")
+                }.asObservable()
+
+                libraryView.showCountries(result)
             }, {
                 libraryView.showError()
             })
-
-    fun loadLibrary(libraryType: LibraryType, param: String = "") = fire(LibraryRefreshEvent(libraryType, param))
 }

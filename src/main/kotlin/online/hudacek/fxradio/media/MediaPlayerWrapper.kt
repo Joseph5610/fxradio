@@ -29,6 +29,7 @@ import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
+
 //TODO get rid of this class in its current form
 class MediaPlayerWrapper : Component(), ScopedInstance {
 
@@ -52,7 +53,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         playerModel.volumeProperty.toObservableChangesNonNull()
                 .map { it.newVal.toDouble() }
                 .subscribe {
-                    logger.info { "volume changed: $it" }
+                    logger.debug { "volume changed: $it" }
                     internalVolume = it
                     internalMediaPlayer.changeVolume(it)
                 }
@@ -80,15 +81,15 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     private fun changePlayer(playerType: PlayerType): MediaPlayer {
-        return if (playerType == PlayerType.FFmpeg) {
-            FFmpegPlayer()
+        if (playerType == PlayerType.FFmpeg) {
+            return FFmpegPlayer()
         } else {
-            try {
+            return try {
                 VLCPlayer()
             } catch (e: Exception) {
-                playerModel.playerType.set(PlayerType.FFmpeg)
+                playerModel.playerType.value = PlayerType.FFmpeg
                 logger.error(e) { "VLC init failed, init native library" }
-                fire(NotificationEvent("Player can't be initialized. Library is not installed on the system."))
+                fire(NotificationEvent("VLC Player can't be initialized. Library is not installed on the system."))
                 FFmpegPlayer()
             }
         }

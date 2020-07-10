@@ -34,6 +34,10 @@ class StationsHeaderView : View() {
     private val logger = KotlinLogging.logger {}
 
     private val actionButton = button {
+        text = messages["favourites.clean"]
+        action {
+            favouritesCleanAction()
+        }
         hide()
     }
 
@@ -73,13 +77,7 @@ class StationsHeaderView : View() {
 
     private fun applyActionButton(type: LibraryType) {
         if (type == LibraryType.Favourites) {
-            actionButton.apply {
-                text = messages["favourites.clean"]
-                action {
-                    favouritesCleanAction()
-                }
-                show()
-            }
+            actionButton.show()
         } else {
             actionButton.hide()
         }
