@@ -164,22 +164,6 @@ class LibraryView : View() {
         bottom {
             vbox(alignment = Pos.CENTER) {
                 maxHeight = 14.0
-                statusbar {
-                    addClass(Styles.statusBar)
-                    left {
-                        label {
-                            countriesListView.items
-                                    .onChangedObservable()
-                                    .map { it.size }
-                                    .filter { it > 0 }
-                                    .subscribe {
-                                        text = "$it ${messages["countries"]}"
-                                    }
-                            addClass(Styles.grayLabel)
-                        }
-                        add(retryLink)
-                    }
-                }
             }
         }
     }
