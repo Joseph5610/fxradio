@@ -49,6 +49,8 @@ class FxRadio : App(MainView::class, Styles::class) {
         //init logger
         logLevel.item = LogLevel(Level.valueOf(config.string(Config.Keys.logLevel, "INFO")))
         Configurator.setAllLevels(LogManager.getRootLogger().name, logLevel.level.value)
+
+        VCSApi.checkCurrentVersion()
     }
 
     /**
@@ -57,7 +59,7 @@ class FxRadio : App(MainView::class, Styles::class) {
     companion object {
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
-        const val appUrl = "https://hudacek.online/fxradio"
+        const val appUrl = "https://hudacek.online/fxradio/"
         const val author = "Jozef Hudáček"
         const val copyright = "Copyright (c) 2020"
 

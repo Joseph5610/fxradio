@@ -302,7 +302,6 @@ class Styles : Stylesheet() {
                     backgroundColor += c(ColorValues.background)
                 }
             }
-
         }
 
         progressIndicator {
