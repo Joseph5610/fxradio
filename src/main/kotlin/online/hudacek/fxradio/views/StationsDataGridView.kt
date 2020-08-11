@@ -54,6 +54,11 @@ class StationsDataGridView : View() {
                     logger.debug { "Content change: ${it.oldVal} -> ${it.newVal}" }
                 }
 
+        itemsProperty.toObservableChangesNonNull()
+                .subscribe {
+                    logger.debug { "Content change: ${it.oldVal} -> ${it.newVal}" }
+                }
+
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {
