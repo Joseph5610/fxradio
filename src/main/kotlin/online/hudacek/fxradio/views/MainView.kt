@@ -59,18 +59,9 @@ class MainView : View(FxRadio.appName) {
         add(stationsView)
     }
 
-    override fun onBeforeShow() {
-        super.onBeforeShow()
-
-        println("Aasdasdasdas")
-    }
-
     override fun onDock() {
-        super.onDock()
-        println("aaaaaasdasdasd")
-        println(currentStage)
         currentStage?.setOnCloseRequest {
-            println("canceeeel")
+            controller.cancelMediaPlaying()
         }
 
         if (playerModel.playerType.value == PlayerType.FFmpeg) {

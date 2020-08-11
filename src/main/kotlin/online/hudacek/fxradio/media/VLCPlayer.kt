@@ -29,10 +29,10 @@ import uk.co.caprica.vlcj.media.Meta
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
+
+private val logger = KotlinLogging.logger {}
+
 internal class VLCPlayer : Component(), MediaPlayer {
-
-    private val logger = KotlinLogging.logger {}
-
     private val audioPlayerComponent: AudioPlayerComponent? by lazy {
         try {
             AudioPlayerComponent()

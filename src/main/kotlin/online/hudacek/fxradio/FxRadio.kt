@@ -49,8 +49,6 @@ class FxRadio : App(MainView::class, Styles::class) {
         //init logger
         logLevel.item = LogLevel(Level.valueOf(config.string(Config.Keys.logLevel, "INFO")))
         Configurator.setAllLevels(LogManager.getRootLogger().name, logLevel.level.value)
-
-        VCSApi.checkCurrentVersion()
     }
 
     /**
