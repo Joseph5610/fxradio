@@ -40,8 +40,6 @@ class StationsDataGridView : View() {
     private val playerModel: PlayerModel by inject()
     private val stationsModel: StationsModel by inject()
 
-    private val logger = KotlinLogging.logger {}
-
     init {
         stationsModel.item = Stations()
     }

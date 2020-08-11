@@ -17,7 +17,6 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.extension.glyph
-import online.hudacek.fxradio.fragments.ProgressFragment
 import online.hudacek.fxradio.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -29,7 +28,7 @@ class StationsInfoErrorView : View() {
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
-    private var progressFragment: ProgressFragment by singleAssign()
+    private val loadingGlyph = glyph(FontAwesome.Glyph.SPINNER)
 
     private val header = label {
         addClass(Styles.header)
@@ -45,15 +44,10 @@ class StationsInfoErrorView : View() {
         paddingRight = 10.0
         add(header)
         add(subHeader)
-        add<ProgressFragment> {
-            progressFragment = this
-            hide()
-        }
     }
 
     fun showShortSearchInfo() {
         root.show()
-        progressFragment.root.hide()
         header.text = messages["searchingLibrary"]
         header.graphic = searchGlyph
         subHeader.text = messages["searchingLibraryDesc"]
@@ -61,7 +55,6 @@ class StationsInfoErrorView : View() {
 
     fun showNoResultsInfo(query: String?) {
         root.show()
-        progressFragment.root.hide()
         if (query != null) {
             subHeader.text = messages["noResultsDesc"]
         }
@@ -77,7 +70,6 @@ class StationsInfoErrorView : View() {
 
     fun showError() {
         root.show()
-        progressFragment.root.hide()
         header.graphic = errorGlyph
         header.text = messages["connectionError"]
         subHeader.text = messages["connectionErrorDesc"]
@@ -85,10 +77,9 @@ class StationsInfoErrorView : View() {
 
     fun showLoading() {
         root.show()
-        header.graphic = null
-        header.text = ""
+        header.graphic = loadingGlyph
+        header.text = messages["library.loading"]
         subHeader.text = ""
-        progressFragment.root.show()
     }
 
     fun hide() = root.hide()
