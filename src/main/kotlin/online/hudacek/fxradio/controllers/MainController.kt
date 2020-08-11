@@ -49,11 +49,11 @@ class MainController : Controller() {
                                 if (it.currentVersion > appVersion) {
                                     logger.info { "There is a new version ${it.currentVersion}" }
                                     val dialogButtons = arrayOf(
-                                            ButtonType(VCSApi.messages["vcs.download"], ButtonBar.ButtonData.YES),
+                                            ButtonType(messages["vcs.download"], ButtonBar.ButtonData.YES),
                                             ButtonType(if (it.required) {
-                                                VCSApi.messages["vcs.close.app"]
+                                                messages["vcs.close.app"]
                                             } else {
-                                                VCSApi.messages["vcs.close"]
+                                                messages["vcs.close"]
                                             }, ButtonBar.ButtonData.NO)
                                     )
                                     information(
@@ -66,7 +66,7 @@ class MainController : Controller() {
                                                 exitProcess(0)
                                             }
                                         } else if (buttonType.buttonData == ButtonBar.ButtonData.YES) {
-                                            VCSApi.app.openUrl(it.downloadUrl)
+                                            app.openUrl(it.downloadUrl)
                                             this.showAndWait()
                                         } else {
                                             this.showAndWait()

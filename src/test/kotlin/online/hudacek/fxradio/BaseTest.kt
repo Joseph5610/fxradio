@@ -26,6 +26,7 @@ import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
 import org.testfx.framework.junit5.Start
+import org.testfx.framework.junit5.Stop
 import tornadofx.*
 
 @ExtendWith(ApplicationExtension::class)
@@ -42,14 +43,17 @@ class BaseTest {
         app.start(stage)
     }
 
+    @Stop
+    fun stop() {
+        app.stop()
+    }
+
     /**
      * Basic interactions test
      * macOS: enable IntelliJ in Settings > Privacy > Accessibility to make it work
      */
     @Test
     fun basicTest(robot: FxRobot) {
-        val mediaPlayerWrapper = find<MediaPlayerWrapper>()
-
         verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
 
         //Wait for stations to load
