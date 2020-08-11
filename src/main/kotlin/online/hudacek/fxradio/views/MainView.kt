@@ -19,6 +19,7 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Orientation
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.VCSApi
 import online.hudacek.fxradio.controllers.MainController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlayerType
@@ -67,6 +68,8 @@ class MainView : View(FxRadio.appName) {
         if (playerModel.playerType.value == PlayerType.FFmpeg) {
             notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
+
+        controller.checkCurrentVersion()
     }
 
     override val root = vbox {

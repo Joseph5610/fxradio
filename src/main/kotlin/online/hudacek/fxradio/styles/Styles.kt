@@ -286,8 +286,27 @@ class Styles : Stylesheet() {
             }
         }
 
+        menuBar {
+            backgroundColor += c(ColorValues.backgroundBorder)
+
+            menu {
+                backgroundColor += c(ColorValues.background)
+
+                and(hover) {
+                    backgroundColor += c(ColorValues.background)
+                }
+                and(focused) {
+                    backgroundColor += c(ColorValues.background)
+                }
+                and(selected) {
+                    backgroundColor += c(ColorValues.background)
+                }
+            }
+
+        }
+
         progressIndicator {
-            progressColor = Color.BLACK
+            progressColor = c(ColorValues.grayLabel)
         }
 
         statusBar {

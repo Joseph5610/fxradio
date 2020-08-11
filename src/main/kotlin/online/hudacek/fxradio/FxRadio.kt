@@ -57,7 +57,7 @@ class FxRadio : App(MainView::class, Styles::class) {
     companion object {
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
-        const val appUrl = "https://hudacek.online/fxradio"
+        const val appUrl = "https://hudacek.online/fxradio/"
         const val author = "Jozef Hudáček"
         const val copyright = "Copyright (c) 2020"
 
