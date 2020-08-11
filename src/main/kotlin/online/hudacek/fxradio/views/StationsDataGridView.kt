@@ -49,11 +49,6 @@ class StationsDataGridView : View() {
     override val root = datagrid(stationsModel.stationsProperty) {
         id = "stations"
 
-        itemsProperty.toObservableChangesNonNull()
-                .subscribe {
-                    logger.debug { "Content change: ${it.oldVal} -> ${it.newVal}" }
-                }
-
         selectionModel.selectedItemProperty().onChange {
             //Update model on selected item
             it?.let {

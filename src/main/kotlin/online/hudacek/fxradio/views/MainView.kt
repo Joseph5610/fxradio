@@ -60,7 +60,7 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
-        currentStage?.setOnCloseRequest {
+        currentWindow?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }
 
