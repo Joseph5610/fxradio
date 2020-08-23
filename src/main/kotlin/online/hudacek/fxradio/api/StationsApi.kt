@@ -84,8 +84,6 @@ interface StationsApi {
             }
 
         val client: StationsApi
-            get() = ApiClient("https://$hostname")
-                    .build()
-                    .create(StationsApi::class.java)
+            get() = ApiClient("https://$hostname").create(StationsApi::class)
     }
 }

@@ -24,6 +24,8 @@ import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ImageCache
 import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.VCSApi
+import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.media.MediaPlayerWrapper
@@ -71,4 +73,16 @@ class MenuBarController : Controller() {
             })
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
+
+    fun checkForUpdate() {
+        VCSApi.client.currentVersion()
+                .observeOnFx()
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    println(it)
+                    //fire(NotificationEvent(it.languages[0].message))
+                }, {
+
+                })
+    }
 }

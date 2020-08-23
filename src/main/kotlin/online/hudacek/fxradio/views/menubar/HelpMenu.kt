@@ -66,6 +66,12 @@ class HelpMenu : Component() {
             }
         }
         separator()
+        item(messages["menu.help.vcs.check"]) {
+            action {
+                controller.checkForUpdate()
+            }
+        }
+        separator()
         menu(messages["menu.help.loglevel"]) {
             checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
                 isSelected = logLevel.level.value == Level.OFF

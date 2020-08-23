@@ -9,3 +9,5 @@ data class AddStationBody(val name: String,
                           val state: String,
                           val language: String,
                           val tags: String)
+
+data class AddStationResult(val ok: String, val result: String, val uuid: String)

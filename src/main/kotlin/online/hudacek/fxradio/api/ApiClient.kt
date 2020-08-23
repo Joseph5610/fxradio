@@ -21,20 +21,23 @@ import online.hudacek.fxradio.FxRadio
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.reflect.KClass
 
 class ApiClient(private val baseUrl: String) {
 
     //Construct http client with custom user agent
-    private val httpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor { chain ->
-                chain.proceed(
-                        chain.request()
-                                .newBuilder()
-                                .header("User-Agent", FxRadio.userAgent)
-                                .build()
-                )
-            }
-            .build()
+    private val httpClient by lazy {
+        OkHttpClient.Builder()
+                .addNetworkInterceptor { chain ->
+                    chain.proceed(
+                            chain.request()
+                                    .newBuilder()
+                                    .header("User-Agent", FxRadio.userAgent)
+                                    .build()
+                    )
+                }
+                .build()
+    }
 
     fun build(): Retrofit {
         return Retrofit.Builder()
@@ -45,3 +48,5 @@ class ApiClient(private val baseUrl: String) {
                 .build()
     }
 }
+
+internal fun <T : Any> ApiClient.create(service: KClass<T>): T = this.build().create(service.java)

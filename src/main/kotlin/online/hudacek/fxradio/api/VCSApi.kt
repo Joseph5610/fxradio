@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.api
 
 import io.reactivex.Single
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.model.vcs.VCSResponse
 import retrofit2.http.GET
 
@@ -26,12 +25,10 @@ import retrofit2.http.GET
  */
 interface VCSApi {
 
-    @GET("vcs/currentVersion.json")
+    @GET("vcs/currentVersion")
     fun currentVersion(): Single<VCSResponse>
 
     companion object {
-        val client: VCSApi = ApiClient(FxRadio.appUrl)
-                .build()
-                .create(VCSApi::class.java)
+        val client: VCSApi = ApiClient("http://m2-multiplayer.eu/").create(VCSApi::class)
     }
 }
