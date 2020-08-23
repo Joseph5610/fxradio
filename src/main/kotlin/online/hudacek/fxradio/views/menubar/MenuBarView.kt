@@ -35,7 +35,7 @@ import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
-import online.hudacek.fxradio.model.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.tools.Platform
 import tornadofx.*

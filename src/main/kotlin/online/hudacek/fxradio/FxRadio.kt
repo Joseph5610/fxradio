@@ -17,27 +17,26 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.model.LogLevel
-import online.hudacek.fxradio.model.LogLevelModel
+import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.views.MainView
-import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
+
 
 /**
  * Main class of the app
  * main() method should be run to start the app
  */
+
 class FxRadio : App(MainView::class, Styles::class) {
 
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
-    private val logLevel: LogLevelModel by inject()
+    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     override fun start(stage: Stage) {
         with(stage) {
@@ -46,9 +45,14 @@ class FxRadio : App(MainView::class, Styles::class) {
             super.start(this)
         }
 
-        //init logger
-        logLevel.item = LogLevel(Level.valueOf(config.string(Config.Keys.logLevel, "INFO")))
-        Configurator.setAllLevels(LogManager.getRootLogger().name, logLevel.level.value)
+        beforeShutdown {
+            mediaPlayerWrapper.release()
+            LogManager.shutdown()
+        }
+    }
+
+    override fun onBeforeShow(view: UIComponent) {
+
     }
 
     /**
@@ -67,6 +71,9 @@ class FxRadio : App(MainView::class, Styles::class) {
         val version: String by lazy {
             FxRadio::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
         }
+
+        //What is app sending as a User Agent string
+        val userAgent = "${appName}/${version}"
     }
 }
 

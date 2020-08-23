@@ -1,8 +1,8 @@
-package online.hudacek.fxradio.model
+package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.StationsApi
+import online.hudacek.fxradio.api.StationsApi
 import tornadofx.*
 
 class ApiServer(url: String) {

@@ -22,7 +22,7 @@ import online.hudacek.fxradio.controllers.menubar.MenuBarController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.openUrl
-import online.hudacek.fxradio.model.LogLevelModel
+import online.hudacek.fxradio.viewmodel.LogLevelModel
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*

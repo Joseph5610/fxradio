@@ -14,6 +14,6 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.model.rest
+package online.hudacek.fxradio.api.model
 
 data class VoteResult(val ok: Boolean, val message: String)

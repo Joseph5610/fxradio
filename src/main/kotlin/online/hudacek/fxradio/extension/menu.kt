@@ -21,7 +21,7 @@ import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.events.PlayerType
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 
 /**

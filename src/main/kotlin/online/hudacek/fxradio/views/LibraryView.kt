@@ -16,8 +16,6 @@
 
 package online.hudacek.fxradio.views
 
-import com.github.thomasnield.rxkotlinfx.onChangedObservable
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import online.hudacek.fxradio.Config
@@ -26,14 +24,12 @@ import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.smallLabel
-import online.hudacek.fxradio.model.rest.Countries
+import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.styles.Styles
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
 import tornadofx.controlsfx.glyph
-import tornadofx.controlsfx.left
-import tornadofx.controlsfx.statusbar
 
 class LibraryView : View() {
 
@@ -105,16 +101,17 @@ class LibraryView : View() {
         }
 
         //Fire up search results after input is written to text field
-        textProperty().toObservableChangesNonNull()
-                .filter { it.newVal.length < 80 }
-                .map { it.newVal.trim() }
-                .subscribe {
-                    fire(LibraryRefreshEvent(LibraryType.Search, it))
+        textProperty().onChange {
+            if (it != null) {
+                if (it.length < 80) {
+                    fire(LibraryRefreshEvent(LibraryType.Search, it.trim()))
                     with(app.config) {
                         set(Config.Keys.searchQuery to text)
                         save()
                     }
                 }
+            }
+        }
 
         setOnMouseClicked {
             fire(LibraryRefreshEvent(LibraryType.Search, text.trim()))

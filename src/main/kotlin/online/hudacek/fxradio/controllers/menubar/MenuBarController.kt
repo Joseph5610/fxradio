@@ -23,11 +23,11 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ImageCache
-import online.hudacek.fxradio.StationsApi
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.media.MediaPlayerWrapper
-import online.hudacek.fxradio.model.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
 import tornadofx.*
 

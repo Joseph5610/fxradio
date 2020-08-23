@@ -20,8 +20,8 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeDisabled
-import online.hudacek.fxradio.model.PlayerModel
-import online.hudacek.fxradio.model.StationsHistoryModel
+import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.StationsHistoryModel
 import org.controlsfx.tools.Platform
 import tornadofx.*
 

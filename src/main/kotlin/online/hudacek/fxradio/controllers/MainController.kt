@@ -16,23 +16,29 @@
 
 package online.hudacek.fxradio.controllers
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
-import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.VCSApi
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.media.MediaPlayerWrapper
+import online.hudacek.fxradio.viewmodel.LogLevel
+import online.hudacek.fxradio.viewmodel.LogLevelModel
+import org.apache.logging.log4j.Level
 import tornadofx.*
 
 class MainController : Controller() {
 
+    private val logLevel: LogLevelModel by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
+
 
     private val logger = KotlinLogging.logger {}
 
     fun cancelMediaPlaying() = mediaPlayerWrapper.release()
 
-    fun checkCurrentVersion() {
-
+    fun appInit() {
+        //init logger
+        val savedLevel = Level.valueOf(app.config.string(Config.Keys.logLevel))
+        logLevel.item = LogLevel(savedLevel)
+        logLevel.commit()
+        logger.debug { "App init called." }
     }
 }

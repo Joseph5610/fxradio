@@ -21,9 +21,9 @@ import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.model.Attribution
-import online.hudacek.fxradio.model.AttributionModel
-import online.hudacek.fxradio.model.Attributions
+import online.hudacek.fxradio.viewmodel.Attribution
+import online.hudacek.fxradio.viewmodel.AttributionModel
+import online.hudacek.fxradio.viewmodel.Attributions
 import tornadofx.*
 
 class AttributionsFragment : Fragment() {

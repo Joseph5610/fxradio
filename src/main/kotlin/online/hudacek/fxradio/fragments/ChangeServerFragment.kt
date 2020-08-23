@@ -16,10 +16,10 @@
 
 package online.hudacek.fxradio.fragments
 
-import online.hudacek.fxradio.StationsApi
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.model.ApiServer
-import online.hudacek.fxradio.model.ApiServerModel
+import online.hudacek.fxradio.viewmodel.ApiServer
+import online.hudacek.fxradio.viewmodel.ApiServerModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 

@@ -1,6 +1,6 @@
-package online.hudacek.fxradio.model
+package online.hudacek.fxradio.viewmodel
 
-import online.hudacek.fxradio.model.rest.AddStationBody
+import online.hudacek.fxradio.api.model.AddStationBody
 import tornadofx.*
 
 class AddStation(station: AddStationBody) {

@@ -14,14 +14,12 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.api
 
 import io.reactivex.Observable
-import okhttp3.OkHttpClient
-import online.hudacek.fxradio.model.rest.*
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import io.reactivex.Single
+import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.model.*
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -35,36 +33,33 @@ import java.net.InetAddress
 interface StationsApi {
 
     @POST("json/stations/bycountry/{countryCode}")
-    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryCode") countryCode: String): Observable<List<Station>>
+    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryCode") countryCode: String): Single<List<Station>>
 
     @POST("json/stations/search")
-    fun searchStationByName(@Body searchBody: SearchBody): Observable<List<Station>>
+    fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
     fun getTopStations(): Observable<List<Station>>
 
     @GET("json/stations/byuuid/{uuid}")
-    fun getStationInfo(@Path("uuid") uuid: String): Observable<List<Station>>
+    fun getStationInfo(@Path("uuid") uuid: String): Single<List<Station>>
 
     @POST("json/add")
-    fun add(@Body addBody: AddStationBody): Observable<AddStationResult>
+    fun add(@Body addBody: AddStationBody): Single<AddStationResult>
 
     @GET("json/tags")
-    fun getTags(): Observable<List<Tags>>
+    fun getTags(): Single<List<Tags>>
 
     @POST("json/countries")
-    fun getCountries(@Body countriesBody: CountriesBody): Observable<List<Countries>>
+    fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
 
     @GET("json/stats")
-    fun getStats(): Observable<Stats>
+    fun getStats(): Single<Stats>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Observable<VoteResult>
+    fun vote(@Path("uuid") uuid: String): Single<VoteResult>
 
     companion object : Component() {
-
-        //What is app sending as a User Agent string
-        private val userAgentIdentifier = "${FxRadio.appName}/${FxRadio.version}"
 
         private const val defaultApiServer = "de1.api.radio-browser.info"
         private const val defaultDnsHost = "all.api.radio-browser.info"
@@ -88,24 +83,8 @@ interface StationsApi {
                 else -> field
             }
 
-        //Construct http client with custom user agent
-        private val httpClient = OkHttpClient.Builder()
-                .addNetworkInterceptor { chain ->
-                    chain.proceed(
-                            chain.request()
-                                    .newBuilder()
-                                    .header("User-Agent", userAgentIdentifier)
-                                    .build()
-                    )
-                }
-                .build()
-
         val client: StationsApi
-            get() = Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://$hostname")
-                    .client(httpClient)
+            get() = ApiClient("https://$hostname")
                     .build()
                     .create(StationsApi::class.java)
     }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.model
+package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.Config

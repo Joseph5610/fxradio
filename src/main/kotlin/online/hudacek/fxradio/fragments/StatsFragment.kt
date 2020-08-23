@@ -19,7 +19,7 @@ package online.hudacek.fxradio.fragments
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
-import online.hudacek.fxradio.StationsApi
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable

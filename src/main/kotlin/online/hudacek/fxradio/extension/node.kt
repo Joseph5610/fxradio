@@ -23,7 +23,7 @@ import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 
 /**

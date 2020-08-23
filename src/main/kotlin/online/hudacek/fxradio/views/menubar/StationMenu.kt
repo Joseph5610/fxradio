@@ -27,7 +27,7 @@ import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeDisabled
-import online.hudacek.fxradio.model.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 

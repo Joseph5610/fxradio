@@ -27,8 +27,8 @@ import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.notification
 import online.hudacek.fxradio.extension.tickerView
-import online.hudacek.fxradio.model.PlayerModel
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 

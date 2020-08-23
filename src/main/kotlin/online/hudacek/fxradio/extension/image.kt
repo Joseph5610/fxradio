@@ -21,7 +21,7 @@ import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ImageCache
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 import java.net.URL
 

@@ -1,4 +1,4 @@
-package online.hudacek.fxradio.model.rest
+package online.hudacek.fxradio.api.model
 
 import io.reactivex.Single
 import online.hudacek.fxradio.Database

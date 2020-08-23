@@ -14,13 +14,11 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.api
 
-import io.reactivex.Observable
-import online.hudacek.fxradio.model.rest.vcs.VCSResponse
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import io.reactivex.Single
+import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.api.model.vcs.VCSResponse
 import retrofit2.http.GET
 
 /**
@@ -29,15 +27,11 @@ import retrofit2.http.GET
 interface VCSApi {
 
     @GET("vcs/currentVersion.json")
-    fun currentVersion(): Observable<VCSResponse>
+    fun currentVersion(): Single<VCSResponse>
 
     companion object {
-        val client: VCSApi
-            get() = Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(FxRadio.appUrl)
-                    .build()
-                    .create(VCSApi::class.java)
+        val client: VCSApi = ApiClient(FxRadio.appUrl)
+                .build()
+                .create(VCSApi::class.java)
     }
 }

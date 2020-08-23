@@ -28,8 +28,8 @@ import online.hudacek.fxradio.extension.setOnSpacePressed
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.extension.smallIcon
 import online.hudacek.fxradio.media.MediaPlayerWrapper
-import online.hudacek.fxradio.model.Player
-import online.hudacek.fxradio.model.PlayerModel
+import online.hudacek.fxradio.viewmodel.Player
+import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 

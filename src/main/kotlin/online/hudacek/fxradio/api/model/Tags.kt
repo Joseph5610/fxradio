@@ -1,4 +1,4 @@
-package online.hudacek.fxradio.model.rest
+package online.hudacek.fxradio.api.model
 
 data class Tags(
         val name: String,

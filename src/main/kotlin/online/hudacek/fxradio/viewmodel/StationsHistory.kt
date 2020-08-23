@@ -1,7 +1,7 @@
-package online.hudacek.fxradio.model
+package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ListProperty
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 
 class StationsHistory {

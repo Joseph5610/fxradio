@@ -19,9 +19,9 @@ package online.hudacek.fxradio.controllers
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import online.hudacek.fxradio.StationsApi
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.model.rest.CountriesBody
+import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.views.LibraryView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*

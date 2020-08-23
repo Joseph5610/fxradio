@@ -20,12 +20,12 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
-import online.hudacek.fxradio.StationsApi
-import online.hudacek.fxradio.model.StationsHistoryModel
-import online.hudacek.fxradio.model.StationsModel
-import online.hudacek.fxradio.model.rest.CountriesBody
-import online.hudacek.fxradio.model.rest.SearchBody
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.viewmodel.StationsHistoryModel
+import online.hudacek.fxradio.viewmodel.StationsModel
+import online.hudacek.fxradio.api.model.CountriesBody
+import online.hudacek.fxradio.api.model.SearchBody
+import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.views.StationsView
 import tornadofx.*
 

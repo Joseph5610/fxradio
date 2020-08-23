@@ -19,14 +19,13 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Orientation
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.VCSApi
 import online.hudacek.fxradio.controllers.MainController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.extension.set
 import online.hudacek.fxradio.media.MediaPlayerWrapper
-import online.hudacek.fxradio.model.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -61,15 +60,15 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
-        currentWindow?.setOnCloseRequest {
+        currentStage?.setOnCloseRequest {
             controller.cancelMediaPlaying()
         }
+
+        controller.appInit()
 
         if (playerModel.playerType.value == PlayerType.FFmpeg) {
             notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
-
-        controller.checkCurrentVersion()
     }
 
     override val root = vbox {

@@ -17,8 +17,8 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.media.MediaPlayerWrapper
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.model.Station
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

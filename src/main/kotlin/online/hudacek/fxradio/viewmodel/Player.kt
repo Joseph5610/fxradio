@@ -1,11 +1,11 @@
-package online.hudacek.fxradio.model
+package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.PlayerType
-import online.hudacek.fxradio.model.rest.Station
+import online.hudacek.fxradio.api.model.Station
 import tornadofx.ItemViewModel
 import tornadofx.onChange
 import tornadofx.property

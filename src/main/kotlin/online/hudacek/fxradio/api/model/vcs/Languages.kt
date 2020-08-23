@@ -14,11 +14,10 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.model.rest.vcs
+package online.hudacek.fxradio.api.model.vcs
 
-data class VCSResponse(
-        val currentVersion: Double,
-        val required: Boolean,
-        val downloadUrl: String,
-        val languages: List<Languages>
+data class Languages(
+        val code: String,
+        val message: String,
+        val description: String
 )
