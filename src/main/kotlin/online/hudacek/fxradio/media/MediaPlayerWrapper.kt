@@ -16,17 +16,23 @@
 
 package online.hudacek.fxradio.media
 
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.events.PlayingStatus
+import online.hudacek.fxradio.media.player.CustomPlayer
+import online.hudacek.fxradio.media.player.VLCPlayer
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
+enum class PlayerType {
+    Custom, VLC
+}
 
 //TODO get rid of this class in its current form
 class MediaPlayerWrapper : Component(), ScopedInstance {
@@ -39,20 +45,22 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     init {
         //Update internal player type
-        playerModel.playerType.onChange {
-            if(it != null) {
-                logger.info { "player type changed: $it" }
-                internalMediaPlayer.releasePlayer()
-                internalMediaPlayer = changePlayer(it)
-            }
-        }
+        playerModel.playerType.toObservableChanges()
+                .map { it.newVal }
+                .subscribe {
+                    logger.info { "player type changed: $it" }
+                    internalMediaPlayer.releasePlayer()
+                    internalMediaPlayer = changePlayer(it)
+                }
 
         //Set volume for current player
-        playerModel.volumeProperty.onChange {
-            logger.debug { "volume changed: $it" }
-            internalVolume = it
-            internalMediaPlayer.changeVolume(it)
-        }
+        playerModel.volumeProperty.toObservableChangesNonNull()
+                .map { it.newVal.toDouble() }
+                .subscribe {
+                    logger.debug { "volume changed: $it" }
+                    internalVolume = it
+                    internalMediaPlayer.changeVolume(it)
+                }
 
         //Toggle playing
         subscribe<PlaybackChangeEvent> {
@@ -64,13 +72,12 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             }
         }
 
-        playerModel.stationProperty.onChange {
-            if (it != null) {
-                if(it.isValidStation()) {
+        playerModel.stationProperty.toObservableChangesNonNull()
+                .filter { it.newVal.isValidStation() }
+                .map { it.newVal }
+                .subscribe {
                     fire(PlaybackChangeEvent(PlayingStatus.Playing))
                 }
-            }
-        }
     }
 
     fun init() {
@@ -78,16 +85,16 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     private fun changePlayer(playerType: PlayerType): MediaPlayer {
-        if (playerType == PlayerType.FFmpeg) {
-            return FFmpegPlayer()
+        if (playerType == PlayerType.Custom) {
+            return CustomPlayer()
         } else {
             return try {
                 VLCPlayer()
             } catch (e: Exception) {
-                playerModel.playerType.value = PlayerType.FFmpeg
+                playerModel.playerType.value = PlayerType.Custom
                 logger.error(e) { "VLC init failed, init native library" }
-                fire(NotificationEvent("VLC Player can't be initialized. Library is not installed on the system."))
-                FFmpegPlayer()
+                fire(NotificationEvent(messages["player.vlc.error"]))
+                CustomPlayer()
             }
         }
     }
@@ -101,9 +108,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         }
     }
 
-    fun release() {
-        internalMediaPlayer.releasePlayer()
-    }
+    fun release() = internalMediaPlayer.releasePlayer()
 
     fun togglePlaying() {
         if (internalPlayingStatus == PlayingStatus.Playing) {

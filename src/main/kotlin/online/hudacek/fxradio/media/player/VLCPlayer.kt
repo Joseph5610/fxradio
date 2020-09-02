@@ -14,11 +14,13 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.media
+package online.hudacek.fxradio.media.player
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.MediaMeta
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
+import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.MediaPlayerWrapper
 import tornadofx.*
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
@@ -113,7 +115,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
         logger.debug { "ending current stream if any with error status $result" }
 
         if (result == 1) {
-            val errorMsg = if (lastLogMessage.isEmpty()) "Error opening stream. See app.log for details." else lastLogMessage
+            val errorMsg = if (lastLogMessage.isEmpty()) messages["player.streamError"] else lastLogMessage
             MediaPlayerWrapper.handleError(RuntimeException(errorMsg))
         }
 

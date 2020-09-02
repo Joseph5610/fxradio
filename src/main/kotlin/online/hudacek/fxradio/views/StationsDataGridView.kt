@@ -21,10 +21,13 @@ import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.extension.createImage
+import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.Stations
 import online.hudacek.fxradio.viewmodel.StationsModel
 import tornadofx.*
+import tornadofx.controlsfx.popover
+import tornadofx.controlsfx.showPopover
 
 /**
  * Main view of stations
@@ -51,7 +54,6 @@ class StationsDataGridView : View() {
 
         cellCache {
             vbox(alignment = Pos.CENTER) {
-                /*
                 popover {
                     title = it.name
                     isCloseButtonEnabled = true
@@ -61,7 +63,7 @@ class StationsDataGridView : View() {
                     }
                 }
 
-                onRightClick { showPopover() }*/
+                onRightClick { showPopover() }
                 onHover { _ -> tooltip(it.name) }
 
                 paddingAll = 5

@@ -21,6 +21,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ImageCache
 import online.hudacek.fxradio.api.StationsApi
@@ -31,12 +32,16 @@ import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
+import org.controlsfx.control.action.Action
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class MenuBarController : Controller() {
 
     private val stationsApi: StationsApi
         get() = StationsApi.client
+
+    private val logger = KotlinLogging.logger {}
 
     private val menuBarView: MenuBarView by inject()
 
@@ -78,11 +83,21 @@ class MenuBarController : Controller() {
         VCSApi.client.currentVersion()
                 .observeOnFx()
                 .subscribeOn(Schedulers.io())
-                .subscribe({
-                    println(it)
-                    //fire(NotificationEvent(it.languages[0].message))
+                .subscribe({ vcs ->
+                    FxRadio.version.toDoubleOrNull().let { appVersion ->
+                        if (appVersion == null) {
+                            fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
+                        } else if (vcs.currentVersion > appVersion) {
+                            logger.info { "There is a new version ${vcs.currentVersion}" }
+                            fire(NotificationEvent(vcs.languages[0].message, op = {
+                                actions.setAll(Action(messages["vcs.download"]) {
+                                    app.openUrl(vcs.downloadUrl)
+                                })
+                            }))
+                        }
+                    }
                 }, {
-
+                    logger.error(it) { "VCS check problem!" }
                 })
     }
 }

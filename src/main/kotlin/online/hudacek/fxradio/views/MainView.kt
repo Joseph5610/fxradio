@@ -21,10 +21,11 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.controllers.MainController
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.extension.set
+import online.hudacek.fxradio.extension.show
 import online.hudacek.fxradio.media.MediaPlayerWrapper
+import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
 import org.controlsfx.control.NotificationPane
@@ -50,7 +51,7 @@ class MainView : View(FxRadio.appName) {
         mediaPlayerWrapper.init()
         setStageIcon(defaultRadioLogo)
         subscribe<NotificationEvent> {
-            notification[it.glyph] = it.text
+            notification.show(it.glyph, it.text, it.op)
         }
     }
 
@@ -64,9 +65,7 @@ class MainView : View(FxRadio.appName) {
             controller.cancelMediaPlaying()
         }
 
-        controller.appInit()
-
-        if (playerModel.playerType.value == PlayerType.FFmpeg) {
+        if (playerModel.playerType.value == PlayerType.Custom) {
             notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
     }

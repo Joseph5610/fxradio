@@ -39,6 +39,14 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
     delay.play()
 }
 
+internal fun NotificationPane.show(glyph: FontAwesome.Glyph, message: String, op: NotificationPane.() -> Unit = {}) {
+    op.invoke(this)
+    if (isVisible) show(message, glyph("FontAwesome", glyph))
+    val delay = PauseTransition(Duration.seconds(5.0))
+    delay.onFinished = EventHandler { hide() }
+    delay.play()
+}
+
 /**
  * Show Native OS notification
  *

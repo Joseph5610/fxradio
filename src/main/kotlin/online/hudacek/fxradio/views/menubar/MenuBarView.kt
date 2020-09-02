@@ -31,10 +31,10 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.controllers.menubar.MenuBarController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
+import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.tools.Platform
@@ -78,14 +78,14 @@ class MenuBarView : View() {
         }
 
         playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-            isSelected = playerModel.playerType.value == PlayerType.FFmpeg
+            isSelected = playerModel.playerType.value == PlayerType.Custom
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                 playerModel.playerType.value =
-                        if (playerModel.playerType.value == PlayerType.FFmpeg) {
+                        if (playerModel.playerType.value == PlayerType.Custom) {
                             PlayerType.VLC
                         } else {
-                            PlayerType.FFmpeg
+                            PlayerType.Custom
                         }
                 playerModel.commit()
             }
@@ -107,7 +107,7 @@ class MenuBarView : View() {
 
     init {
         playerModel.playerType.onChange {
-            playerCheck.isSelected = it == PlayerType.FFmpeg
+            playerCheck.isSelected = it == PlayerType.Custom
         }
     }
 

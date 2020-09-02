@@ -21,7 +21,6 @@ class Styles : Stylesheet() {
         const val grayLabel = "#8B8B8B"
 
         const val transparent = "transparent"
-
     }
 
     companion object {

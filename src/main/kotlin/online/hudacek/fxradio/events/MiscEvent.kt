@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.events
 
+import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -27,4 +28,6 @@ class LibraryRefreshEvent(val type: LibraryType, val params: String = "") : FXEv
 
 class LibraryRefreshConditionalEvent(val onlyWhen: LibraryType) : FXEvent()
 
-class NotificationEvent(val text: String, val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING) : FXEvent()
+class NotificationEvent(val text: String,
+                        val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,
+                        val op: NotificationPane.() -> Unit = {}) : FXEvent()

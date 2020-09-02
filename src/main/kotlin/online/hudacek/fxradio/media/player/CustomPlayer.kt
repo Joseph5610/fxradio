@@ -14,12 +14,14 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.media
+package online.hudacek.fxradio.media.player
 
 import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
 import io.humble.video.javaxsound.MediaAudioConverterFactory
 import kotlinx.coroutines.*
+import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.MediaPlayerWrapper
 import tornadofx.*
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
@@ -28,7 +30,8 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-internal class FFmpegPlayer : Component(), MediaPlayer {
+//Custom Audio player using ffmpeg lib
+internal class CustomPlayer : Component(), MediaPlayer {
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null

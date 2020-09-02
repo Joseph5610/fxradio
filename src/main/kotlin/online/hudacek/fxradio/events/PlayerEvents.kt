@@ -23,10 +23,6 @@ enum class PlayingStatus {
     Stopped
 }
 
-enum class PlayerType {
-    FFmpeg, VLC
-}
-
 class PlaybackChangeEvent(val playingStatus: PlayingStatus) : FXEvent()
 
 data class MediaMeta(val title: String, val genre: String, val nowPlaying: String)

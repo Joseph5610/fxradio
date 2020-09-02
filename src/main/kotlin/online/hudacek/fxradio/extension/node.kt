@@ -49,11 +49,3 @@ internal fun Node.shouldBeDisabled(station: Property<Station>) {
         value == null || !value.isValidStation()
     })
 }
-
-internal fun Node.setOnSpacePressed(action: () -> Unit) {
-    addEventHandler(KeyEvent.KEY_PRESSED) {
-        if (it.code == KeyCode.SPACE) {
-            action.invoke()
-        }
-    }
-}

@@ -20,8 +20,8 @@ import javafx.beans.property.Property
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
-import online.hudacek.fxradio.events.PlayerType
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.media.PlayerType
 import tornadofx.*
 
 /**
@@ -35,7 +35,7 @@ internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
 
 internal fun CheckMenuItem.shouldBeSelected(playerType: Property<PlayerType>) {
     selectedProperty().cleanBind(booleanBinding(playerType) {
-        value == PlayerType.FFmpeg
+        value == PlayerType.Custom
     })
 }
 

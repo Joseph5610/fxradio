@@ -25,6 +25,9 @@ import kotlin.reflect.KClass
 
 class ApiClient(private val baseUrl: String) {
 
+    //What is app sending as a User Agent string
+    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
+
     //Construct http client with custom user agent
     private val httpClient by lazy {
         OkHttpClient.Builder()
@@ -32,7 +35,7 @@ class ApiClient(private val baseUrl: String) {
                     chain.proceed(
                             chain.request()
                                     .newBuilder()
-                                    .header("User-Agent", FxRadio.userAgent)
+                                    .header("User-Agent", userAgent)
                                     .build()
                     )
                 }
