@@ -23,8 +23,8 @@ enum class PlayingStatus {
     Stopped
 }
 
-class PlaybackChangeEvent(val playingStatus: PlayingStatus) : FXEvent()
-
 data class MediaMeta(val title: String, val genre: String, val nowPlaying: String)
+
+class PlaybackChangeEvent(val playingStatus: PlayingStatus) : FXEvent()
 
 class PlaybackMetaChangedEvent(val mediaMeta: MediaMeta) : FXEvent()

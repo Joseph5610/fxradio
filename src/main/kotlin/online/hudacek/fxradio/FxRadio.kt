@@ -23,7 +23,6 @@ import online.hudacek.fxradio.viewmodel.LogLevel
 import online.hudacek.fxradio.viewmodel.LogLevelModel
 import online.hudacek.fxradio.views.MainView
 import org.apache.logging.log4j.Level
-import org.apache.logging.log4j.LogManager
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
