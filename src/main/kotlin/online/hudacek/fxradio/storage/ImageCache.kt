@@ -14,10 +14,11 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.storage
 
 import javafx.scene.image.Image
 import mu.KotlinLogging
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.api.model.Station
 import org.apache.commons.io.FileUtils

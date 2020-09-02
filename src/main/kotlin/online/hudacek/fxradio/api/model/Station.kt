@@ -1,7 +1,7 @@
 package online.hudacek.fxradio.api.model
 
 import io.reactivex.Single
-import online.hudacek.fxradio.Database
+import online.hudacek.fxradio.storage.Database
 import org.nield.rxkotlinjdbc.insert
 import org.nield.rxkotlinjdbc.select
 

@@ -14,10 +14,11 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.storage
 
 import io.reactivex.Single
 import mu.KotlinLogging
+import online.hudacek.fxradio.Config
 import org.nield.rxkotlinjdbc.execute
 import java.sql.Connection
 import java.sql.DriverManager

@@ -55,9 +55,9 @@ class MenuBarView : View() {
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
     private val shouldUsePlatformMenuBar = Platform.getCurrent() == Platform.OSX && usePlatformMenuBarProperty
 
-    private val stationMenu = StationMenu().menu
-    private val helpMenu = HelpMenu().menu
-    private val historyMenu = HistoryMenu().menu
+    private val stationMenu = Menus.stationMenu
+    private val helpMenu = Menus.helpMenu
+    private val historyMenu = Menus.historyMenu
 
     private val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
     private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
@@ -147,7 +147,7 @@ class MenuBarView : View() {
                 .withVersionString("Version ${FxRadio.version}")
                 .withCopyright("Copyright \u00A9 " + Calendar
                         .getInstance()[Calendar.YEAR] + " " + FxRadio.author)
-                .withImage(Image(Config.R.appLogo))
+                .withImage(Image(Config.Resources.appLogo))
                 .build()
 
         val aboutMenu = Menu(FxRadio.appName).apply {

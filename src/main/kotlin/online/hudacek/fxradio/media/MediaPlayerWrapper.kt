@@ -16,8 +16,6 @@
 
 package online.hudacek.fxradio.media
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
@@ -45,22 +43,20 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     init {
         //Update internal player type
-        playerModel.playerType.toObservableChanges()
-                .map { it.newVal }
-                .subscribe {
-                    logger.info { "player type changed: $it" }
-                    internalMediaPlayer.releasePlayer()
-                    internalMediaPlayer = changePlayer(it)
-                }
+        playerModel.playerType.onChange {
+            if (it != null) {
+                logger.info { "player type changed: $it" }
+                internalMediaPlayer.releasePlayer()
+                internalMediaPlayer = changePlayer(it)
+            }
+        }
 
         //Set volume for current player
-        playerModel.volumeProperty.toObservableChangesNonNull()
-                .map { it.newVal.toDouble() }
-                .subscribe {
-                    logger.debug { "volume changed: $it" }
-                    internalVolume = it
-                    internalMediaPlayer.changeVolume(it)
-                }
+        playerModel.volumeProperty.onChange {
+            logger.debug { "volume changed: $it" }
+            internalVolume = it
+            internalMediaPlayer.changeVolume(it)
+        }
 
         //Toggle playing
         subscribe<PlaybackChangeEvent> {
@@ -72,12 +68,13 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             }
         }
 
-        playerModel.stationProperty.toObservableChangesNonNull()
-                .filter { it.newVal.isValidStation() }
-                .map { it.newVal }
-                .subscribe {
+        playerModel.stationProperty.onChange {
+            if (it != null) {
+                if (it.isValidStation()) {
                     fire(PlaybackChangeEvent(PlayingStatus.Playing))
                 }
+            }
+        }
     }
 
     fun init() {

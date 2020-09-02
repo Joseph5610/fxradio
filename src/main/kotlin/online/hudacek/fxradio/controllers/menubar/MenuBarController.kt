@@ -23,7 +23,7 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.ImageCache
+import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent

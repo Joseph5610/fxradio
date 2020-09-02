@@ -20,14 +20,14 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.ImageCache
+import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 import java.net.URL
 
 private val logger = KotlinLogging.logger {}
 
-internal val defaultRadioLogo by lazy { Image(Config.R.defaultRadioIcon) }
+internal val defaultRadioLogo by lazy { Image(Config.Resources.defaultRadioIcon) }
 
 /**
  * This method is used for custom downloading of station's logo

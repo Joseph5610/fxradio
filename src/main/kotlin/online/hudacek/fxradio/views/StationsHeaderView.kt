@@ -18,7 +18,7 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import mu.KotlinLogging
-import online.hudacek.fxradio.Database
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
 import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType

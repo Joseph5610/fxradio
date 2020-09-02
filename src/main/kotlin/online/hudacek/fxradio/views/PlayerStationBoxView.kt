@@ -39,7 +39,7 @@ class PlayerStationBoxView : View() {
 
     private val playerModel: PlayerModel by inject()
 
-    private var stationLogo = imageview(Config.R.defaultRadioIcon) {
+    private var stationLogo = imageview(Config.Resources.defaultRadioIcon) {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true

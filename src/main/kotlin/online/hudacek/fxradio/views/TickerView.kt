@@ -74,10 +74,6 @@ class TickerView : View() {
     private fun createText(content: String) = text(content) {
         layoutY = 12.0
     }
-
-    fun stop() = marqueeView.stop()
-
-    fun play() = marqueeView.play()
 }
 
 class MarqueeView : View() {
@@ -147,7 +143,6 @@ class MarqueeView : View() {
             }
 
             activeTicks.forEach { active ->
-
                 val entry = active.entry
                 val content = entry.content
                 val textWidth = content.layoutBounds.width
@@ -191,8 +186,4 @@ class MarqueeView : View() {
         queuedTicks.clear()
         root.clear()
     }
-
-    fun stop() = timeline.stop()
-
-    fun play() = timeline.play()
 }

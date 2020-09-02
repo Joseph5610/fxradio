@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.views
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import online.hudacek.fxradio.Config
@@ -102,16 +101,17 @@ class LibraryView : View() {
         }
 
         //Fire up search results after input is written to text field
-        textProperty().toObservableChangesNonNull()
-                .filter { it.newVal.length < 80 }
-                .map { it.newVal.trim() }
-                .subscribe {
-                    fire(LibraryRefreshEvent(LibraryType.Search, it))
+        textProperty().onChange {
+            if (it != null) {
+                if (it.length < 80) {
+                    fire(LibraryRefreshEvent(LibraryType.Search, it.trim()))
                     with(app.config) {
                         set(Config.Keys.searchQuery to text)
                         save()
                     }
                 }
+            }
+        }
 
         setOnMouseClicked {
             fire(LibraryRefreshEvent(LibraryType.Search, text.trim()))

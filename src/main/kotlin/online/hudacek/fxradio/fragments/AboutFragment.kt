@@ -32,7 +32,7 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
         prefWidth = 300.0
 
         vbox(alignment = Pos.CENTER) {
-            imageview(Config.R.appLogo) {
+            imageview(Config.Resources.appLogo) {
                 fitHeight = 80.0
                 isPreserveRatio = true
                 paddingAll = 20.0
