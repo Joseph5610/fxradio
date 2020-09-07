@@ -85,7 +85,6 @@ internal fun Window.setOnSpacePressed(action: () -> Unit) {
     }
 }
 
-
 /**
  * Open URL in user's internet browser
  */

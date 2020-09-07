@@ -16,49 +16,89 @@
 
 package online.hudacek.fxradio.fragments
 
+import javafx.scene.layout.Priority
 import javafx.stage.FileChooser
+import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.model.AddStationBody
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.AddStation
+import online.hudacek.fxradio.viewmodel.AddStationModel
 import tornadofx.*
-import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
-import tornadofx.controlsfx.hyperlinklabel
 import tornadofx.controlsfx.notificationPane
+import java.nio.file.Files
 
+//TODO finish this class properly
+//Functionality disabled / not finished
 class AddStationFragment : Fragment("Add new station") {
+
+    private val model: AddStationModel by inject()
+
+    private val stationsApi: StationsApi
+        get() = StationsApi.client
 
     override val root = notificationPane {
         prefWidth = 400.0
+        model.item = AddStation(AddStationBody())
 
         content {
             form {
                 fieldset("Add new station") {
-                    hyperlinklabel("Add station into [radio-browser.info] public directory. Please fill all required information correctly and check if the station has not already been added.") {
-                    }
-
-
-                    field("Name") {
-                        textfield {
-
+                    vbox {
+                        prefHeight = 50.0
+                        vgrow = Priority.ALWAYS
+                        label("Add station into radio-browser.info public directory. " +
+                                "Please fill all required information correctly and check if" +
+                                " the station has not already been added.") {
+                            isWrapText = true
                         }
                     }
-                    field("Website") {
-                        textfield {
 
+                    field("Name") {
+                        textfield(model.name) {
+                            required()
+                            validator {
+                                if (model.name.length() < 3)
+                                    error(messages["invalidAddress"]) else null
+                            }
+                            promptText = "My Radio Station"
+                        }
+                    }
+
+                    field("Website") {
+                        textfield(model.homepage) {
+                            required()
+                            validator {
+                                if (model.homepage.length() < 3)
+                                    error(messages["invalidAddress"]) else null
+
+                            }
+                            promptText = "https://example.com/"
                         }
                     }
                     field("Stream URL") {
-                        textfield {
-
+                        textfield(model.URL) {
+                            required()
+                            validator {
+                                if (model.URL.length() < 3)
+                                    error(messages["invalidAddress"]) else null
+                            }
+                            promptText = "https://example.com/stream.m3u"
                         }
                     }
                     field("Icon") {
                         button("Select") {
 
-                        action {
+                            action {
                                 val filter = FileChooser.ExtensionFilter("Images (.png, .gif, .jpg)", "*.png", "*.gif", "*.jpg", "*.jpeg")
                                 val file = chooseFile("Select Icon", arrayOf(filter))
-                                text = if (file.isNotEmpty()) {
-                                    "Selected: ${file.last().name}"
+                                text = if (file.isNotEmpty() && file.size == 1) {
+                                    val mimeType: String = Files.probeContentType(file.first().toPath())
+                                    if (mimeType.split("/")[0] == "image") {
+                                        "Selected: ${file.last().name}"
+                                    } else {
+                                        "Invalid file selected."
+                                    }
                                 } else {
                                     "Select"
                                 }
@@ -67,27 +107,34 @@ class AddStationFragment : Fragment("Add new station") {
 
                     }
                     field("Language") {
-                        textfield {
-
+                        textfield(model.language) {
+                            required()
+                            promptText = "English"
                         }
                     }
                     field("Country") {
-                        textfield {
-
+                        textfield(model.country) {
+                            required()
+                            promptText = "United Kingdom"
                         }
                     }
                     field("Tags") {
-                        textfield {
-                            bindAutoCompletion("AAA", "BBB", "CCC")
+                        textfield(model.tags) {
+                            promptText = "Separated by comma and space"
                         }
                     }
                 }
 
                 hbox(5) {
                     button("Save") {
+                        enableWhen(model.valid)
+
                         isDefaultButton = true
                         addClass(Styles.primaryButton)
                         action {
+                            model.commit {
+                                //stationsApi.add()
+                            }
                         }
                     }
 
@@ -98,7 +145,6 @@ class AddStationFragment : Fragment("Add new station") {
                         }
                     }
                 }
-
             }
         }
     }

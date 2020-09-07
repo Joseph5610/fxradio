@@ -17,6 +17,7 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
+import online.hudacek.fxradio.api.BasicHttpClient
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
 import org.junit.jupiter.api.Assertions
@@ -79,5 +80,28 @@ class BaseTest {
                         Assertions.assertTrue(it.url_resolved != null)
                     }
                 }.dispose()
+    }
+
+    @Test
+    fun basicHttpTest() {
+        val client = BasicHttpClient(FxRadio.appUrl)
+        var performed = false
+        
+        client.call(
+                success = {
+                    Assertions.assertTrue(code() == 200)
+                    println(this.body()?.string())
+                    performed = true
+                },
+                fail = {
+                    performed = true
+                    Assertions.fail(this)
+                }
+        )
+
+        //wait until async task finishes
+        waitFor(10) {
+            performed
+        }
     }
 }

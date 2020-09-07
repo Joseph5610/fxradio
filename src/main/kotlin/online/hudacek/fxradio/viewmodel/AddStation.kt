@@ -1,5 +1,6 @@
 package online.hudacek.fxradio.viewmodel
 
+import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.api.model.AddStationBody
 import tornadofx.*
 
@@ -16,13 +17,13 @@ class AddStation(station: AddStationBody) {
 }
 
 class AddStationModel : ItemViewModel<AddStation>() {
-    val name = bind(AddStation::name)
-    val URL = bind(AddStation::URL)
-    val homepage = bind(AddStation::homepage)
-    val favicon = bind(AddStation::favicon)
-    val country = bind(AddStation::country)
-    val countryCode = bind(AddStation::countryCode)
-    val state = bind(AddStation::state)
-    val language = bind(AddStation::language)
-    val tags = bind(AddStation::tags)
+    val name = bind(AddStation::name) as StringProperty
+    val URL = bind(AddStation::URL) as StringProperty
+    val homepage = bind(AddStation::homepage) as StringProperty
+    val favicon = bind(AddStation::favicon) as StringProperty
+    val country = bind(AddStation::country) as StringProperty
+    val countryCode = bind(AddStation::countryCode) as StringProperty
+    val state = bind(AddStation::state) as StringProperty
+    val language = bind(AddStation::language) as StringProperty
+    val tags = bind(AddStation::tags) as StringProperty
 }
