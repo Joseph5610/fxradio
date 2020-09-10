@@ -23,8 +23,7 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.viewmodel.PlayerModel
-import online.hudacek.fxradio.viewmodel.Stations
-import online.hudacek.fxradio.viewmodel.StationsModel
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -36,13 +35,9 @@ import tornadofx.controlsfx.showPopover
 class StationsDataGridView : View() {
 
     private val playerModel: PlayerModel by inject()
-    private val stationsModel: StationsModel by inject()
+    private val viewModel: StationsViewModel by inject()
 
-    init {
-        stationsModel.item = Stations()
-    }
-
-    override val root = datagrid(stationsModel.stationsProperty) {
+    override val root = datagrid(viewModel.stationsProperty) {
         id = "stations"
 
         selectionModel.selectedItemProperty().onChange {
@@ -87,15 +82,6 @@ class StationsDataGridView : View() {
                 }
             }
         }
-    }
-
-    fun hide() = root.hide()
-
-    /**
-     * Change datagrid content
-     */
-    fun show() = root.apply {
-        show()
-        selectionModel.clearSelection()
+        visibleWhen(!viewModel.errorVisible)
     }
 }

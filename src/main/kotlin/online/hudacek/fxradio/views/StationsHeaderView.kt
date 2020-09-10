@@ -18,12 +18,13 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import mu.KotlinLogging
-import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
 import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import tornadofx.*
 
 /**
@@ -32,6 +33,7 @@ import tornadofx.*
 class StationsHeaderView : View() {
 
     private val logger = KotlinLogging.logger {}
+    private val viewModel: StationsViewModel by inject()
 
     private val actionButton = button {
         text = messages["favourites.clean"]
@@ -73,6 +75,8 @@ class StationsHeaderView : View() {
                 add(actionButton)
             }
         }
+
+        visibleWhen(!viewModel.errorVisible)
     }
 
     private fun applyActionButton(type: LibraryType) {
@@ -82,9 +86,6 @@ class StationsHeaderView : View() {
             actionButton.hide()
         }
     }
-
-    fun hide() = root.hide()
-    fun show() = root.show()
 
     private fun favouritesCleanAction() {
         confirm(messages["database.clear.confirm"], messages["database.clear.text"]) {

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.controllers.menubar
+package online.hudacek.fxradio.controllers
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
@@ -23,13 +23,13 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.media.MediaPlayerWrapper
+import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
 import org.controlsfx.control.action.Action

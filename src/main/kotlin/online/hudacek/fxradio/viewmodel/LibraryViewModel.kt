@@ -14,37 +14,57 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.controllers
+package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javafx.beans.property.ListProperty
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.collections.ObservableList
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
-import online.hudacek.fxradio.views.LibraryView
+import online.hudacek.fxradio.events.LibraryRefreshEvent
+import online.hudacek.fxradio.events.LibraryType
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 
-class LibraryController : Controller() {
+data class LibraryModel(
+        val countries: ObservableList<Countries> = observableListOf(),
 
-    private val libraryView: LibraryView by inject()
+        //Default items shown in library ListView
+        val libraries: ObservableList<LibraryItem> = observableListOf()
+)
+
+class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     private val stationsApi: StationsApi
         get() = StationsApi.client
 
-    //Default items shown in library ListView
-    val libraryItems by lazy {
-        observableListOf(
+    val countriesListProperty = bind(LibraryModel::countries) as ListProperty
+    val librariesListProperty = bind(LibraryModel::libraries) as ListProperty
+
+    val errorVisible = SimpleBooleanProperty(false)
+
+    val savedQuery
+        get() = app.config.string(Config.Keys.searchQuery)
+
+    init {
+        librariesListProperty.setAll(
                 LibraryItem(LibraryType.TopStations, FontAwesome.Glyph.TROPHY),
                 LibraryItem(LibraryType.Favourites, FontAwesome.Glyph.STAR),
                 LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
         )
+
+        //Load Countries List
+        showCountries()
     }
 
-    fun getCountries(): Disposable = stationsApi
+    fun showCountries(): Disposable = stationsApi
             .getCountries(CountriesBody())
             .subscribeOn(Schedulers.io())
             .observeOnFx()
@@ -53,9 +73,21 @@ class LibraryController : Controller() {
                 val result = response.filter {
                     it.name.length > 1 && !it.name.contains(".")
                 }.asObservable()
-
-                libraryView.showCountries(result)
+                countriesListProperty.setAll(result)
+                errorVisible.value = false
             }, {
-                libraryView.showError()
+                errorVisible.value = true
             })
+
+    fun handleSearch(searchedValue: String) {
+        if (searchedValue.length < 80) {
+            handleSearchInputClick(searchedValue)
+            with(app.config) {
+                set(Config.Keys.searchQuery to searchedValue)
+                save()
+            }
+        }
+    }
+
+    fun handleSearchInputClick(text: String) = fire(LibraryRefreshEvent(LibraryType.Search, text.trim()))
 }

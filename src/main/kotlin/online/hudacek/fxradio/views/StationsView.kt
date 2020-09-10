@@ -18,11 +18,11 @@ package online.hudacek.fxradio.views
 
 import io.reactivex.subjects.BehaviorSubject
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.controllers.StationsController
 import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
 import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import tornadofx.*
 
 /**
@@ -30,17 +30,16 @@ import tornadofx.*
  */
 class StationsView : View() {
 
-    private val controller: StationsController by inject()
+    private val viewModel: StationsViewModel by inject()
 
-    private val dataGridView: StationsDataGridView by inject()
-    private val headerView: StationsHeaderView by inject()
     private val infoErrorView: StationsInfoErrorView by inject()
+    private val headerView: StationsHeaderView by inject()
+    private val dataGridView: StationsDataGridView by inject()
 
     private val currentLibType = BehaviorSubject.create<LibraryType>()
     private val currentLibParams = BehaviorSubject.create<String>()
 
     init {
-        showLoading()
 
         currentLibType.startWith(LibraryType.TopStations)
         currentLibParams.startWith("")
@@ -64,54 +63,27 @@ class StationsView : View() {
     override val root = vbox {
         addClass(Styles.backgroundWhite)
         vgrow = Priority.ALWAYS
-        add(infoErrorView)
+        //add(infoErrorView)
         add(headerView)
         add(dataGridView)
         dataGridView.root.fitToParentHeight()
     }
 
-    fun showNoResults(queryString: String? = null) {
-        headerView.hide()
-        dataGridView.hide()
-        infoErrorView.showNoResultsInfo(queryString)
-    }
-
-    fun showError() {
-        headerView.hide()
-        dataGridView.hide()
-        infoErrorView.showError()
-    }
-
-    fun showStations() {
-        infoErrorView.hide()
-        headerView.show()
-        dataGridView.show()
-    }
-
     private fun handleSearch(query: String) {
         if (query.length > 2)
-            controller.searchStations(query)
+            viewModel.searchStations(query)
         else {
-            headerView.hide()
-            dataGridView.hide()
             infoErrorView.showShortSearchInfo()
         }
     }
 
-    private fun showLoading() {
-        headerView.hide()
-        dataGridView.hide()
-        infoErrorView.showLoading()
-    }
-
     private fun showLibraryType(libraryType: LibraryType, params: String) {
-        showLoading()
         when (libraryType) {
-            LibraryType.Country -> controller.getStationsByCountry(params)
-            LibraryType.Favourites -> controller.getFavourites()
-            LibraryType.History -> controller.getHistory()
+            LibraryType.Country -> viewModel.getStationsByCountry(params)
+            LibraryType.Favourites -> viewModel.getFavourites()
+            LibraryType.History -> viewModel.getHistory()
             LibraryType.Search -> handleSearch(params)
-            else -> controller.getTopStations()
+            else -> viewModel.getTopStations()
         }
     }
 }

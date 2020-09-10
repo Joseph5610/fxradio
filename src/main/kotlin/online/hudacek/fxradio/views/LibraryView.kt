@@ -16,16 +16,12 @@
 
 package online.hudacek.fxradio.views
 
-import javafx.collections.ObservableList
 import javafx.geometry.Pos
-import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.controllers.LibraryController
 import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.smallLabel
-import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
@@ -33,16 +29,16 @@ import tornadofx.controlsfx.glyph
 
 class LibraryView : View() {
 
-    private val controller: LibraryController by inject()
+    private val viewModel: LibraryViewModel by inject()
 
     private val retryLink = hyperlink(messages["downloadRetry"]) {
-        hide()
         action {
-            controller.getCountries()
+            viewModel.showCountries()
         }
+        visibleWhen(viewModel.errorVisible)
     }
 
-    private val libraryListView = listview(controller.libraryItems) {
+    private val libraryListView = listview(viewModel.librariesListProperty) {
         prefHeight = items.size * 30.0 + 10
 
         cellFormat {
@@ -59,7 +55,7 @@ class LibraryView : View() {
         addClass(Styles.libraryListView)
     }
 
-    private val countriesListView = listview<Countries> {
+    private val countriesListView = listview(viewModel.countriesListProperty) {
         cellFormat {
             graphic = hbox(5) {
                 val stationWord = if (item.stationcount > 1)
@@ -71,7 +67,6 @@ class LibraryView : View() {
                     addClass(Styles.libraryListItemTag)
                 }
             }
-
             addClass(Styles.libraryListItem)
         }
 
@@ -80,6 +75,8 @@ class LibraryView : View() {
             libraryListView.selectionModel.clearSelection()
             fire(LibraryRefreshEvent(LibraryType.Country, it.name))
         }
+
+        visibleWhen(!viewModel.errorVisible)
     }
 
     private val searchField = customTextfield {
@@ -94,7 +91,7 @@ class LibraryView : View() {
             }
         }
 
-        app.config.string(Config.Keys.searchQuery)?.let {
+        viewModel.savedQuery?.let {
             if (it.isNotBlank()) {
                 text = it
             }
@@ -102,30 +99,19 @@ class LibraryView : View() {
 
         //Fire up search results after input is written to text field
         textProperty().onChange {
-            if (it != null) {
-                if (it.length < 80) {
-                    fire(LibraryRefreshEvent(LibraryType.Search, it.trim()))
-                    with(app.config) {
-                        set(Config.Keys.searchQuery to text)
-                        save()
-                    }
-                }
-            }
+            it?.let(viewModel::handleSearch)
         }
 
         setOnMouseClicked {
-            fire(LibraryRefreshEvent(LibraryType.Search, text.trim()))
+            viewModel.handleSearchInputClick(text)
             countriesListView.selectionModel.clearSelection()
             libraryListView.selectionModel.clearSelection()
         }
     }
 
     init {
-        //Load Countries List
-        controller.getCountries()
-
         //set default view
-        libraryListView.selectionModel.select(controller.libraryItems[0])
+        libraryListView.selectionModel.select(viewModel.librariesListProperty[0])
         fire(LibraryRefreshEvent(LibraryType.TopStations))
 
         libraryListView.onUserSelect(1) {
@@ -154,24 +140,9 @@ class LibraryView : View() {
                 smallLabel(messages["countries"])
                 vbox(alignment = Pos.CENTER) {
                     add(countriesListView)
+                    add(retryLink)
                 }
             }
         }
-
-        bottom {
-            vbox(alignment = Pos.CENTER) {
-                maxHeight = 14.0
-            }
-        }
-    }
-
-    fun showCountries(countries: ObservableList<Countries>) {
-        retryLink.hide()
-        countriesListView.items.setAll(countries)
-    }
-
-    fun showError() {
-        fire(NotificationEvent(messages["downloadError"]))
-        retryLink.show()
     }
 }

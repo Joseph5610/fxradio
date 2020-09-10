@@ -18,6 +18,7 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Pos
 import online.hudacek.fxradio.extension.glyph
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -25,6 +26,8 @@ import tornadofx.*
  * This is a view that shows different errors or info messages on stationsView
  */
 class StationsInfoErrorView : View() {
+
+    private val viewModel: StationsViewModel by inject()
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
@@ -44,43 +47,13 @@ class StationsInfoErrorView : View() {
         paddingRight = 10.0
         add(header)
         add(subHeader)
+
+        visibleWhen(viewModel.errorVisible)
     }
 
     fun showShortSearchInfo() {
-        root.show()
         header.text = messages["searchingLibrary"]
         header.graphic = searchGlyph
         subHeader.text = messages["searchingLibraryDesc"]
     }
-
-    fun showNoResultsInfo(query: String?) {
-        root.show()
-        if (query != null) {
-            subHeader.text = messages["noResultsDesc"]
-        }
-
-        header.graphic = null
-        header.text =
-                if (query != null)
-                    "${messages["noResultsFor"]} \"$query\""
-                else {
-                    messages["noResults"]
-                }
-    }
-
-    fun showError() {
-        root.show()
-        header.graphic = errorGlyph
-        header.text = messages["connectionError"]
-        subHeader.text = messages["connectionErrorDesc"]
-    }
-
-    fun showLoading() {
-        root.show()
-        header.graphic = loadingGlyph
-        header.text = messages["library.loading"]
-        subHeader.text = ""
-    }
-
-    fun hide() = root.hide()
 }

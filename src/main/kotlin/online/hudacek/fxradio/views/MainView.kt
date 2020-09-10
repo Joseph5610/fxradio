@@ -19,7 +19,6 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Orientation
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.controllers.MainController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.extension.set
@@ -36,12 +35,10 @@ import tornadofx.controlsfx.notificationPane
 
 class MainView : View(FxRadio.appName) {
 
-    private val controller: MainController by inject()
     private val playerModel: PlayerModel by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     private val leftPaneView: LibraryView by inject()
-
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
 
@@ -62,7 +59,7 @@ class MainView : View(FxRadio.appName) {
 
     override fun onDock() {
         currentStage?.setOnCloseRequest {
-            controller.cancelMediaPlaying()
+            mediaPlayerWrapper.release()
         }
 
         if (playerModel.playerType.value == PlayerType.Custom) {

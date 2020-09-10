@@ -28,7 +28,7 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.controllers.menubar.MenuBarController
+import online.hudacek.fxradio.controllers.MenuBarController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
