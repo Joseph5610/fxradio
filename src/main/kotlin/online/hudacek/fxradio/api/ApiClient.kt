@@ -16,14 +16,21 @@
 
 package online.hudacek.fxradio.api
 
+import mu.KotlinLogging
+import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import online.hudacek.fxradio.FxRadio
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
+private val logger = KotlinLogging.logger {}
+
 class ApiClient(private val baseUrl: String) {
+
+    private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
 
     //What is app sending as a User Agent string
     private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
@@ -39,6 +46,7 @@ class ApiClient(private val baseUrl: String) {
                                     .build()
                     )
                 }
+                .connectionPool(connectionPool)
                 .build()
     }
 
@@ -52,4 +60,7 @@ class ApiClient(private val baseUrl: String) {
     }
 }
 
-internal fun <T : Any> ApiClient.create(service: KClass<T>): T = this.build().create(service.java)
+internal fun <T : Any> ApiClient.create(service: KClass<T>): T {
+    logger.debug { "Creating service: $service" }
+    return this.build().create(service.java)
+}

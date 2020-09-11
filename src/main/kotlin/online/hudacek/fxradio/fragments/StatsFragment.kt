@@ -37,16 +37,13 @@ class StatsFragment : Fragment() {
         add<ProgressFragment>()
     }
 
-    private val stationsApi: StationsApi
-        get() = StationsApi.client
-
     override fun onBeforeShow() {
         currentWindow?.opacity = 0.85
     }
 
     init {
         title = messages["title"]
-        stationsApi.getStats()
+        StationsApi.client.getStats()
                 .subscribeOn(Schedulers.io())
                 .observeOnFx()
                 .subscribe({

@@ -76,14 +76,13 @@ interface StationsApi {
 
         //API server URL property which is actually used for requests
         //Can be changed in app: About -> server selection
-        var hostname: String = ""
+        val hostname: String = ""
             get() = when {
                 app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
                 field.isEmpty() -> inetAddressHostname
                 else -> field
             }
 
-        val client: StationsApi
-            get() = ApiClient("https://$hostname").create(StationsApi::class)
+        val client by lazy { ApiClient("https://$hostname").create(StationsApi::class) }
     }
 }

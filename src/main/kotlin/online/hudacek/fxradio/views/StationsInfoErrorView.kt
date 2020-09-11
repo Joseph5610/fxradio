@@ -17,8 +17,10 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.extension.glyph
+import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -48,12 +50,59 @@ class StationsInfoErrorView : View() {
         add(header)
         add(subHeader)
 
-        visibleWhen(viewModel.errorVisible)
+        showWhen {
+            booleanBinding(viewModel.stationViewStatus) {
+                when (this.value) {
+                    StationsViewState.NoResults -> true.apply {
+                        showNoResults(this@StationsInfoErrorView.viewModel.currentLibParams.value)
+                    }
+                    StationsViewState.Error -> true.apply {
+                        showError()
+                    }
+                    StationsViewState.Loading -> true.apply {
+                        showLoading()
+                    }
+                    StationsViewState.ShortQuery -> true.apply {
+                        showShortQuery()
+                    }
+                    StationsViewState.Normal -> false
+                    else -> false
+                }
+            }
+        }
     }
 
-    fun showShortSearchInfo() {
+    private fun showShortQuery() {
         header.text = messages["searchingLibrary"]
         header.graphic = searchGlyph
         subHeader.text = messages["searchingLibraryDesc"]
+    }
+
+    private fun showNoResults(query: String?) {
+        if (query == null) {
+            subHeader.text = messages["noResultsDesc"]
+        } else {
+            subHeader.text = null
+        }
+
+        header.graphic = null
+        header.text =
+                if (query.isNullOrEmpty()) {
+                    messages["noResults"]
+                } else {
+                    "${messages["noResultsFor"]} \"$query\""
+                }
+    }
+
+    private fun showError() {
+        header.graphic = errorGlyph
+        header.text = messages["connectionError"]
+        subHeader.text = messages["connectionErrorDesc"]
+    }
+
+    private fun showLoading() {
+        header.graphic = loadingGlyph
+        header.text = messages["library.loading"]
+        subHeader.text = ""
     }
 }

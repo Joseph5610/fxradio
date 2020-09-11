@@ -38,9 +38,6 @@ import tornadofx.*
 
 class MenuBarController : Controller() {
 
-    private val stationsApi: StationsApi
-        get() = StationsApi.client
-
     private val logger = KotlinLogging.logger {}
 
     private val menuBarView: MenuBarView by inject()
@@ -51,8 +48,6 @@ class MenuBarController : Controller() {
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
-
-    fun openServerSelect() = find<ChangeServerFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -67,7 +62,7 @@ class MenuBarController : Controller() {
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun voteForStation(): Disposable = stationsApi
+    fun voteForStation(): Disposable = StationsApi.client
             .vote(playerModel.stationProperty.value.stationuuid)
             .observeOnFx()
             .subscribeOn(Schedulers.io())

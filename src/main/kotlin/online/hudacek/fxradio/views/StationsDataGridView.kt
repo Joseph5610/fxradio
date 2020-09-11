@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.views
 
+import com.github.thomasnield.rxkotlinfx.onChangedObservable
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
@@ -23,7 +24,9 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.StationsModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -37,14 +40,21 @@ class StationsDataGridView : View() {
     private val playerModel: PlayerModel by inject()
     private val viewModel: StationsViewModel by inject()
 
+    init {
+        viewModel.item = StationsModel()
+    }
+
     override val root = datagrid(viewModel.stationsProperty) {
         id = "stations"
 
-        selectionModel.selectedItemProperty().onChange {
-            //Update model on selected item
-            it?.let {
-                playerModel.stationProperty.value = it
-            }
+        itemsProperty
+                .onChangedObservable()
+                .subscribe {
+                    selectionModel.clearSelection()
+                }
+
+        onUserSelect(1) {
+            playerModel.stationProperty.value = it
         }
 
         cellCache {
@@ -82,6 +92,11 @@ class StationsDataGridView : View() {
                 }
             }
         }
-        visibleWhen(!viewModel.errorVisible)
+        hiddenWhen(viewModel.isError.or(booleanBinding(viewModel.stationViewStatus) {
+            when (this.value) {
+                StationsViewState.Normal -> false
+                else -> true
+            }
+        }))
     }
 }

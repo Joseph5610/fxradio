@@ -180,9 +180,6 @@ class MenuBarView : View() {
 
     private fun Menu.addAboutMenuContent() {
         separator()
-        item(messages["menu.app.server"]).action {
-            controller.openServerSelect()
-        }
         item(messages["menu.app.attributions"]).action {
             controller.openAttributions()
         }

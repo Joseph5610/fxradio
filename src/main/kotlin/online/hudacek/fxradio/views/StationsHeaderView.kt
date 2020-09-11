@@ -18,13 +18,14 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
-import online.hudacek.fxradio.events.LibraryRefreshEvent
 import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.events.LibraryTypeChanged
+import online.hudacek.fxradio.events.LibraryTypeChangedConditional
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
 
 /**
@@ -50,7 +51,7 @@ class StationsHeaderView : View() {
     }
 
     init {
-        subscribe<LibraryRefreshEvent> {
+        subscribe<LibraryTypeChanged> {
             applyActionButton(it.type)
             shownLibraryName.text = when (it.type) {
                 LibraryType.Favourites -> messages["favourites"]
@@ -76,7 +77,12 @@ class StationsHeaderView : View() {
             }
         }
 
-        visibleWhen(!viewModel.errorVisible)
+        hiddenWhen(viewModel.isError.or(booleanBinding(viewModel.stationViewStatus) {
+            when (this.value) {
+                StationsViewState.Normal -> false
+                else -> true
+            }
+        }))
     }
 
     private fun applyActionButton(type: LibraryType) {
@@ -93,7 +99,7 @@ class StationsHeaderView : View() {
                     .cleanup()
                     .subscribe({
                         fire(NotificationEvent(messages["database.clear.ok"]))
-                        fire(LibraryRefreshConditionalEvent(LibraryType.Favourites))
+                        fire(LibraryTypeChangedConditional(LibraryType.Favourites))
                     }, {
                         logger.error(it) { "Can't remove favourites!" }
                         fire(NotificationEvent(messages["database.clear.error"]))

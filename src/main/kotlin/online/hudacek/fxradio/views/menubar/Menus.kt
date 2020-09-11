@@ -23,7 +23,7 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.controllers.MenuBarController
-import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
+import online.hudacek.fxradio.events.LibraryTypeChangedConditional
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.createImage
@@ -115,7 +115,7 @@ object Menus : Component() {
                     .flatMapSingle { playerModel.stationProperty.value.removeFavourite() }
                     .subscribe({
                         fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
-                        fire(LibraryRefreshConditionalEvent(LibraryType.Favourites))
+                        fire(LibraryTypeChangedConditional(LibraryType.Favourites))
                     }, {
                         fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
                     })

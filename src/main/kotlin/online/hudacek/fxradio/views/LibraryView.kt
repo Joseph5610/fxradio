@@ -17,8 +17,9 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.events.LibraryRefreshEvent
+import online.hudacek.fxradio.events.LibraryTypeChanged
 import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.extension.smallLabel
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -35,7 +36,7 @@ class LibraryView : View() {
         action {
             viewModel.showCountries()
         }
-        visibleWhen(viewModel.errorVisible)
+        showWhen { viewModel.isError }
     }
 
     private val libraryListView = listview(viewModel.librariesListProperty) {
@@ -73,10 +74,21 @@ class LibraryView : View() {
         addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
-            fire(LibraryRefreshEvent(LibraryType.Country, it.name))
+            fire(LibraryTypeChanged(LibraryType.Country, it.name))
         }
 
-        visibleWhen(!viewModel.errorVisible)
+        hiddenWhen(viewModel.isError)
+    }
+
+    init {
+        //set default view
+        libraryListView.selectionModel.select(viewModel.librariesListProperty[0])
+        fire(LibraryTypeChanged(LibraryType.TopStations))
+
+        libraryListView.onUserSelect(1) {
+            countriesListView.selectionModel.clearSelection()
+            fire(LibraryTypeChanged(it.type))
+        }
     }
 
     private val searchField = customTextfield {
@@ -106,17 +118,6 @@ class LibraryView : View() {
             viewModel.handleSearchInputClick(text)
             countriesListView.selectionModel.clearSelection()
             libraryListView.selectionModel.clearSelection()
-        }
-    }
-
-    init {
-        //set default view
-        libraryListView.selectionModel.select(viewModel.librariesListProperty[0])
-        fire(LibraryRefreshEvent(LibraryType.TopStations))
-
-        libraryListView.onUserSelect(1) {
-            countriesListView.selectionModel.clearSelection()
-            fire(LibraryRefreshEvent(it.type))
         }
     }
 

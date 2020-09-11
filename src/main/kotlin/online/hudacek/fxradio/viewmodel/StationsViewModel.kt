@@ -3,72 +3,122 @@ package online.hudacek.fxradio.viewmodel
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
-import javafx.beans.property.SimpleBooleanProperty
+import javafx.collections.ObservableList
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.events.LibraryTypeChanged
+import online.hudacek.fxradio.events.LibraryTypeChangedConditional
 import tornadofx.*
 
 class StationsModel {
-    val stations = observableListOf(Station.stub())
+    val stations: ObservableList<Station> by property(observableListOf(Station.stub()))
+}
+
+enum class StationsViewState {
+    Normal, Error, Loading, NoResults, ShortQuery
 }
 
 class StationsViewModel : ItemViewModel<StationsModel>() {
 
-    val stationsProperty = bind(StationsModel::stations) as ListProperty
-    val errorVisible = SimpleBooleanProperty(false)
+    private val logger = KotlinLogging.logger {}
 
-    private val stationsApi: StationsApi
-        get() = StationsApi.client
+    private val stationsHistory: StationsHistoryModel by inject()
+
+    val stationsProperty = bind(StationsModel::stations) as ListProperty
+    val isError = booleanProperty(false)
+    val stationViewStatus = objectProperty(StationsViewState.Normal)
+
+    val currentLibType = BehaviorSubject.create<LibraryType>()
+    val currentLibParams = BehaviorSubject.create<String>()
+
+    init {
+        currentLibType.startWith(LibraryType.TopStations)
+        currentLibParams.startWith("")
+
+        //Handle change of stations library
+        subscribe<LibraryTypeChanged> {
+            currentLibParams.onNext(it.params)
+            currentLibType.onNext(it.type)
+            showLibraryType(it.type, it.params)
+        }
+
+        subscribe<LibraryTypeChangedConditional> {
+            currentLibType.value?.let { value ->
+                if (it.onlyWhen == value) {
+                    showLibraryType(value, currentLibParams.value ?: "")
+                }
+            }
+        }
+    }
 
     //retrieve favourites from DB
-    fun getFavourites(): Disposable = Station.favourites()
+    private fun getFavourites(): Disposable = Station.favourites()
             .observeOnFx()
             .subscribeOn(Schedulers.io())
-            .subscribe({
-                errorVisible.value = false
-                stationsProperty.setAll(it)
-            }, ::handleError)
+            .subscribe(::handleResponse, ::handleError)
 
     //retrieve all stations from given country from endpoint
-    fun getStationsByCountry(country: String): Disposable = stationsApi
+    private fun getStationsByCountry(country: String): Disposable = StationsApi.client
             .getStationsByCountry(CountriesBody(), country)
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe({
-                errorVisible.value = false
-                stationsProperty.setAll(it)
-            }, ::handleError)
+            .subscribe(::handleResponse, ::handleError)
 
     //search for station name on endpoint
-    fun searchStations(name: String): Disposable = stationsApi
-            .searchStationByName(SearchBody(name))
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
-            .subscribe({
-                errorVisible.value = false
-                stationsProperty.setAll(it)
-            }, ::handleError)
-
-    //retrieve history list
-    fun getHistory() {
-
+    private fun searchStations(name: String) {
+        if (name.length > 2) {
+            StationsApi.client
+                    .searchStationByName(SearchBody(name))
+                    .subscribeOn(Schedulers.io())
+                    .observeOnFx()
+                    .subscribe(::handleResponse, ::handleError)
+        } else {
+            stationViewStatus.value = StationsViewState.ShortQuery
+        }
     }
 
+    //retrieve history list
+    private fun getHistory() = handleResponse(stationsHistory.stations)
+
     //retrieve top voted stations list from endpoint
-    fun getTopStations(): Disposable = stationsApi
+    private fun getTopStations(): Disposable = StationsApi.client
             .getTopStations()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe({
-                errorVisible.value = false
-                stationsProperty.setAll(it)
-            }, ::handleError)
+            .subscribe(::handleResponse, ::handleError)
 
+    private fun handleResponse(stations: List<Station>) {
+        isError.value = false
+        stationsProperty.set(stations.asObservable())
+        if (stations.isEmpty()) {
+            stationViewStatus.value = StationsViewState.NoResults
+        } else {
+            stationViewStatus.value = StationsViewState.Normal
+        }
+    }
 
     private fun handleError(throwable: Throwable) {
-        errorVisible.value = true
+        logger.error(throwable) { "Error showing station library." }
+        isError.value = true
+        stationViewStatus.value = StationsViewState.Error
     }
+
+    private fun showLibraryType(libraryType: LibraryType, params: String) {
+        when (libraryType) {
+            LibraryType.Country -> getStationsByCountry(params)
+            LibraryType.Favourites -> getFavourites()
+            LibraryType.History -> getHistory()
+            LibraryType.Search -> searchStations(params)
+            else -> getTopStations()
+        }
+    }
+
+    override fun toString() = "StationsViewModel(stationsProperty=${stationsProperty.value}, isError=${isError.value})"
 }
+

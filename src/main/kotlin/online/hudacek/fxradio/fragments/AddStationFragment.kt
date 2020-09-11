@@ -34,9 +34,6 @@ class AddStationFragment : Fragment("Add new station") {
 
     private val model: AddStationModel by inject()
 
-    private val stationsApi: StationsApi
-        get() = StationsApi.client
-
     override val root = notificationPane {
         prefWidth = 400.0
         model.item = AddStation(AddStationBody())

@@ -81,9 +81,11 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
+/*
 jfxJar {
     dependsOn test
 }
+*/
 
 jfx {
     HashMap<String, String> attributes = new HashMap<String, String>()

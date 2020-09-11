@@ -16,13 +16,8 @@
 
 package online.hudacek.fxradio.views
 
-import io.reactivex.subjects.BehaviorSubject
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.events.LibraryRefreshConditionalEvent
-import online.hudacek.fxradio.events.LibraryRefreshEvent
-import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.viewmodel.StationsViewModel
 import tornadofx.*
 
 /**
@@ -30,60 +25,16 @@ import tornadofx.*
  */
 class StationsView : View() {
 
-    private val viewModel: StationsViewModel by inject()
-
     private val infoErrorView: StationsInfoErrorView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
 
-    private val currentLibType = BehaviorSubject.create<LibraryType>()
-    private val currentLibParams = BehaviorSubject.create<String>()
-
-    init {
-
-        currentLibType.startWith(LibraryType.TopStations)
-        currentLibParams.startWith("")
-
-        //Handle change of stations library
-        subscribe<LibraryRefreshEvent> {
-            currentLibParams.onNext(it.params)
-            currentLibType.onNext(it.type)
-            showLibraryType(it.type, it.params)
-        }
-
-        subscribe<LibraryRefreshConditionalEvent> {
-            currentLibType.value?.let { value ->
-                if (it.onlyWhen == value) {
-                    showLibraryType(value, currentLibParams.value ?: "")
-                }
-            }
-        }
-    }
-
     override val root = vbox {
         addClass(Styles.backgroundWhite)
         vgrow = Priority.ALWAYS
-        //add(infoErrorView)
+        add(infoErrorView)
         add(headerView)
         add(dataGridView)
         dataGridView.root.fitToParentHeight()
-    }
-
-    private fun handleSearch(query: String) {
-        if (query.length > 2)
-            viewModel.searchStations(query)
-        else {
-            infoErrorView.showShortSearchInfo()
-        }
-    }
-
-    private fun showLibraryType(libraryType: LibraryType, params: String) {
-        when (libraryType) {
-            LibraryType.Country -> viewModel.getStationsByCountry(params)
-            LibraryType.Favourites -> viewModel.getFavourites()
-            LibraryType.History -> viewModel.getHistory()
-            LibraryType.Search -> handleSearch(params)
-            else -> viewModel.getTopStations()
-        }
     }
 }

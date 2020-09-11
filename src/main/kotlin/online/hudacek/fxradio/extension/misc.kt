@@ -17,7 +17,9 @@
 package online.hudacek.fxradio.extension
 
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
+import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
+import javafx.scene.Node
 import javafx.scene.control.ContextMenu
 import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
@@ -95,3 +97,8 @@ internal fun App.openUrl(url: String, query: String = "") {
 }
 
 internal fun String.asBase64() = Base64.getEncoder().encodeToString(this.toByteArray())
+
+internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
+        visibleWhen(expr()).apply {
+            managedWhen(expr())
+        }
