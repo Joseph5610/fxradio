@@ -62,7 +62,7 @@ class MenuBarController : Controller() {
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun voteForStation(): Disposable = StationsApi.client
+    fun voteForStation(): Disposable = StationsApi.service
             .vote(playerModel.stationProperty.value.stationuuid)
             .observeOnFx()
             .subscribeOn(Schedulers.io())
@@ -75,7 +75,7 @@ class MenuBarController : Controller() {
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 
     fun checkForUpdate() {
-        VCSApi.client.currentVersion()
+        VCSApi.service.currentVersion()
                 .observeOnFx()
                 .subscribeOn(Schedulers.io())
                 .subscribe({ vcs ->

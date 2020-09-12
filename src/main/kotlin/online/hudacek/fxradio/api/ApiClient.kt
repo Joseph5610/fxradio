@@ -58,6 +58,13 @@ class ApiClient(private val baseUrl: String) {
                 .client(httpClient)
                 .build()
     }
+
+    fun shutdown() {
+        logger.debug { "Shutting down okhttp" }
+        logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }
+        httpClient.dispatcher().executorService().shutdown()
+        httpClient.connectionPool().evictAll()
+    }
 }
 
 internal fun <T : Any> ApiClient.create(service: KClass<T>): T {

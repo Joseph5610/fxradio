@@ -43,7 +43,7 @@ class StatsFragment : Fragment() {
 
     init {
         title = messages["title"]
-        StationsApi.client.getStats()
+        StationsApi.service.getStats()
                 .subscribeOn(Schedulers.io())
                 .observeOnFx()
                 .subscribe({

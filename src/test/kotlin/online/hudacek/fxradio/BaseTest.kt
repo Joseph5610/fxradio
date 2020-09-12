@@ -70,7 +70,7 @@ class BaseTest {
 
     @Test
     fun apiTest() {
-        StationsApi.client
+        StationsApi.service
                 .getTopStations()
                 .subscribe { stations ->
                     Assertions.assertEquals(50, stations.size)

@@ -29,6 +29,7 @@ interface VCSApi {
     fun currentVersion(): Single<VCSResponse>
 
     companion object {
-        val client: VCSApi by lazy { ApiClient("http://m2-multiplayer.eu/").create(VCSApi::class) }
+        val client: ApiClient by lazy { ApiClient("http://m2-multiplayer.eu/") }
+        val service: VCSApi by lazy { client.create(VCSApi::class) }
     }
 }

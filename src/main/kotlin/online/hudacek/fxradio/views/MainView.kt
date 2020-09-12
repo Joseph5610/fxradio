@@ -19,6 +19,8 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Orientation
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.extension.set
@@ -60,6 +62,8 @@ class MainView : View(FxRadio.appName) {
     override fun onDock() {
         currentStage?.setOnCloseRequest {
             mediaPlayerWrapper.release()
+            StationsApi.client.shutdown()
+            VCSApi.client.shutdown()
         }
 
         if (playerModel.playerType.value == PlayerType.Custom) {

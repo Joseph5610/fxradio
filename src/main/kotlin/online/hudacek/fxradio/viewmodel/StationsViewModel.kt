@@ -64,7 +64,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
             .subscribe(::handleResponse, ::handleError)
 
     //retrieve all stations from given country from endpoint
-    private fun getStationsByCountry(country: String): Disposable = StationsApi.client
+    private fun getStationsByCountry(country: String): Disposable = StationsApi.service
             .getStationsByCountry(CountriesBody(), country)
             .subscribeOn(Schedulers.io())
             .observeOnFx()
@@ -73,7 +73,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     //search for station name on endpoint
     private fun searchStations(name: String) {
         if (name.length > 2) {
-            StationsApi.client
+            StationsApi.service
                     .searchStationByName(SearchBody(name))
                     .subscribeOn(Schedulers.io())
                     .observeOnFx()
@@ -87,7 +87,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     private fun getHistory() = handleResponse(stationsHistory.stations)
 
     //retrieve top voted stations list from endpoint
-    private fun getTopStations(): Disposable = StationsApi.client
+    private fun getTopStations(): Disposable = StationsApi.service
             .getTopStations()
             .subscribeOn(Schedulers.io())
             .observeOnFx()

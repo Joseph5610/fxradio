@@ -83,6 +83,7 @@ interface StationsApi {
                 else -> field
             }
 
-        val client by lazy { ApiClient("https://$hostname").create(StationsApi::class) }
+        val client by lazy { ApiClient("https://$hostname") }
+        val service by lazy { client.create(StationsApi::class)}
     }
 }

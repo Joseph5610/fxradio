@@ -60,7 +60,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
         showCountries()
     }
 
-    fun showCountries(): Disposable = StationsApi.client
+    fun showCountries(): Disposable = StationsApi.service
             .getCountries(CountriesBody())
             .subscribeOn(Schedulers.io())
             .observeOnFx()

@@ -17,7 +17,6 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.viewmodel.LogLevel
 import online.hudacek.fxradio.viewmodel.LogLevelModel
@@ -38,8 +37,6 @@ class FxRadio : App(MainView::class, Styles::class) {
 
     private val logLevel: LogLevelModel by inject()
 
-    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
-
     override fun start(stage: Stage) {
         with(stage) {
             minWidth = 600.0
@@ -51,10 +48,6 @@ class FxRadio : App(MainView::class, Styles::class) {
         val savedLevel = Level.valueOf(config.string(Config.Keys.logLevel))
         logLevel.item = LogLevel(savedLevel)
         logLevel.commit()
-
-        beforeShutdown {
-            mediaPlayerWrapper.release()
-        }
     }
 
     /**

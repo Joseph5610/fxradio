@@ -20,8 +20,8 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.storage.ImageCache
 import tornadofx.*
 import java.net.URL
 
@@ -53,7 +53,7 @@ internal fun ImageView.createImage(station: Station) {
 
         logger.debug { "downloading logo of ${station.name} from ${station.favicon}" }
 
-        runAsync {
+        runAsync(daemon = true) {
             URL(station.favicon).openConnection().apply {
                 setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
                 getInputStream().use { stream ->
