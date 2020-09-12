@@ -19,8 +19,8 @@ package online.hudacek.fxradio.storage
 import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.extension.defaultRadioLogo
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
 import java.io.InputStream
@@ -35,6 +35,7 @@ import java.nio.file.StandardCopyOption
  * and loaded using fileInputStream
  */
 object ImageCache {
+
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
     private val logger = KotlinLogging.logger {}
 

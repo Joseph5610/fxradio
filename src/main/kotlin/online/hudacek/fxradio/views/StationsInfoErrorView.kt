@@ -50,23 +50,31 @@ class StationsInfoErrorView : View() {
         add(header)
         add(subHeader)
 
+        //TODO rework
         showWhen {
             booleanBinding(viewModel.stationViewStatus) {
                 when (this.value) {
-                    StationsViewState.NoResults -> true.apply {
-                        showNoResults(this@StationsInfoErrorView.viewModel.currentLibParams.value)
-                    }
-                    StationsViewState.Error -> true.apply {
-                        showError()
-                    }
-                    StationsViewState.Loading -> true.apply {
-                        showLoading()
-                    }
-                    StationsViewState.ShortQuery -> true.apply {
-                        showShortQuery()
-                    }
                     StationsViewState.Normal -> false
-                    else -> false
+                    else -> true
+                }
+            }
+        }
+    }
+
+    init {
+        viewModel.stationViewStatus.onChange {
+            when (it) {
+                StationsViewState.NoResults -> {
+                    showNoResults(this@StationsInfoErrorView.viewModel.currentLibParams.value)
+                }
+                StationsViewState.Error -> {
+                    showError()
+                }
+                StationsViewState.Loading -> {
+                    showLoading()
+                }
+                StationsViewState.ShortQuery -> {
+                    showShortQuery()
                 }
             }
         }
