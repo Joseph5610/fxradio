@@ -64,7 +64,7 @@ class FxRadio : App(MainView::class, Styles::class) {
          * Get version from jar MANIFEST.MF file
          */
         val version: String by lazy {
-            FxRadio::class.java.getPackage().implementationVersion ?: "DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT"
         }
     }
 }

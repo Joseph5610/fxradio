@@ -17,8 +17,11 @@
 package online.hudacek.fxradio.controllers
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
+import com.vdurmont.semver4j.Semver
+import com.vdurmont.semver4j.SemverException
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javafx.application.Platform
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import mu.KotlinLogging
@@ -78,18 +81,32 @@ class MenuBarController : Controller() {
         VCSApi.service.currentVersion()
                 .observeOnFx()
                 .subscribeOn(Schedulers.io())
+                .doOnError {
+                    println("ahoj ahoj aa")
+                }
                 .subscribe({ vcs ->
-                    FxRadio.version.toDoubleOrNull().let { appVersion ->
-                        if (appVersion == null) {
+                    try {
+                        val actualVersion = Semver(FxRadio.version, Semver.SemverType.LOOSE)
+                        val latestVersion = Semver(vcs.currentVersion, Semver.SemverType.LOOSE)
+                        if (actualVersion.isEqualTo(latestVersion)) {
                             fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
-                        } else if (vcs.currentVersion > appVersion) {
+                        } else if (latestVersion.isGreaterThan(actualVersion)) {
                             logger.info { "There is a new version ${vcs.currentVersion}" }
-                            fire(NotificationEvent(vcs.languages[0].message, op = {
-                                actions.setAll(Action(messages["vcs.download"]) {
-                                    app.openUrl(vcs.downloadUrl)
-                                })
-                            }))
+                            if (vcs.required) {
+                                confirm(vcs.languages[0].message, vcs.languages[0].description) {
+                                    Platform.exit()
+                                }
+                            } else {
+                                fire(NotificationEvent(vcs.languages[0].message, op = {
+                                    actions.setAll(Action(messages["vcs.download"]) {
+                                        app.openUrl(vcs.downloadUrl)
+                                    })
+                                }))
+                            }
                         }
+                    } catch (e: SemverException) {
+                        logger.error(e) { "Can't parse version string, acting as no update available." }
+                        fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
                     }
                 }, {
                     logger.error(it) { "VCS check problem!" }

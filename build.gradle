@@ -43,6 +43,7 @@ ext.versions = [
         'sqlite-jdbc'         : '3.21.0.1',
         'rxkotlin-jdbc'       : '0.4.1',
         'nsmenufx'            : '2.1.7',
+        'semver'              : '3.1.0',
         'testfx'              : '4.0.16-alpha',
         'junit'               : '5.3.1'
 ]
@@ -80,6 +81,7 @@ dependencies {
     compile "org.xerial:sqlite-jdbc:${versions["sqlite-jdbc"]}"
     compile "org.nield:rxkotlin-jdbc:${versions["rxkotlin-jdbc"]}"
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:${versions["nsmenufx"]}"
+    compile "com.vdurmont:semver4j:${versions["semver"]}"
 
     //Players
     compile "io.humble:humble-video-all:${versions["humble"]}"

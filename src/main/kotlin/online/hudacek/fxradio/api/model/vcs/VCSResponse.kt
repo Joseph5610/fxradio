@@ -17,7 +17,7 @@
 package online.hudacek.fxradio.api.model.vcs
 
 data class VCSResponse(
-        val currentVersion: Double,
+        val currentVersion: String,
         val required: Boolean,
         val downloadUrl: String,
         val languages: List<Languages>
