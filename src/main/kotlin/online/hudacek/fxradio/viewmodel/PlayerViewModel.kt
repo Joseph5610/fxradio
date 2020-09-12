@@ -10,8 +10,8 @@ import tornadofx.ItemViewModel
 import tornadofx.onChange
 import tornadofx.property
 
-class Player(animate: Boolean = true, station: Station = Station.stub(),
-             playerType: PlayerType, notifications: Boolean = true, volume: Double) {
+class PlayerModel(animate: Boolean = true, station: Station = Station.stub(),
+                  playerType: PlayerType, notifications: Boolean = true, volume: Double) {
 
     var animate: Boolean by property(animate)
     var notifications: Boolean by property(notifications)
@@ -20,19 +20,19 @@ class Player(animate: Boolean = true, station: Station = Station.stub(),
     var volume: Double by property(volume)
 }
 
-class PlayerModel : ItemViewModel<Player>() {
+class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
-    private val stationsHistory: StationsHistoryModel by inject()
+    private val stationsHistoryView: StationsHistoryViewModel by inject()
 
-    val animate = bind(Player::animate) as BooleanProperty
-    val notifications = bind(Player::notifications) as BooleanProperty
-    val stationProperty = bind(Player::station) as ObjectProperty
-    val playerType = bind(Player::playerType) as ObjectProperty
-    val volumeProperty = bind(Player::volume) as DoubleProperty
+    val animate = bind(PlayerModel::animate) as BooleanProperty
+    val notifications = bind(PlayerModel::notifications) as BooleanProperty
+    val stationProperty = bind(PlayerModel::station) as ObjectProperty
+    val playerType = bind(PlayerModel::playerType) as ObjectProperty
+    val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
 
     init {
         stationProperty.onChange {
-            it?.let(stationsHistory::add)
+            it?.let(stationsHistoryView::add)
         }
     }
 

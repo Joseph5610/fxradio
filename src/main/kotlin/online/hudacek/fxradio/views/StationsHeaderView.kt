@@ -77,12 +77,12 @@ class StationsHeaderView : View() {
             }
         }
 
-        hiddenWhen(viewModel.isError.or(booleanBinding(viewModel.stationViewStatus) {
-            when (this.value) {
+        hiddenWhen(booleanBinding(viewModel.stationViewStatus) {
+            when (value) {
                 StationsViewState.Normal -> false
                 else -> true
             }
-        }))
+        })
     }
 
     private fun applyActionButton(type: LibraryType) {

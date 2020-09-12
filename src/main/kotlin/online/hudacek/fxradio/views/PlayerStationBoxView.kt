@@ -23,11 +23,10 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
-import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.notification
 import online.hudacek.fxradio.extension.tickerView
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
@@ -37,7 +36,7 @@ import tornadofx.*
  */
 class PlayerStationBoxView : View() {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
 
     private var stationLogo = imageview(Config.Resources.defaultRadioIcon) {
         effect = DropShadow(20.0, Color.WHITE)
@@ -49,7 +48,7 @@ class PlayerStationBoxView : View() {
     private val stationNameStatic = label()
 
     private var stationNameBox = vbox(alignment = Pos.CENTER) {
-        if (playerModel.animate.value) {
+        if (playerViewModel.animate.value) {
             add(stationNameAnimated)
         } else {
             add(stationNameStatic)
@@ -63,8 +62,8 @@ class PlayerStationBoxView : View() {
 
     init {
         //Subscribe to property changes
-        playerModel.stationProperty.onChange { it?.let(::onStationChange) }
-        playerModel.animate.onChange(::onAnimatePropertyChanged)
+        playerViewModel.stationProperty.onChange { it?.let(::onStationChange) }
+        playerViewModel.animate.onChange(::onAnimatePropertyChanged)
         subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataUpdated) }
     }
 
@@ -99,12 +98,6 @@ class PlayerStationBoxView : View() {
             if (isValidStation()) {
                 updateStationName(name)
                 stationLogo.createImage(this)
-
-                if (favicon != null) {
-                    stationLogo.copyMenu(clipboard,
-                            name = messages["copy.image.url"],
-                            value = favicon ?: "")
-                }
             }
         }
     }
@@ -119,7 +112,7 @@ class PlayerStationBoxView : View() {
         } else {
             stationNameBox.replaceChildren(stationNameStatic)
         }
-        onStationChange(playerModel.stationProperty.value)
+        onStationChange(playerViewModel.stationProperty.value)
     }
 
     /**
@@ -136,10 +129,10 @@ class PlayerStationBoxView : View() {
             val actualTitle = if (newStreamTitle.isNotEmpty()) {
                 newStreamTitle
             } else {
-                playerModel.stationProperty.value.name
+                playerViewModel.stationProperty.value.name
             }
 
-            if (playerModel.notifications.value) {
+            if (playerViewModel.notifications.value) {
                 notification(
                         title = newSongName,
                         subtitle = actualTitle)
@@ -152,7 +145,7 @@ class PlayerStationBoxView : View() {
 
     //change station name for static or animated view
     private fun updateStationName(stationName: String) {
-        if (playerModel.animate.value) stationNameAnimated.updateText(stationName)
+        if (playerViewModel.animate.value) stationNameAnimated.updateText(stationName)
         else {
             stationNameStatic.text = stationName
             stationNameStatic.tooltip = Tooltip(stationName)

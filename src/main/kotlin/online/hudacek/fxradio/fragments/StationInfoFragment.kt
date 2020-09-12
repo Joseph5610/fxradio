@@ -22,7 +22,7 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.openUrl
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
@@ -31,9 +31,9 @@ import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment(station: Station? = null) : Fragment() {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
 
-    private val shownStation: Station = station ?: playerModel.stationProperty.value
+    private val shownStation: Station = station ?: playerViewModel.stationProperty.value
 
     private val items = observableListOf<String>()
 

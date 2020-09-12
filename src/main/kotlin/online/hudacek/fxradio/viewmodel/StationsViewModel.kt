@@ -28,10 +28,9 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
 
     private val logger = KotlinLogging.logger {}
 
-    private val stationsHistory: StationsHistoryModel by inject()
+    private val stationsHistoryView: StationsHistoryViewModel by inject()
 
     val stationsProperty = bind(StationsModel::stations) as ListProperty
-    val isError = booleanProperty(false)
     val stationViewStatus = objectProperty(StationsViewState.Normal)
 
     val currentLibType = BehaviorSubject.create<LibraryType>()
@@ -84,7 +83,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     }
 
     //retrieve history list
-    private fun getHistory() = handleResponse(stationsHistory.stations)
+    private fun getHistory() = handleResponse(stationsHistoryView.stations)
 
     //retrieve top voted stations list from endpoint
     private fun getTopStations(): Disposable = StationsApi.service
@@ -94,7 +93,6 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
             .subscribe(::handleResponse, ::handleError)
 
     private fun handleResponse(stations: List<Station>) {
-        isError.value = false
         stationsProperty.set(stations.asObservable())
         if (stations.isEmpty()) {
             stationViewStatus.value = StationsViewState.NoResults
@@ -105,11 +103,11 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
 
     private fun handleError(throwable: Throwable) {
         logger.error(throwable) { "Error showing station library." }
-        isError.value = true
         stationViewStatus.value = StationsViewState.Error
     }
 
     private fun showLibraryType(libraryType: LibraryType, params: String) {
+        stationViewStatus.value = StationsViewState.Loading
         when (libraryType) {
             LibraryType.Country -> getStationsByCountry(params)
             LibraryType.Favourites -> getFavourites()
@@ -119,6 +117,6 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
         }
     }
 
-    override fun toString() = "StationsViewModel(stationsProperty=${stationsProperty.value}, isError=${isError.value})"
+    override fun toString() = "StationsViewModel(stationsProperty=${stationsProperty.value})"
 }
 

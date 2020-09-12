@@ -33,7 +33,7 @@ import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
 import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
@@ -46,7 +46,7 @@ class MenuBarController : Controller() {
     private val menuBarView: MenuBarView by inject()
 
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -66,7 +66,7 @@ class MenuBarController : Controller() {
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun voteForStation(): Disposable = StationsApi.service
-            .vote(playerModel.stationProperty.value.stationuuid)
+            .vote(playerViewModel.stationProperty.value.stationuuid)
             .observeOnFx()
             .subscribeOn(Schedulers.io())
             .subscribe({

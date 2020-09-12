@@ -50,10 +50,9 @@ class StationsInfoErrorView : View() {
         add(header)
         add(subHeader)
 
-        //TODO rework
         showWhen {
             booleanBinding(viewModel.stationViewStatus) {
-                when (this.value) {
+                when (value) {
                     StationsViewState.Normal -> false
                     else -> true
                 }
@@ -64,25 +63,19 @@ class StationsInfoErrorView : View() {
     init {
         viewModel.stationViewStatus.onChange {
             when (it) {
-                StationsViewState.NoResults -> {
-                    showNoResults(this@StationsInfoErrorView.viewModel.currentLibParams.value)
-                }
-                StationsViewState.Error -> {
-                    showError()
-                }
-                StationsViewState.Loading -> {
-                    showLoading()
-                }
-                StationsViewState.ShortQuery -> {
-                    showShortQuery()
-                }
+                StationsViewState.NoResults -> showNoResults(this.viewModel.currentLibParams.value)
+                StationsViewState.Error -> showError()
+                StationsViewState.Loading -> showLoading()
+                StationsViewState.ShortQuery -> showShortQuery()
             }
         }
     }
 
     private fun showShortQuery() {
-        header.text = messages["searchingLibrary"]
-        header.graphic = searchGlyph
+        with(header) {
+            text = messages["searchingLibrary"]
+            graphic = searchGlyph
+        }
         subHeader.text = messages["searchingLibraryDesc"]
     }
 
@@ -103,14 +96,18 @@ class StationsInfoErrorView : View() {
     }
 
     private fun showError() {
-        header.graphic = errorGlyph
-        header.text = messages["connectionError"]
+        with(header) {
+            graphic = errorGlyph
+            text = messages["connectionError"]
+        }
         subHeader.text = messages["connectionErrorDesc"]
     }
 
     private fun showLoading() {
-        header.graphic = loadingGlyph
-        header.text = messages["library.loading"]
+        with(header) {
+            graphic = loadingGlyph
+            text = messages["library.loading"]
+        }
         subHeader.text = ""
     }
 }

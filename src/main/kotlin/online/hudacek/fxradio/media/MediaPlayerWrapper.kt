@@ -23,7 +23,7 @@ import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.media.player.CustomPlayer
 import online.hudacek.fxradio.media.player.VLCPlayer
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
@@ -35,7 +35,7 @@ enum class PlayerType {
 //TODO get rid of this class in its current form
 class MediaPlayerWrapper : Component(), ScopedInstance {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
 
     private var internalMediaPlayer: MediaPlayer = MediaPlayer.stub
     private var internalPlayingStatus = PlayingStatus.Stopped
@@ -43,7 +43,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     init {
         //Update internal player type
-        playerModel.playerType.onChange {
+        playerViewModel.playerType.onChange {
             if (it != null) {
                 logger.info { "player type changed: $it" }
                 internalMediaPlayer.releasePlayer()
@@ -52,7 +52,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         }
 
         //Set volume for current player
-        playerModel.volumeProperty.onChange {
+        playerViewModel.volumeProperty.onChange {
             logger.debug { "volume changed: $it" }
             internalVolume = it
             internalMediaPlayer.changeVolume(it)
@@ -62,13 +62,13 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         subscribe<PlaybackChangeEvent> {
             internalPlayingStatus = it.playingStatus
             if (it.playingStatus == PlayingStatus.Playing) {
-                play(playerModel.stationProperty.value.url_resolved)
+                play(playerViewModel.stationProperty.value.url_resolved)
             } else {
                 internalMediaPlayer.cancelPlaying()
             }
         }
 
-        playerModel.stationProperty.onChange {
+        playerViewModel.stationProperty.onChange {
             if (it != null) {
                 if (it.isValidStation()) {
                     fire(PlaybackChangeEvent(PlayingStatus.Playing))
@@ -88,7 +88,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             return try {
                 VLCPlayer()
             } catch (e: Exception) {
-                playerModel.playerType.value = PlayerType.Custom
+                playerViewModel.playerType.value = PlayerType.Custom
                 logger.error(e) { "VLC init failed, init native library" }
                 fire(NotificationEvent(messages["player.vlc.error"]))
                 CustomPlayer()

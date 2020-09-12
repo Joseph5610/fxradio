@@ -28,8 +28,8 @@ import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.extension.smallIcon
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.viewmodel.Player
 import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 
@@ -39,11 +39,11 @@ import tornadofx.*
  */
 class PlayerView : View() {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
     private val playerStationBoxView: PlayerStationBoxView by inject()
 
-    private val playerControlsIcon = imageview(playIcon) {
+    private val playerControlsIcon = imageview(Config.Resources.playIcon) {
         fitWidth = 30.0
         fitHeight = 30.0
         isPreserveRatio = true
@@ -51,7 +51,7 @@ class PlayerView : View() {
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
-        shouldBeDisabled(playerModel.stationProperty)
+        shouldBeDisabled(playerViewModel.stationProperty)
         add(playerControlsIcon)
         addClass(Styles.playerControls)
         action {
@@ -65,7 +65,7 @@ class PlayerView : View() {
         val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
         val volume = app.config.double(Config.Keys.volume, 0.0)
 
-        playerModel.item = Player(
+        playerViewModel.item = PlayerModel(
                 animate = animate,
                 playerType = playerType,
                 notifications = notifications,
@@ -76,12 +76,12 @@ class PlayerView : View() {
     }
 
     private val volumeSlider = slider(-30..5) {
-        bind(playerModel.volumeProperty)
+        bind(playerViewModel.volumeProperty)
         majorTickUnit = 8.0
         isSnapToTicks = true
         // isShowTickMarks = true
         valueProperty().onChange {
-            playerModel.commit()
+            playerViewModel.commit()
         }
     }
 
@@ -109,13 +109,13 @@ class PlayerView : View() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
-                smallIcon(volumeDownIcon) {
+                smallIcon(Config.Resources.volumeDownIcon) {
                     setOnMouseClicked {
                         volumeSlider.value = volumeSlider.min
                     }
                 }
                 add(volumeSlider)
-                smallIcon(volumeUpIcon) {
+                smallIcon(Config.Resources.volumeUpIcon) {
                     setOnMouseClicked {
                         volumeSlider.value = volumeSlider.max
                     }
@@ -137,19 +137,11 @@ class PlayerView : View() {
      */
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
-            playerControlsIcon.image = Image(playIcon)
+            playerControlsIcon.image = Image(Config.Resources.playIcon)
             playerStationBoxView.nowStreamingLabel.text = messages["player.streamingStopped"]
         } else {
-            playerControlsIcon.image = Image(stopIcon)
+            playerControlsIcon.image = Image(Config.Resources.stopIcon)
             playerStationBoxView.nowStreamingLabel.text = messages["player.nowStreaming"]
         }
-    }
-
-    //Player resources
-    private companion object {
-        private const val playIcon = "Media-Controls-Play-icon.png"
-        private const val stopIcon = "Media-Controls-Stop-icon.png"
-        private const val volumeDownIcon = "Media-Controls-Volume-Down-icon.png"
-        private const val volumeUpIcon = "Media-Controls-Volume-Up-icon.png"
     }
 }

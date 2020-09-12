@@ -27,7 +27,7 @@ import online.hudacek.fxradio.extension.set
 import online.hudacek.fxradio.extension.show
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menubar.MenuBarView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -37,7 +37,7 @@ import tornadofx.controlsfx.notificationPane
 
 class MainView : View(FxRadio.appName) {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
     private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
 
     private val leftPaneView: LibraryView by inject()
@@ -60,13 +60,14 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
+        //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             mediaPlayerWrapper.release()
             StationsApi.client.shutdown()
             VCSApi.client.shutdown()
         }
 
-        if (playerModel.playerType.value == PlayerType.Custom) {
+        if (playerViewModel.playerType.value == PlayerType.Custom) {
             notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
     }

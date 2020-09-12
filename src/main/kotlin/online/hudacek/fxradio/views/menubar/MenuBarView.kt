@@ -35,7 +35,7 @@ import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
 import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.tools.Platform
 import tornadofx.*
@@ -44,7 +44,7 @@ import java.util.*
 class MenuBarView : View() {
 
     private val controller: MenuBarController by inject()
-    private val playerModel: PlayerModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
     private var playerStop: MenuItem by singleAssign()
@@ -64,49 +64,49 @@ class MenuBarView : View() {
 
     private val playerMenu = menu(messages["menu.player.controls"]) {
         playerPlay = item(messages["menu.player.start"], keyPlay) {
-            shouldBeVisible(playerModel.stationProperty)
+            shouldBeVisible(playerViewModel.stationProperty)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
         playerStop = item(messages["menu.player.stop"], keyStop) {
-            shouldBeVisible(playerModel.stationProperty)
+            shouldBeVisible(playerViewModel.stationProperty)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
             }
         }
 
         playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-            isSelected = playerModel.playerType.value == PlayerType.Custom
+            isSelected = playerViewModel.playerType.value == PlayerType.Custom
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-                playerModel.playerType.value =
-                        if (playerModel.playerType.value == PlayerType.Custom) {
+                playerViewModel.playerType.value =
+                        if (playerViewModel.playerType.value == PlayerType.Custom) {
                             PlayerType.VLC
                         } else {
                             PlayerType.Custom
                         }
-                playerModel.commit()
+                playerViewModel.commit()
             }
         }
 
         playerAnimateCheck = checkmenuitem(messages["menu.player.animate"]) {
-            bind(playerModel.animate)
+            bind(playerViewModel.animate)
             action {
-                playerModel.commit()
+                playerViewModel.commit()
             }
         }
         playerNotificationsCheck = checkmenuitem(messages["menu.player.notifications"]) {
-            bind(playerModel.notifications)
+            bind(playerViewModel.notifications)
             action {
-                playerModel.commit()
+                playerViewModel.commit()
             }
         }
     }
 
     init {
-        playerModel.playerType.onChange {
+        playerViewModel.playerType.onChange {
             playerCheck.isSelected = it == PlayerType.Custom
         }
     }

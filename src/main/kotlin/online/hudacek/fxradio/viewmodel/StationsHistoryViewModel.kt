@@ -4,12 +4,12 @@ import javafx.beans.property.ListProperty
 import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 
-class StationsHistory {
+class StationsHistoryModel {
     val stations = observableListOf<Station>()
 }
 
-class StationsHistoryModel : ItemViewModel<StationsHistory>() {
-    val stations = bind(StationsHistory::stations) as ListProperty
+class StationsHistoryViewModel : ItemViewModel<StationsHistoryModel>() {
+    val stations = bind(StationsHistoryModel::stations) as ListProperty
 
     fun add(station: Station) {
         if (!station.isValidStation()) return

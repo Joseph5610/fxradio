@@ -23,7 +23,7 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.fragments.StationInfoFragment
-import online.hudacek.fxradio.viewmodel.PlayerModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.StationsModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
@@ -37,7 +37,7 @@ import tornadofx.controlsfx.showPopover
  */
 class StationsDataGridView : View() {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerViewViewModel: PlayerViewModel by inject()
     private val viewModel: StationsViewModel by inject()
 
     init {
@@ -54,7 +54,7 @@ class StationsDataGridView : View() {
                 }
 
         onUserSelect(1) {
-            playerModel.stationProperty.value = it
+            playerViewViewModel.stationProperty.value = it
         }
 
         cellCache {
@@ -92,11 +92,11 @@ class StationsDataGridView : View() {
                 }
             }
         }
-        hiddenWhen(viewModel.isError.or(booleanBinding(viewModel.stationViewStatus) {
+        hiddenWhen(booleanBinding(viewModel.stationViewStatus) {
             when (this.value) {
                 StationsViewState.Normal -> false
                 else -> true
             }
-        }))
+        })
     }
 }

@@ -44,7 +44,7 @@ class FxRadio : App(MainView::class, Styles::class) {
             super.start(this)
         }
 
-        //init logger
+        //init logger level based on stored settings
         val savedLevel = Level.valueOf(config.string(Config.Keys.logLevel))
         logLevel.item = LogLevel(savedLevel)
         logLevel.commit()

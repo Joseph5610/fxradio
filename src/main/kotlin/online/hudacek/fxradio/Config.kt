@@ -25,6 +25,10 @@ object Config {
         const val appLogo = "appLogo.png"
         const val defaultRadioIcon = "Industry-Radio-Tower-icon.png"
         const val appWebsiteIcon = "browser-web-icon.png"
+        const val playIcon = "Media-Controls-Play-icon.png"
+        const val stopIcon = "Media-Controls-Stop-icon.png"
+        const val volumeDownIcon = "Media-Controls-Volume-Down-icon.png"
+        const val volumeUpIcon = "Media-Controls-Volume-Up-icon.png"
     }
 
     /**

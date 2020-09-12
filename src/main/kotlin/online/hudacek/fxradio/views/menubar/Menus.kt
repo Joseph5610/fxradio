@@ -31,8 +31,8 @@ import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.viewmodel.LogLevelModel
-import online.hudacek.fxradio.viewmodel.PlayerModel
-import online.hudacek.fxradio.viewmodel.StationsHistoryModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationsHistoryViewModel
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.tools.Platform
@@ -41,8 +41,8 @@ import tornadofx.*
 object Menus : Component() {
 
     private val controller: MenuBarController by inject()
-    private val playerModel: PlayerModel by inject()
-    private val stationsHistory: StationsHistoryModel by inject()
+    private val PLAYER_VIEW_MODEL: PlayerViewModel by inject()
+    private val STATIONS_HISTORY_VIEW: StationsHistoryViewModel by inject()
     private val logLevel: LogLevelModel by inject()
 
     private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
@@ -60,8 +60,8 @@ object Menus : Component() {
     }
 
     val historyMenu = menu(messages["menu.history"]) {
-        shouldBeDisabled(playerModel.stationProperty)
-        items.bind(stationsHistory.stations) {
+        shouldBeDisabled(PLAYER_VIEW_MODEL.stationProperty)
+        items.bind(STATIONS_HISTORY_VIEW.stations) {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
@@ -74,7 +74,7 @@ object Menus : Component() {
                     }
                 }
                 action {
-                    playerModel.stationProperty.value = it
+                    PLAYER_VIEW_MODEL.stationProperty.value = it
                 }
             }
         }
@@ -82,21 +82,21 @@ object Menus : Component() {
 
     val stationMenu = menu(messages["menu.station"]) {
         item(messages["menu.station.info"], keyInfo) {
-            shouldBeDisabled(playerModel.stationProperty)
+            shouldBeDisabled(PLAYER_VIEW_MODEL.stationProperty)
             action {
                 controller.openStationInfo()
             }
         }
 
         item(messages["menu.station.favourite"], keyFavourites) {
-            disableWhen(booleanBinding(playerModel.stationProperty) {
+            disableWhen(booleanBinding(PLAYER_VIEW_MODEL.stationProperty) {
                 value == null || !value.isValidStation() || value.isFavourite.blockingGet()
             })
 
             actionEvents()
-                    .flatMapSingle { playerModel.stationProperty.value.isFavourite }
+                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.isFavourite }
                     .filter { !it }
-                    .flatMapSingle { playerModel.stationProperty.value.addFavourite() }
+                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.addFavourite() }
                     .subscribe({
                         fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
                     }, {
@@ -105,14 +105,14 @@ object Menus : Component() {
         }
 
         item(messages["menu.station.favourite.remove"]) {
-            visibleWhen(booleanBinding(playerModel.stationProperty) {
+            visibleWhen(booleanBinding(PLAYER_VIEW_MODEL.stationProperty) {
                 value != null && value.isValidStation() && value.isFavourite.blockingGet()
             })
 
             actionEvents()
-                    .flatMapSingle { playerModel.stationProperty.value.isFavourite }
+                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.isFavourite }
                     .filter { it }
-                    .flatMapSingle { playerModel.stationProperty.value.removeFavourite() }
+                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.removeFavourite() }
                     .subscribe({
                         fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
                         fire(LibraryTypeChangedConditional(LibraryType.Favourites))
@@ -122,7 +122,7 @@ object Menus : Component() {
         }
 
         item(messages["menu.station.vote"]) {
-            shouldBeDisabled(playerModel.stationProperty)
+            shouldBeDisabled(PLAYER_VIEW_MODEL.stationProperty)
             action {
                 controller.voteForStation()
             }
