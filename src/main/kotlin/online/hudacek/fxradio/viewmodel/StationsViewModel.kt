@@ -102,7 +102,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     }
 
     private fun handleError(throwable: Throwable) {
-        logger.error(throwable) { "Error showing station library." }
+        logger.error(throwable) { "Error showing station library" }
         stationViewStatus.value = StationsViewState.Error
     }
 

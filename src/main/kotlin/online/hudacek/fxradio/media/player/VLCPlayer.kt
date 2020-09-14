@@ -46,7 +46,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
     private lateinit var nativeLog: NativeLog
     private val nativeLogListener = LogEventListener { level, module, _, _, name, _, _, message ->
         lastLogMessage = message
-        logger.debug { String.format("[%s] (%s) %7s: %s\n", module, name, level, message) }
+        logger.debug { "[$module] ($name) $level: $message" }
     }
 
     private var lastLogMessage = ""
@@ -112,7 +112,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
      * Called on libVLC event thread
      */
     private fun end(result: Int) {
-        logger.debug { "ending current stream if any with error status $result" }
+        logger.debug { "Ending current stream with status: $result" }
 
         if (result == 1) {
             val errorMsg = if (lastLogMessage.isEmpty()) messages["player.streamError"] else lastLogMessage
@@ -128,7 +128,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
                 }
             }
         } catch (e: Exception) {
-            logger.debug { "stop failed, probably already stopped" }
+            logger.debug { "Can't stop stream" }
         }
     }
 

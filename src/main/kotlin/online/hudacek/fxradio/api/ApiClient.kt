@@ -60,7 +60,7 @@ class ApiClient(private val baseUrl: String) {
     }
 
     fun shutdown() {
-        logger.debug { "Shutting down okhttp" }
+        logger.debug { "Shutting down OKHttp" }
         logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }
         httpClient.dispatcher().executorService().shutdown()
         httpClient.connectionPool().evictAll()

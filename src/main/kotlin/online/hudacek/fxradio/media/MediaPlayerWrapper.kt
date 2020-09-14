@@ -45,7 +45,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
         //Update internal player type
         playerViewModel.playerType.onChange {
             if (it != null) {
-                logger.info { "player type changed: $it" }
+                logger.info { "Player type has changed: $it" }
                 internalMediaPlayer.releasePlayer()
                 internalMediaPlayer = changePlayer(it)
             }
@@ -53,7 +53,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
         //Set volume for current player
         playerViewModel.volumeProperty.onChange {
-            logger.debug { "volume changed: $it" }
+            logger.debug { "Volume changed: $it" }
             internalVolume = it
             internalMediaPlayer.changeVolume(it)
         }
@@ -78,7 +78,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     }
 
     fun init() {
-        logger.info { "init MediaPlayerWrapper with MediaPlayer $internalMediaPlayer" }
+        logger.info { "MediaPlayer $internalMediaPlayer initialized" }
     }
 
     private fun changePlayer(playerType: PlayerType): MediaPlayer {
@@ -89,7 +89,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 VLCPlayer()
             } catch (e: Exception) {
                 playerViewModel.playerType.value = PlayerType.Custom
-                logger.error(e) { "VLC init failed, init native library" }
+                logger.error(e) { "VLC player failed to initialize, trying ${PlayerType.Custom} instead" }
                 fire(NotificationEvent(messages["player.vlc.error"]))
                 CustomPlayer()
             }

@@ -47,11 +47,9 @@ internal fun ImageView.createImage(station: Station) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
         if (station.isInvalidImage()) {
-            logger.info { "Image for ${station.name} is null or empty." }
+            logger.debug { "Image for ${station.name} is null or empty" }
             return
         }
-
-        logger.debug { "downloading logo of ${station.name} from ${station.favicon}" }
 
         runAsync(daemon = true) {
             URL(station.favicon).openConnection().apply {
@@ -63,9 +61,7 @@ internal fun ImageView.createImage(station: Station) {
         } success {
             this.image = ImageCache.getImageFromCache(station)
         } fail {
-            logger.error {
-                "image download failed for ${station.name} (${it::class} : ${it.localizedMessage}) "
-            }
+            logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
             this.image = defaultRadioLogo
         }
     }

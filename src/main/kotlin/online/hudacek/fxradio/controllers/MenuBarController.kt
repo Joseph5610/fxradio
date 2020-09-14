@@ -105,7 +105,7 @@ class MenuBarController : Controller() {
                             }
                         }
                     } catch (e: SemverException) {
-                        logger.error(e) { "Can't parse version string, acting as no update available." }
+                        logger.error(e) { "Can't parse version string, acting as no update available" }
                         fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
                     }
                 }, {

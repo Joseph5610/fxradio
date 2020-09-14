@@ -60,9 +60,7 @@ object ImageCache {
         val imagePath = cacheBasePath.resolve(station.stationuuid)
         val image = Image(FileInputStream(imagePath.toFile()))
         return if (image.isError) {
-            logger.error {
-                "image showing failed for ${station.name} (${image.exception.localizedMessage}) "
-            }
+            logger.error { "Can't show image for ${station.name} (${image.exception.localizedMessage}) " }
             defaultRadioLogo
         } else {
             image
@@ -78,7 +76,7 @@ object ImageCache {
                     imagePath,
                     StandardCopyOption.REPLACE_EXISTING)
         } catch (e: FileAlreadyExistsException) {
-            logger.error(e) { "FileAlreadyExists. Should not happen." }
+            logger.error(e) { "File already exists" }
         }
     }
 }
