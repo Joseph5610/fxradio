@@ -20,6 +20,7 @@ import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
 import io.humble.video.javaxsound.MediaAudioConverterFactory
 import kotlinx.coroutines.*
+import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import tornadofx.*
@@ -35,6 +36,10 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
+
+    private var lastTriedVolumeChange = 0.0
+
+    private val logger = KotlinLogging.logger {}
 
     private val handler = CoroutineExceptionHandler { _, exception ->
         MediaPlayerWrapper.handleError(exception)
@@ -54,7 +59,6 @@ internal class CustomPlayer : Component(), MediaPlayer {
                     val demuxerStream = demuxer.getStream(i)
 
                     val decoder = demuxerStream.decoder
-
                     if (decoder != null && decoder.codecType == MediaDescriptor.Type.MEDIA_AUDIO) {
                         audioStreamId = i
                         audioDecoder = decoder
@@ -77,6 +81,8 @@ internal class CustomPlayer : Component(), MediaPlayer {
                             MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
                             samples)
                     audioFrame = AudioFrame.make(converter.javaFormat) ?: throw LineUnavailableException()
+
+                    changeVolume(lastTriedVolumeChange)
 
                     var rawAudio: ByteBuffer? = null
 
@@ -116,6 +122,8 @@ internal class CustomPlayer : Component(), MediaPlayer {
         return try {
             //Dirty hack, since the api does not provide direct access to field,
             //we use reflection to get access to line field to change volume
+            lastTriedVolumeChange = volume
+
             AudioFrame::class.memberProperties
                     .filter { it.name == "mLine" }[0].apply {
                 isAccessible = true
@@ -125,6 +133,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
             }
             true
         } catch (e: Exception) {
+            logger.error(e) { "Can't change volume to : $volume, will try later" }
             false
         }
     }
