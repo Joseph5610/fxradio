@@ -16,14 +16,14 @@
 
 package online.hudacek.fxradio.fragments
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.schedulers.Schedulers
 import javafx.geometry.Pos
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.StatsViewModel
 import tornadofx.*
 
 /**
@@ -31,11 +31,7 @@ import tornadofx.*
  */
 class StatsFragment : Fragment() {
 
-    data class StatsList(val key: String, val value: String)
-
-    private var container = vbox {
-        add<ProgressFragment>()
-    }
+    private val statsViewModel: StatsViewModel by inject()
 
     override fun onBeforeShow() {
         currentWindow?.opacity = 0.85
@@ -43,49 +39,7 @@ class StatsFragment : Fragment() {
 
     init {
         title = messages["title"]
-        StationsApi.service.getStats()
-                .subscribeOn(Schedulers.io())
-                .observeOnFx()
-                .subscribe({
-
-                    val mappedValuesList = observableListOf(
-                            StatsList(messages["stats.status"], it.status),
-                            StatsList(messages["stats.apiVersion"], it.software_version),
-                            StatsList(messages["stats.supportedVersion"], it.supported_version.toString()),
-                            StatsList(messages["stats.stations"], it.stations.toString()),
-                            StatsList(messages["stats.countries"], it.countries.toString()),
-                            StatsList(messages["stats.brokenStations"], it.stations_broken.toString()),
-                            StatsList(messages["stats.tags"], it.tags.toString())
-                    )
-
-                    container.replaceChildren(
-                            vbox {
-                                listview(mappedValuesList) {
-                                    cellFormat {
-                                        paddingAll = 0.0
-                                        graphic = hbox(5) {
-                                            label(item.key + ":")
-                                            label(item.value)
-                                            addClass(Styles.libraryListItem)
-                                        }
-                                        copyMenu(clipboard,
-                                                name = messages["copy"],
-                                                value = "${item.key}: ${item.value}")
-                                    }
-                                    addClass(Styles.libraryListView)
-                                }
-                            }
-                    )
-                }, {
-                    container.replaceChildren(
-                            vbox {
-                                alignment = Pos.BASELINE_CENTER
-                                label(messages["statsUnavailable"]) {
-                                    paddingAll = 20.0
-                                }
-                            }
-                    )
-                })
+        statsViewModel.getStats()
     }
 
     override val root = vbox {
@@ -100,7 +54,40 @@ class StatsFragment : Fragment() {
                     app.openUrl("http://${this.text}")
                 }
             }
-            add(container)
+
+            vbox {
+                alignment = Pos.BASELINE_CENTER
+                label(messages["statsUnavailable"]) {
+                    paddingAll = 20.0
+                }
+                showWhen {
+                    statsViewModel.isError
+                }
+            }
+
+            progressindicator {
+                minHeight = 50.0
+                showWhen {
+                    statsViewModel.isError.not().and(booleanBinding(statsViewModel.statsProperty) {
+                        isEmpty()
+                    })
+                }
+            }
+        }
+
+        listview(statsViewModel.statsProperty) {
+            cellFormat {
+                paddingAll = 0.0
+                graphic = hbox(5) {
+                    label(item.first + ":")
+                    label(item.second)
+                    addClass(Styles.libraryListItem)
+                }
+                copyMenu(clipboard,
+                        name = messages["copy"],
+                        value = "${item.first}: ${item.second}")
+            }
+            addClass(Styles.libraryListView)
         }
     }
 }

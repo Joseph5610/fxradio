@@ -17,12 +17,12 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Orientation
+import javafx.scene.image.Image
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.extension.defaultRadioLogo
 import online.hudacek.fxradio.extension.set
 import online.hudacek.fxradio.extension.show
 import online.hudacek.fxradio.media.MediaPlayerWrapper
@@ -48,7 +48,7 @@ class MainView : View(FxRadio.appName) {
 
     init {
         mediaPlayerWrapper.init()
-        setStageIcon(defaultRadioLogo)
+        setStageIcon(Image(Config.Resources.stageIcon))
         subscribe<NotificationEvent> {
             notification.show(it.glyph, it.text, it.op)
         }

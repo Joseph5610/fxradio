@@ -25,16 +25,16 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
-import online.hudacek.fxradio.events.LibraryTypeChanged
 import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.events.LibraryTypeChanged
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 
-class LibraryModel {
+class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
     //Countries shown in Countries ListView
-    val countries: ObservableList<Countries> by property(observableListOf())
+    val countries: ObservableList<Countries> by property(countries)
 
     //Default items shown in library ListView
     val libraries: ObservableList<LibraryItem> by property(observableListOf(
@@ -54,12 +54,6 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     val isError = booleanProperty()
 
-    init {
-        item = LibraryModel()
-        //Load Countries List
-        showCountries()
-    }
-
     fun showCountries(): Disposable = StationsApi.service
             .getCountries(CountriesBody())
             .subscribeOn(Schedulers.io())
@@ -69,9 +63,10 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
                 val result = response.filter {
                     it.name.length > 1 && !it.name.contains(".")
                 }.asObservable()
-                countriesListProperty.setAll(result)
+                item = LibraryModel(result)
                 isError.value = false
             }, {
+                item = LibraryModel()
                 isError.value = true
             })
 

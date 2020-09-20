@@ -22,13 +22,13 @@ import javafx.scene.control.Tooltip
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.notification
 import online.hudacek.fxradio.extension.tickerView
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
 /**
@@ -38,7 +38,7 @@ class PlayerStationBoxView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private var stationLogo = imageview(Config.Resources.defaultRadioIcon) {
+    private var stationLogo = imageview(Config.Resources.musicIcon) {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true

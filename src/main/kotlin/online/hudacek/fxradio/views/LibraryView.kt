@@ -17,11 +17,12 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.events.LibraryTypeChanged
 import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.events.LibraryTypeChanged
 import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.extension.smallLabel
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.LibraryModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -40,8 +41,6 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(viewModel.librariesListProperty) {
-        prefHeight = items.size * 30.0 + 10
-
         cellFormat {
             graphic = glyph("FontAwesome", item.graphic)
             text = when (item.type) {
@@ -76,18 +75,29 @@ class LibraryView : View() {
             libraryListView.selectionModel.clearSelection()
             fire(LibraryTypeChanged(LibraryType.Country, it.name))
         }
-
-        hiddenWhen(viewModel.isError)
+        showWhen {
+            viewModel.isError.not()
+        }
     }
 
     init {
-        //set default view
-        libraryListView.selectionModel.select(viewModel.librariesListProperty[0])
+        viewModel.item = LibraryModel()
+        viewModel.showCountries()
+
         fire(LibraryTypeChanged(LibraryType.TopStations))
 
         libraryListView.onUserSelect(1) {
             countriesListView.selectionModel.clearSelection()
             fire(LibraryTypeChanged(it.type))
+        }
+
+        viewModel.librariesListProperty.onChangeOnce {
+            if (it != null) {
+                with(libraryListView) {
+                    prefHeight = it.size * 30.0 + 10
+                    selectionModel.select(it[0])
+                }
+            }
         }
     }
 

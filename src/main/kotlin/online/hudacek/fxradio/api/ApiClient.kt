@@ -57,7 +57,7 @@ class ApiClient(private val baseUrl: String) {
                 .build()
     }
 
-    fun build() = Retrofit.Builder()
+    fun build(): Retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(baseUrl)
