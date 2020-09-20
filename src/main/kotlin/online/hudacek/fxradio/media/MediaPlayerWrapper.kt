@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.media
 
-import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
@@ -26,14 +25,14 @@ import online.hudacek.fxradio.media.player.VLCPlayer
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-private val logger = KotlinLogging.logger {}
-
 enum class PlayerType {
     Custom, VLC
 }
 
 //TODO get rid of this class in its current form
 class MediaPlayerWrapper : Component(), ScopedInstance {
+
+    private val logger = KotlinLogging.logger {}
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -112,16 +111,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             fire(PlaybackChangeEvent(PlayingStatus.Stopped))
         } else {
             fire(PlaybackChangeEvent(PlayingStatus.Playing))
-        }
-    }
-
-    companion object : Component() {
-        fun handleError(t: Throwable) {
-            Platform.runLater {
-                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-                fire(NotificationEvent(t.localizedMessage))
-                logger.error(t) { "Stream can't be played" }
-            }
         }
     }
 }

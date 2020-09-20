@@ -38,7 +38,7 @@ class StatsFragment : Fragment() {
     }
 
     init {
-        title = messages["title"]
+        title = messages["stats.title"]
         statsViewModel.getStats()
     }
 

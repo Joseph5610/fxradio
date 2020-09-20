@@ -22,7 +22,7 @@ import io.humble.video.javaxsound.MediaAudioConverterFactory
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
-import online.hudacek.fxradio.media.MediaPlayerWrapper
+import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.*
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
@@ -42,7 +42,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
     private val logger = KotlinLogging.logger {}
 
     private val handler = CoroutineExceptionHandler { _, exception ->
-        MediaPlayerWrapper.handleError(exception)
+        logger.error(exception) { "Unhandled exception." }
     }
 
     override fun play(url: String) {
@@ -110,9 +110,11 @@ internal class CustomPlayer : Component(), MediaPlayer {
                             audioFrame?.play(rawAudio)
                         }
                     } while (samples.isComplete)
+                    demuxer.close()
                 }
+            } catch (e: Exception) {
+                throw StreamUnavailableException(e.localizedMessage, e)
             } finally {
-                demuxer.close()
                 audioFrame?.dispose()
             }
         }

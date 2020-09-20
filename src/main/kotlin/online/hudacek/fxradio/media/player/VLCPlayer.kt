@@ -20,7 +20,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.events.MediaMeta
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.media.MediaPlayer
-import online.hudacek.fxradio.media.MediaPlayerWrapper
+import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.*
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
@@ -116,7 +116,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
 
         if (result == 1) {
             val errorMsg = if (lastLogMessage.isEmpty()) messages["player.streamError"] else lastLogMessage
-            MediaPlayerWrapper.handleError(RuntimeException(errorMsg))
+            throw StreamUnavailableException(errorMsg)
         }
 
         // Its not allowed to call back into LibVLC from an event handling thread,
