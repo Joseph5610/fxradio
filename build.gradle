@@ -26,26 +26,28 @@ compileTestKotlin {
 }
 
 ext.versions = [
-        'kotlin'              : '1.3.0',
-        'kotlin-coroutines'   : '1.3.4',
-        'tornadofx'           : '1.7.20',
-        'controlsfx'          : '8.40.17',
-        'tornadofx-controlsfx': '0.1.1',
-        'retrofit'            : '2.8.1',
-        'retrofit-adapters'   : '2.3.0',
-        'kotlin-logging'      : '1.7.9',
-        'slf4j'               : '1.7.5',
-        'log4j2'              : '2.9.1',
-        'commons-io'          : '2.6',
-        'rxkotlinfx'          : '2.2.2',
-        'humble'              : '0.3.0',
-        'vlcj'                : '4.4.0',
-        'sqlite-jdbc'         : '3.21.0.1',
-        'rxkotlin-jdbc'       : '0.4.1',
-        'nsmenufx'            : '2.1.7',
-        'semver'              : '3.1.0',
-        'testfx'              : '4.0.16-alpha',
-        'junit'               : '5.3.1'
+        kotlin             : "1.3.0",
+        kotlinCoroutines   : "1.3.4",
+        tornadofx          : "1.7.20",
+        controlsfx         : "8.40.17",
+        tornadofxControlsfx: "0.1.1",
+        retrofit           : "2.9.0",
+        retrofitAdapters   : "2.3.0",
+        retrofitLogger     : "3.14.9",
+
+        kotlinLogging      : "1.7.9",
+        slf4j              : "1.7.5",
+        log4j2             : "2.9.1",
+        commonsio          : "2.6",
+        rxkotlinfx         : "2.2.2",
+        humble             : "0.3.0",
+        vlcj               : "4.4.0",
+        sqliteJdbc         : "3.21.0.1",
+        rxkotlinJdbc       : "0.4.1",
+        nsmenufx           : "2.1.7",
+        semver             : "3.1.0",
+        testfx             : "4.0.16-alpha",
+        junit              : "5.3.1"
 ]
 
 dependencies {
@@ -57,40 +59,41 @@ dependencies {
 
     // Use the Kotlin JDK 8 standard library.
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    runtime group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: versions["kotlin"]
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions["kotlin-coroutines"]}"
+    runtime group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: versions.kotlin
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines"
 
-    compile "no.tornado:tornadofx:${versions["tornadofx"]}"
-    compile "org.controlsfx:controlsfx:${versions["controlsfx"]}"
-    compile "no.tornado:tornadofx-controlsfx:${versions["tornadofx-controlsfx"]}"
+    compile "no.tornado:tornadofx:$versions.tornadofx"
+    compile "org.controlsfx:controlsfx:$versions.controlsfx"
+    compile "no.tornado:tornadofx-controlsfx:$versions.tornadofxControlsfx"
 
-    compile "com.squareup.retrofit2:retrofit:${versions["retrofit"]}"
-    compile "com.squareup.retrofit2:adapter-rxjava2:${versions["retrofit-adapters"]}"
-    compile "com.squareup.retrofit2:converter-gson:${versions["retrofit-adapters"]}"
+    compile "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofitAdapters"
+    compile "com.squareup.retrofit2:converter-gson:$versions.retrofitAdapters"
+    compile "com.squareup.okhttp3:logging-interceptor:$versions.retrofitLogger"
 
-    compile "io.github.microutils:kotlin-logging:${versions["kotlin-logging"]}"
-    compile "org.slf4j:slf4j-api:${versions["slf4j"]}"
-    compile "org.apache.logging.log4j:log4j-slf4j-impl:${versions["log4j2"]}"
-    compile "org.apache.logging.log4j:log4j-api:${versions["log4j2"]}"
-    compile "org.apache.logging.log4j:log4j-core:${versions["log4j2"]}"
+    compile "io.github.microutils:kotlin-logging:$versions.kotlinLogging"
+    compile "org.slf4j:slf4j-api:$versions.slf4j"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:$versions.log4j2"
+    compile "org.apache.logging.log4j:log4j-api:$versions.log4j2"
+    compile "org.apache.logging.log4j:log4j-core:$versions.log4j2"
 
-    compile "commons-io:commons-io:${versions["commons-io"]}"
+    compile "commons-io:commons-io:$versions.commonsio"
 
-    compile "com.github.thomasnield:rxkotlinfx:${versions["rxkotlinfx"]}"
+    compile "com.github.thomasnield:rxkotlinfx:$versions.rxkotlinfx"
 
-    compile "org.xerial:sqlite-jdbc:${versions["sqlite-jdbc"]}"
-    compile "org.nield:rxkotlin-jdbc:${versions["rxkotlin-jdbc"]}"
-    compile "de.codecentric.centerdevice:centerdevice-nsmenufx:${versions["nsmenufx"]}"
-    compile "com.vdurmont:semver4j:${versions["semver"]}"
+    compile "org.xerial:sqlite-jdbc:$versions.sqliteJdbc"
+    compile "org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc"
+    compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"
+    compile "com.vdurmont:semver4j:$versions.semver"
 
     //Players
-    compile "io.humble:humble-video-all:${versions["humble"]}"
-    compile "uk.co.caprica:vlcj:${versions["vlcj"]}"
+    compile "io.humble:humble-video-all:$versions.humble"
+    compile "uk.co.caprica:vlcj:$versions.vlcj"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}"
-    testCompile "org.junit.jupiter:junit-jupiter-api:${versions["junit"]}"
-    testCompile "org.testfx:testfx-core:${versions["testfx"]}"
-    testCompile "org.testfx:testfx-junit5:${versions["testfx"]}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
+    testCompile "org.junit.jupiter:junit-jupiter-api:$versions.junit"
+    testCompile "org.testfx:testfx-core:$versions.testfx"
+    testCompile "org.testfx:testfx-junit5:$versions.testfx"
 }
 
 sourceSets {

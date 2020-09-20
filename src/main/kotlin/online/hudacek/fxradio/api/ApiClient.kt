@@ -19,6 +19,7 @@ package online.hudacek.fxradio.api
 import mu.KotlinLogging
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import online.hudacek.fxradio.FxRadio
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -26,17 +27,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
-private val logger = KotlinLogging.logger {}
-
 class ApiClient(private val baseUrl: String) {
+
+    private val logger = KotlinLogging.logger {}
 
     private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
 
     //What is app sending as a User Agent string
     private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
 
+    //Logging of http requests
+    private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }
+
     //Construct http client with custom user agent
     private val httpClient by lazy {
+        loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
         OkHttpClient.Builder()
                 .addNetworkInterceptor { chain ->
                     chain.proceed(
@@ -46,17 +52,21 @@ class ApiClient(private val baseUrl: String) {
                                     .build()
                     )
                 }
+                .addInterceptor(loggerInterceptor)
                 .connectionPool(connectionPool)
                 .build()
     }
 
-    fun build(): Retrofit {
-        return Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(baseUrl)
-                .client(httpClient)
-                .build()
+    fun build() = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(baseUrl)
+            .client(httpClient)
+            .build()
+
+    fun <T : Any> create(service: KClass<T>): T {
+        logger.debug { "Creating service: $service" }
+        return build().create(service.java)
     }
 
     fun shutdown() {
@@ -65,9 +75,4 @@ class ApiClient(private val baseUrl: String) {
         httpClient.dispatcher().executorService().shutdown()
         httpClient.connectionPool().evictAll()
     }
-}
-
-internal fun <T : Any> ApiClient.create(service: KClass<T>): T {
-    logger.debug { "Creating service: $service" }
-    return this.build().create(service.java)
 }
