@@ -78,11 +78,11 @@ class MenuBarView : View() {
         }
 
         playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-            isSelected = playerViewModel.playerType.value == PlayerType.Custom
+            isSelected = playerViewModel.playerTypeProperty.value == PlayerType.Custom
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-                playerViewModel.playerType.value =
-                        if (playerViewModel.playerType.value == PlayerType.Custom) {
+                playerViewModel.playerTypeProperty.value =
+                        if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
                             PlayerType.VLC
                         } else {
                             PlayerType.Custom
@@ -92,13 +92,13 @@ class MenuBarView : View() {
         }
 
         playerAnimateCheck = checkmenuitem(messages["menu.player.animate"]) {
-            bind(playerViewModel.animate)
+            bind(playerViewModel.animateProperty)
             action {
                 playerViewModel.commit()
             }
         }
         playerNotificationsCheck = checkmenuitem(messages["menu.player.notifications"]) {
-            bind(playerViewModel.notifications)
+            bind(playerViewModel.notificationsProperty)
             action {
                 playerViewModel.commit()
             }
@@ -106,7 +106,7 @@ class MenuBarView : View() {
     }
 
     init {
-        playerViewModel.playerType.onChange {
+        playerViewModel.playerTypeProperty.onChange {
             playerCheck.isSelected = it == PlayerType.Custom
         }
     }

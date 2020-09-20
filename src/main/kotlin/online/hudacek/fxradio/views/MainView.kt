@@ -67,7 +67,7 @@ class MainView : View(FxRadio.appName) {
             VCSApi.client.shutdown()
         }
 
-        if (playerViewModel.playerType.value == PlayerType.Custom) {
+        if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
             notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
     }

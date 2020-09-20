@@ -3,7 +3,6 @@ package online.hudacek.fxradio.viewmodel
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
@@ -12,8 +11,7 @@ import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.LibraryTypeChanged
-import online.hudacek.fxradio.events.LibraryTypeChangedConditional
+import online.hudacek.fxradio.events.RefreshFavourites
 import tornadofx.*
 
 class StationsModel {
@@ -29,28 +27,22 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     private val logger = KotlinLogging.logger {}
 
     private val stationsHistoryView: StationsHistoryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     val stationsProperty = bind(StationsModel::stations) as ListProperty
     val stationViewStatus = objectProperty(StationsViewState.Normal)
 
-    val currentLibType = BehaviorSubject.create<LibraryType>()
-    val currentLibParams = BehaviorSubject.create<String>()
-
     init {
-        currentLibType.startWith(LibraryType.TopStations)
-        currentLibParams.startWith("")
-
-        //Handle change of stations library
-        subscribe<LibraryTypeChanged> {
-            currentLibParams.onNext(it.params)
-            currentLibType.onNext(it.type)
-            showLibraryType(it.type, it.params)
+        libraryViewModel.selectedProperty.onChange {
+            if (it != null) {
+                showLibraryType(it.type, it.params)
+            }
         }
 
-        subscribe<LibraryTypeChangedConditional> {
-            currentLibType.value?.let { value ->
-                if (it.onlyWhen == value) {
-                    showLibraryType(value, currentLibParams.value ?: "")
+        subscribe<RefreshFavourites> {
+            libraryViewModel.selectedProperty.value.let { value ->
+                if (value.type == LibraryType.Favourites) {
+                    showLibraryType(value.type, value.params)
                 }
             }
         }
@@ -83,7 +75,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     }
 
     //retrieve history list
-    private fun getHistory() = handleResponse(stationsHistoryView.stations)
+    private fun getHistory() = handleResponse(stationsHistoryView.stationsProperty)
 
     //retrieve top voted stations list from endpoint
     private fun getTopStations(): Disposable = StationsApi.service

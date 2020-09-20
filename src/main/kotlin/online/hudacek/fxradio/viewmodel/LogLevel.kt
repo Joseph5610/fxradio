@@ -24,21 +24,21 @@ import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.*
 
 class LogLevel(level: Level) {
-    var level: Level by property(level)
+    val level: Level by property(level)
 }
 
 class LogLevelModel : ItemViewModel<LogLevel>() {
-    val level = bind(LogLevel::level) as ObjectProperty
+    val levelProperty = bind(LogLevel::level) as ObjectProperty
 
     override fun onCommit() {
         super.onCommit()
 
         //Set Current Logger Level
-        Configurator.setAllLevels(LogManager.getRootLogger().name, level.value)
+        Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
 
         //Save it
         with(app.config) {
-            set(Config.Keys.logLevel to level.value)
+            set(Config.Keys.logLevel to levelProperty.value)
             save()
         }
     }

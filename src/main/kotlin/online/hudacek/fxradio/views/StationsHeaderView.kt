@@ -19,11 +19,11 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Pos
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.LibraryTypeChanged
-import online.hudacek.fxradio.events.LibraryTypeChangedConditional
 import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
@@ -35,6 +35,7 @@ class StationsHeaderView : View() {
 
     private val logger = KotlinLogging.logger {}
     private val viewModel: StationsViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     private val actionButton = button {
         text = messages["favourites.clean"]
@@ -51,14 +52,16 @@ class StationsHeaderView : View() {
     }
 
     init {
-        subscribe<LibraryTypeChanged> {
-            applyActionButton(it.type)
-            shownLibraryName.text = when (it.type) {
-                LibraryType.Favourites -> messages["favourites"]
-                LibraryType.History -> messages["history"]
-                LibraryType.TopStations -> messages["topStations"]
-                LibraryType.Search -> messages["searchResultsFor"] + " \"${it.params}\""
-                else -> it.params
+        libraryViewModel.selectedProperty.onChange {
+            if (it != null) {
+                applyActionButton(it.type)
+                shownLibraryName.text = when (it.type) {
+                    LibraryType.Favourites -> messages["favourites"]
+                    LibraryType.History -> messages["history"]
+                    LibraryType.TopStations -> messages["topStations"]
+                    LibraryType.Search -> messages["searchResultsFor"] + " \"${it.params}\""
+                    else -> it.params
+                }
             }
         }
     }
@@ -99,7 +102,7 @@ class StationsHeaderView : View() {
                     .cleanup()
                     .subscribe({
                         fire(NotificationEvent(messages["database.clear.ok"]))
-                        fire(LibraryTypeChangedConditional(LibraryType.Favourites))
+                        fire(RefreshFavourites())
                     }, {
                         logger.error(it) { "Can't remove favourites!" }
                         fire(NotificationEvent(messages["database.clear.error"]))

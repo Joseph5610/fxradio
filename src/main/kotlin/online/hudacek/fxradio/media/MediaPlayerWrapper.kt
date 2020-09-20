@@ -42,7 +42,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
 
     init {
         //Update internal player type
-        playerViewModel.playerType.onChange {
+        playerViewModel.playerTypeProperty.onChange {
             if (it != null) {
                 logger.info { "Player type has changed: $it" }
                 internalMediaPlayer.releasePlayer()
@@ -87,7 +87,7 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
             return try {
                 VLCPlayer()
             } catch (e: Exception) {
-                playerViewModel.playerType.value = PlayerType.Custom
+                playerViewModel.playerTypeProperty.value = PlayerType.Custom
                 logger.error(e) { "VLC player failed to initialize, trying ${PlayerType.Custom} instead" }
                 fire(NotificationEvent(messages["player.vlc.error"]))
                 CustomPlayer()

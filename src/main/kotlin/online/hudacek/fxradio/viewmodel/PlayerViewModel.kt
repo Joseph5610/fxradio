@@ -24,10 +24,10 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
     private val stationsHistoryView: StationsHistoryViewModel by inject()
 
-    val animate = bind(PlayerModel::animate) as BooleanProperty
-    val notifications = bind(PlayerModel::notifications) as BooleanProperty
+    val animateProperty = bind(PlayerModel::animate) as BooleanProperty
+    val notificationsProperty = bind(PlayerModel::notifications) as BooleanProperty
     val stationProperty = bind(PlayerModel::station) as ObjectProperty
-    val playerType = bind(PlayerModel::playerType) as ObjectProperty
+    val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
     val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
 
     init {
@@ -39,9 +39,9 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     override fun onCommit() {
         //Save API server
         with(app.config) {
-            set(Config.Keys.playerAnimate to animate.value)
-            set(Config.Keys.playerType to playerType.value)
-            set(Config.Keys.notifications to notifications.value)
+            set(Config.Keys.playerAnimate to animateProperty.value)
+            set(Config.Keys.playerType to playerTypeProperty.value)
+            set(Config.Keys.notifications to notificationsProperty.value)
             set(Config.Keys.volume to volumeProperty.value)
             save()
         }

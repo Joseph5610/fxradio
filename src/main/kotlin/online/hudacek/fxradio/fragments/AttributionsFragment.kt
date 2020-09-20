@@ -21,14 +21,14 @@ import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionModel
+import online.hudacek.fxradio.viewmodel.AttributionViewModel
 import online.hudacek.fxradio.viewmodel.Attributions
 import tornadofx.*
 
 class AttributionsFragment : Fragment() {
 
-    private val model: AttributionModel by inject()
+    private val viewModel: AttributionViewModel by inject()
 
     override val root = vbox {
         title = "${messages["title"]} ${FxRadio.appName}"
@@ -40,10 +40,10 @@ class AttributionsFragment : Fragment() {
 
             tableview(Attributions.all) {
                 columnResizePolicy = SmartResize.POLICY
-                readonlyColumn(messages["name"], Attribution::name).remainingWidth()
-                readonlyColumn(messages["version"], Attribution::version)
+                readonlyColumn(messages["name"], AttributionModel::name).remainingWidth()
+                readonlyColumn(messages["version"], AttributionModel::version)
 
-                bindSelected(model)
+                bindSelected(viewModel)
 
                 onUserSelect {
                     find<LicenseFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -68,14 +68,14 @@ class AttributionsFragment : Fragment() {
      */
     internal class LicenseFragment : Fragment() {
 
-        private val model: AttributionModel by inject()
+        private val viewModel: AttributionViewModel by inject()
 
         override val root = vbox {
             setPrefSize(600.0, 400.0)
-            titleProperty.bind(model.licenseName)
+            titleProperty.bind(viewModel.licenseNameProperty)
 
             textarea {
-                bind(model.licenseContent)
+                bind(viewModel.licenseContentProperty)
                 vgrow = Priority.ALWAYS
             }
         }

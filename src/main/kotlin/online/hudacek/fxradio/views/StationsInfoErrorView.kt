@@ -19,6 +19,7 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.extension.glyph
 import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
@@ -30,6 +31,7 @@ import tornadofx.*
 class StationsInfoErrorView : View() {
 
     private val viewModel: StationsViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
     private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
@@ -63,10 +65,11 @@ class StationsInfoErrorView : View() {
     init {
         viewModel.stationViewStatus.onChange {
             when (it) {
-                StationsViewState.NoResults -> showNoResults(this.viewModel.currentLibParams.value)
+                StationsViewState.NoResults -> showNoResults(libraryViewModel.selectedProperty.value.params)
                 StationsViewState.Error -> showError()
                 StationsViewState.Loading -> showLoading()
                 StationsViewState.ShortQuery -> showShortQuery()
+                else -> Unit
             }
         }
     }

@@ -9,11 +9,11 @@ class StationsHistoryModel {
 }
 
 class StationsHistoryViewModel : ItemViewModel<StationsHistoryModel>() {
-    val stations = bind(StationsHistoryModel::stations) as ListProperty
+    val stationsProperty = bind(StationsHistoryModel::stations) as ListProperty
 
     fun add(station: Station) {
         if (!station.isValidStation()) return
-        with(stations) {
+        with(stationsProperty) {
             if (!contains(station)) {
                 if (size > 10) {
                     removeAt(0)

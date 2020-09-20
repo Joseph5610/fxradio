@@ -20,17 +20,19 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.ListProperty
+import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.LibraryTypeChanged
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
+
+data class SelectedLibrary(val type: LibraryType, val params: String = "")
 
 class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
     //Countries shown in Countries ListView
@@ -42,6 +44,8 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
             LibraryItem(LibraryType.Favourites, FontAwesome.Glyph.STAR),
             LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
     ))
+
+    val selected: SelectedLibrary by property(SelectedLibrary(LibraryType.TopStations))
 }
 
 class LibraryViewModel : ItemViewModel<LibraryModel>() {
@@ -49,8 +53,11 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     val savedQuery
         get() = app.config.string(Config.Keys.searchQuery)
 
-    val countriesListProperty = bind(LibraryModel::countries) as ListProperty
-    val librariesListProperty = bind(LibraryModel::libraries) as ListProperty
+    val countriesProperty = bind(LibraryModel::countries) as ListProperty
+    val librariesProperty = bind(LibraryModel::libraries) as ListProperty
+
+    //Currently selected library type
+    val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
 
     val isError = booleanProperty()
 
@@ -63,10 +70,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
                 val result = response.filter {
                     it.name.length > 1 && !it.name.contains(".")
                 }.asObservable()
-                item = LibraryModel(result)
+                countriesProperty.setAll(result)
                 isError.value = false
             }, {
-                item = LibraryModel()
                 isError.value = true
             })
 
@@ -80,5 +86,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
         }
     }
 
-    fun handleSearchInputClick(text: String) = fire(LibraryTypeChanged(LibraryType.Search, text.trim()))
+    fun handleSearchInputClick(text: String) {
+        selectedProperty.value = SelectedLibrary(LibraryType.Search, text.trim())
+    }
 }

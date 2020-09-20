@@ -48,7 +48,7 @@ class PlayerStationBoxView : View() {
     private val stationNameStatic = label()
 
     private var stationNameBox = vbox(alignment = Pos.CENTER) {
-        if (playerViewModel.animate.value) {
+        if (playerViewModel.animateProperty.value) {
             add(stationNameAnimated)
         } else {
             add(stationNameStatic)
@@ -63,7 +63,7 @@ class PlayerStationBoxView : View() {
     init {
         //Subscribe to property changes
         playerViewModel.stationProperty.onChange { it?.let(::onStationChange) }
-        playerViewModel.animate.onChange(::onAnimatePropertyChanged)
+        playerViewModel.animateProperty.onChange(::onAnimatePropertyChanged)
         subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataUpdated) }
     }
 
@@ -132,7 +132,7 @@ class PlayerStationBoxView : View() {
                 playerViewModel.stationProperty.value.name
             }
 
-            if (playerViewModel.notifications.value) {
+            if (playerViewModel.notificationsProperty.value) {
                 notification(
                         title = newSongName,
                         subtitle = actualTitle)
@@ -145,7 +145,7 @@ class PlayerStationBoxView : View() {
 
     //change station name for static or animated view
     private fun updateStationName(stationName: String) {
-        if (playerViewModel.animate.value) stationNameAnimated.updateText(stationName)
+        if (playerViewModel.animateProperty.value) stationNameAnimated.updateText(stationName)
         else {
             stationNameStatic.text = stationName
             stationNameStatic.tooltip = Tooltip(stationName)

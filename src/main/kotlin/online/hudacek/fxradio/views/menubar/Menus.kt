@@ -23,15 +23,15 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.controllers.MenuBarController
-import online.hudacek.fxradio.events.LibraryTypeChangedConditional
-import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.viewmodel.LogLevelModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationsHistoryModel
 import online.hudacek.fxradio.viewmodel.StationsHistoryViewModel
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
@@ -41,8 +41,8 @@ import tornadofx.*
 object Menus : Component() {
 
     private val controller: MenuBarController by inject()
-    private val PLAYER_VIEW_MODEL: PlayerViewModel by inject()
-    private val STATIONS_HISTORY_VIEW: StationsHistoryViewModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
+    private val stationsHistoryViewModel: StationsHistoryViewModel by inject()
     private val logLevel: LogLevelModel by inject()
 
     private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
@@ -56,12 +56,13 @@ object Menus : Component() {
     private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
 
     init {
-        logLevel.level.onChange { it?.let(::updateSelectedLoggerLevel) }
+        stationsHistoryViewModel.item = StationsHistoryModel()
+        logLevel.levelProperty.onChange { it?.let(::updateSelectedLoggerLevel) }
     }
 
     val historyMenu = menu(messages["menu.history"]) {
-        shouldBeDisabled(PLAYER_VIEW_MODEL.stationProperty)
-        items.bind(STATIONS_HISTORY_VIEW.stations) {
+        shouldBeDisabled(playerViewModel.stationProperty)
+        items.bind(stationsHistoryViewModel.stationsProperty) {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
@@ -74,7 +75,7 @@ object Menus : Component() {
                     }
                 }
                 action {
-                    PLAYER_VIEW_MODEL.stationProperty.value = it
+                    playerViewModel.stationProperty.value = it
                 }
             }
         }
@@ -82,21 +83,21 @@ object Menus : Component() {
 
     val stationMenu = menu(messages["menu.station"]) {
         item(messages["menu.station.info"], keyInfo) {
-            shouldBeDisabled(PLAYER_VIEW_MODEL.stationProperty)
+            shouldBeDisabled(playerViewModel.stationProperty)
             action {
                 controller.openStationInfo()
             }
         }
 
         item(messages["menu.station.favourite"], keyFavourites) {
-            disableWhen(booleanBinding(PLAYER_VIEW_MODEL.stationProperty) {
+            disableWhen(booleanBinding(playerViewModel.stationProperty) {
                 value == null || !value.isValidStation() || value.isFavourite.blockingGet()
             })
 
             actionEvents()
-                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.isFavourite }
+                    .flatMapSingle { playerViewModel.stationProperty.value.isFavourite }
                     .filter { !it }
-                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.addFavourite() }
+                    .flatMapSingle { playerViewModel.stationProperty.value.addFavourite() }
                     .subscribe({
                         fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
                     }, {
@@ -105,24 +106,24 @@ object Menus : Component() {
         }
 
         item(messages["menu.station.favourite.remove"]) {
-            visibleWhen(booleanBinding(PLAYER_VIEW_MODEL.stationProperty) {
+            visibleWhen(booleanBinding(playerViewModel.stationProperty) {
                 value != null && value.isValidStation() && value.isFavourite.blockingGet()
             })
 
             actionEvents()
-                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.isFavourite }
+                    .flatMapSingle { playerViewModel.stationProperty.value.isFavourite }
                     .filter { it }
-                    .flatMapSingle { PLAYER_VIEW_MODEL.stationProperty.value.removeFavourite() }
+                    .flatMapSingle { playerViewModel.stationProperty.value.removeFavourite() }
                     .subscribe({
                         fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
-                        fire(LibraryTypeChangedConditional(LibraryType.Favourites))
+                        fire(RefreshFavourites())
                     }, {
                         fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
                     })
         }
 
         item(messages["menu.station.vote"]) {
-            shouldBeDisabled(PLAYER_VIEW_MODEL.stationProperty)
+            shouldBeDisabled(playerViewModel.stationProperty)
             action {
                 controller.voteForStation()
             }
@@ -169,19 +170,19 @@ object Menus : Component() {
         separator()
         menu(messages["menu.help.loglevel"]) {
             checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
-                isSelected = logLevel.level.value == Level.OFF
+                isSelected = logLevel.levelProperty.value == Level.OFF
                 action {
                     saveNewLogger(Level.OFF)
                 }
             }
             checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
-                isSelected = logLevel.level.value == Level.INFO
+                isSelected = logLevel.levelProperty.value == Level.INFO
                 action {
                     saveNewLogger(Level.INFO)
                 }
             }
             checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
-                isSelected = logLevel.level.value == Level.DEBUG
+                isSelected = logLevel.levelProperty.value == Level.DEBUG
                 action {
                     saveNewLogger(Level.ALL)
                 }
@@ -194,7 +195,7 @@ object Menus : Component() {
 
     private fun saveNewLogger(level: Level) {
         updateSelectedLoggerLevel(level)
-        logLevel.level.value = level
+        logLevel.levelProperty.value = level
         logLevel.commit()
     }
 

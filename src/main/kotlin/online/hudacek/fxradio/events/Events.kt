@@ -24,9 +24,7 @@ enum class LibraryType {
     Favourites, Search, History, Country, TopStations
 }
 
-class LibraryTypeChanged(val type: LibraryType, val params: String = "") : FXEvent()
-
-class LibraryTypeChangedConditional(val onlyWhen: LibraryType) : FXEvent()
+class RefreshFavourites : FXEvent()
 
 class NotificationEvent(val text: String,
                         val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,

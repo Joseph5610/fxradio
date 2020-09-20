@@ -6,28 +6,25 @@ import tornadofx.*
 object Attributions {
     val all by lazy {
         observableListOf(
-                Attribution("tornadofx", "1.7.20", Licenses.apache20),
-                Attribution("controlsfx", "8.40.17", Licenses.controlsfx),
-                Attribution("vlcj", "4.0", Licenses.gpl3),
-                Attribution("humble video", "0.3.0", Licenses.gpl3),
-                Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
-                Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
-                Attribution("log4j", "2.9.1", Licenses.apache20),
-                Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
-                Attribution("TickerView", license = Licenses.tickerView),
-                Attribution("macOS install disk background", license = Licenses.bg),
-                Attribution("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
+                AttributionModel("tornadofx", "1.7.20", Licenses.apache20),
+                AttributionModel("controlsfx", "8.40.17", Licenses.controlsfx),
+                AttributionModel("vlcj", "4.0", Licenses.gpl3),
+                AttributionModel("humble video", "0.3.0", Licenses.gpl3),
+                AttributionModel("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
+                AttributionModel("slf4j-api", "1.7.5", Licenses.sl4fj),
+                AttributionModel("log4j", "2.9.1", Licenses.apache20),
+                AttributionModel("kotlin-logging", "1.7.9", Licenses.apache20),
+                AttributionModel("TickerView", license = Licenses.tickerView),
+                AttributionModel("macOS install disk background", license = Licenses.bg),
+                AttributionModel("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
         )
     }
 }
 
-//Data classes
-class License(name: String = "", content: String) {
-    var name: String by property(name)
-    var content: String by property(content)
-}
+//License Data class
+data class License(val name: String = "", val content: String)
 
-class Attribution(name: String, version: String = "", license: License) {
+class AttributionModel(name: String, version: String = "", license: License) {
     var name: String by property(name)
     var version: String by property(version)
     var licenseContent: String by property(license.content)
@@ -35,10 +32,10 @@ class Attribution(name: String, version: String = "", license: License) {
 }
 
 //Model
-class AttributionModel : ItemViewModel<Attribution>() {
-    val name = bind(Attribution::name) as StringProperty
-    val licenseName = bind(Attribution::licenseName) as StringProperty
-    val licenseContent = bind(Attribution::licenseContent) as StringProperty
+class AttributionViewModel : ItemViewModel<AttributionModel>() {
+    val nameProperty = bind(AttributionModel::name) as StringProperty
+    val licenseNameProperty = bind(AttributionModel::licenseName) as StringProperty
+    val licenseContentProperty = bind(AttributionModel::licenseContent) as StringProperty
 }
 
 private object Licenses {

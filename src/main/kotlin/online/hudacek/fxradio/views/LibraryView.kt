@@ -18,12 +18,12 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.LibraryTypeChanged
 import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.extension.smallLabel
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.viewmodel.LibraryModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SelectedLibrary
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
@@ -40,7 +40,7 @@ class LibraryView : View() {
         showWhen { viewModel.isError }
     }
 
-    private val libraryListView = listview(viewModel.librariesListProperty) {
+    private val libraryListView = listview(viewModel.librariesProperty) {
         cellFormat {
             graphic = glyph("FontAwesome", item.graphic)
             text = when (item.type) {
@@ -55,7 +55,7 @@ class LibraryView : View() {
         addClass(Styles.libraryListView)
     }
 
-    private val countriesListView = listview(viewModel.countriesListProperty) {
+    private val countriesListView = listview(viewModel.countriesProperty) {
         cellFormat {
             graphic = hbox(5) {
                 val stationWord = if (item.stationcount > 1)
@@ -73,7 +73,7 @@ class LibraryView : View() {
         addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
-            fire(LibraryTypeChanged(LibraryType.Country, it.name))
+            viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
         }
         showWhen {
             viewModel.isError.not()
@@ -84,20 +84,14 @@ class LibraryView : View() {
         viewModel.item = LibraryModel()
         viewModel.showCountries()
 
-        fire(LibraryTypeChanged(LibraryType.TopStations))
+        with(libraryListView) {
+            prefHeight = viewModel.librariesProperty.size * 30.0 + 10
+            selectionModel.select(viewModel.librariesProperty[0])
+        }
 
         libraryListView.onUserSelect(1) {
             countriesListView.selectionModel.clearSelection()
-            fire(LibraryTypeChanged(it.type))
-        }
-
-        viewModel.librariesListProperty.onChangeOnce {
-            if (it != null) {
-                with(libraryListView) {
-                    prefHeight = it.size * 30.0 + 10
-                    selectionModel.select(it[0])
-                }
-            }
+            viewModel.selectedProperty.value = SelectedLibrary(it.type)
         }
     }
 
