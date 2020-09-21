@@ -1,8 +1,6 @@
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
@@ -12,6 +10,7 @@ import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.RefreshFavourites
+import online.hudacek.fxradio.extension.applySchedulers
 import tornadofx.*
 
 class StationsModel {
@@ -50,15 +49,13 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
 
     //retrieve favourites from DB
     private fun getFavourites(): Disposable = Station.favourites()
-            .observeOnFx()
-            .subscribeOn(Schedulers.io())
+            .compose(applySchedulers())
             .subscribe(::handleResponse, ::handleError)
 
     //retrieve all stations from given country from endpoint
     private fun getStationsByCountry(country: String): Disposable = StationsApi.service
             .getStationsByCountry(CountriesBody(), country)
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
+            .compose(applySchedulers())
             .subscribe(::handleResponse, ::handleError)
 
     //search for station name on endpoint
@@ -66,8 +63,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
         if (name.length > 2) {
             StationsApi.service
                     .searchStationByName(SearchBody(name))
-                    .subscribeOn(Schedulers.io())
-                    .observeOnFx()
+                    .compose(applySchedulers())
                     .subscribe(::handleResponse, ::handleError)
         } else {
             stationViewStatus.value = StationsViewState.ShortQuery
@@ -80,8 +76,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     //retrieve top voted stations list from endpoint
     private fun getTopStations(): Disposable = StationsApi.service
             .getTopStations()
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
+            .compose(applySchedulers())
             .subscribe(::handleResponse, ::handleError)
 
     private fun handleResponse(stations: List<Station>) {

@@ -16,7 +16,10 @@
 
 package online.hudacek.fxradio.extension
 
+import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
+import io.reactivex.SingleTransformer
+import io.reactivex.schedulers.Schedulers
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.Node
@@ -33,6 +36,7 @@ import tornadofx.*
 import tornadofx.controlsfx.glyph
 import java.net.URLEncoder
 import java.util.*
+
 
 /*
  * Helper extension functions for UI
@@ -102,3 +106,10 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
         visibleWhen(expr()).apply {
             managedWhen(expr())
         }
+
+internal fun <T> applySchedulers(): SingleTransformer<T, T>? {
+    return SingleTransformer<T, T> { observable ->
+        observable.subscribeOn(Schedulers.io())
+                .observeOnFx()
+    }
+}

@@ -16,12 +16,11 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.extension.applySchedulers
 import tornadofx.*
 
 class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf()) {
@@ -35,8 +34,7 @@ class StatsViewModel : ItemViewModel<StatsModel>() {
 
     fun getStats(): Disposable =
             StationsApi.service.getStats()
-                    .subscribeOn(Schedulers.io())
-                    .observeOnFx()
+                    .compose(applySchedulers())
                     .subscribe({
                         val statsPair = observableListOf(
                                 Pair(messages["stats.status"], it.status),

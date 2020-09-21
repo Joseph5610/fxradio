@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.api
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.*
@@ -39,7 +38,7 @@ interface StationsApi {
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
-    fun getTopStations(): Observable<List<Station>>
+    fun getTopStations(): Single<List<Station>>
 
     @GET("json/stations/byuuid/{uuid}")
     fun getStationInfo(@Path("uuid") uuid: String): Single<List<Station>>

@@ -16,9 +16,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
@@ -27,6 +25,7 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.extension.applySchedulers
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -63,8 +62,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     fun showCountries(): Disposable = StationsApi.service
             .getCountries(CountriesBody())
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
+            .compose(applySchedulers())
             .subscribe({ response ->
                 //Ignore invalid states
                 val result = response.filter {

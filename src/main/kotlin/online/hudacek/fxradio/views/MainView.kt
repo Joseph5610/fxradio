@@ -38,7 +38,9 @@ import tornadofx.controlsfx.notificationPane
 class MainView : View(FxRadio.appName) {
 
     private val playerViewModel: PlayerViewModel by inject()
-    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
+
+    //initialize Player
+    private val mediaPlayerWrapper = find<MediaPlayerWrapper>()
 
     private val leftPaneView: LibraryView by inject()
     private val playerView: PlayerView by inject()
@@ -47,7 +49,6 @@ class MainView : View(FxRadio.appName) {
     private var notification: NotificationPane by singleAssign()
 
     init {
-        mediaPlayerWrapper.init()
         setStageIcon(Image(Config.Resources.stageIcon))
         subscribe<NotificationEvent> {
             notification.show(it.glyph, it.text, it.op)

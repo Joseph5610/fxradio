@@ -16,11 +16,9 @@
 
 package online.hudacek.fxradio.controllers
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.vdurmont.semver4j.Semver
 import com.vdurmont.semver4j.SemverException
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javafx.application.Platform
 import javafx.stage.Stage
 import javafx.stage.StageStyle
@@ -29,6 +27,7 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.extension.applySchedulers
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.media.MediaPlayerWrapper
@@ -56,7 +55,14 @@ class MenuBarController : Controller() {
 
     fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
-    fun clearCache() = ImageCache.clearCache()
+    fun clearCache() = runAsync(daemon = true) {
+        ImageCache.clear()
+    } success {
+        fire(NotificationEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+    } fail {
+        fire(NotificationEvent(messages["cache.clear.error"]))
+        logger.error(it) { "Exception when clearing cache" }
+    }
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()
@@ -67,8 +73,7 @@ class MenuBarController : Controller() {
 
     fun voteForStation(): Disposable = StationsApi.service
             .vote(playerViewModel.stationProperty.value.stationuuid)
-            .observeOnFx()
-            .subscribeOn(Schedulers.io())
+            .compose(applySchedulers())
             .subscribe({
                 menuBarView.showVoteResult(it.ok)
             }, {
@@ -79,18 +84,13 @@ class MenuBarController : Controller() {
 
     fun checkForUpdate() {
         VCSApi.service.currentVersion()
-                .observeOnFx()
-                .subscribeOn(Schedulers.io())
-                .doOnError {
-                    println("ahoj ahoj aa")
-                }
+                .compose(applySchedulers())
                 .subscribe({ vcs ->
                     try {
-                        val actualVersion = Semver(FxRadio.version, Semver.SemverType.LOOSE)
                         val latestVersion = Semver(vcs.currentVersion, Semver.SemverType.LOOSE)
-                        if (actualVersion.isEqualTo(latestVersion)) {
+                        if (FxRadio.version.isEqualTo(latestVersion)) {
                             fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
-                        } else if (latestVersion.isGreaterThan(actualVersion)) {
+                        } else if (latestVersion.isGreaterThan(FxRadio.version)) {
                             logger.info { "There is a new version ${vcs.currentVersion}" }
                             if (vcs.required) {
                                 confirm(vcs.languages[0].message, vcs.languages[0].description) {

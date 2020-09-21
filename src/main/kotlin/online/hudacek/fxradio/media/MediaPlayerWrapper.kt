@@ -41,6 +41,8 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     private var internalVolume = 0.0
 
     init {
+        logger.info { "MediaPlayer $internalMediaPlayer initialized" }
+
         //Update internal player type
         playerViewModel.playerTypeProperty.onChange {
             if (it != null) {
@@ -74,10 +76,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 }
             }
         }
-    }
-
-    fun init() {
-        logger.info { "MediaPlayer $internalMediaPlayer initialized" }
     }
 
     private fun changePlayer(playerType: PlayerType): MediaPlayer {

@@ -46,13 +46,7 @@ object ImageCache {
         }
     }
 
-    fun clearCache() = try {
-        FileUtils.cleanDirectory(cacheBasePath.toFile())
-        true
-    } catch (e: Exception) {
-        logger.error(e) { "Exception when clearing cache" }
-        false
-    }
+    fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
     fun isImageInCache(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
 

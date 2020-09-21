@@ -143,11 +143,7 @@ object Menus : Component() {
         }
         item(messages["menu.help.clearCache"]).action {
             confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
-                if (controller.clearCache()) {
-                    fire(NotificationEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
-                } else {
-                    fire(NotificationEvent(messages["cache.clear.error"]))
-                }
+                controller.clearCache()
             }
         }
         separator()
