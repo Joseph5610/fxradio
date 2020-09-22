@@ -45,10 +45,9 @@ class LibraryView : View() {
             graphic = glyph("FontAwesome", item.graphic)
             text = when (item.type) {
                 LibraryType.Favourites -> messages["favourites"]
-                LibraryType.Search -> ""
-                LibraryType.History -> messages["history"]
-                LibraryType.Country -> ""
                 LibraryType.TopStations -> messages["topStations"]
+                LibraryType.History -> messages["history"]
+                else -> ""
             }
             addClass(Styles.libraryListItem)
         }
