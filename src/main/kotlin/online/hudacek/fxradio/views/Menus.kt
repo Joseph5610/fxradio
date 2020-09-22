@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views.menubar
+package online.hudacek.fxradio.views
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.control.CheckMenuItem
@@ -22,17 +22,13 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.controllers.MenuBarController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.shouldBeDisabled
-import online.hudacek.fxradio.viewmodel.LogLevelModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationsHistoryModel
-import online.hudacek.fxradio.viewmodel.StationsHistoryViewModel
+import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.tools.Platform
@@ -40,10 +36,10 @@ import tornadofx.*
 
 object Menus : Component() {
 
-    private val controller: MenuBarController by inject()
+    private val menuViewModel: MenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsHistoryViewModel: StationsHistoryViewModel by inject()
-    private val logLevel: LogLevelModel by inject()
+    private val logViewModel: LogViewModel by inject()
 
     private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
     private val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
@@ -57,7 +53,7 @@ object Menus : Component() {
 
     init {
         stationsHistoryViewModel.item = StationsHistoryModel()
-        logLevel.levelProperty.onChange { it?.let(::updateSelectedLoggerLevel) }
+        logViewModel.levelProperty.onChange { it?.let(Menus::updateSelectedLoggerLevel) }
     }
 
     val historyMenu = menu(messages["menu.history"]) {
@@ -85,7 +81,7 @@ object Menus : Component() {
         item(messages["menu.station.info"], keyInfo) {
             shouldBeDisabled(playerViewModel.stationProperty)
             action {
-                controller.openStationInfo()
+                menuViewModel.openStationInfo()
             }
         }
 
@@ -125,25 +121,25 @@ object Menus : Component() {
         item(messages["menu.station.vote"]) {
             shouldBeDisabled(playerViewModel.stationProperty)
             action {
-                controller.voteForStation()
+                menuViewModel.voteForStation()
             }
         }
 
         item(messages["menu.station.add"], keyAdd) {
             isVisible = Config.Flags.addStationEnabled
             action {
-                controller.openAddNewStation()
+                menuViewModel.openAddNewStation()
             }
         }
     }
 
     val helpMenu = menu(messages["menu.help"]) {
         item(messages["menu.help.stats"]).action {
-            controller.openStats()
+            menuViewModel.openStats()
         }
         item(messages["menu.help.clearCache"]).action {
             confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
-                controller.clearCache()
+                menuViewModel.clearCache()
             }
         }
         separator()
@@ -154,31 +150,31 @@ object Menus : Component() {
                 isPreserveRatio = true
             }
             action {
-                controller.openWebsite()
+                menuViewModel.openWebsite()
             }
         }
         separator()
         item(messages["menu.help.vcs.check"]) {
             action {
-                controller.checkForUpdate()
+                menuViewModel.checkForUpdate()
             }
         }
         separator()
         menu(messages["menu.help.loglevel"]) {
             checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
-                isSelected = logLevel.levelProperty.value == Level.OFF
+                isSelected = logViewModel.levelProperty.value == Level.OFF
                 action {
                     saveNewLogger(Level.OFF)
                 }
             }
             checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
-                isSelected = logLevel.levelProperty.value == Level.INFO
+                isSelected = logViewModel.levelProperty.value == Level.INFO
                 action {
                     saveNewLogger(Level.INFO)
                 }
             }
             checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
-                isSelected = logLevel.levelProperty.value == Level.DEBUG
+                isSelected = logViewModel.levelProperty.value == Level.DEBUG
                 action {
                     saveNewLogger(Level.ALL)
                 }
@@ -191,8 +187,8 @@ object Menus : Component() {
 
     private fun saveNewLogger(level: Level) {
         updateSelectedLoggerLevel(level)
-        logLevel.levelProperty.value = level
-        logLevel.commit()
+        logViewModel.levelProperty.value = level
+        logViewModel.commit()
     }
 
     private fun updateSelectedLoggerLevel(level: Level) {

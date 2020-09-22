@@ -26,7 +26,6 @@ import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.extension.setOnSpacePressed
 import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.extension.smallIcon
-import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -40,7 +39,7 @@ import tornadofx.*
 class PlayerView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
-    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
+
     private val playerStationBoxView: PlayerStationBoxView by inject()
 
     private val playerControlsIcon = imageview(Config.Resources.playIcon) {
@@ -55,7 +54,7 @@ class PlayerView : View() {
         add(playerControlsIcon)
         addClass(Styles.playerControls)
         action {
-            mediaPlayerWrapper.togglePlaying()
+            playerViewModel.togglePlayer()
         }
     }
 
@@ -126,7 +125,7 @@ class PlayerView : View() {
 
     override fun onDock() {
         currentWindow?.setOnSpacePressed {
-            mediaPlayerWrapper.togglePlaying()
+            playerViewModel.togglePlayer()
         }
     }
 

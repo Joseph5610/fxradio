@@ -14,37 +14,32 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.controllers
+package online.hudacek.fxradio.viewmodel
 
-import com.vdurmont.semver4j.Semver
-import com.vdurmont.semver4j.SemverException
 import io.reactivex.disposables.Disposable
-import javafx.application.Platform
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.VersionCheck
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.applySchedulers
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
-import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.views.menubar.MenuBarView
-import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class MenuBarController : Controller() {
+//WIP
+class MenuModel() {
+
+}
+
+class MenuViewModel : ItemViewModel<MenuModel>() {
 
     private val logger = KotlinLogging.logger {}
 
-    private val menuBarView: MenuBarView by inject()
-
-    private val mediaPlayerWrapper: MediaPlayerWrapper by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -66,7 +61,7 @@ class MenuBarController : Controller() {
 
     fun closeApp(currentStage: Stage?) {
         currentStage?.close()
-        mediaPlayerWrapper.release()
+        //mediaPlayerWrapper.release()
     }
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -75,41 +70,21 @@ class MenuBarController : Controller() {
             .vote(playerViewModel.stationProperty.value.stationuuid)
             .compose(applySchedulers())
             .subscribe({
-                menuBarView.showVoteResult(it.ok)
+                showVoteResult(it.ok)
             }, {
-                menuBarView.showVoteResult(false)
+                showVoteResult(false)
             })
+
+    private fun showVoteResult(result: Boolean) {
+        if (result) {
+            fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+        } else {
+            fire(NotificationEvent(messages["vote.error"]))
+        }
+    }
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 
-    fun checkForUpdate() {
-        VCSApi.service.currentVersion()
-                .compose(applySchedulers())
-                .subscribe({ vcs ->
-                    try {
-                        val latestVersion = Semver(vcs.currentVersion, Semver.SemverType.LOOSE)
-                        if (FxRadio.version.isEqualTo(latestVersion)) {
-                            fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
-                        } else if (latestVersion.isGreaterThan(FxRadio.version)) {
-                            logger.info { "There is a new version ${vcs.currentVersion}" }
-                            if (vcs.required) {
-                                confirm(vcs.languages[0].message, vcs.languages[0].description) {
-                                    Platform.exit()
-                                }
-                            } else {
-                                fire(NotificationEvent(vcs.languages[0].message, op = {
-                                    actions.setAll(Action(messages["vcs.download"]) {
-                                        app.openUrl(vcs.downloadUrl)
-                                    })
-                                }))
-                            }
-                        }
-                    } catch (e: SemverException) {
-                        logger.error(e) { "Can't parse version string, acting as no update available" }
-                        fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
-                    }
-                }, {
-                    logger.error(it) { "VCS check problem!" }
-                })
-    }
+    fun checkForUpdate() = VersionCheck.perform()
+
 }

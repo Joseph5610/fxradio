@@ -23,12 +23,15 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.*
 
-class LogLevel(level: Level) {
+class LogModel(level: Level) {
     val level: Level by property(level)
 }
 
-class LogLevelModel : ItemViewModel<LogLevel>() {
-    val levelProperty = bind(LogLevel::level) as ObjectProperty
+/**
+ * Keeps information about current logging level chosen in UI
+ */
+class LogViewModel : ItemViewModel<LogModel>() {
+    val levelProperty = bind(LogModel::level) as ObjectProperty
 
     override fun onCommit() {
         super.onCommit()

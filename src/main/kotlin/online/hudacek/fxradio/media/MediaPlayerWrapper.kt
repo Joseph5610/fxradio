@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.media
 
+import javafx.beans.property.Property
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
@@ -30,7 +31,7 @@ enum class PlayerType {
 }
 
 //TODO get rid of this class in its current form
-class MediaPlayerWrapper : Component(), ScopedInstance {
+object MediaPlayerWrapper : Component() {
 
     private val logger = KotlinLogging.logger {}
 
@@ -41,8 +42,6 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
     private var internalVolume = 0.0
 
     init {
-        logger.info { "MediaPlayer $internalMediaPlayer initialized" }
-
         //Update internal player type
         playerViewModel.playerTypeProperty.onChange {
             if (it != null) {
@@ -76,6 +75,11 @@ class MediaPlayerWrapper : Component(), ScopedInstance {
                 }
             }
         }
+    }
+
+    fun init(playerType: Property<PlayerType>) {
+        logger.info { "MediaPlayer $playerType initialized" }
+        internalMediaPlayer = changePlayer(playerType.value)
     }
 
     private fun changePlayer(playerType: PlayerType): MediaPlayer {

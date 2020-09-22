@@ -29,7 +29,6 @@ import online.hudacek.fxradio.extension.show
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.views.menubar.MenuBarView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -39,9 +38,6 @@ import tornadofx.controlsfx.notificationPane
 class MainView : View(FxRadio.appName) {
 
     private val playerViewModel: PlayerViewModel by inject()
-
-    //initialize Player
-    private val mediaPlayerWrapper = find<MediaPlayerWrapper>()
 
     private val leftPaneView: LibraryView by inject()
     private val playerView: PlayerView by inject()
@@ -64,8 +60,10 @@ class MainView : View(FxRadio.appName) {
 
     override fun onDock() {
         //Correctly shutdown all classes
+        MediaPlayerWrapper.init(playerViewModel.playerTypeProperty)
+
         currentStage?.setOnCloseRequest {
-            mediaPlayerWrapper.release()
+            playerViewModel.releasePlayer()
             StationsApi.client.shutdown()
             VCSApi.client.shutdown()
         }

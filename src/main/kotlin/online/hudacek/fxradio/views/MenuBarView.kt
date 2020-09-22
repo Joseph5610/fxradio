@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views.menubar
+package online.hudacek.fxradio.views
 
 import de.codecentric.centerdevice.MenuToolkit
 import de.codecentric.centerdevice.dialogs.about.AboutStageBuilder
@@ -28,13 +28,13 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.controllers.MenuBarController
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.viewmodel.MenuViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.tools.Platform
@@ -43,7 +43,7 @@ import java.util.*
 
 class MenuBarView : View() {
 
-    private val controller: MenuBarController by inject()
+    private val menuViewModel: MenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     private var playerPlay: MenuItem by singleAssign()
@@ -120,11 +120,11 @@ class MenuBarView : View() {
     private fun defaultMenuBar() = menubar {
         menu(FxRadio.appName) {
             item(messages["menu.app.about"]).action {
-                controller.openAbout()
+                menuViewModel.openAbout()
             }
             addAboutMenuContent()
             item(messages["menu.app.quit"]).action {
-                controller.closeApp(currentStage)
+                menuViewModel.closeApp(currentStage)
             }
         }
         menus.addAll(stationMenu, playerMenu, historyMenu, helpMenu)
@@ -181,7 +181,7 @@ class MenuBarView : View() {
     private fun Menu.addAboutMenuContent() {
         separator()
         item(messages["menu.app.attributions"]).action {
-            controller.openAttributions()
+            menuViewModel.openAttributions()
         }
         separator()
     }

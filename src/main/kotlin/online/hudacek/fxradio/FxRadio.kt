@@ -18,8 +18,8 @@ package online.hudacek.fxradio
 
 import javafx.stage.Stage
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.viewmodel.LogLevel
-import online.hudacek.fxradio.viewmodel.LogLevelModel
+import online.hudacek.fxradio.viewmodel.LogModel
+import online.hudacek.fxradio.viewmodel.LogViewModel
 import online.hudacek.fxradio.views.MainView
 import org.apache.logging.log4j.Level
 import tornadofx.*
@@ -35,7 +35,7 @@ class FxRadio : App(MainView::class, Styles::class) {
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
-    private val logLevel: LogLevelModel by inject()
+    private val logViewModel: LogViewModel by inject()
 
     override fun start(stage: Stage) {
         with(stage) {
@@ -46,8 +46,8 @@ class FxRadio : App(MainView::class, Styles::class) {
 
         //init logger level based on stored settings
         val savedLevel = Level.valueOf(config.string(Config.Keys.logLevel))
-        logLevel.item = LogLevel(savedLevel)
-        logLevel.commit()
+        logViewModel.item = LogModel(savedLevel)
+        logViewModel.commit()
     }
 
     /**
