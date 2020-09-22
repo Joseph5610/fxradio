@@ -80,9 +80,9 @@ class LibraryView : View() {
         }
     }
 
-    init {
-        viewModel.item = LibraryModel()
+    override fun onDock() {
         viewModel.showCountries()
+        viewModel.item = LibraryModel()
 
         with(libraryListView) {
             prefHeight = viewModel.librariesProperty.size * 30.0 + 10
@@ -115,13 +115,22 @@ class LibraryView : View() {
 
         //Fire up search results after input is written to text field
         textProperty().onChange {
-            it?.let(viewModel::handleSearch)
+            if (text.length >= 50) {
+                text = text.substring(0, 49)
+            } else {
+                it?.let(viewModel::handleSearch)
+            }
         }
 
         setOnMouseClicked {
             viewModel.handleSearchInputClick(text)
             countriesListView.selectionModel.clearSelection()
             libraryListView.selectionModel.clearSelection()
+        }
+
+        //Validation
+        ValidationContext().addValidator(this, textProperty()) {
+            if (it!!.length >= 49) error(messages["search.max.length"]) else null
         }
     }
 

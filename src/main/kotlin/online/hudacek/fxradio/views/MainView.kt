@@ -18,6 +18,7 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Orientation
 import javafx.scene.image.Image
+import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
@@ -56,6 +57,7 @@ class MainView : View(FxRadio.appName) {
     }
 
     private val rightPane = vbox {
+        hgrow = Priority.NEVER
         add(playerView)
         add(stationsView)
     }

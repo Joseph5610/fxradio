@@ -16,6 +16,7 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
+import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.extension.glyph
 import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.styles.Styles
@@ -41,15 +42,21 @@ class StationsInfoErrorView : View() {
         addClass(Styles.header)
     }
 
+    private val noResultsText = text {
+        addClass(Styles.header)
+        wrappingWidth = 350.0
+        textAlignment = TextAlignment.CENTER
+        hide()
+    }
+
     private val subHeader = label {
         addClass(Styles.grayLabel)
     }
 
     override val root = vbox(alignment = Pos.CENTER) {
         paddingTop = 120.0
-        paddingLeft = 10.0
-        paddingRight = 10.0
         add(header)
+        add(noResultsText)
         add(subHeader)
 
         showWhen {
@@ -75,7 +82,9 @@ class StationsInfoErrorView : View() {
     }
 
     private fun showShortQuery() {
+        noResultsText.hide()
         with(header) {
+            show()
             text = messages["searchingLibrary"]
             graphic = searchGlyph
         }
@@ -83,14 +92,15 @@ class StationsInfoErrorView : View() {
     }
 
     private fun showNoResults(query: String?) {
+        noResultsText.show()
+        header.hide()
         if (query == null) {
             subHeader.text = messages["noResultsDesc"]
         } else {
             subHeader.text = null
         }
 
-        header.graphic = null
-        header.text =
+        noResultsText.text =
                 if (query.isNullOrEmpty()) {
                     messages["noResults"]
                 } else {
@@ -99,7 +109,9 @@ class StationsInfoErrorView : View() {
     }
 
     private fun showError() {
+        noResultsText.hide()
         with(header) {
+            show()
             graphic = errorGlyph
             text = messages["connectionError"]
         }
@@ -107,7 +119,9 @@ class StationsInfoErrorView : View() {
     }
 
     private fun showLoading() {
+        noResultsText.hide()
         with(header) {
+            show()
             graphic = loadingGlyph
             text = messages["library.loading"]
         }

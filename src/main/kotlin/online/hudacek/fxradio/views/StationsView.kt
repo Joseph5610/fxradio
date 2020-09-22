@@ -36,5 +36,6 @@ class StationsView : View() {
         add(headerView)
         add(dataGridView)
         dataGridView.root.fitToParentHeight()
+        infoErrorView.root.prefWidthProperty().bind(widthProperty())
     }
 }
