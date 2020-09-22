@@ -37,7 +37,6 @@ import tornadofx.controlsfx.glyph
 import java.net.URLEncoder
 import java.util.*
 
-
 /*
  * Helper extension functions for UI
  */

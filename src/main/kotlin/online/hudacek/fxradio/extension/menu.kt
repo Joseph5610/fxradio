@@ -33,12 +33,6 @@ internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
     })
 }
 
-internal fun CheckMenuItem.shouldBeSelected(playerType: Property<PlayerType>) {
-    selectedProperty().cleanBind(booleanBinding(playerType) {
-        value == PlayerType.Custom
-    })
-}
-
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     disableWhen(booleanBinding(station) {
         value == null || !value.isValidStation()

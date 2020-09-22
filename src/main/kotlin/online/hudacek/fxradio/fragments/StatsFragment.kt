@@ -37,12 +37,12 @@ class StatsFragment : Fragment() {
         currentWindow?.opacity = 0.85
     }
 
-    init {
-        title = messages["stats.title"]
+    override fun onDock() {
         statsViewModel.getStats()
     }
 
     override val root = vbox {
+        title = messages["stats.title"]
         setPrefSize(300.0, 250.0)
 
         vbox(alignment = Pos.CENTER) {
