@@ -22,6 +22,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.VersionCheck
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.extension.createImage
@@ -31,7 +32,6 @@ import online.hudacek.fxradio.extension.shouldBeDisabled
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.tools.Platform
 import tornadofx.*
 
 object Menus : Component() {
@@ -49,8 +49,6 @@ object Menus : Component() {
     private var checkLoggerInfo: CheckMenuItem by singleAssign()
     private var checkLoggerAll: CheckMenuItem by singleAssign()
 
-    private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
-
     init {
         stationsHistoryViewModel.item = StationsHistoryModel()
         logViewModel.levelProperty.onChange { it?.let(Menus::updateSelectedLoggerLevel) }
@@ -62,7 +60,7 @@ object Menus : Component() {
             item("${it.name} (${it.countrycode})") {
                 //for some reason macos native menu does not respect
                 //width/height setting so it is disabled for now
-                if (Platform.getCurrent() != Platform.OSX || !usePlatformMenuBarProperty) {
+                if (!menuViewModel.useNative) {
                     graphic = imageview {
                         createImage(it)
                         fitHeight = 15.0
@@ -121,7 +119,7 @@ object Menus : Component() {
         item(messages["menu.station.vote"]) {
             shouldBeDisabled(playerViewModel.stationProperty)
             action {
-                menuViewModel.voteForStation()
+                menuViewModel.handleVote()
             }
         }
 
@@ -156,7 +154,7 @@ object Menus : Component() {
         separator()
         item(messages["menu.help.vcs.check"]) {
             action {
-                menuViewModel.checkForUpdate()
+                VersionCheck.perform()
             }
         }
         separator()

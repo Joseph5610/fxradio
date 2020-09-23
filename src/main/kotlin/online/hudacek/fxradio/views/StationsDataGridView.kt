@@ -38,13 +38,13 @@ import tornadofx.controlsfx.showPopover
 class StationsDataGridView : View() {
 
     private val playerViewViewModel: PlayerViewModel by inject()
-    private val viewModel: StationsViewModel by inject()
+    private val stationsViewModel: StationsViewModel by inject()
 
     init {
-        viewModel.item = StationsModel()
+        stationsViewModel.item = StationsModel()
     }
 
-    override val root = datagrid(viewModel.stationsProperty) {
+    override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
 
         itemsProperty
@@ -92,7 +92,7 @@ class StationsDataGridView : View() {
                 }
             }
         }
-        hiddenWhen(booleanBinding(viewModel.stationViewStatus) {
+        hiddenWhen(booleanBinding(stationsViewModel.stationViewStatus) {
             when (this.value) {
                 StationsViewState.Normal -> false
                 else -> true

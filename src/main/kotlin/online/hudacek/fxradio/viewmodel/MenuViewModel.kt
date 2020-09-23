@@ -17,30 +17,31 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
-import javafx.stage.Stage
 import javafx.stage.StageStyle
 import mu.KotlinLogging
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.VersionCheck
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.extension.applySchedulers
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
+import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.storage.ImageCache
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 //WIP
-class MenuModel() {
-
-}
+class MenuModel
 
 class MenuViewModel : ItemViewModel<MenuModel>() {
 
     private val logger = KotlinLogging.logger {}
 
     private val playerViewModel: PlayerViewModel by inject()
+
+    val useNative: Boolean
+        get() = MacUtils.isMac && app.config.boolean(Config.Keys.useNativeMenuBar, true)
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -49,6 +50,8 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
+
+    fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun clearCache() = runAsync(daemon = true) {
         ImageCache.clear()
@@ -59,32 +62,14 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
         logger.error(it) { "Exception when clearing cache" }
     }
 
-    fun closeApp(currentStage: Stage?) {
-        currentStage?.close()
-        //mediaPlayerWrapper.release()
-    }
-
-    fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
-
-    fun voteForStation(): Disposable = StationsApi.service
+    fun handleVote(): Disposable = StationsApi.service
             .vote(playerViewModel.stationProperty.value.stationuuid)
             .compose(applySchedulers())
             .subscribe({
-                showVoteResult(it.ok)
+                fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
             }, {
-                showVoteResult(false)
+                fire(NotificationEvent(messages["vote.error"]))
             })
 
-    private fun showVoteResult(result: Boolean) {
-        if (result) {
-            fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
-        } else {
-            fire(NotificationEvent(messages["vote.error"]))
-        }
-    }
-
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
-
-    fun checkForUpdate() = VersionCheck.perform()
-
 }

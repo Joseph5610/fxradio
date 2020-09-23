@@ -47,19 +47,31 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
         }
     }
 
+    //retrieve top voted stations list from endpoint
+    private val topStations: Disposable
+        get() = StationsApi.service
+                .getTopStations()
+                .compose(applySchedulers())
+                .subscribe(::handleResponse, ::handleError)
+
     //retrieve favourites from DB
-    private fun getFavourites(): Disposable = Station.favourites()
-            .compose(applySchedulers())
-            .subscribe(::handleResponse, ::handleError)
+    private val favourites: Disposable
+        get() = Station.favourites()
+                .compose(applySchedulers())
+                .subscribe(::handleResponse, ::handleError)
+
+    //retrieve history list
+    private val history
+        get() = handleResponse(stationsHistoryView.stationsProperty)
 
     //retrieve all stations from given country from endpoint
-    private fun getStationsByCountry(country: String): Disposable = StationsApi.service
+    private fun stationsByCountry(country: String): Disposable = StationsApi.service
             .getStationsByCountry(CountriesBody(), country)
             .compose(applySchedulers())
             .subscribe(::handleResponse, ::handleError)
 
     //search for station name on endpoint
-    private fun searchStations(name: String) {
+    private fun search(name: String) {
         if (name.length > 2) {
             StationsApi.service
                     .searchStationByName(SearchBody(name))
@@ -69,15 +81,6 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
             stationViewStatus.value = StationsViewState.ShortQuery
         }
     }
-
-    //retrieve history list
-    private fun getHistory() = handleResponse(stationsHistoryView.stationsProperty)
-
-    //retrieve top voted stations list from endpoint
-    private fun getTopStations(): Disposable = StationsApi.service
-            .getTopStations()
-            .compose(applySchedulers())
-            .subscribe(::handleResponse, ::handleError)
 
     private fun handleResponse(stations: List<Station>) {
         stationsProperty.set(stations.asObservable())
@@ -96,11 +99,11 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     private fun showLibraryType(libraryType: LibraryType, params: String) {
         stationViewStatus.value = StationsViewState.Loading
         when (libraryType) {
-            LibraryType.Country -> getStationsByCountry(params)
-            LibraryType.Favourites -> getFavourites()
-            LibraryType.History -> getHistory()
-            LibraryType.Search -> searchStations(params)
-            else -> getTopStations()
+            LibraryType.Country -> stationsByCountry(params)
+            LibraryType.Favourites -> favourites
+            LibraryType.History -> history
+            LibraryType.Search -> search(params)
+            else -> topStations
         }
     }
 

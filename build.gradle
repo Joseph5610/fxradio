@@ -55,7 +55,7 @@ dependencies {
     compile platform('org.jetbrains.kotlin:kotlin-bom')
 
     //local jars
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 
     // Use the Kotlin JDK 8 standard library.
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
@@ -133,7 +133,9 @@ jfx {
     additionalAppResources = 'src/main/deploy/additional'
     bundleArguments = [
             licenseType: 'ASL 2.0',
-            licenseFile: 'LICENSE'
+            licenseFile: 'LICENSE'//,
+            //'signBundle': true,
+            //'mac.signing-key-developer-id-app': 'Developer ID Application: XYZ'
     ]
 }
 

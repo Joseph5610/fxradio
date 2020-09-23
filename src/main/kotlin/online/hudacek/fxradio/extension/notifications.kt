@@ -16,13 +16,12 @@
 
 package online.hudacek.fxradio.extension
 
-import airsquared.JMacNotification.NSUserNotification
 import javafx.animation.PauseTransition
 import javafx.event.EventHandler
 import javafx.util.Duration
+import online.hudacek.fxradio.macos.MacUtils
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.tools.Platform
 import tornadofx.controlsfx.glyph
 
 /**
@@ -53,17 +52,9 @@ internal fun NotificationPane.show(glyph: FontAwesome.Glyph, message: String, op
  */
 
 fun notification(title: String, subtitle: String) {
-    if (Platform.getCurrent() == Platform.OSX) {
-        macNotification(title, subtitle)
+    if (MacUtils.isMac) {
+        MacUtils.notification(title, subtitle)
     } else {
         //not implemented
     }
 }
-
-//MacOS native notification
-private fun macNotification(title: String, subtitle: String) =
-        NSUserNotification().apply {
-            this.title = title
-            this.informativeText = subtitle
-            show()
-        }

@@ -26,7 +26,7 @@ import tornadofx.*
  * Simple Information about the app
  * shows only on platforms other than macOS (macos uses own About stage)
  */
-class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
+class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version.version}") {
 
     override val root = vbox {
         prefWidth = 300.0
@@ -37,7 +37,11 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version}") {
                 isPreserveRatio = true
                 paddingAll = 20.0
             }
-            label("${FxRadio.appName} - ${FxRadio.appDesc}")
+            label("${FxRadio.appName} - ${FxRadio.appDesc}") {
+                style {
+                    paddingBottom = 5.0
+                }
+            }
             label("${FxRadio.copyright} ${FxRadio.author}") {
                 addClass(Styles.grayLabel)
             }

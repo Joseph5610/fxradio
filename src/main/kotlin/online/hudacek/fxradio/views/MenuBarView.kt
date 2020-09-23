@@ -16,30 +16,24 @@
 
 package online.hudacek.fxradio.views
 
-import de.codecentric.centerdevice.MenuToolkit
-import de.codecentric.centerdevice.dialogs.about.AboutStageBuilder
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
+import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
-import javafx.scene.control.SeparatorMenuItem
-import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.extension.menu
 import online.hudacek.fxradio.extension.shouldBeVisible
+import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.viewmodel.MenuModel
 import online.hudacek.fxradio.viewmodel.MenuViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.tools.Platform
 import tornadofx.*
-import java.util.*
 
 class MenuBarView : View() {
 
@@ -51,9 +45,6 @@ class MenuBarView : View() {
     private var playerCheck: CheckMenuItem by singleAssign()
     private var playerAnimateCheck: CheckMenuItem by singleAssign()
     private var playerNotificationsCheck: CheckMenuItem by singleAssign()
-
-    private val usePlatformMenuBarProperty = app.config.boolean(Config.Keys.useNativeMenuBar, true)
-    private val shouldUsePlatformMenuBar = Platform.getCurrent() == Platform.OSX && usePlatformMenuBarProperty
 
     private val stationMenu = Menus.stationMenu
     private val helpMenu = Menus.helpMenu
@@ -106,12 +97,14 @@ class MenuBarView : View() {
     }
 
     init {
+        menuViewModel.item = MenuModel()
+
         playerViewModel.playerTypeProperty.onChange {
             playerCheck.isSelected = it == PlayerType.Custom
         }
     }
 
-    override val root = if (shouldUsePlatformMenuBar) {
+    override val root = if (menuViewModel.useNative) {
         platformMenuBar()
     } else {
         defaultMenuBar()
@@ -119,12 +112,10 @@ class MenuBarView : View() {
 
     private fun defaultMenuBar() = menubar {
         menu(FxRadio.appName) {
-            item(messages["menu.app.about"]).action {
-                menuViewModel.openAbout()
-            }
-            addAboutMenuContent()
+            addAppMenuContent()
             item(messages["menu.app.quit"]).action {
-                menuViewModel.closeApp(currentStage)
+                currentStage?.close()
+                playerViewModel.releasePlayer()
             }
         }
         menus.addAll(stationMenu, playerMenu, historyMenu, helpMenu)
@@ -134,63 +125,29 @@ class MenuBarView : View() {
      * Platform specific menu bar working on OSX
      * used instead of in-app menubar
      */
-    private fun platformMenuBar() = menubar {
-        val tk = MenuToolkit.toolkit(Locale.getDefault())
-        tk.setApplicationMenu(tk.createDefaultApplicationMenu(FxRadio.appName))
-
-        useSystemMenuBarProperty().set(true)
-
-        val macAboutStage = AboutStageBuilder
-                .start("")
-                .withAppName(FxRadio.appName + " - " + FxRadio.appDesc)
-                .withCloseOnFocusLoss()
-                .withVersionString("Version ${FxRadio.version}")
-                .withCopyright("Copyright \u00A9 " + Calendar
-                        .getInstance()[Calendar.YEAR] + " " + FxRadio.author)
-                .withImage(Image(Config.Resources.appLogo))
-                .build()
-
-        val aboutMenu = Menu(FxRadio.appName).apply {
-            items.add(tk.createAboutMenuItem(FxRadio.appName, macAboutStage))
-            separator()
-            addAboutMenuContent()
-            items.addAll(
-                    tk.createHideMenuItem(FxRadio.appName),
-                    tk.createHideOthersMenuItem(),
-                    tk.createUnhideAllMenuItem(),
-                    SeparatorMenuItem(),
-                    tk.createQuitMenuItem(FxRadio.appName))
+    private fun platformMenuBar(): MenuBar {
+        return MacMenu.menuBar {
+            MacMenu.appMenu {
+                addAppMenuContent()
+            }
+        }.apply {
+            menus.addAll(
+                    stationMenu,
+                    playerMenu,
+                    historyMenu,
+                    MacMenu.windowMenu(messages["macos.menu.window"]),
+                    helpMenu)
         }
-
-        val windowMenu = Menu(messages["macos.menu.window"]).apply {
-            items.addAll(
-                    tk.createMinimizeMenuItem(),
-                    tk.createZoomMenuItem(),
-                    tk.createCycleWindowsItem(),
-                    SeparatorMenuItem(),
-                    tk.createBringAllToFrontItem())
-        }
-
-        menus.addAll(stationMenu, playerMenu, historyMenu, windowMenu, helpMenu)
-
-        tk.setApplicationMenu(aboutMenu)
-        tk.autoAddWindowMenuItems(windowMenu)
-        tk.setMenuBar(this)
     }
 
-    private fun Menu.addAboutMenuContent() {
+    private fun Menu.addAppMenuContent() {
+        item(messages["menu.app.about"] + " " + FxRadio.appName).action {
+            menuViewModel.openAbout()
+        }
         separator()
         item(messages["menu.app.attributions"]).action {
             menuViewModel.openAttributions()
         }
         separator()
-    }
-
-    fun showVoteResult(result: Boolean) {
-        if (result) {
-            fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
-        } else {
-            fire(NotificationEvent(messages["vote.error"]))
-        }
     }
 }
