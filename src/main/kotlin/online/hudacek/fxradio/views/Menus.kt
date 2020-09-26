@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.VersionCheck
+import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.extension.createImage
@@ -38,6 +39,7 @@ object Menus : Component() {
 
     private val menuViewModel: MenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
     private val stationsHistoryViewModel: StationsHistoryViewModel by inject()
     private val logViewModel: LogViewModel by inject()
 
@@ -55,23 +57,32 @@ object Menus : Component() {
     }
 
     val historyMenu = menu(messages["menu.history"]) {
-        shouldBeDisabled(playerViewModel.stationProperty)
-        items.bind(stationsHistoryViewModel.stationsProperty) {
-            item("${it.name} (${it.countrycode})") {
-                //for some reason macos native menu does not respect
-                //width/height setting so it is disabled for now
-                if (!menuViewModel.useNative) {
-                    graphic = imageview {
-                        createImage(it)
-                        fitHeight = 15.0
-                        fitWidth = 15.0
-                        isPreserveRatio = true
+        item(messages["menu.history.show"]).action {
+            libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
+        }
+        separator()
+        menu(messages["menu.history.recent"]) {
+            items.bind(stationsHistoryViewModel.stationsProperty) {
+                item("${it.name} (${it.countrycode})") {
+                    //for some reason macos native menu does not respect
+                    //width/height setting so it is disabled for now
+                    if (!menuViewModel.useNative) {
+                        graphic = imageview {
+                            createImage(it)
+                            fitHeight = 15.0
+                            fitWidth = 15.0
+                            isPreserveRatio = true
+                        }
+                    }
+                    action {
+                        playerViewModel.stationProperty.value = it
                     }
                 }
-                action {
-                    playerViewModel.stationProperty.value = it
-                }
             }
+        }
+        separator()
+        item(messages["menu.history.clear"]).action {
+            stationsHistoryViewModel.item = StationsHistoryModel()
         }
     }
 

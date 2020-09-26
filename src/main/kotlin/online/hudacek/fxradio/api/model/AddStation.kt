@@ -2,7 +2,7 @@ package online.hudacek.fxradio.api.model
 
 //POST params
 data class AddStationBody(val name: String = "",
-                          val URL: String = "",
+                          val url: String = "",
                           val homepage: String = "",
                           val favicon: String = "",
                           val country: String = "",
@@ -12,4 +12,4 @@ data class AddStationBody(val name: String = "",
                           val tags: String = "")
 
 //Response
-data class AddStationResult(val ok: String, val result: String, val uuid: String)
+data class AddStationResult(val ok: String, val message: String, val uuid: String)

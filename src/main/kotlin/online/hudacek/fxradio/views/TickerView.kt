@@ -14,6 +14,7 @@ import javafx.util.Duration
 import online.hudacek.fxradio.extension.copyMenu
 import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.extension.update
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -35,13 +36,33 @@ class TickerView : View() {
     private val marqueeView: MarqueeView by inject()
     private var copyMenu: ContextMenu by singleAssign()
 
+    private val playerViewModel: PlayerViewModel by inject()
+
     private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
+
+    init {
+        playerViewModel.stationProperty.onChange {
+            if (it != null) {
+                copyMenu.apply {
+                    items[1].apply {
+                        isDisable = false
+                        action {
+                            it.url_resolved?.let { url -> clipboard.update(url) }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     override val root = pane {
         prefHeight = 15.0
         marqueeView.inside(this)
         copyMenu = copyMenu(clipboard, name = messages["copy"]) {
             items[0].apply {
+                isDisable = true
+            }
+            item(messages["copy.stream.url"]) {
                 isDisable = true
             }
             item(messages["search.on.youtube"]) {
@@ -59,8 +80,7 @@ class TickerView : View() {
                     clipboard.update(text)
                 }
             }
-
-            items[1].apply {
+            items[2].apply {
                 isDisable = false
                 action {
                     app.openUrl(youtubeSearchUrl, text)

@@ -75,7 +75,7 @@ class MainView : View(FxRadio.appName) {
 
     override val root = vbox {
         setPrefSize(800.0, 600.0)
-        add(MenuBarView::class)
+        add<MenuBarView>()
         notificationPane {
             notification = this
             isShowFromTop = true

@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.StationsApi
@@ -25,12 +26,12 @@ import tornadofx.*
 
 class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf()) {
     val stats: ObservableList<Pair<String, String>> by property(map)
+    val isError = booleanProperty()
 }
 
 class StatsViewModel : ItemViewModel<StatsModel>() {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
-
-    val isError = booleanProperty()
+    val isErrorProperty = bind(StatsModel::isError) as BooleanProperty
 
     fun getStats(): Disposable =
             StationsApi.service.getStats()
@@ -46,9 +47,9 @@ class StatsViewModel : ItemViewModel<StatsModel>() {
                                 Pair(messages["stats.tags"], it.tags)
                         )
                         item = StatsModel(statsPair)
-                        isError.value = false
+                        isErrorProperty.value = false
                     }, {
                         item = StatsModel()
-                        isError.value = true
+                        isErrorProperty.value = true
                     })
 }

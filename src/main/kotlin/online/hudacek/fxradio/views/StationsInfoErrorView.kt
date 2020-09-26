@@ -60,7 +60,7 @@ class StationsInfoErrorView : View() {
         add(subHeader)
 
         showWhen {
-            booleanBinding(viewModel.stationViewStatus) {
+            booleanBinding(viewModel.stationsViewStateProperty) {
                 when (value) {
                     StationsViewState.Normal -> false
                     else -> true
@@ -70,7 +70,7 @@ class StationsInfoErrorView : View() {
     }
 
     init {
-        viewModel.stationViewStatus.onChange {
+        viewModel.stationsViewStateProperty.onChange {
             when (it) {
                 StationsViewState.NoResults -> showNoResults(libraryViewModel.selectedProperty.value.params)
                 StationsViewState.Error -> showError()

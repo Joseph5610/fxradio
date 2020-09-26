@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
@@ -45,6 +46,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
     ))
 
     val selected: SelectedLibrary by property(SelectedLibrary(LibraryType.TopStations))
+    val isError = booleanProperty()
 }
 
 class LibraryViewModel : ItemViewModel<LibraryModel>() {
@@ -58,7 +60,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     //Currently selected library type
     val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
 
-    val isError = booleanProperty()
+    val isErrorProperty = bind(LibraryModel::isError) as BooleanProperty
 
     fun showCountries(): Disposable = StationsApi.service
             .getCountries(CountriesBody())
@@ -69,9 +71,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
                     it.name.length > 1 && !it.name.contains(".")
                 }.asObservable()
                 countriesProperty.setAll(result)
-                isError.value = false
+                isErrorProperty.value = false
             }, {
-                isError.value = true
+                isErrorProperty.value = true
             })
 
     fun handleSearch(searchedValue: String) {

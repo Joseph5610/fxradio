@@ -92,7 +92,7 @@ class StationsDataGridView : View() {
                 }
             }
         }
-        hiddenWhen(booleanBinding(stationsViewModel.stationViewStatus) {
+        hiddenWhen(booleanBinding(stationsViewModel.stationsViewStateProperty) {
             when (this.value) {
                 StationsViewState.Normal -> false
                 else -> true

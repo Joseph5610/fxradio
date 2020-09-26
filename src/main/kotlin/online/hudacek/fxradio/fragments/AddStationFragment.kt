@@ -17,125 +17,143 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.scene.layout.Priority
-import javafx.stage.FileChooser
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
+import online.hudacek.fxradio.extension.set
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.viewmodel.AddStation
 import online.hudacek.fxradio.viewmodel.AddStationModel
+import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
-import java.nio.file.Files
 
-//TODO finish this class properly
-//Functionality disabled / not finished
-class AddStationFragment : Fragment("Add new station") {
+//TODO finish
+class AddStationFragment : Fragment() {
 
-    private val model: AddStationModel by inject()
+    private val viewModel: AddStationViewModel by inject()
 
     override val root = notificationPane {
+        title = messages["add.title"]
         prefWidth = 400.0
-        model.item = AddStation(AddStationBody())
 
         content {
             form {
-                fieldset("Add new station") {
+                fieldset(messages["add.title"]) {
                     vbox {
                         prefHeight = 50.0
                         vgrow = Priority.ALWAYS
-                        label("Add station into radio-browser.info public directory. " +
-                                "Please fill all required information correctly and check if" +
-                                " the station has not already been added.") {
+                        label(messages["add.label"]) {
                             isWrapText = true
                         }
                     }
 
-                    field("Name") {
-                        textfield(model.name) {
+                    field(messages["add.name"]) {
+                        textfield(viewModel.name) {
                             required()
                             validator {
-                                if (model.name.length() < 3)
-                                    error(messages["invalidAddress"]) else null
+                                if (viewModel.validate(viewModel.name, maxValue = 400))
+                                    null
+                                else
+                                    error(messages["field.invalid.length"])
                             }
                             promptText = "My Radio Station"
                         }
                     }
 
-                    field("Website") {
-                        textfield(model.homepage) {
+                    field(messages["add.site"]) {
+                        textfield(viewModel.homepage) {
                             required()
                             validator {
-                                if (model.homepage.length() < 3)
-                                    error(messages["invalidAddress"]) else null
+                                if (viewModel.validate(viewModel.homepage, minValue = 7))
+                                    null
+                                else
+                                    error(messages["field.invalid.length"])
 
                             }
                             promptText = "https://example.com/"
                         }
                     }
-                    field("Stream URL") {
-                        textfield(model.URL) {
+                    field(messages["add.url"]) {
+                        textfield(viewModel.URL) {
                             required()
                             validator {
-                                if (model.URL.length() < 3)
-                                    error(messages["invalidAddress"]) else null
+                                if (viewModel.validate(viewModel.URL, minValue = 7))
+                                    null
+                                else
+                                    error(messages["field.invalid.length"])
                             }
                             promptText = "https://example.com/stream.m3u"
                         }
                     }
-                    field("Icon") {
-                        button("Select") {
-
-                            action {
-                                val filter = FileChooser.ExtensionFilter("Images (.png, .gif, .jpg)", "*.png", "*.gif", "*.jpg", "*.jpeg")
-                                val file = chooseFile("Select Icon", arrayOf(filter))
-                                text = if (file.isNotEmpty() && file.size == 1) {
-                                    val mimeType: String = Files.probeContentType(file.first().toPath())
-                                    if (mimeType.split("/")[0] == "image") {
-                                        "Selected: ${file.last().name}"
-                                    } else {
-                                        "Invalid file selected."
-                                    }
-                                } else {
-                                    "Select"
-                                }
-                            }
-                        }
-
-                    }
-                    field("Language") {
-                        textfield(model.language) {
+                    field(messages["add.icon"]) {
+                        textfield(viewModel.favicon) {
                             required()
+                            validator {
+                                if (viewModel.validate(viewModel.favicon, minValue = 7))
+                                    null
+                                else
+                                    error(messages["field.invalid.length"])
+                            }
+                            promptText = "https://example.com/favicon.ico"
+                        }
+                    }
+                    field(messages["add.language"]) {
+                        textfield(viewModel.language) {
+                            required()
+                            validator {
+                                if (viewModel.validate(viewModel.homepage))
+                                    null
+                                else
+                                    error(messages["field.invalid.length"])
+                            }
                             promptText = "English"
                         }
                     }
-                    field("Country") {
-                        textfield(model.country) {
+                    field(messages["add.country"]) {
+                        textfield(viewModel.country) {
                             required()
                             promptText = "United Kingdom"
                         }
                     }
-                    field("Tags") {
-                        textfield(model.tags) {
+                    field(messages["add.tags"]) {
+                        textfield(viewModel.tags) {
                             promptText = "Separated by comma and space"
                         }
                     }
                 }
 
                 hbox(5) {
-                    button("Save") {
-                        enableWhen(model.valid)
-
+                    button(messages["save"]) {
+                        enableWhen(viewModel.valid)
                         isDefaultButton = true
                         addClass(Styles.primaryButton)
                         action {
-                            model.commit {
-                                //stationsApi.add()
+                            viewModel.commit {
+                                this@notificationPane[FontAwesome.Glyph.CHECK] = messages["add.success"]
+                                viewModel.item = AddStationModel(AddStationBody())
+                                StationsApi.service
+                                        .add(AddStationBody(
+                                                name = viewModel.name.value,
+                                                url = viewModel.URL.value,
+                                                homepage = viewModel.homepage.value,
+                                                favicon = viewModel.favicon.value,
+                                                country = viewModel.country.value,
+                                                countryCode = viewModel.countryCode.value,
+                                                state = viewModel.state.value,
+                                                language = viewModel.language.value,
+                                                tags = viewModel.tags.value
+                                        ))
+                                        .subscribe({
+                                            println(it)
+                                        }, {
+                                            println(it)
+                                        })
                             }
                         }
                     }
 
-                    button("Cancel") {
+                    button(messages["cancel"]) {
                         isCancelButton = true
                         action {
                             close()

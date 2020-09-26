@@ -37,7 +37,7 @@ class LibraryView : View() {
         action {
             viewModel.showCountries()
         }
-        showWhen { viewModel.isError }
+        showWhen { viewModel.isErrorProperty }
     }
 
     private val libraryListView = listview(viewModel.librariesProperty) {
@@ -75,13 +75,13 @@ class LibraryView : View() {
             viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
         }
         showWhen {
-            viewModel.isError.not()
+            viewModel.isErrorProperty.not()
         }
     }
 
     override fun onDock() {
-        viewModel.showCountries()
         viewModel.item = LibraryModel()
+        viewModel.showCountries()
 
         with(libraryListView) {
             prefHeight = viewModel.librariesProperty.size * 30.0 + 10
@@ -129,7 +129,7 @@ class LibraryView : View() {
 
         //Validation
         ValidationContext().addValidator(this, textProperty()) {
-            if (it!!.length >= 49) error(messages["search.max.length"]) else null
+            if (it!!.length >= 49) error(messages["field.max.length"]) else null
         }
     }
 

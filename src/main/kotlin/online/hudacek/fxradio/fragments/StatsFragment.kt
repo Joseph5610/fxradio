@@ -61,14 +61,14 @@ class StatsFragment : Fragment() {
                     paddingAll = 20.0
                 }
                 showWhen {
-                    statsViewModel.isError
+                    statsViewModel.isErrorProperty
                 }
             }
 
             progressindicator {
                 minHeight = 50.0
                 showWhen {
-                    statsViewModel.isError.not().and(booleanBinding(statsViewModel.statsProperty) {
+                    statsViewModel.isErrorProperty.not().and(booleanBinding(statsViewModel.statsProperty) {
                         isEmpty()
                     })
                 }

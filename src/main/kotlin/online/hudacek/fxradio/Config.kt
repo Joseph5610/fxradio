@@ -65,6 +65,6 @@ object Config {
      * Flags that change app behaviour
      */
     object Flags {
-        const val addStationEnabled = false
+        const val addStationEnabled = true
     }
 }

@@ -2,6 +2,7 @@ package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
+import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.StationsApi
@@ -15,6 +16,7 @@ import tornadofx.*
 
 class StationsModel {
     val stations: ObservableList<Station> by property(observableListOf(Station.stub()))
+    val stationsViewState = objectProperty(StationsViewState.Normal)
 }
 
 enum class StationsViewState {
@@ -29,7 +31,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     private val libraryViewModel: LibraryViewModel by inject()
 
     val stationsProperty = bind(StationsModel::stations) as ListProperty
-    val stationViewStatus = objectProperty(StationsViewState.Normal)
+    val stationsViewStateProperty = bind(StationsModel::stationsViewState) as ObjectProperty
 
     init {
         libraryViewModel.selectedProperty.onChange {
@@ -78,26 +80,26 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
                     .compose(applySchedulers())
                     .subscribe(::handleResponse, ::handleError)
         } else {
-            stationViewStatus.value = StationsViewState.ShortQuery
+            stationsViewStateProperty.value = StationsViewState.ShortQuery
         }
     }
 
     private fun handleResponse(stations: List<Station>) {
         stationsProperty.set(stations.asObservable())
         if (stations.isEmpty()) {
-            stationViewStatus.value = StationsViewState.NoResults
+            stationsViewStateProperty.value = StationsViewState.NoResults
         } else {
-            stationViewStatus.value = StationsViewState.Normal
+            stationsViewStateProperty.value = StationsViewState.Normal
         }
     }
 
     private fun handleError(throwable: Throwable) {
         logger.error(throwable) { "Error showing station library" }
-        stationViewStatus.value = StationsViewState.Error
+        stationsViewStateProperty.value = StationsViewState.Error
     }
 
     private fun showLibraryType(libraryType: LibraryType, params: String) {
-        stationViewStatus.value = StationsViewState.Loading
+        stationsViewStateProperty.value = StationsViewState.Loading
         when (libraryType) {
             LibraryType.Country -> stationsByCountry(params)
             LibraryType.Favourites -> favourites

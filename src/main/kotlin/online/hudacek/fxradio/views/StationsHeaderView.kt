@@ -80,7 +80,7 @@ class StationsHeaderView : View() {
             }
         }
 
-        hiddenWhen(booleanBinding(viewModel.stationViewStatus) {
+        hiddenWhen(booleanBinding(viewModel.stationsViewStateProperty) {
             when (value) {
                 StationsViewState.Normal -> false
                 else -> true
