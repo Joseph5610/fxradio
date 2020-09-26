@@ -14,15 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.extension
+package online.hudacek.fxradio.utils
 
 import javafx.animation.PauseTransition
 import javafx.event.EventHandler
 import javafx.util.Duration
+import mu.KotlinLogging
 import online.hudacek.fxradio.macos.MacUtils
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.controlsfx.glyph
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Custom function for showing notification in NotificationPane.
@@ -52,6 +55,7 @@ fun notification(title: String, subtitle: String) {
     if (MacUtils.isMac) {
         MacUtils.notification(title, subtitle)
     } else {
-        //not implemented
+        //not implemented error
+        logger.debug { "Trying to shown notification on not implemented platform" }
     }
 }

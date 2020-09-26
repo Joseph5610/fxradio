@@ -18,11 +18,11 @@ package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.extension.copyMenu
-import online.hudacek.fxradio.extension.openUrl
-import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.copyMenu
+import online.hudacek.fxradio.utils.openUrl
+import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.StatsViewModel
 import tornadofx.*
 

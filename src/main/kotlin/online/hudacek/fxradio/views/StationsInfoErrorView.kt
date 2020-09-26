@@ -17,9 +17,9 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
-import online.hudacek.fxradio.extension.glyph
-import online.hudacek.fxradio.extension.showWhen
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.glyph
+import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState

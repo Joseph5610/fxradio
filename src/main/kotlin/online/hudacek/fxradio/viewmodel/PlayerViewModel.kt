@@ -7,9 +7,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
-import tornadofx.ItemViewModel
-import tornadofx.onChange
-import tornadofx.property
+import tornadofx.*
 
 class PlayerModel(animate: Boolean = true, station: Station = Station.stub(),
                   playerType: PlayerType, notifications: Boolean = true, volume: Double) {
@@ -21,6 +19,13 @@ class PlayerModel(animate: Boolean = true, station: Station = Station.stub(),
     var volume: Double by property(volume)
 }
 
+/**
+ * Player view model
+ * -------------------
+ * Stores player settings, toggles playing
+ * Increment station history list
+ * Used all around the app
+ */
 class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
     private val stationsHistoryView: StationsHistoryViewModel by inject()

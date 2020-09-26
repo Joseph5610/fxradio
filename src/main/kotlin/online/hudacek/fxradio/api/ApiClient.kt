@@ -27,10 +27,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
+/**
+ * Api Client
+ * ---------------------
+ * Helper to construct Retrofit instance with custom HTTP client with
+ * enabled logging and custom User-Agent string
+ */
 class ApiClient(private val baseUrl: String) {
 
     private val logger = KotlinLogging.logger {}
 
+    //To Limit the active connections
     private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
 
     //What is app sending as a User Agent string
@@ -41,6 +48,8 @@ class ApiClient(private val baseUrl: String) {
 
     //Construct http client with custom user agent
     private val httpClient by lazy {
+        //Set logging level for HTTP requests to full request and response
+        //Http requests are logged only on debug app logger level
         loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         OkHttpClient.Builder()
@@ -64,14 +73,16 @@ class ApiClient(private val baseUrl: String) {
             .client(httpClient)
             .build()
 
+    //Helper to construct Retrofit service class
     fun <T : Any> create(service: KClass<T>): T {
         logger.debug { "Creating service: $service" }
         return build().create(service.java)
     }
 
     fun shutdown() {
-        logger.debug { "Shutting down OKHttp" }
+        logger.info { "Shutting down OKHttp" }
         logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }
+        //Kill all OkHttp Threads
         httpClient.dispatcher().executorService().shutdown()
         httpClient.connectionPool().evictAll()
     }

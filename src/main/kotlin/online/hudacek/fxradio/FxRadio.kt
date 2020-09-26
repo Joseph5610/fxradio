@@ -18,6 +18,7 @@ package online.hudacek.fxradio
 
 import javafx.stage.Stage
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.Version
 import online.hudacek.fxradio.viewmodel.LogModel
 import online.hudacek.fxradio.viewmodel.LogViewModel
 import online.hudacek.fxradio.views.MainView

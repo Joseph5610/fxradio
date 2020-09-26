@@ -21,7 +21,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.extension.applySchedulers
+import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
 class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf()) {
@@ -29,6 +29,12 @@ class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf())
     val isError = booleanProperty()
 }
 
+/**
+ * Stats view model
+ * -------------------
+ * Holds information about radio-browser API stats and health
+ * Shown inside [online.hudacek.fxradio.fragments.StatsFragment]
+ */
 class StatsViewModel : ItemViewModel<StatsModel>() {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
     val isErrorProperty = bind(StatsModel::isError) as BooleanProperty

@@ -11,9 +11,9 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
-import online.hudacek.fxradio.extension.copyMenu
-import online.hudacek.fxradio.extension.openUrl
-import online.hudacek.fxradio.extension.update
+import online.hudacek.fxradio.utils.copyMenu
+import online.hudacek.fxradio.utils.openUrl
+import online.hudacek.fxradio.utils.update
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue

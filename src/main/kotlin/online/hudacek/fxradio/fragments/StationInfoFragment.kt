@@ -19,12 +19,12 @@ package online.hudacek.fxradio.fragments
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.extension.copyMenu
-import online.hudacek.fxradio.extension.createImage
-import online.hudacek.fxradio.extension.openUrl
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.copyMenu
+import online.hudacek.fxradio.utils.createImage
+import online.hudacek.fxradio.utils.openUrl
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar

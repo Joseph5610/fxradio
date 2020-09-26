@@ -21,7 +21,9 @@ import online.hudacek.fxradio.api.model.vcs.VCSResponse
 import retrofit2.http.GET
 
 /**
- * Simple version check api
+ * VCS API
+ * --------------
+ * HTTP endpoints for checking of app version
  */
 interface VCSApi {
 

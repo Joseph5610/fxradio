@@ -27,6 +27,8 @@ import tornadofx.*
 import java.net.InetAddress
 
 /**
+ * Stations API
+ * --------------
  * HTTP endpoints for radio-browser.info API
  */
 interface StationsApi {

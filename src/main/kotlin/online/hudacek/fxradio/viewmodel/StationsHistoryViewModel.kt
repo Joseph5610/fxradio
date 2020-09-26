@@ -8,6 +8,12 @@ class StationsHistoryModel {
     val stations = observableListOf<Station>()
 }
 
+/**
+ * Stations History view model
+ * -------------------
+ * Holds information about last 10 played stations
+ * shows in [online.hudacek.fxradio.views.StationsDataGridView] and in MenuBar
+ */
 class StationsHistoryViewModel : ItemViewModel<StationsHistoryModel>() {
     val stationsProperty = bind(StationsHistoryModel::stations) as ListProperty
 

@@ -21,8 +21,8 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.extension.createImage
 import online.hudacek.fxradio.fragments.StationInfoFragment
+import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.StationsModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel

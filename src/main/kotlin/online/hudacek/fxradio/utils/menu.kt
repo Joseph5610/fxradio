@@ -14,14 +14,12 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.extension
+package online.hudacek.fxradio.utils
 
 import javafx.beans.property.Property
-import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.media.PlayerType
 import tornadofx.*
 
 /**

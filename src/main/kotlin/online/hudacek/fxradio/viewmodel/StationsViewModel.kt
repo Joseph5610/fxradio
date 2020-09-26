@@ -11,7 +11,7 @@ import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.RefreshFavourites
-import online.hudacek.fxradio.extension.applySchedulers
+import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
 class StationsModel {
@@ -23,6 +23,12 @@ enum class StationsViewState {
     Normal, Error, Loading, NoResults, ShortQuery
 }
 
+/**
+ * Stations view model
+ * -------------------
+ * Holds information about currently shown
+ * stations inside [online.hudacek.fxradio.views.StationsDataGridView]
+ */
 class StationsViewModel : ItemViewModel<StationsModel>() {
 
     private val logger = KotlinLogging.logger {}

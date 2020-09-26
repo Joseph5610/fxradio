@@ -24,10 +24,10 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.extension.set
-import online.hudacek.fxradio.extension.show
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.utils.set
+import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -35,6 +35,12 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
+
+/**
+ * Main View
+ * --------------
+ * Entry to the app, parent to all other views inside main window
+ */
 class MainView : View(FxRadio.appName) {
 
     private val playerViewModel: PlayerViewModel by inject()

@@ -14,16 +14,15 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.utils
 
 import com.vdurmont.semver4j.Semver
 import com.vdurmont.semver4j.SemverException
 import javafx.application.Platform
 import mu.KotlinLogging
+import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.extension.applySchedulers
-import online.hudacek.fxradio.extension.openUrl
 import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*

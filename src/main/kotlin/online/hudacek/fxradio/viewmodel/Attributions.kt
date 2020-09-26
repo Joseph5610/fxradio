@@ -24,6 +24,7 @@ object Attributions {
 //License Data class
 data class License(val name: String = "", val content: String)
 
+
 class AttributionModel(name: String, version: String = "", license: License) {
     var name: String by property(name)
     var version: String by property(version)
@@ -31,7 +32,12 @@ class AttributionModel(name: String, version: String = "", license: License) {
     var licenseName: String by property(license.name)
 }
 
-//Model
+/**
+ * Attribution view model
+ * -------------------
+ * Handles information about Licensing
+ * Used in [online.hudacek.fxradio.fragments.AttributionsFragment]
+ */
 class AttributionViewModel : ItemViewModel<AttributionModel>() {
     val nameProperty = bind(AttributionModel::name) as StringProperty
     val licenseNameProperty = bind(AttributionModel::licenseName) as StringProperty

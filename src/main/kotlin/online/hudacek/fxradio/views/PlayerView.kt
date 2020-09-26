@@ -22,14 +22,14 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
-import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.extension.setOnSpacePressed
-import online.hudacek.fxradio.extension.shouldBeDisabled
-import online.hudacek.fxradio.extension.smallIcon
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.utils.setOnSpacePressed
+import online.hudacek.fxradio.utils.shouldBeDisabled
+import online.hudacek.fxradio.utils.smallIcon
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 
 /**

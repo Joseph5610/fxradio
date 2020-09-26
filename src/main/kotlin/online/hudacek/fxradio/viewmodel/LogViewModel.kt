@@ -28,7 +28,10 @@ class LogModel(level: Level) {
 }
 
 /**
+ * Log view model
+ * -------------------
  * Keeps information about current logging level chosen in UI
+ * Used in MenuBar
  */
 class LogViewModel : ItemViewModel<LogModel>() {
     val levelProperty = bind(LogModel::level) as ObjectProperty

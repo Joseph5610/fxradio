@@ -26,10 +26,10 @@ import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
-import online.hudacek.fxradio.extension.menu
-import online.hudacek.fxradio.extension.shouldBeVisible
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.utils.menu
+import online.hudacek.fxradio.utils.shouldBeVisible
 import online.hudacek.fxradio.viewmodel.MenuModel
 import online.hudacek.fxradio.viewmodel.MenuViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel

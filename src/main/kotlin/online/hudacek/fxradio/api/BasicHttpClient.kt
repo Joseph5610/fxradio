@@ -22,6 +22,8 @@ import java.io.IOException
 
 /**
  * Basic async http client
+ * -----------------------------
+ *
  */
 class BasicHttpClient(url: String) {
 

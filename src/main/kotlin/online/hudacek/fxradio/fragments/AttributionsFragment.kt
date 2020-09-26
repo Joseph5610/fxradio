@@ -20,7 +20,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.extension.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.viewmodel.AttributionModel
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
 import online.hudacek.fxradio.viewmodel.Attributions

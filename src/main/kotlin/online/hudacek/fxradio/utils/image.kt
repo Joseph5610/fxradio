@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.extension
+package online.hudacek.fxradio.utils
 
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView

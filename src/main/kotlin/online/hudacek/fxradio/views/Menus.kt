@@ -22,19 +22,16 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.VersionCheck
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.RefreshFavourites
-import online.hudacek.fxradio.extension.createImage
-import online.hudacek.fxradio.extension.menu
-import online.hudacek.fxradio.extension.openUrl
-import online.hudacek.fxradio.extension.shouldBeDisabled
+import online.hudacek.fxradio.utils.*
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
+//TODO remove
 object Menus : Component() {
 
     private val menuViewModel: MenuViewModel by inject()
@@ -62,6 +59,9 @@ object Menus : Component() {
         }
         separator()
         menu(messages["menu.history.recent"]) {
+            disableWhen {
+                stationsHistoryViewModel.stationsProperty.emptyProperty()
+            }
             items.bind(stationsHistoryViewModel.stationsProperty) {
                 item("${it.name} (${it.countrycode})") {
                     //for some reason macos native menu does not respect

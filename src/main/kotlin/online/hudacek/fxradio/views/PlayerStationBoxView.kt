@@ -24,10 +24,10 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
-import online.hudacek.fxradio.extension.createImage
-import online.hudacek.fxradio.extension.notification
-import online.hudacek.fxradio.extension.tickerView
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.createImage
+import online.hudacek.fxradio.utils.notification
+import online.hudacek.fxradio.utils.tickerView
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.extension
+package online.hudacek.fxradio.utils
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
@@ -35,7 +35,6 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
 import java.net.URLEncoder
-import java.util.*
 
 /*
  * Helper extension functions for UI
@@ -59,7 +58,7 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) = glyph("FontAwesome", 
     }
 }
 
-internal fun EventTarget.tickerView(op: TickerView.() -> Unit = {}): TickerView {
+internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
         op.invoke(this)
     }
@@ -98,8 +97,6 @@ internal fun App.openUrl(url: String, query: String = "") {
     val hostServices = HostServicesFactory.getInstance(this)
     hostServices.showDocument(url + queryEncoded)
 }
-
-internal fun String.asBase64() = Base64.getEncoder().encodeToString(this.toByteArray())
 
 internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
         visibleWhen(expr()).apply {

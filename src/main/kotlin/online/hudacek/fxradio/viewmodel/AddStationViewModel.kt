@@ -16,6 +16,12 @@ class AddStationModel(station: AddStationBody) {
     val tags: String by property(station.tags)
 }
 
+/**
+ * Add Station view model
+ * -------------------
+ * Stores entered information into the form in [online.hudacek.fxradio.fragments.AddStationFragment]
+ * Handles logic for adding new station into the API
+ */
 class AddStationViewModel : ItemViewModel<AddStationModel>() {
     val name = bind(AddStationModel::name) as StringProperty
     val URL = bind(AddStationModel::URL) as StringProperty

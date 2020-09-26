@@ -20,7 +20,7 @@ import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.extension.defaultRadioLogo
+import online.hudacek.fxradio.utils.defaultRadioLogo
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
 import java.io.InputStream

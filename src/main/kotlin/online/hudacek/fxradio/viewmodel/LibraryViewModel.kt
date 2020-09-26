@@ -26,7 +26,7 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.extension.applySchedulers
+import online.hudacek.fxradio.utils.applySchedulers
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -49,6 +49,12 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
     val isError = booleanProperty()
 }
 
+/**
+ * Library view model
+ * -------------------
+ * Stores shown libraries and countries in the sidebar
+ * Used in [online.hudacek.fxradio.views.LibraryView]
+ */
 class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     val savedQuery

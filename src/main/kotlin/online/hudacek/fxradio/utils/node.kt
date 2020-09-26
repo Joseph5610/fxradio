@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.extension
+package online.hudacek.fxradio.utils
 
 import javafx.beans.property.Property
 import javafx.beans.value.ChangeListener

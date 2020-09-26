@@ -23,11 +23,11 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.extension.applySchedulers
-import online.hudacek.fxradio.extension.openUrl
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.storage.ImageCache
+import online.hudacek.fxradio.utils.applySchedulers
+import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
