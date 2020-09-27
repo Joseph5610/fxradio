@@ -46,6 +46,9 @@ class ApiClient(private val baseUrl: String) {
     //Logging of http requests
     private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }
 
+    //Stores created type of service, Just a convenience for logging
+    private var service: Any? = null
+
     //Construct http client with custom user agent
     private val httpClient by lazy {
         //Set logging level for HTTP requests to full request and response
@@ -66,21 +69,24 @@ class ApiClient(private val baseUrl: String) {
                 .build()
     }
 
-    fun build(): Retrofit = Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(baseUrl)
-            .client(httpClient)
-            .build()
+    //Retrofit instance
+    private val client: Retrofit
+        get() = Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(baseUrl)
+                .client(httpClient)
+                .build()
 
     //Helper to construct Retrofit service class
     fun <T : Any> create(service: KClass<T>): T {
         logger.debug { "Creating service: $service" }
-        return build().create(service.java)
+        this.service = service.java
+        return client.create(service.java)
     }
 
     fun shutdown() {
-        logger.info { "Shutting down OKHttp" }
+        logger.info { "Shutting down client for service $service" }
         logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }
         //Kill all OkHttp Threads
         httpClient.dispatcher().executorService().shutdown()

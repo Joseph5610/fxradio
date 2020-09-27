@@ -17,9 +17,7 @@
 package online.hudacek.fxradio.macos
 
 import airsquared.JMacNotification.NSUserNotification
-import de.codecentric.centerdevice.MenuToolkit
 import org.controlsfx.tools.Platform
-import java.util.*
 
 object MacUtils {
 
@@ -32,7 +30,4 @@ object MacUtils {
                 this.informativeText = subtitle
                 show()
             }
-
-    //NSMenu toolkit
-    fun menuToolkit(): MenuToolkit = MenuToolkit.toolkit(Locale.getDefault())
 }

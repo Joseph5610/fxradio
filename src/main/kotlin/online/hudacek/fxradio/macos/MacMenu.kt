@@ -16,17 +16,20 @@
 
 package online.hudacek.fxradio.macos
 
+import de.codecentric.centerdevice.MenuToolkit
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.SeparatorMenuItem
 import online.hudacek.fxradio.FxRadio
+import java.util.*
 
 /**
  * NSMenu helpers
  */
 object MacMenu {
 
-    private val tk by lazy { MacUtils.menuToolkit() }
+    //NSMenu toolkit
+    private val tk by lazy { MenuToolkit.toolkit(Locale.getDefault()) }
 
     fun menuBar(op: MenuBar.() -> Menu): MenuBar {
         return MenuBar().apply {

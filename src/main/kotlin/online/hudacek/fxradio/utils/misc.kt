@@ -51,10 +51,12 @@ internal fun EventTarget.smallIcon(url: String, op: ImageView.() -> Unit = {}) =
             fitHeight = 14.0
         }
 
-internal fun EventTarget.glyph(glyph: FontAwesome.Glyph) = glyph("FontAwesome", glyph) {
-    size(35.0)
-    style {
-        padding = box(10.px, 5.px)
+internal fun EventTarget.glyph(glyph: FontAwesome.Glyph, size: Double = 35.0, useStyle: Boolean = true) = glyph("FontAwesome", glyph) {
+    size(size)
+    if (useStyle) {
+        style {
+            padding = box(10.px, 5.px)
+        }
     }
 }
 

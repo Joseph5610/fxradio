@@ -23,8 +23,7 @@ import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 
 /***
- * Simple Information about the app
- * shows only on platforms other than macOS (macos uses own About stage)
+ * Simple Information dialog about the app
  */
 class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version.version}") {
 

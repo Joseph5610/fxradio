@@ -17,19 +17,19 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
-import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.setOnSpacePressed
 import online.hudacek.fxradio.utils.shouldBeDisabled
-import online.hudacek.fxradio.utils.smallIcon
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 /**
@@ -42,17 +42,17 @@ class PlayerView : View() {
 
     private val playerStationBoxView: PlayerStationBoxView by inject()
 
-    private val playerControlsIcon = imageview(Config.Resources.playIcon) {
-        fitWidth = 30.0
-        fitHeight = 30.0
-        isPreserveRatio = true
-    }
+    private val playGlyph = glyph(FontAwesome.Glyph.PLAY, size = 22.0, useStyle = false)
+    private val stopGlyph = glyph(FontAwesome.Glyph.STOP, size = 22.0, useStyle = false)
+
+    private val volumeDown = glyph(FontAwesome.Glyph.VOLUME_DOWN, size = 18.0, useStyle = false)
+    private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 18.0, useStyle = false)
 
     private val playerControls = button {
         requestFocusOnSceneAvailable()
         shouldBeDisabled(playerViewModel.stationProperty)
-        add(playerControlsIcon)
         addClass(Styles.playerControls)
+        graphic = playGlyph
         action {
             playerViewModel.togglePlayer()
         }
@@ -78,7 +78,8 @@ class PlayerView : View() {
         bind(playerViewModel.volumeProperty)
         majorTickUnit = 8.0
         isSnapToTicks = true
-        // isShowTickMarks = true
+        isShowTickMarks = true
+        paddingTop = 10.0
         valueProperty().onChange {
             playerViewModel.commit()
         }
@@ -86,7 +87,8 @@ class PlayerView : View() {
 
     override val root = vbox {
         addClass(Styles.playerMainBox)
-        hbox(15) {
+        hbox(12) {
+            vgrow = Priority.NEVER
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
 
@@ -108,13 +110,18 @@ class PlayerView : View() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
-                smallIcon(Config.Resources.volumeDownIcon) {
+                button {
+                    addClass(Styles.playerControls)
+                    graphic = volumeDown
                     setOnMouseClicked {
                         volumeSlider.value = volumeSlider.min
                     }
                 }
                 add(volumeSlider)
-                smallIcon(Config.Resources.volumeUpIcon) {
+                button {
+                    addClass(Styles.playerControls)
+                    graphic = volumeUp
+                    minWidth = 20.0
                     setOnMouseClicked {
                         volumeSlider.value = volumeSlider.max
                     }
@@ -136,10 +143,10 @@ class PlayerView : View() {
      */
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
-            playerControlsIcon.image = Image(Config.Resources.playIcon)
+            playerControls.graphic = playGlyph
             playerStationBoxView.nowStreamingLabel.text = messages["player.streamingStopped"]
         } else {
-            playerControlsIcon.image = Image(Config.Resources.stopIcon)
+            playerControls.graphic = stopGlyph
             playerStationBoxView.nowStreamingLabel.text = messages["player.nowStreaming"]
         }
     }
