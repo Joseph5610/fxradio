@@ -18,9 +18,9 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.extension.showWhen
-import online.hudacek.fxradio.extension.smallLabel
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.utils.smallLabel
 import online.hudacek.fxradio.viewmodel.LibraryModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedLibrary

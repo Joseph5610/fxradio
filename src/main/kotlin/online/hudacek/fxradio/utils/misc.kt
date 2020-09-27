@@ -24,7 +24,6 @@ import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.Node
 import javafx.scene.control.ContextMenu
-import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -44,12 +43,6 @@ internal fun EventTarget.smallLabel(text: String) = label(text) {
     addClass(Styles.boldText)
     addClass(Styles.grayLabel)
 }
-
-internal fun EventTarget.smallIcon(url: String, op: ImageView.() -> Unit = {}) =
-        imageview(url, op = op).apply {
-            fitWidth = 14.0
-            fitHeight = 14.0
-        }
 
 internal fun EventTarget.glyph(glyph: FontAwesome.Glyph, size: Double = 35.0, useStyle: Boolean = true) = glyph("FontAwesome", glyph) {
     size(size)
@@ -106,7 +99,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
         }
 
 internal fun <T> applySchedulers(): SingleTransformer<T, T>? {
-    return SingleTransformer<T, T> { observable ->
+    return SingleTransformer { observable ->
         observable.subscribeOn(Schedulers.io())
                 .observeOnFx()
     }

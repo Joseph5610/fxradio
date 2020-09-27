@@ -7,14 +7,9 @@ import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.EventHandler
 import javafx.scene.Node
-import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
-import online.hudacek.fxradio.utils.copyMenu
-import online.hudacek.fxradio.utils.openUrl
-import online.hudacek.fxradio.utils.update
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -33,66 +28,25 @@ open class TickerEntry<T : Node>(
  */
 class TickerView : View() {
 
+    private var entry = TickerEntry<Node>(content = createText(""), reschedule = true)
+
     private val marqueeView: MarqueeView by inject()
-    private var copyMenu: ContextMenu by singleAssign()
-
-    private val playerViewModel: PlayerViewModel by inject()
-
-    private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
-
-    init {
-        playerViewModel.stationProperty.onChange {
-            if (it != null) {
-                copyMenu.apply {
-                    items[1].apply {
-                        isDisable = false
-                        action {
-                            it.url_resolved?.let { url -> clipboard.update(url) }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     override val root = pane {
         prefHeight = 15.0
         marqueeView.inside(this)
-        copyMenu = copyMenu(clipboard, name = messages["copy"]) {
-            items[0].apply {
-                isDisable = true
-            }
-            item(messages["copy.stream.url"]) {
-                isDisable = true
-            }
-            item(messages["search.on.youtube"]) {
-                isDisable = true
-            }
-        }
         add(marqueeView)
     }
 
     fun updateText(text: String) {
-        copyMenu.apply {
-            items[0].apply {
-                isDisable = false
-                action {
-                    clipboard.update(text)
-                }
-            }
-            items[2].apply {
-                isDisable = false
-                action {
-                    app.openUrl(youtubeSearchUrl, text)
-                }
-            }
-        }
-        marqueeView.clear()
-        marqueeView.enqueueTickEntry(TickerEntry(content = createText(text), reschedule = true))
+        marqueeView.clear(entry)
+        entry = TickerEntry(content = createText(text), reschedule = true)
+        marqueeView.enqueueTickEntry(entry)
     }
 
     private fun createText(content: String) = text(content) {
         layoutY = 12.0
+        isVisible = false
     }
 }
 
@@ -155,6 +109,7 @@ class MarqueeView : View() {
             if (activeTicks.isEmpty() || lastOneCleared()) {
                 val newTickerEntry: TickerEntry<Node>? = queuedTicks.poll()
                 if (newTickerEntry != null) {
+                    newTickerEntry.content.isVisible = true
                     //Then just put it into the active queue, so it will start processing like normal
                     newTickerEntry.content.layoutX = root.prefWidth //Where to start
                     activeTicks.add(ActiveTick(newTickerEntry))
@@ -200,10 +155,10 @@ class MarqueeView : View() {
         timeline.play()
     }
 
-
-    fun clear() {
-        activeTicks.clear()
+    fun clear(entry: TickerEntry<Node>) {
+        entry.reschedule = false
+        entry.content.removeFromParent()
+        if (activeTicks.isNotEmpty()) activeTicks.remove()
         queuedTicks.clear()
-        root.clear()
     }
 }

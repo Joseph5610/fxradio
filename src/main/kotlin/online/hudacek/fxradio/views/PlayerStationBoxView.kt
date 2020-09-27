@@ -18,6 +18,7 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.control.ContextMenu
 import javafx.scene.control.Tooltip
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
@@ -25,9 +26,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.createImage
-import online.hudacek.fxradio.utils.notification
-import online.hudacek.fxradio.utils.tickerView
+import online.hudacek.fxradio.utils.*
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
@@ -37,6 +36,10 @@ import tornadofx.*
 class PlayerStationBoxView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
+
+    private var copyMenu: ContextMenu by singleAssign()
+
+    private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
 
     private var stationLogo = imageview(Config.Resources.musicIcon) {
         effect = DropShadow(20.0, Color.WHITE)
@@ -68,6 +71,17 @@ class PlayerStationBoxView : View() {
     }
 
     override val root = hbox(5) {
+        copyMenu = copyMenu(clipboard, name = messages["copy"]) {
+            items[0].apply {
+                isDisable = true
+            }
+            item(messages["copy.stream.url"]) {
+                isDisable = true
+            }
+            item(messages["search.on.youtube"]) {
+                isDisable = true
+            }
+        }
         addClass(Styles.playerStationBox)
 
         //Radio logo
@@ -97,6 +111,14 @@ class PlayerStationBoxView : View() {
         with(station) {
             if (isValidStation()) {
                 updateStationName(name)
+                copyMenu.apply {
+                    items[1].apply {
+                        isDisable = false
+                        action {
+                            url_resolved?.let { url -> clipboard.update(url) }
+                        }
+                    }
+                }
                 stationLogo.createImage(this)
             }
         }
@@ -145,6 +167,20 @@ class PlayerStationBoxView : View() {
 
     //change station name for static or animated view
     private fun updateStationName(stationName: String) {
+        copyMenu.apply {
+            items[0].apply {
+                isDisable = false
+                action {
+                    clipboard.update(stationName)
+                }
+            }
+            items[2].apply {
+                isDisable = false
+                action {
+                    app.openUrl(youtubeSearchUrl, stationName)
+                }
+            }
+        }
         if (playerViewModel.animateProperty.value) stationNameAnimated.updateText(stationName)
         else {
             stationNameStatic.text = stationName

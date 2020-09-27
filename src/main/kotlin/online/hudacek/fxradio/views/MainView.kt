@@ -35,7 +35,6 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
-
 /**
  * Main View
  * --------------
