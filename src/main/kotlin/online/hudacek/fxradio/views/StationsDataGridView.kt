@@ -21,12 +21,13 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import mu.KotlinLogging
+import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.utils.createImage
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationsModel
-import online.hudacek.fxradio.viewmodel.StationsViewModel
-import online.hudacek.fxradio.viewmodel.StationsViewState
+import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover
@@ -36,12 +37,42 @@ import tornadofx.controlsfx.showPopover
  * Datagrid shows radio station logo and name
  */
 class StationsDataGridView : View() {
+    private val logger = KotlinLogging.logger {}
 
     private val playerViewViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
+    private val stationsHistoryView: StationsHistoryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     init {
         stationsViewModel.item = StationsModel()
+
+        libraryViewModel.selectedProperty.onChange {
+            logger.debug { "selectedProperty changed: $it" }
+            it?.let(::showLibraryType)
+        }
+
+        subscribe<RefreshFavourites> {
+            libraryViewModel.selectedProperty.value.let { value ->
+                if (value.type == LibraryType.Favourites) {
+                    showLibraryType(value)
+                }
+            }
+        }
+    }
+
+
+    private fun showLibraryType(selected: SelectedLibrary) {
+        stationsViewModel.stationsViewStateProperty.value = StationsViewState.Loading
+        with(selected) {
+            when (type) {
+                LibraryType.Country -> stationsViewModel.stationsByCountry(params)
+                LibraryType.Favourites -> stationsViewModel.favourites
+                LibraryType.History -> stationsViewModel.show(stationsHistoryView.stationsProperty)
+                LibraryType.Search -> stationsViewModel.search(params)
+                else -> stationsViewModel.topStations
+            }
+        }
     }
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
@@ -92,11 +123,9 @@ class StationsDataGridView : View() {
                 }
             }
         }
-        hiddenWhen(booleanBinding(stationsViewModel.stationsViewStateProperty) {
-            when (this.value) {
-                StationsViewState.Normal -> false
-                else -> true
-            }
-        })
+
+        showWhen {
+            stationsViewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
+        }
     }
 }

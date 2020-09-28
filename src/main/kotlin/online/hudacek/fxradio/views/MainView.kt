@@ -29,7 +29,6 @@ import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
@@ -48,13 +47,8 @@ class MainView : View(FxRadio.appName) {
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
 
-    private var notification: NotificationPane by singleAssign()
-
     init {
         setStageIcon(Image(Config.Resources.stageIcon))
-        subscribe<NotificationEvent> {
-            notification.show(it.glyph, it.text, it.op)
-        }
     }
 
     private val rightPane = vbox {
@@ -64,17 +58,13 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
-        //Correctly shutdown all classes
         MediaPlayerWrapper.init(playerViewModel.playerTypeProperty)
 
+        //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             playerViewModel.releasePlayer()
             StationsApi.client.shutdown()
             VCSApi.client.shutdown()
-        }
-
-        if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
-            notification[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
         }
     }
 
@@ -82,8 +72,15 @@ class MainView : View(FxRadio.appName) {
         setPrefSize(800.0, 600.0)
         add<MenuBarView>()
         notificationPane {
-            notification = this
             isShowFromTop = true
+
+            subscribe<NotificationEvent> {
+                show(it.glyph, it.text, it.op)
+            }
+
+            if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
+                this[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
+            }
 
             content {
                 splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
@@ -99,8 +96,8 @@ class MainView : View(FxRadio.appName) {
                     }
 
                     //Constrains width of left pane
-                    leftPaneView.root.minWidthProperty().bind(this.widthProperty().divide(5))
-                    leftPaneView.root.maxWidthProperty().bind(this.widthProperty().multiply(0.35))
+                    leftPaneView.root.minWidthProperty().bind(widthProperty().divide(5))
+                    leftPaneView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
                 }
             }
         }

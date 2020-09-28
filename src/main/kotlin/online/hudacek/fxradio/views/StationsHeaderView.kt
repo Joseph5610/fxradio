@@ -23,7 +23,9 @@ import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SelectedLibrary
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
@@ -37,12 +39,13 @@ class StationsHeaderView : View() {
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val actionButton = button {
-        text = messages["favourites.clean"]
+    private val actionButton = button(messages["favourites.clean"]) {
         action {
-            favouritesCleanAction()
+            cleanFavourites()
         }
-        hide()
+        showWhen {
+            libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))
+        }
     }
 
     private val shownLibraryName = label {
@@ -53,8 +56,7 @@ class StationsHeaderView : View() {
 
     init {
         libraryViewModel.selectedProperty.onChange {
-            if (it != null) {
-                applyActionButton(it.type)
+            it?.let {
                 shownLibraryName.text = when (it.type) {
                     LibraryType.Favourites -> messages["favourites"]
                     LibraryType.History -> messages["history"]
@@ -80,23 +82,12 @@ class StationsHeaderView : View() {
             }
         }
 
-        hiddenWhen(booleanBinding(viewModel.stationsViewStateProperty) {
-            when (value) {
-                StationsViewState.Normal -> false
-                else -> true
-            }
-        })
-    }
-
-    private fun applyActionButton(type: LibraryType) {
-        if (type == LibraryType.Favourites) {
-            actionButton.show()
-        } else {
-            actionButton.hide()
+        showWhen {
+            viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
         }
     }
 
-    private fun favouritesCleanAction() {
+    private fun cleanFavourites() {
         confirm(messages["database.clear.confirm"], messages["database.clear.text"]) {
             Database
                     .cleanup()

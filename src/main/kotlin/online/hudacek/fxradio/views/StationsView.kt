@@ -25,17 +25,17 @@ import tornadofx.*
  */
 class StationsView : View() {
 
-    private val infoErrorView: StationsInfoErrorView by inject()
+    private val messageView: StationsMessageView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
 
     override val root = vbox {
         addClass(Styles.backgroundWhite)
         vgrow = Priority.ALWAYS
-        add(infoErrorView)
+        add(messageView)
         add(headerView)
         add(dataGridView)
         dataGridView.root.fitToParentHeight()
-        infoErrorView.root.prefWidthProperty().bind(widthProperty())
+        messageView.root.prefWidthProperty().bind(widthProperty())
     }
 }

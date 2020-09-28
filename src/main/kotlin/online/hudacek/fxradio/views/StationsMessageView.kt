@@ -30,7 +30,7 @@ import tornadofx.*
 /**
  * This is a view that shows different errors or info messages on stationsView
  */
-class StationsInfoErrorView : View() {
+class StationsMessageView : View() {
 
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
@@ -41,13 +41,19 @@ class StationsInfoErrorView : View() {
 
     private val header = label {
         addClass(Styles.header)
+        showWhen {
+            viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.NoResults)
+        }
     }
 
     private val noResultsText = text {
         addClass(Styles.header)
         wrappingWidth = 350.0
         textAlignment = TextAlignment.CENTER
-        hide()
+
+        showWhen {
+            viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.NoResults)
+        }
     }
 
     private val subHeader = label {
@@ -61,48 +67,40 @@ class StationsInfoErrorView : View() {
         add(subHeader)
 
         showWhen {
-            booleanBinding(viewModel.stationsViewStateProperty) {
-                when (value) {
-                    StationsViewState.Normal -> false
-                    else -> true
-                }
-            }
+            viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.Normal)
         }
     }
 
     init {
         viewModel.stationsViewStateProperty.onChange {
             when (it) {
-                StationsViewState.NoResults -> showNoResults(libraryViewModel.selectedProperty.value.params)
+                StationsViewState.NoResults -> showNoResults()
                 StationsViewState.Error -> showMessage(messages["connectionError"], messages["connectionErrorDesc"], errorGlyph)
-                StationsViewState.Loading -> showMessage(messages["library.loading"], "", loadingGlyph)
+                StationsViewState.Loading -> showMessage("", "", loadingGlyph)
                 StationsViewState.ShortQuery -> showMessage(messages["searchingLibrary"], messages["searchingLibraryDesc"], searchGlyph)
                 else -> Unit
             }
         }
     }
 
-    private fun showNoResults(query: String?) {
-        noResultsText.show()
-        header.hide()
-        if (query == null) {
-            subHeader.text = messages["noResultsDesc"]
+    private fun showNoResults() {
+        val library = libraryViewModel.selectedProperty.value
+        if (library != null) {
+            noResultsText.text =
+                    if (library.params.isNullOrEmpty()) {
+                        messages["noResults"]
+                    } else {
+                        "${messages["noResultsFor"]} \"${library.params}\""
+                    }
         } else {
-            subHeader.text = null
+            //Selected library should have some value,
+            //probably some error during loading occured here
+            viewModel.stationsViewStateProperty.value = StationsViewState.Error
         }
-
-        noResultsText.text =
-                if (query.isNullOrEmpty()) {
-                    messages["noResults"]
-                } else {
-                    "${messages["noResultsFor"]} \"$query\""
-                }
     }
 
     private fun showMessage(headerValue: String, subHeaderValue: String, glyph: Glyph? = null) {
-        noResultsText.hide()
         with(header) {
-            show()
             graphic = glyph
             text = headerValue
         }

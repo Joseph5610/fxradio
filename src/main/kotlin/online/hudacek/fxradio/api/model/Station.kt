@@ -69,8 +69,8 @@ data class Station(
     companion object {
         fun stub() = Station(
                 "0",
-                "Not playing",
-                "none",
+                "No stations found",
+                null,
                 "",
                 null)
 

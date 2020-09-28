@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.media
 
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.beans.property.Property
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
@@ -42,13 +43,14 @@ object MediaPlayerWrapper : Component() {
 
     init {
         //Update internal player type
-        playerViewModel.playerTypeProperty.onChange {
-            if (it != null) {
-                logger.info { "Player type has changed: $it" }
-                internalMediaPlayer.releasePlayer()
-                internalMediaPlayer = changePlayer(it)
-            }
-        }
+        playerViewModel.playerTypeProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
+                .subscribe {
+                    logger.info { "Player type has changed: $it" }
+                    internalMediaPlayer.releasePlayer()
+                    internalMediaPlayer = changePlayer(it)
+                }
 
         //Set volume for current player
         playerViewModel.volumeProperty.onChange {
@@ -60,7 +62,10 @@ object MediaPlayerWrapper : Component() {
         subscribe<PlaybackChangeEvent> {
             internalPlayingStatus = it.playingStatus
             if (internalPlayingStatus == PlayingStatus.Playing) {
-                play(playerViewModel.stationProperty.value.url_resolved)
+                //Ignore stations with empty stream URL
+                playerViewModel.stationProperty.value.url_resolved?.let {
+                    play(it)
+                }
             } else {
                 internalMediaPlayer.cancelPlaying()
             }
@@ -101,12 +106,10 @@ object MediaPlayerWrapper : Component() {
         }
     }
 
-    private fun play(url: String?) {
-        if (url != null) {
-            internalMediaPlayer.apply {
-                changeVolume(playerViewModel.volumeProperty.value)
-                play(url)
-            }
+    private fun play(url: String) {
+        with(internalMediaPlayer) {
+            changeVolume(playerViewModel.volumeProperty.value)
+            play(url)
         }
     }
 }
