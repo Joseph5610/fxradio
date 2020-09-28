@@ -26,7 +26,7 @@ import tornadofx.*
 
 class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf()) {
     val stats: ObservableList<Pair<String, String>> by property(map)
-    val isError = booleanProperty()
+    val isError by booleanProperty()
 }
 
 /**

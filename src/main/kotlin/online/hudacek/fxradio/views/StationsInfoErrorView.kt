@@ -24,6 +24,7 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 
 /**
@@ -73,22 +74,12 @@ class StationsInfoErrorView : View() {
         viewModel.stationsViewStateProperty.onChange {
             when (it) {
                 StationsViewState.NoResults -> showNoResults(libraryViewModel.selectedProperty.value.params)
-                StationsViewState.Error -> showError()
-                StationsViewState.Loading -> showLoading()
-                StationsViewState.ShortQuery -> showShortQuery()
+                StationsViewState.Error -> showMessage(messages["connectionError"], messages["connectionErrorDesc"], errorGlyph)
+                StationsViewState.Loading -> showMessage(messages["library.loading"], "", loadingGlyph)
+                StationsViewState.ShortQuery -> showMessage(messages["searchingLibrary"], messages["searchingLibraryDesc"], searchGlyph)
                 else -> Unit
             }
         }
-    }
-
-    private fun showShortQuery() {
-        noResultsText.hide()
-        with(header) {
-            show()
-            text = messages["searchingLibrary"]
-            graphic = searchGlyph
-        }
-        subHeader.text = messages["searchingLibraryDesc"]
     }
 
     private fun showNoResults(query: String?) {
@@ -108,23 +99,13 @@ class StationsInfoErrorView : View() {
                 }
     }
 
-    private fun showError() {
+    private fun showMessage(headerValue: String, subHeaderValue: String, glyph: Glyph? = null) {
         noResultsText.hide()
         with(header) {
             show()
-            graphic = errorGlyph
-            text = messages["connectionError"]
+            graphic = glyph
+            text = headerValue
         }
-        subHeader.text = messages["connectionErrorDesc"]
-    }
-
-    private fun showLoading() {
-        noResultsText.hide()
-        with(header) {
-            show()
-            graphic = loadingGlyph
-            text = messages["library.loading"]
-        }
-        subHeader.text = ""
+        subHeader.text = subHeaderValue
     }
 }

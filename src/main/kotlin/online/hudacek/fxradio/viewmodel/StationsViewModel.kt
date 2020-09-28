@@ -16,7 +16,7 @@ import tornadofx.*
 
 class StationsModel {
     val stations: ObservableList<Station> by property(observableListOf(Station.stub()))
-    val stationsViewState = objectProperty(StationsViewState.Normal)
+    val stationsViewState: StationsViewState by objectProperty(StationsViewState.Normal)
 }
 
 enum class StationsViewState {

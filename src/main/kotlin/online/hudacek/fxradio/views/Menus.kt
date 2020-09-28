@@ -86,14 +86,11 @@ object Menus : Component() {
         }
     }
 
-    val stationMenu = menu(messages["menu.station"]) {
-        item(messages["menu.station.info"], keyInfo) {
-            shouldBeDisabled(playerViewModel.stationProperty)
-            action {
-                menuViewModel.openStationInfo()
-            }
+    val favouritesMenu = menu(messages["menu.favourites"]) {
+        item(messages["menu.favourites.show"]).action {
+            libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Favourites)
         }
-
+        separator()
         item(messages["menu.station.favourite"], keyFavourites) {
             disableWhen(booleanBinding(playerViewModel.stationProperty) {
                 value == null || !value.isValidStation() || value.isFavourite.blockingGet()
@@ -126,7 +123,15 @@ object Menus : Component() {
                         fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
                     })
         }
+    }
 
+    val stationMenu = menu(messages["menu.station"]) {
+        item(messages["menu.station.info"], keyInfo) {
+            shouldBeDisabled(playerViewModel.stationProperty)
+            action {
+                menuViewModel.openStationInfo()
+            }
+        }
         item(messages["menu.station.vote"]) {
             shouldBeDisabled(playerViewModel.stationProperty)
             action {

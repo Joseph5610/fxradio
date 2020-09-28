@@ -46,7 +46,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
     ))
 
     val selected: SelectedLibrary by property(SelectedLibrary(LibraryType.TopStations))
-    val isError = booleanProperty()
+    val isError by booleanProperty()
 }
 
 /**

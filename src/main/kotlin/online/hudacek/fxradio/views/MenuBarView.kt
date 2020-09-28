@@ -46,6 +46,7 @@ class MenuBarView : View() {
     private var playerAnimateCheck: CheckMenuItem by singleAssign()
     private var playerNotificationsCheck: CheckMenuItem by singleAssign()
 
+    private val favouritesMenu = Menus.favouritesMenu
     private val stationMenu = Menus.stationMenu
     private val helpMenu = Menus.helpMenu
     private val historyMenu = Menus.historyMenu
@@ -118,7 +119,11 @@ class MenuBarView : View() {
                 playerViewModel.releasePlayer()
             }
         }
-        menus.addAll(stationMenu, playerMenu, historyMenu, helpMenu)
+        menus.addAll(stationMenu,
+                playerMenu,
+                favouritesMenu,
+                historyMenu,
+                helpMenu)
     }
 
     /**
@@ -131,9 +136,9 @@ class MenuBarView : View() {
                 addAppMenuContent()
             }
         }.apply {
-            menus.addAll(
-                    stationMenu,
+            menus.addAll(stationMenu,
                     playerMenu,
+                    favouritesMenu,
                     historyMenu,
                     MacMenu.windowMenu(messages["macos.menu.window"]),
                     helpMenu)

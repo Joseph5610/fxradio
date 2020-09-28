@@ -39,7 +39,6 @@ object MediaPlayerWrapper : Component() {
 
     private var internalMediaPlayer: MediaPlayer = MediaPlayer.stub
     private var internalPlayingStatus = PlayingStatus.Stopped
-    private var internalVolume = 0.0
 
     init {
         //Update internal player type
@@ -54,14 +53,13 @@ object MediaPlayerWrapper : Component() {
         //Set volume for current player
         playerViewModel.volumeProperty.onChange {
             logger.debug { "Volume changed: $it" }
-            internalVolume = it
             internalMediaPlayer.changeVolume(it)
         }
 
         //Toggle playing
         subscribe<PlaybackChangeEvent> {
             internalPlayingStatus = it.playingStatus
-            if (it.playingStatus == PlayingStatus.Playing) {
+            if (internalPlayingStatus == PlayingStatus.Playing) {
                 play(playerViewModel.stationProperty.value.url_resolved)
             } else {
                 internalMediaPlayer.cancelPlaying()
@@ -69,10 +67,8 @@ object MediaPlayerWrapper : Component() {
         }
 
         playerViewModel.stationProperty.onChange {
-            if (it != null) {
-                if (it.isValidStation()) {
-                    fire(PlaybackChangeEvent(PlayingStatus.Playing))
-                }
+            if (it != null && it.isValidStation()) {
+                fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
     }
@@ -80,6 +76,14 @@ object MediaPlayerWrapper : Component() {
     fun init(playerType: Property<PlayerType>) {
         logger.info { "MediaPlayer $playerType initialized" }
         internalMediaPlayer = changePlayer(playerType.value)
+    }
+
+    fun release() = internalMediaPlayer.releasePlayer()
+
+    fun togglePlaying() = if (internalPlayingStatus == PlayingStatus.Playing) {
+        fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+    } else {
+        fire(PlaybackChangeEvent(PlayingStatus.Playing))
     }
 
     private fun changePlayer(playerType: PlayerType): MediaPlayer {
@@ -100,19 +104,9 @@ object MediaPlayerWrapper : Component() {
     private fun play(url: String?) {
         if (url != null) {
             internalMediaPlayer.apply {
-                changeVolume(internalVolume)
+                changeVolume(playerViewModel.volumeProperty.value)
                 play(url)
             }
-        }
-    }
-
-    fun release() = internalMediaPlayer.releasePlayer()
-
-    fun togglePlaying() {
-        if (internalPlayingStatus == PlayingStatus.Playing) {
-            fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-        } else {
-            fire(PlaybackChangeEvent(PlayingStatus.Playing))
         }
     }
 }
