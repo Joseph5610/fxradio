@@ -17,11 +17,7 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
-import mu.KotlinLogging
 import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.events.RefreshFavourites
-import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -35,69 +31,51 @@ import tornadofx.*
  */
 class StationsHeaderView : View() {
 
-    private val logger = KotlinLogging.logger {}
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val actionButton = button(messages["favourites.clean"]) {
-        action {
-            cleanFavourites()
-        }
-        showWhen {
-            libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))
+    //Bindings for library name based on selected library
+    private val libraryNameTextProperty = libraryViewModel.selectedProperty.stringBinding {
+        it?.let {
+            if (it.type == LibraryType.Country) it.params
+            else if (it.type == LibraryType.Search) messages[it.type.toString()] + " \"${it.params}\""
+            else messages[it.type.toString()]
         }
     }
 
-    private val shownLibraryName = label {
-        paddingTop = 8.0
-        paddingBottom = 8.0
-        addClass(Styles.subheader)
-    }
-
-    init {
-        libraryViewModel.selectedProperty.onChange {
-            it?.let {
-                shownLibraryName.text = when (it.type) {
-                    LibraryType.Favourites -> messages["favourites"]
-                    LibraryType.History -> messages["history"]
-                    LibraryType.TopStations -> messages["topStations"]
-                    LibraryType.Search -> messages["searchResultsFor"] + " \"${it.params}\""
-                    else -> it.params
-                }
-            }
+    private val libraryName by lazy {
+        label(libraryNameTextProperty) {
+            paddingTop = 8.0
+            paddingBottom = 8.0
+            addClass(Styles.subheader)
         }
     }
 
     override val root = borderpane {
         padding = insets(horizontal = 10.0, vertical = 0.0)
         maxHeight = 10.0
-        addClass(Styles.backgroundWhiteSmoke)
+
         left {
-            add(shownLibraryName)
+            add(libraryName)
         }
 
         right {
             vbox(alignment = Pos.CENTER_RIGHT) {
-                add(actionButton)
+                button(messages["favourites.clean"]) {
+                    action {
+                        viewModel.cleanFavourites()
+                    }
+                    showWhen {
+                        libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))
+                    }
+                }
             }
         }
 
         showWhen {
             viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
         }
-    }
 
-    private fun cleanFavourites() {
-        confirm(messages["database.clear.confirm"], messages["database.clear.text"]) {
-            Database
-                    .cleanup()
-                    .subscribe({
-                        fire(NotificationEvent(messages["database.clear.ok"]))
-                        fire(RefreshFavourites())
-                    }, {
-                        logger.error(it) { "Can't remove favourites!" }
-                        fire(NotificationEvent(messages["database.clear.error"]))
-                    })
-        }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 }

@@ -9,6 +9,9 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.events.RefreshFavourites
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
@@ -71,6 +74,20 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
             stationsViewStateProperty.value = StationsViewState.NoResults
         } else {
             stationsViewStateProperty.value = StationsViewState.Normal
+        }
+    }
+
+    fun cleanFavourites() {
+        confirm(messages["database.clear.confirm"], messages["database.clear.text"]) {
+            Database
+                    .cleanup()
+                    .subscribe({
+                        fire(NotificationEvent(messages["database.clear.ok"]))
+                        fire(RefreshFavourites())
+                    }, {
+                        logger.error(it) { "Can't remove favourites!" }
+                        fire(NotificationEvent(messages["database.clear.error"]))
+                    })
         }
     }
 

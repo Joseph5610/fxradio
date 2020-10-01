@@ -34,7 +34,8 @@ data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 
 data class SelectedLibrary(val type: LibraryType, val params: String = "")
 
-class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
+class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
+                   selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations)) {
     //Countries shown in Countries ListView
     val countries: ObservableList<Countries> by property(countries)
 
@@ -45,7 +46,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf()) {
             LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
     ))
 
-    val selected: SelectedLibrary by property(SelectedLibrary(LibraryType.TopStations))
+    val selected: SelectedLibrary by property(selected)
     val isError by booleanProperty()
 }
 
@@ -67,6 +68,10 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
 
     val isErrorProperty = bind(LibraryModel::isError) as BooleanProperty
+
+    init {
+        item = LibraryModel()
+    }
 
     fun showCountries(): Disposable = StationsApi.service
             .getCountries(CountriesBody())

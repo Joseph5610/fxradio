@@ -16,6 +16,7 @@
 package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -24,7 +25,6 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 
 /**
@@ -35,75 +35,84 @@ class StationsMessageView : View() {
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val searchGlyph = glyph(FontAwesome.Glyph.SEARCH)
-    private val errorGlyph = glyph(FontAwesome.Glyph.WARNING)
-    private val loadingGlyph = glyph(FontAwesome.Glyph.SPINNER)
+    private val searchGlyph by lazy { glyph(FontAwesome.Glyph.SEARCH) }
+    private val errorGlyph by lazy { glyph(FontAwesome.Glyph.WARNING) }
 
-    private val header = label {
-        addClass(Styles.header)
-        showWhen {
-            viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.NoResults)
+    private val headerTextProperty = viewModel.stationsViewStateProperty.stringBinding {
+        when (it) {
+            StationsViewState.Error -> messages["connectionError"]
+            StationsViewState.ShortQuery -> messages["searchingLibrary"]
+            else -> ""
         }
     }
 
-    private val noResultsText = text {
-        addClass(Styles.header)
-        wrappingWidth = 350.0
-        textAlignment = TextAlignment.CENTER
-
-        showWhen {
-            viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.NoResults)
+    private val headerGraphicProperty = viewModel.stationsViewStateProperty.objectBinding {
+        when (it) {
+            StationsViewState.Error -> errorGlyph as Node
+            StationsViewState.ShortQuery -> searchGlyph as Node
+            else -> null
         }
     }
 
-    private val subHeader = label {
-        addClass(Styles.grayLabel)
-    }
-
-    override val root = vbox(alignment = Pos.CENTER) {
-        paddingTop = 120.0
-        add(header)
-        add(noResultsText)
-        add(subHeader)
-
-        showWhen {
-            viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.Normal)
+    private val subHeaderTextProperty = viewModel.stationsViewStateProperty.stringBinding {
+        when (it) {
+            StationsViewState.Error -> messages["connectionErrorDesc"]
+            StationsViewState.ShortQuery -> messages["searchingLibraryDesc"]
+            else -> ""
         }
     }
 
-    init {
-        viewModel.stationsViewStateProperty.onChange {
-            when (it) {
-                StationsViewState.NoResults -> showNoResults()
-                StationsViewState.Error -> showMessage(messages["connectionError"], messages["connectionErrorDesc"], errorGlyph)
-                StationsViewState.Loading -> showMessage("", "", loadingGlyph)
-                StationsViewState.ShortQuery -> showMessage(messages["searchingLibrary"], messages["searchingLibraryDesc"], searchGlyph)
-                else -> Unit
+    private val noResultsTextProperty = libraryViewModel.selectedProperty.stringBinding {
+        it?.let {
+            if (it.params.isEmpty()) {
+                messages["noResults"]
+            } else {
+                "${messages["noResultsFor"]} \"${it.params}\""
             }
         }
     }
 
-    private fun showNoResults() {
-        val library = libraryViewModel.selectedProperty.value
-        if (library != null) {
-            noResultsText.text =
-                    if (library.params.isNullOrEmpty()) {
-                        messages["noResults"]
-                    } else {
-                        "${messages["noResultsFor"]} \"${library.params}\""
-                    }
-        } else {
-            //Selected library should have some value,
-            //probably some error during loading occured here
-            viewModel.stationsViewStateProperty.value = StationsViewState.Error
+    //Main live for message
+    private val header by lazy {
+        label(headerTextProperty) {
+            graphicProperty().bind(headerGraphicProperty)
+            addClass(Styles.header)
+            showWhen {
+                viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.NoResults)
+            }
         }
     }
 
-    private fun showMessage(headerValue: String, subHeaderValue: String, glyph: Glyph? = null) {
-        with(header) {
-            graphic = glyph
-            text = headerValue
+    private val noResultsText by lazy {
+        text {
+            addClass(Styles.header)
+            wrappingWidth = 350.0
+            textAlignment = TextAlignment.CENTER
+
+            showWhen {
+                viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.NoResults)
+            }
+
+            textProperty().bind(noResultsTextProperty)
         }
-        subHeader.text = subHeaderValue
+    }
+
+    //Description of a message, shown only if relevant
+    private val subHeader by lazy {
+        label(subHeaderTextProperty) {
+            addClass(Styles.grayLabel)
+        }
+    }
+
+    override val root = vbox(alignment = Pos.CENTER) {
+        paddingTop = 120.0
+
+        add(header)
+        add(noResultsText)
+        add(subHeader)
+        
+        showWhen {
+            viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.Normal)
+        }
     }
 }

@@ -34,12 +34,12 @@ import tornadofx.controlsfx.showPopover
 
 /**
  * Main view of stations
- * Datagrid shows radio station logo and name
+ * DataGrid shows radio station logo and name
  */
 class StationsDataGridView : View() {
     private val logger = KotlinLogging.logger {}
 
-    private val playerViewViewModel: PlayerViewModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val stationsHistoryView: StationsHistoryViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
@@ -61,23 +61,15 @@ class StationsDataGridView : View() {
         }
     }
 
-
-    private fun showLibraryType(selected: SelectedLibrary) {
-        stationsViewModel.stationsViewStateProperty.value = StationsViewState.Loading
-        with(selected) {
-            when (type) {
-                LibraryType.Country -> stationsViewModel.stationsByCountry(params)
-                LibraryType.Favourites -> stationsViewModel.favourites
-                LibraryType.History -> stationsViewModel.show(stationsHistoryView.stationsProperty)
-                LibraryType.Search -> stationsViewModel.search(params)
-                else -> stationsViewModel.topStations
-            }
-        }
+    override fun onDock() {
+        //Default View
+        showLibraryType(libraryViewModel.selectedProperty.value)
     }
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
 
+        //Cleanup selected item on refresh of library
         itemsProperty
                 .onChangedObservable()
                 .subscribe {
@@ -85,7 +77,7 @@ class StationsDataGridView : View() {
                 }
 
         onUserSelect(1) {
-            playerViewViewModel.stationProperty.value = it
+            playerViewModel.stationProperty.value = it
         }
 
         cellCache {
@@ -126,6 +118,19 @@ class StationsDataGridView : View() {
 
         showWhen {
             stationsViewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
+        }
+    }
+
+    private fun showLibraryType(selected: SelectedLibrary) {
+        stationsViewModel.stationsViewStateProperty.value = StationsViewState.Loading
+        with(selected) {
+            when (type) {
+                LibraryType.Country -> stationsViewModel.stationsByCountry(params)
+                LibraryType.Favourites -> stationsViewModel.favourites
+                LibraryType.History -> stationsViewModel.show(stationsHistoryView.stationsProperty)
+                LibraryType.Search -> stationsViewModel.search(params)
+                else -> stationsViewModel.topStations
+            }
         }
     }
 }

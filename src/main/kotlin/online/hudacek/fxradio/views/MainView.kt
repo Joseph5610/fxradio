@@ -51,6 +51,7 @@ class MainView : View(FxRadio.appName) {
         setStageIcon(Image(Config.Resources.stageIcon))
     }
 
+    //Right pane of the app (Player + Stations)
     private val rightPane = vbox {
         hgrow = Priority.NEVER
         add(playerView)

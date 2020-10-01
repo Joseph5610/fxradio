@@ -6,7 +6,7 @@ import tornadofx.*
 
 class AddStationModel(station: AddStationBody) {
     val name: String by property(station.name)
-    val URL: String by property(station.url)
+    val url: String by property(station.url)
     val homepage: String by property(station.homepage)
     val favicon: String by property(station.favicon)
     val country: String by property(station.country)
@@ -24,7 +24,7 @@ class AddStationModel(station: AddStationBody) {
  */
 class AddStationViewModel : ItemViewModel<AddStationModel>() {
     val name = bind(AddStationModel::name) as StringProperty
-    val URL = bind(AddStationModel::URL) as StringProperty
+    val url = bind(AddStationModel::url) as StringProperty
     val homepage = bind(AddStationModel::homepage) as StringProperty
     val favicon = bind(AddStationModel::favicon) as StringProperty
     val country = bind(AddStationModel::country) as StringProperty
@@ -42,7 +42,7 @@ class AddStationViewModel : ItemViewModel<AddStationModel>() {
 
     override fun toString(): String {
         return "AddStationViewModel(name=${name.value}," +
-                " URL=${URL.value}, " +
+                " URL=${url.value}, " +
                 "homepage=${homepage.value}, " +
                 "favicon=${favicon.value}," +
                 "country=${country.value}, " +

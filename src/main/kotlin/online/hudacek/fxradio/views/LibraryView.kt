@@ -43,12 +43,7 @@ class LibraryView : View() {
     private val libraryListView = listview(viewModel.librariesProperty) {
         cellFormat {
             graphic = glyph("FontAwesome", item.graphic)
-            text = when (item.type) {
-                LibraryType.Favourites -> messages["favourites"]
-                LibraryType.TopStations -> messages["topStations"]
-                LibraryType.History -> messages["history"]
-                else -> ""
-            }
+            text = messages[item.type.toString()]
             addClass(Styles.libraryListItem)
         }
         addClass(Styles.libraryListView)
@@ -80,7 +75,6 @@ class LibraryView : View() {
     }
 
     override fun onDock() {
-        viewModel.item = LibraryModel()
         viewModel.showCountries()
 
         with(libraryListView) {

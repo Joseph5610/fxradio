@@ -26,14 +26,14 @@ import tornadofx.*
  * Convenience methods for boolean bindings
  */
 internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
-    visibleWhen(booleanBinding(station) {
-        value != null && value.isValidStation()
+    visibleWhen(station.booleanBinding {
+        it != null && it.isValidStation()
     })
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
-    disableWhen(booleanBinding(station) {
-        value == null || !value.isValidStation()
+    disableWhen(station.booleanBinding {
+        it == null || !it.isValidStation()
     })
 }
 

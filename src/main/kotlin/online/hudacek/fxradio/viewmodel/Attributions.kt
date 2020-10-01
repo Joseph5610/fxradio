@@ -16,7 +16,7 @@ object Attributions {
                 AttributionModel("kotlin-logging", "1.7.9", Licenses.apache20),
                 AttributionModel("TickerView", license = Licenses.tickerView),
                 AttributionModel("macOS install disk background", license = Licenses.bg),
-                AttributionModel("Application logo, radio station icon, play, pause, volume icons", license = Licenses.iconArchive)
+                AttributionModel("Application logo, radio station icon", license = Licenses.iconArchive)
         )
     }
 }
@@ -24,12 +24,11 @@ object Attributions {
 //License Data class
 data class License(val name: String = "", val content: String)
 
-
 class AttributionModel(name: String, version: String = "", license: License) {
-    var name: String by property(name)
-    var version: String by property(version)
-    var licenseContent: String by property(license.content)
-    var licenseName: String by property(license.name)
+    val name: String by property(name)
+    val version: String by property(version)
+    val licenseContent: String by property(license.content)
+    val licenseName: String by property(license.name)
 }
 
 /**

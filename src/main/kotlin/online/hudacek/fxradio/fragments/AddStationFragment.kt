@@ -75,10 +75,10 @@ class AddStationFragment : Fragment() {
                         }
                     }
                     field(messages["add.url"]) {
-                        textfield(viewModel.URL) {
+                        textfield(viewModel.url) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.URL, minValue = 7))
+                                if (viewModel.validate(viewModel.url, minValue = 7))
                                     null
                                 else
                                     error(messages["field.invalid.length"])
@@ -135,7 +135,7 @@ class AddStationFragment : Fragment() {
                                 StationsApi.service
                                         .add(AddStationBody(
                                                 name = viewModel.name.value,
-                                                url = viewModel.URL.value,
+                                                url = viewModel.url.value,
                                                 homepage = viewModel.homepage.value,
                                                 favicon = viewModel.favicon.value,
                                                 country = viewModel.country.value,

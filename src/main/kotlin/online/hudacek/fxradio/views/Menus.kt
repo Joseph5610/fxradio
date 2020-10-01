@@ -92,8 +92,8 @@ object Menus : Component() {
         }
         separator()
         item(messages["menu.station.favourite"], keyFavourites) {
-            disableWhen(booleanBinding(playerViewModel.stationProperty) {
-                value == null || !value.isValidStation() || value.isFavourite.blockingGet()
+            disableWhen(playerViewModel.stationProperty.booleanBinding {
+                it == null || !it.isValidStation() || it.isFavourite.blockingGet()
             })
 
             actionEvents()
@@ -108,8 +108,8 @@ object Menus : Component() {
         }
 
         item(messages["menu.station.favourite.remove"]) {
-            visibleWhen(booleanBinding(playerViewModel.stationProperty) {
-                value != null && value.isValidStation() && value.isFavourite.blockingGet()
+            visibleWhen(playerViewModel.stationProperty.booleanBinding {
+                it != null && it.isValidStation() && it.isFavourite.blockingGet()
             })
 
             actionEvents()
