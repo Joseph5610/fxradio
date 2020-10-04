@@ -42,6 +42,7 @@ class StationsDataGridView : View() {
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val stationsHistoryView: StationsHistoryViewModel by inject()
+
     private val libraryViewModel: LibraryViewModel by inject()
 
     init {
@@ -82,16 +83,18 @@ class StationsDataGridView : View() {
 
         cellCache {
             vbox(alignment = Pos.CENTER) {
-                popover {
-                    title = it.name
-                    isCloseButtonEnabled = true
-                    isHeaderAlwaysVisible = true
-                    vbox {
-                        add(StationInfoFragment(it))
+                onRightClick {
+                    popover {
+                        title = it.name
+                        isCloseButtonEnabled = true
+                        isHeaderAlwaysVisible = true
+                        vbox {
+                            add(StationInfoFragment(it))
+                        }
                     }
+                    showPopover()
                 }
 
-                onRightClick { showPopover() }
                 onHover { _ -> tooltip(it.name) }
 
                 paddingAll = 5

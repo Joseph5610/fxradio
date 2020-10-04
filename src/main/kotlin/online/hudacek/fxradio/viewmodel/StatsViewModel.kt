@@ -58,4 +58,6 @@ class StatsViewModel : ItemViewModel<StatsModel>() {
                         item = StatsModel()
                         isErrorProperty.value = true
                     })
+
+    override fun toString() = "StatsViewModel(statsProperty=${statsProperty.value}, isErrorProperty=${isErrorProperty.value})"
 }

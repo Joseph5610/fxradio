@@ -24,18 +24,24 @@ import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.copyMenu
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.openUrl
+import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationInfoModel
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import tornadofx.*
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment(station: Station? = null) : Fragment() {
 
+    private val stationInfoViewModel: StationInfoViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
-    private val shownStation: Station = station ?: playerViewModel.stationProperty.value
-
-    private val items = observableListOf<String>()
+    init {
+        stationInfoViewModel.item = StationInfoModel(
+                station ?: playerViewModel.stationProperty.value
+        )
+    }
 
     override fun onBeforeShow() {
         currentWindow?.opacity = 0.85
@@ -43,87 +49,74 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
 
     override val root = vbox {
         prefWidth = 300.0
-        title = shownStation.name
-        shownStation.let {
-            val tagsList = it.tags.split(",")
-                    .map { tag -> tag.trim() }
-                    .filter { tag -> tag.isNotEmpty() }
+        titleProperty.bind(stationInfoViewModel.stationNameProperty)
 
-            vbox {
-                vbox(alignment = Pos.CENTER) {
-                    paddingAll = 10.0
-                    imageview {
-                        createImage(it)
-                        effect = DropShadow(30.0, Color.LIGHTGRAY)
-                        fitHeight = 100.0
-                        fitHeight = 100.0
-                        isPreserveRatio = true
+        vbox {
+            vbox(alignment = Pos.CENTER) {
+                paddingAll = 10.0
+                imageview {
+                    createImage(stationInfoViewModel.stationProperty.value)
+                    effect = DropShadow(30.0, Color.LIGHTGRAY)
+                    fitHeight = 100.0
+                    fitHeight = 100.0
+                    isPreserveRatio = true
+                }
+            }
+        }
+
+        flowpane {
+            hgap = 5.0
+            vgap = 5.0
+            alignment = Pos.CENTER
+            paddingAll = 5.0
+
+            stationInfoViewModel.infoItemsProperty.forEach {
+                val text =
+                        if (it.key.isNotEmpty()) messages[it.key] + ": " + it.value
+                        else it.value
+
+                label(text) {
+                    addClass(Styles.grayLabel)
+                    addClass(Styles.tag)
+                    copyMenu(clipboard,
+                            name = messages["copy"],
+                            value = it.value)
+                }
+            }
+        }
+
+        flowpane {
+            hgap = 5.0
+            vgap = 5.0
+            alignment = Pos.CENTER
+            paddingAll = 5.0
+            stationInfoViewModel.tagsProperty.forEach {
+                label(it) {
+                    addClass(Styles.tag)
+                    addClass(Styles.grayLabel)
+                    copyMenu(clipboard,
+                            name = messages["copy"],
+                            value = it)
+                }
+            }
+        }
+
+        statusbar {
+            right {
+                hyperlink {
+                    bind(stationInfoViewModel.homePageProperty)
+                    addClass(Styles.primaryTextColor)
+                    action {
+                        app.openUrl(text)
                     }
+                    copyMenu(clipboard,
+                            name = messages["copy"],
+                            value = text)
                 }
             }
 
-            flowpane {
-                hgap = 5.0
-                vgap = 5.0
-                alignment = Pos.CENTER
-                paddingAll = 5.0
-
-                if (it.votes != 0) items.add("${it.votes} ${messages["votes"]}")
-
-                val codec = if (it.bitrate != 0) {
-                    it.codec + " (${it.bitrate} kbps)"
-                } else {
-                    it.codec
-                }
-
-                items.addAll(
-                        codec,
-                        "${messages["country"]}: ${it.country}",
-                        "${messages["language"]}: ${it.language}"
-                )
-                items.forEach { info ->
-                    label(info) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                        copyMenu(clipboard,
-                                name = messages["copy"],
-                                value = info)
-                    }
-                }
-            }
-
-            if (tagsList.isNotEmpty()) {
-                flowpane {
-                    hgap = 5.0
-                    vgap = 5.0
-                    alignment = Pos.CENTER
-                    paddingAll = 5.0
-                    tagsList.forEach { tag ->
-                        label(tag) {
-                            addClass(Styles.tag)
-                            addClass(Styles.grayLabel)
-                            copyMenu(clipboard,
-                                    name = messages["copy"],
-                                    value = tag)
-                        }
-                    }
-                }
-            }
-
-            if (it.homepage.isNotEmpty()) {
-                statusbar {
-                    right {
-                        hyperlink(it.homepage) {
-                            addClass(Styles.primaryTextColor)
-                            action {
-                                app.openUrl(it.homepage)
-                            }
-                            copyMenu(clipboard,
-                                    name = messages["copy"],
-                                    value = it.homepage)
-                        }
-                    }
-                }
+            showWhen {
+                stationInfoViewModel.homePageProperty.isNotEmpty
             }
         }
     }

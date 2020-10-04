@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.copyMenu
@@ -31,6 +32,8 @@ import tornadofx.*
  */
 class StatsFragment : Fragment() {
 
+    private val logger = KotlinLogging.logger {}
+
     private val statsViewModel: StatsViewModel by inject()
 
     override fun onBeforeShow() {
@@ -38,7 +41,15 @@ class StatsFragment : Fragment() {
     }
 
     override fun onDock() {
-        statsViewModel.getStats()
+        //We want to show progress bar each time fragment is opened
+        statsViewModel.let {
+            logger.debug { "Clearing up ${statsViewModel}" }
+            //Cleanup stored variable
+            it.item = null
+
+            //Retrieve new stats
+            it.getStats()
+        }
     }
 
     override val root = vbox {
