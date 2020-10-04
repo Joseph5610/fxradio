@@ -41,7 +41,7 @@ val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
 internal fun ImageView.createImage(station: Station) {
     this.image = defaultRadioLogo
 
-    if (!station.isValidStation()) return
+    if (!station.isValid()) return
 
     if (ImageCache.isImageInCache(station)) {
         this.image = ImageCache.getImageFromCache(station)

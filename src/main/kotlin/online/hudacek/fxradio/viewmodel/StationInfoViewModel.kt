@@ -25,7 +25,7 @@ import javafx.collections.ObservableMap
 import online.hudacek.fxradio.api.model.Station
 import tornadofx.*
 
-class StationInfoModel(station: Station = Station.stub()) {
+class StationInfoModel(station: Station = Station.stub) {
     val codec = if (station.bitrate != 0) {
         station.codec + " (${station.bitrate} kbps)"
     } else {

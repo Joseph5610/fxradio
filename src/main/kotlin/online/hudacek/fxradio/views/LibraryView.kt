@@ -19,15 +19,14 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Pos
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
-import online.hudacek.fxradio.viewmodel.LibraryModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedLibrary
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
-import tornadofx.controlsfx.glyph
 
 class LibraryView : View() {
 
@@ -42,7 +41,7 @@ class LibraryView : View() {
 
     private val libraryListView = listview(viewModel.librariesProperty) {
         cellFormat {
-            graphic = glyph("FontAwesome", item.graphic)
+            graphic = glyph(item.graphic, size = 14.0, useStyle = false)
             text = messages[item.type.toString()]
             addClass(Styles.libraryListItem)
         }
@@ -92,18 +91,10 @@ class LibraryView : View() {
         promptText = messages["search"]
         id = "search"
 
-        left = label {
-            graphic = glyph("FontAwesome", FontAwesome.Glyph.SEARCH) {
-                style {
-                    padding = box(10.px, 5.px)
-                }
-            }
-        }
+        bind(viewModel.searchQueryProperty)
 
-        viewModel.savedQuery?.let {
-            if (it.isNotBlank()) {
-                text = it
-            }
+        left = label {
+            graphic = glyph(FontAwesome.Glyph.SEARCH, size = 14.0)
         }
 
         //Fire up search results after input is written to text field
@@ -116,13 +107,12 @@ class LibraryView : View() {
         }
 
         setOnMouseClicked {
-            viewModel.handleSearchInputClick(text)
+            viewModel.handleSearchInputClick()
             countriesListView.selectionModel.clearSelection()
             libraryListView.selectionModel.clearSelection()
         }
 
-        //Validation
-        ValidationContext().addValidator(this, textProperty()) {
+        validator {
             if (it!!.length >= 49) error(messages["field.max.length"]) else null
         }
     }

@@ -19,7 +19,10 @@ package online.hudacek.fxradio.storage
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.model.Station
 import org.nield.rxkotlinjdbc.execute
+import org.nield.rxkotlinjdbc.insert
+import org.nield.rxkotlinjdbc.select
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -29,7 +32,7 @@ import java.sql.DriverManager
 object Database {
     private val logger = KotlinLogging.logger {}
 
-    val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.dbPath}").apply {
+    private val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.dbPath}").apply {
 
         //Initial creation of tables
         execute("CREATE TABLE IF NOT EXISTS FAVOURITES (ID INTEGER PRIMARY KEY," +
@@ -45,4 +48,52 @@ object Database {
     }
 
     fun cleanup(): Single<Int> = connection.execute("delete from favourites").toSingle()
+
+    //get data about station from db and return latest info from API about it
+    fun favourites(): Single<MutableList<Station>> =
+            connection.select("SELECT * FROM FAVOURITES")
+                    .toObservable {
+                        Station(it.getString("stationuuid"),
+                                it.getString("name"),
+                                it.getString("url_resolved"),
+                                it.getString("homepage"),
+                                it.getString("favicon"),
+                                it.getString("tags"),
+                                it.getString("country"),
+                                it.getString("countrycode"),
+                                it.getString("state"),
+                                it.getString("language"),
+                                it.getString("codec"),
+                                it.getInt("bitrate"))
+                    }
+                    .toList()
+
+
+    fun isFavourite(station: Station): Single<Boolean> =
+            connection.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
+                    .parameter("uuid", station.stationuuid)
+                    .toSingle { it.getInt(1) > 0 }
+
+    fun addFavourite(station: Station): Single<Boolean> =
+            connection.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
+                    "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
+                    "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
+                    .parameter("name", station.name)
+                    .parameter("stationuuid", station.stationuuid)
+                    .parameter("url_resolved", station.url_resolved)
+                    .parameter("homepage", station.homepage)
+                    .parameter("country", station.country)
+                    .parameter("countrycode", station.countrycode)
+                    .parameter("state", station.state)
+                    .parameter("language", station.language)
+                    .parameter("favicon", station.favicon)
+                    .parameter("tags", station.tags)
+                    .parameter("codec", station.codec)
+                    .parameter("bitrate", station.bitrate)
+                    .toSingle { it.getInt(1) > 0 }
+
+    fun removeFavourite(station: Station): Single<Boolean> =
+            connection.insert("delete from favourites where stationuuid = :stationuuid")
+                    .parameter("stationuuid", station.stationuuid)
+                    .toSingle { it.getInt(1) > 0 }
 }

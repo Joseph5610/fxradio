@@ -24,16 +24,18 @@ interface MediaPlayer {
 
     companion object {
         //Dummy media player object
-        val stub = object : MediaPlayer {
-            override fun play(url: String) {}
+        val stub by lazy {
+            object : MediaPlayer {
+                override fun play(url: String) {}
 
-            override fun changeVolume(volume: Double) = false
+                override fun changeVolume(volume: Double) = false
 
-            override fun cancelPlaying() {}
+                override fun cancelPlaying() {}
 
-            override fun releasePlayer() {}
+                override fun releasePlayer() {}
 
-            override fun toString() = "Stub Player"
+                override fun toString() = "Stub Player"
+            }
         }
     }
 }

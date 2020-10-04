@@ -46,7 +46,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
 
     //retrieve favourites from DB
     val favourites: Disposable
-        get() = Station.favourites()
+        get() = Database.favourites()
                 .compose(applySchedulers())
                 .subscribe(::show, ::handleError)
 

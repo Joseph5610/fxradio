@@ -93,7 +93,7 @@ object Menus : Component() {
         separator()
         item(messages["menu.station.favourite"], keyFavourites) {
             disableWhen(playerViewModel.stationProperty.booleanBinding {
-                it == null || !it.isValidStation() || it.isFavourite.blockingGet()
+                it == null || !it.isValid() || it.isFavourite.blockingGet()
             })
 
             actionEvents()
@@ -109,7 +109,7 @@ object Menus : Component() {
 
         item(messages["menu.station.favourite.remove"]) {
             visibleWhen(playerViewModel.stationProperty.booleanBinding {
-                it != null && it.isValidStation() && it.isFavourite.blockingGet()
+                it != null && it.isValid() && it.isFavourite.blockingGet()
             })
 
             actionEvents()

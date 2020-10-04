@@ -9,7 +9,7 @@ import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import tornadofx.*
 
-class PlayerModel(animate: Boolean = true, station: Station = Station.stub(),
+class PlayerModel(animate: Boolean = true, station: Station = Station.stub,
                   playerType: PlayerType, notifications: Boolean = true, volume: Double) {
 
     var animate: Boolean by property(animate)

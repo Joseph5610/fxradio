@@ -20,6 +20,7 @@ import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
+import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.StationsApi
@@ -35,7 +36,8 @@ data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 data class SelectedLibrary(val type: LibraryType, val params: String = "")
 
 class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
-                   selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations)) {
+                   selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations),
+                   searchQuery: String = "") {
     //Countries shown in Countries ListView
     val countries: ObservableList<Countries> by property(countries)
 
@@ -48,6 +50,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
 
     val selected: SelectedLibrary by property(selected)
     val isError by booleanProperty()
+    val searchQuery by property(searchQuery)
 }
 
 /**
@@ -58,9 +61,6 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
  */
 class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
-    val savedQuery
-        get() = app.config.string(Config.Keys.searchQuery)
-
     val countriesProperty = bind(LibraryModel::countries) as ListProperty
     val librariesProperty = bind(LibraryModel::libraries) as ListProperty
 
@@ -69,8 +69,10 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     val isErrorProperty = bind(LibraryModel::isError) as BooleanProperty
 
+    val searchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
+
     init {
-        item = LibraryModel()
+        item = LibraryModel(searchQuery = app.config.string(Config.Keys.searchQuery, ""))
     }
 
     fun showCountries(): Disposable = StationsApi.service
@@ -88,16 +90,14 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             })
 
     fun handleSearch(searchedValue: String) {
-        if (searchedValue.length < 80) {
-            handleSearchInputClick(searchedValue)
-            with(app.config) {
-                set(Config.Keys.searchQuery to searchedValue)
-                save()
-            }
+        handleSearchInputClick()
+        with(app.config) {
+            set(Config.Keys.searchQuery to searchedValue)
+            save()
         }
     }
 
-    fun handleSearchInputClick(text: String) {
-        selectedProperty.value = SelectedLibrary(LibraryType.Search, text.trim())
+    fun handleSearchInputClick() {
+        selectedProperty.value = SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim())
     }
 }

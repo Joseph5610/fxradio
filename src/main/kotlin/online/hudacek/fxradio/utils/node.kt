@@ -44,6 +44,6 @@ internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
 
 internal fun Node.shouldBeDisabled(station: Property<Station>) {
     disableWhen(station.booleanBinding {
-        it == null || !it.isValidStation()
+        it == null || !it.isValid()
     })
 }

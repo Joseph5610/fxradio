@@ -109,7 +109,7 @@ class PlayerStationBoxView : View() {
 
     private fun onStationChange(station: Station) {
         with(station) {
-            if (isValidStation()) {
+            if (isValid()) {
                 updateStationName(name)
                 copyMenu.apply {
                     items[1].apply {

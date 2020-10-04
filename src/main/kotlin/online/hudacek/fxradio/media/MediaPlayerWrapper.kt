@@ -72,7 +72,7 @@ object MediaPlayerWrapper : Component() {
         }
 
         playerViewModel.stationProperty.onChange {
-            if (it != null && it.isValidStation()) {
+            if (it != null && it.isValid()) {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }

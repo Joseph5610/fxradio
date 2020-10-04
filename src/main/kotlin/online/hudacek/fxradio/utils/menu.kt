@@ -27,13 +27,13 @@ import tornadofx.*
  */
 internal fun MenuItem.shouldBeVisible(station: Property<Station>) {
     visibleWhen(station.booleanBinding {
-        it != null && it.isValidStation()
+        it != null && it.isValid()
     })
 }
 
 internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     disableWhen(station.booleanBinding {
-        it == null || !it.isValidStation()
+        it == null || !it.isValid()
     })
 }
 
