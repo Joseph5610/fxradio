@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.stations
 
 import com.github.thomasnield.rxkotlinfx.onChangedObservable
 import javafx.geometry.Pos

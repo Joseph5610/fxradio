@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.menu
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.control.CheckMenuItem

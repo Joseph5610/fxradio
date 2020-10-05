@@ -14,17 +14,17 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.player
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.control.ContextMenu
-import javafx.scene.control.Tooltip
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
+import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.*
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -37,51 +37,57 @@ class PlayerStationBoxView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private var copyMenu: ContextMenu by singleAssign()
+    private val ticker = tickerView()
+    private val stationNameProperty = stringProperty()
 
-    private val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
+    //Right click menu on
+    private val copyMenu = copyMenu(clipboard, name = messages["copy"]) {
+        items[0].apply {
+            isDisable = true
+        }
+        item(messages["copy.stream.url"]) {
+            isDisable = true
+        }
+        item(messages["search.on.youtube"]) {
+            isDisable = true
+        }
+    }
 
-    private var stationLogo = imageview(Config.Resources.musicIcon) {
+    private val stationLogo = imageview(Config.Resources.musicIcon) {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true
     }
 
-    private val stationNameAnimated = tickerView()
-    private val stationNameStatic = label()
+    private val stationNameBox = vbox(alignment = Pos.CENTER) {
+        vbox {
+            add(ticker)
+            showWhen {
+                playerViewModel.animateProperty
+            }
+        }
 
-    private var stationNameBox = vbox(alignment = Pos.CENTER) {
-        if (playerViewModel.animateProperty.value) {
-            add(stationNameAnimated)
-        } else {
-            add(stationNameStatic)
+        label(stationNameProperty) {
+            showWhen {
+                playerViewModel.animateProperty.not()
+            }
         }
     }
 
-    val nowStreamingLabel = label(messages["player.streamingStopped"]) {
+    private val nowStreamingLabel = label(messages["player.streamingStopped"]) {
         id = "nowStreaming"
         addClass(Styles.grayLabel)
     }
 
     init {
         //Subscribe to property changes
+        ticker.tickerTextProperty.bindBidirectional(stationNameProperty)
         playerViewModel.stationProperty.onChange { it?.let(::onStationChange) }
-        playerViewModel.animateProperty.onChange(::onAnimatePropertyChanged)
         subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataUpdated) }
+        subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
     }
 
     override val root = hbox(5) {
-        copyMenu = copyMenu(clipboard, name = messages["copy"]) {
-            items[0].apply {
-                isDisable = true
-            }
-            item(messages["copy.stream.url"]) {
-                isDisable = true
-            }
-            item(messages["search.on.youtube"]) {
-                isDisable = true
-            }
-        }
         addClass(Styles.playerStationBox)
 
         //Radio logo
@@ -125,19 +131,6 @@ class PlayerStationBoxView : View() {
     }
 
     /**
-     * Show/Hide ticker with radio name / Now playing details
-     * Called when user changes the settings in Player menu
-     */
-    private fun onAnimatePropertyChanged(shouldAnimate: Boolean) {
-        if (shouldAnimate) {
-            stationNameBox.replaceChildren(stationNameAnimated)
-        } else {
-            stationNameBox.replaceChildren(stationNameStatic)
-        }
-        onStationChange(playerViewModel.stationProperty.value)
-    }
-
-    /**
      * Called when new song starts playing or other metadata of stream changes
      * @param event new stream Meta Data
      */
@@ -147,7 +140,6 @@ class PlayerStationBoxView : View() {
 
         //Do not update if song name is too short
         if (newSongName.length > 1) {
-
             val actualTitle = if (newStreamTitle.isNotEmpty()) {
                 newStreamTitle
             } else {
@@ -167,6 +159,7 @@ class PlayerStationBoxView : View() {
 
     //change station name for static or animated view
     private fun updateStationName(stationName: String) {
+        this.stationNameProperty.value = stationName
         copyMenu.apply {
             items[0].apply {
                 isDisable = false
@@ -177,14 +170,17 @@ class PlayerStationBoxView : View() {
             items[2].apply {
                 isDisable = false
                 action {
-                    app.openUrl(youtubeSearchUrl, stationName)
+                    app.openUrl(Config.Paths.youtubeSearchUrl, stationName)
                 }
             }
         }
-        if (playerViewModel.animateProperty.value) stationNameAnimated.updateText(stationName)
-        else {
-            stationNameStatic.text = stationName
-            stationNameStatic.tooltip = Tooltip(stationName)
+    }
+
+    fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
+        if (playingStatus == PlayingStatus.Stopped) {
+            nowStreamingLabel.text = messages["player.streamingStopped"]
+        } else {
+            nowStreamingLabel.text = messages["player.nowStreaming"]
         }
     }
 }

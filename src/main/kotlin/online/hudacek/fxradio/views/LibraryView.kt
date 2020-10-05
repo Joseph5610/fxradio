@@ -45,6 +45,7 @@ class LibraryView : View() {
             text = messages[item.type.toString()]
             addClass(Styles.libraryListItem)
         }
+
         addClass(Styles.libraryListView)
     }
 

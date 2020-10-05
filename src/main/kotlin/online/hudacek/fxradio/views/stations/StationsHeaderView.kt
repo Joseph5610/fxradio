@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.stations
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.events.LibraryType

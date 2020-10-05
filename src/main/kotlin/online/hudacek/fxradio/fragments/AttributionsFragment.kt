@@ -74,8 +74,7 @@ class AttributionsFragment : Fragment() {
             setPrefSize(600.0, 400.0)
             titleProperty.bind(viewModel.licenseNameProperty)
 
-            textarea {
-                bind(viewModel.licenseContentProperty)
+            textarea(viewModel.licenseContentProperty) {
                 vgrow = Priority.ALWAYS
             }
         }

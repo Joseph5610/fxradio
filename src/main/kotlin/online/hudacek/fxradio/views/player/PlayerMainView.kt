@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
@@ -26,7 +26,6 @@ import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.setOnSpacePressed
-import online.hudacek.fxradio.utils.shouldBeDisabled
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -36,7 +35,7 @@ import tornadofx.*
  * Main player view above stations
  * Play/pause, volume controls
  */
-class PlayerView : View() {
+class PlayerMainView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -49,13 +48,25 @@ class PlayerView : View() {
     private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 18.0, useStyle = false)
 
     private val playerControls = button {
-        requestFocusOnSceneAvailable()
-        shouldBeDisabled(playerViewModel.stationProperty)
-        addClass(Styles.playerControls)
         graphic = playGlyph
+        requestFocusOnSceneAvailable()
+        disableWhen {
+            playerViewModel.stationProperty.booleanBinding {
+                it == null || !it.isValid()
+            }
+        }
+        addClass(Styles.playerControls)
         action {
             playerViewModel.togglePlayer()
         }
+    }
+
+    private val volumeSlider = slider(-30..5) {
+        bind(playerViewModel.volumeProperty)
+        majorTickUnit = 8.0
+        isSnapToTicks = true
+        isShowTickMarks = true
+        paddingTop = 10.0
     }
 
     init {
@@ -72,17 +83,6 @@ class PlayerView : View() {
 
         //subscribe to events
         subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
-    }
-
-    private val volumeSlider = slider(-30..5) {
-        bind(playerViewModel.volumeProperty)
-        majorTickUnit = 8.0
-        isSnapToTicks = true
-        isShowTickMarks = true
-        paddingTop = 10.0
-        valueProperty().onChange {
-            playerViewModel.commit()
-        }
     }
 
     override val root = vbox {
@@ -113,7 +113,7 @@ class PlayerView : View() {
                 button {
                     addClass(Styles.playerControls)
                     graphic = volumeDown
-                    setOnMouseClicked {
+                    onLeftClick {
                         volumeSlider.value = volumeSlider.min
                     }
                 }
@@ -122,7 +122,7 @@ class PlayerView : View() {
                     addClass(Styles.playerControls)
                     graphic = volumeUp
                     minWidth = 20.0
-                    setOnMouseClicked {
+                    onLeftClick {
                         volumeSlider.value = volumeSlider.max
                     }
                 }
@@ -144,10 +144,8 @@ class PlayerView : View() {
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
             playerControls.graphic = playGlyph
-            playerStationBoxView.nowStreamingLabel.text = messages["player.streamingStopped"]
         } else {
             playerControls.graphic = stopGlyph
-            playerStationBoxView.nowStreamingLabel.text = messages["player.nowStreaming"]
         }
     }
 }

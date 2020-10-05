@@ -103,8 +103,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
 
         statusbar {
             right {
-                hyperlink {
-                    bind(stationInfoViewModel.homePageProperty)
+                hyperlink(stationInfoViewModel.homePageProperty) {
                     addClass(Styles.primaryTextColor)
                     action {
                         app.openUrl(text)

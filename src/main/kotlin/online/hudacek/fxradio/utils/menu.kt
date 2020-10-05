@@ -37,8 +37,6 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
     })
 }
 
-internal fun menu(name: String, op: Menu.() -> Unit = {}): Menu {
-    return Menu(name).apply {
-        op.invoke(this)
-    }
+internal fun menu(name: String, op: Menu.() -> Unit = {}) = Menu(name).apply {
+    op.invoke(this)
 }

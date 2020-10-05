@@ -16,13 +16,10 @@
 
 package online.hudacek.fxradio.utils
 
-import javafx.beans.property.Property
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.scene.Node
 import javafx.scene.Scene
-import online.hudacek.fxradio.api.model.Station
-import tornadofx.*
 
 /**
  * This is to overcome a bug that sometimes
@@ -40,10 +37,4 @@ internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
     sceneProperty().addListener(listener)
 } else {
     requestFocus()
-}
-
-internal fun Node.shouldBeDisabled(station: Property<Station>) {
-    disableWhen(station.booleanBinding {
-        it == null || !it.isValid()
-    })
 }

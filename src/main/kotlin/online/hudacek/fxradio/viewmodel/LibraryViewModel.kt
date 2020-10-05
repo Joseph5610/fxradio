@@ -50,7 +50,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
 
     val selected: SelectedLibrary by property(selected)
     val isError by booleanProperty()
-    val searchQuery by property(searchQuery)
+    val searchQuery: String by property(searchQuery)
 }
 
 /**

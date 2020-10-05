@@ -50,7 +50,6 @@ internal fun NotificationPane.show(glyph: FontAwesome.Glyph, message: String, op
  * Show Native OS notification
  *
  */
-
 fun notification(title: String, subtitle: String) {
     if (MacUtils.isMac) {
         MacUtils.notification(title, subtitle)

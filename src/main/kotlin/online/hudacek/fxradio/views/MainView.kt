@@ -29,6 +29,9 @@ import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.views.menu.MenuBarView
+import online.hudacek.fxradio.views.player.PlayerMainView
+import online.hudacek.fxradio.views.stations.StationsMainView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
@@ -44,8 +47,8 @@ class MainView : View(FxRadio.appName) {
     private val playerViewModel: PlayerViewModel by inject()
 
     private val leftPaneView: LibraryView by inject()
-    private val playerView: PlayerView by inject()
-    private val stationsView: StationsView by inject()
+    private val playerMainView: PlayerMainView by inject()
+    private val stationsMainView: StationsMainView by inject()
 
     init {
         setStageIcon(Image(Config.Resources.stageIcon))
@@ -54,8 +57,8 @@ class MainView : View(FxRadio.appName) {
     //Right pane of the app (Player + Stations)
     private val rightPane = vbox {
         hgrow = Priority.NEVER
-        add(playerView)
-        add(stationsView)
+        add(playerMainView)
+        add(stationsMainView)
     }
 
     override fun onDock() {

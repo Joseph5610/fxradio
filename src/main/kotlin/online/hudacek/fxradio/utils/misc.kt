@@ -29,7 +29,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.Window
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.views.TickerView
+import online.hudacek.fxradio.views.player.TickerView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
@@ -53,7 +53,7 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph, size: Double = 35.0, us
     }
 }
 
-internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
+internal fun EventTarget.tickerView(op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
         op.invoke(this)
     }
@@ -98,9 +98,11 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
             managedWhen(expr())
         }
 
-internal fun <T> applySchedulers(): SingleTransformer<T, T>? {
-    return SingleTransformer { observable ->
-        observable.subscribeOn(Schedulers.io())
-                .observeOnFx()
-    }
-}
+/**
+ * Perform async calls on correct thread
+ */
+internal fun <T> applySchedulers(): SingleTransformer<T, T>? =
+        SingleTransformer {
+            it.subscribeOn(Schedulers.io())
+                    .observeOnFx()
+        }

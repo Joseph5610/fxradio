@@ -14,12 +14,11 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.menu
 
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
-import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
@@ -40,11 +39,7 @@ class MenuBarView : View() {
     private val menuViewModel: MenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
-    private var playerPlay: MenuItem by singleAssign()
-    private var playerStop: MenuItem by singleAssign()
     private var playerCheck: CheckMenuItem by singleAssign()
-    private var playerAnimateCheck: CheckMenuItem by singleAssign()
-    private var playerNotificationsCheck: CheckMenuItem by singleAssign()
 
     private val favouritesMenu = Menus.favouritesMenu
     private val stationMenu = Menus.stationMenu
@@ -55,14 +50,14 @@ class MenuBarView : View() {
     private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
 
     private val playerMenu = menu(messages["menu.player.controls"]) {
-        playerPlay = item(messages["menu.player.start"], keyPlay) {
+        item(messages["menu.player.start"], keyPlay) {
             shouldBeVisible(playerViewModel.stationProperty)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Playing))
             }
         }
 
-        playerStop = item(messages["menu.player.stop"], keyStop) {
+        item(messages["menu.player.stop"], keyStop) {
             shouldBeVisible(playerViewModel.stationProperty)
             action {
                 fire(PlaybackChangeEvent(PlayingStatus.Stopped))
@@ -83,13 +78,14 @@ class MenuBarView : View() {
             }
         }
 
-        playerAnimateCheck = checkmenuitem(messages["menu.player.animate"]) {
+        checkmenuitem(messages["menu.player.animate"]) {
             bind(playerViewModel.animateProperty)
             action {
                 playerViewModel.commit()
             }
         }
-        playerNotificationsCheck = checkmenuitem(messages["menu.player.notifications"]) {
+
+        checkmenuitem(messages["menu.player.notifications"]) {
             bind(playerViewModel.notificationsProperty)
             action {
                 playerViewModel.commit()

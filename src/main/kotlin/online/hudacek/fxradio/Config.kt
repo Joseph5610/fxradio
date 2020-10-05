@@ -36,6 +36,8 @@ object Config {
     object Paths {
         private val appName = FxRadio.appName.toLowerCase()
 
+        const val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
+
         val baseAppPath = System.getProperty("user.home") + "/.$appName/"
         val confDirPath = "$baseAppPath/conf"
         val cacheDirPath = "$baseAppPath/cache"

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.views
+package online.hudacek.fxradio.views.stations
 
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.styles.Styles
@@ -23,7 +23,7 @@ import tornadofx.*
 /**
  * Main view displaying grid of stations
  */
-class StationsView : View() {
+class StationsMainView : View() {
 
     private val messageView: StationsMessageView by inject()
     private val headerView: StationsHeaderView by inject()
