@@ -26,7 +26,10 @@ import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.*
+import online.hudacek.fxradio.utils.createImage
+import online.hudacek.fxradio.utils.notification
+import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.utils.tickerView
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
@@ -40,38 +43,10 @@ class PlayerStationBoxView : View() {
     private val ticker = tickerView()
     private val stationNameProperty = stringProperty()
 
-    //Right click menu on
-    private val copyMenu = copyMenu(clipboard, name = messages["copy"]) {
-        items[0].apply {
-            isDisable = true
-        }
-        item(messages["copy.stream.url"]) {
-            isDisable = true
-        }
-        item(messages["search.on.youtube"]) {
-            isDisable = true
-        }
-    }
-
     private val stationLogo = imageview(Config.Resources.musicIcon) {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true
-    }
-
-    private val stationNameBox = vbox(alignment = Pos.CENTER) {
-        vbox {
-            add(ticker)
-            showWhen {
-                playerViewModel.animateProperty
-            }
-        }
-
-        label(stationNameProperty) {
-            showWhen {
-                playerViewModel.animateProperty.not()
-            }
-        }
     }
 
     private val nowStreamingLabel = label(messages["player.streamingStopped"]) {
@@ -83,7 +58,7 @@ class PlayerStationBoxView : View() {
         //Subscribe to property changes
         ticker.tickerTextProperty.bindBidirectional(stationNameProperty)
         playerViewModel.stationProperty.onChange { it?.let(::onStationChange) }
-        subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataUpdated) }
+        subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataChanged) }
         subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
     }
 
@@ -103,7 +78,22 @@ class PlayerStationBoxView : View() {
         borderpane {
             prefWidthProperty().bind(this@hbox.maxWidthProperty())
             top {
-                add(stationNameBox)
+                vbox(alignment = Pos.CENTER) {
+                    //Dynamic ticker for station name
+                    vbox {
+                        add(ticker)
+                        showWhen {
+                            playerViewModel.animateProperty
+                        }
+                    }
+
+                    //Static label for station name
+                    label(stationNameProperty) {
+                        showWhen {
+                            playerViewModel.animateProperty.not()
+                        }
+                    }
+                }
             }
             bottom {
                 vbox(alignment = Pos.CENTER) {
@@ -114,19 +104,9 @@ class PlayerStationBoxView : View() {
     }
 
     private fun onStationChange(station: Station) {
-        with(station) {
-            if (isValid()) {
-                updateStationName(name)
-                copyMenu.apply {
-                    items[1].apply {
-                        isDisable = false
-                        action {
-                            url_resolved?.let { url -> clipboard.update(url) }
-                        }
-                    }
-                }
-                stationLogo.createImage(this)
-            }
+        if (station.isValid()) {
+            stationNameProperty.value = station.name
+            stationLogo.createImage(station)
         }
     }
 
@@ -134,49 +114,23 @@ class PlayerStationBoxView : View() {
      * Called when new song starts playing or other metadata of stream changes
      * @param event new stream Meta Data
      */
-    private fun onMetaDataUpdated(event: PlaybackMetaChangedEvent) {
+    private fun onMetaDataChanged(event: PlaybackMetaChangedEvent) {
         val newSongName = event.mediaMeta.nowPlaying.trim()
         val newStreamTitle = event.mediaMeta.title.trim()
 
         //Do not update if song name is too short
         if (newSongName.length > 1) {
-            val actualTitle = if (newStreamTitle.isNotEmpty()) {
-                newStreamTitle
-            } else {
-                playerViewModel.stationProperty.value.name
+            if (newStreamTitle.isNotEmpty()) {
+                if (playerViewModel.notificationsProperty.value) {
+                    notification(title = newSongName, subtitle = newStreamTitle)
+                }
+                nowStreamingLabel.text = newStreamTitle
             }
-
-            if (playerViewModel.notificationsProperty.value) {
-                notification(
-                        title = newSongName,
-                        subtitle = actualTitle)
-            }
-
-            updateStationName(newSongName)
-            nowStreamingLabel.text = actualTitle
+            stationNameProperty.value = newSongName
         }
     }
 
-    //change station name for static or animated view
-    private fun updateStationName(stationName: String) {
-        this.stationNameProperty.value = stationName
-        copyMenu.apply {
-            items[0].apply {
-                isDisable = false
-                action {
-                    clipboard.update(stationName)
-                }
-            }
-            items[2].apply {
-                isDisable = false
-                action {
-                    app.openUrl(Config.Paths.youtubeSearchUrl, stationName)
-                }
-            }
-        }
-    }
-
-    fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
+    private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
             nowStreamingLabel.text = messages["player.streamingStopped"]
         } else {
