@@ -165,7 +165,7 @@ object Menus : Component() {
             menuViewModel.openStats()
         }
         item(messages["menu.help.clearCache"]).action {
-            confirm(messages["cache.clear.confirm"], messages["cache.clear.text"]) {
+            confirm(messages["cache.clear.confirm"], messages["cache.clear.text"], owner = primaryStage) {
                 menuViewModel.clearCache()
             }
         }

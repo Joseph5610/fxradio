@@ -33,6 +33,8 @@ import online.hudacek.fxradio.views.player.TickerView
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.net.URLEncoder
 
 /*
@@ -106,3 +108,16 @@ internal fun <T> applySchedulers(): SingleTransformer<T, T>? =
             it.subscribeOn(Schedulers.io())
                     .observeOnFx()
         }
+
+//Command line utilities
+internal fun command(command: String) = Runtime.getRuntime().exec(command)
+
+internal val Process.result: String
+    get() {
+        val sb = StringBuilder()
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        reader.readLine().forEach {
+            sb.append(it)
+        }
+        return sb.toString()
+    }

@@ -48,7 +48,7 @@ object VersionCheck : Component() {
                         } else if (latestVersion.isGreaterThan(FxRadio.version)) {
                             logger.info { "There is a new version ${vcs.currentVersion}" }
                             if (vcs.required) {
-                                confirm(vcs.languages[0].message, vcs.languages[0].description) {
+                                confirm(vcs.languages[0].message, vcs.languages[0].description, owner = primaryStage) {
                                     Platform.exit()
                                 }
                             } else {

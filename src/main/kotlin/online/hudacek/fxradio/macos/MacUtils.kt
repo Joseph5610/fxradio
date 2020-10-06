@@ -17,6 +17,8 @@
 package online.hudacek.fxradio.macos
 
 import airsquared.JMacNotification.NSUserNotification
+import online.hudacek.fxradio.utils.command
+import online.hudacek.fxradio.utils.result
 import org.controlsfx.tools.Platform
 
 object MacUtils {
@@ -30,4 +32,6 @@ object MacUtils {
                 this.informativeText = subtitle
                 show()
             }
+
+    fun isInDarkMode() = command("defaults read -g AppleInterfaceStyle").result == "Dark"
 }

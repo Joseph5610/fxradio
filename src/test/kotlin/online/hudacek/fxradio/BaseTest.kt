@@ -40,7 +40,7 @@ class BaseTest {
 
     @Start
     fun start(stage: Stage) {
-        app = FxRadio()
+        app = FxRadioLight()
         app.start(stage)
     }
 
@@ -86,7 +86,7 @@ class BaseTest {
     fun basicHttpTest() {
         val client = BasicHttpClient(FxRadio.appUrl)
         var performed = false
-        
+
         client.call(
                 success = {
                     Assertions.assertTrue(code() == 200)

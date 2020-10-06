@@ -14,13 +14,13 @@ class StylesDark : Stylesheet() {
         const val primary = "#0097CE"
         const val primaryHover = "#0097EA"
 
-        const val background = "#000000"
-        const val backgroundBorder = "#000000"
+        const val background = "#333232"
+        const val backgroundBorder = "#E8E8E8"
 
         const val label = "#2b2b2b"
         const val grayLabel = "#8B8B8B"
 
-        const val transparent = "#000000"
+        const val transparent = "transparent"
     }
 
     companion object {
@@ -125,14 +125,14 @@ class StylesDark : Stylesheet() {
         }
 
         libraryListView {
-            backgroundColor += Color.WHITESMOKE
+            backgroundColor += c("#333232")
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
         libraryListItem {
             fontSize = 12.px
             textFill = c(ColorValues.label)
-            backgroundColor += Color.WHITESMOKE
+            backgroundColor += c("#333232")
             and(hover) {
                 backgroundColor += c(ColorValues.background)
                 borderColor += box(c(ColorValues.backgroundBorder))
@@ -160,11 +160,11 @@ class StylesDark : Stylesheet() {
         }
 
         backgroundWhiteSmoke {
-            backgroundColor += Color.WHITESMOKE
+            backgroundColor += c("#333232")
         }
 
         backgroundWhite {
-            backgroundColor += Color.WHITE
+            backgroundColor += c("#262625")
         }
 
         // ===================================================================
@@ -205,7 +205,7 @@ class StylesDark : Stylesheet() {
             }
 
             thumb {
-                unsafe("-fx-background-color", raw("derive(black,90.0%)"))
+                unsafe("-fx-background-color", raw("derive(white,90.0%)"))
                 unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
                 unsafe("-fx-background-radius", raw("2.0em"))
 

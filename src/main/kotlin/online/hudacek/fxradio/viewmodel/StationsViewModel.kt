@@ -78,7 +78,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     }
 
     fun cleanFavourites() {
-        confirm(messages["database.clear.confirm"], messages["database.clear.text"]) {
+        confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
             Database
                     .cleanup()
                     .subscribe({
