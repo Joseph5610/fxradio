@@ -139,6 +139,19 @@ object Menus : Component() {
             }
         }
 
+        item(messages["copy.stream.url"]) {
+            action {
+                playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
+            }
+
+            enableWhen {
+                playerViewModel.stationProperty.booleanBinding {
+                    it != null && it.url_resolved != null
+                }
+            }
+        }
+
+        separator()
         item(messages["menu.station.add"], keyAdd) {
             isVisible = Config.Flags.addStationEnabled
             action {

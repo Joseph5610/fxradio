@@ -18,6 +18,7 @@ package online.hudacek.fxradio
 
 import javafx.stage.Stage
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.styles.StylesDark
 import online.hudacek.fxradio.utils.Version
 import online.hudacek.fxradio.viewmodel.LogModel
 import online.hudacek.fxradio.viewmodel.LogViewModel
@@ -26,12 +27,20 @@ import org.apache.logging.log4j.Level
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.reflect.KClass
 
 /**
  * Main class of the app
  * main() method should be run to start the app
  */
-class FxRadio : App(MainView::class, Styles::class) {
+
+//Dark mode
+class FxRadioDark : FxRadio(StylesDark::class)
+
+//Light mode
+class FxRadioLight : FxRadio(Styles::class)
+
+open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
 
     //override app.config path to user.home/fxradio
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
@@ -70,4 +79,10 @@ class FxRadio : App(MainView::class, Styles::class) {
     }
 }
 
-fun main(args: Array<String>) = launch<FxRadio>(args)
+fun main(args: Array<String>) {
+    if (Config.Flags.darkStylesEnabled) {
+        launch<FxRadioDark>(args)
+    } else {
+        launch<FxRadioLight>(args)
+    }
+}
