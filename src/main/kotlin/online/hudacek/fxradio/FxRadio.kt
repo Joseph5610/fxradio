@@ -20,6 +20,7 @@ import javafx.stage.Stage
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.styles.StylesDark
 import online.hudacek.fxradio.utils.Version
+import online.hudacek.fxradio.utils.isSystemDarkMode
 import online.hudacek.fxradio.viewmodel.LogModel
 import online.hudacek.fxradio.viewmodel.LogViewModel
 import online.hudacek.fxradio.views.MainView
@@ -80,7 +81,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 }
 
 fun main(args: Array<String>) {
-    if (Config.Flags.darkStylesEnabled) {
+    if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
         launch<FxRadioDark>(args)
     } else {
         launch<FxRadioLight>(args)

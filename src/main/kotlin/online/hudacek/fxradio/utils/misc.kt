@@ -28,6 +28,8 @@ import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.Window
+import mu.KotlinLogging
+import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.views.player.TickerView
 import org.controlsfx.glyphfont.FontAwesome
@@ -36,6 +38,9 @@ import tornadofx.controlsfx.glyph
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URLEncoder
+
+private val logger = KotlinLogging.logger {}
+
 
 /*
  * Helper extension functions for UI
@@ -116,8 +121,17 @@ internal val Process.result: String
     get() {
         val sb = StringBuilder()
         val reader = BufferedReader(InputStreamReader(inputStream))
-        reader.readLine().forEach {
+        reader.forEachLine {
             sb.append(it)
         }
         return sb.toString()
+    }
+
+internal val isSystemDarkMode: Boolean
+    get() {
+        return if (MacUtils.isMac) MacUtils.isInDarkMode()
+        else {
+            logger.debug { "isSystemDarkMode: Unsupported OS" }
+            false
+        }
     }
