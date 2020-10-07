@@ -61,9 +61,10 @@ object Config {
 
     /**
      * Flags that change app behaviour
+     * Experimental features
      */
     object Flags {
         const val addStationEnabled = true
-        const val darkStylesEnabled = false
+        const val darkStylesEnabled = true
     }
 }

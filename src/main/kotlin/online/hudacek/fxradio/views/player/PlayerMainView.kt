@@ -86,7 +86,6 @@ class PlayerMainView : View() {
     }
 
     override val root = vbox {
-        addClass(Styles.playerMainBox)
         hbox(12) {
             vgrow = Priority.NEVER
             alignment = Pos.CENTER_LEFT
@@ -128,6 +127,8 @@ class PlayerMainView : View() {
                 }
             }
         }
+        addClass(Styles.playerMainBox)
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     override fun onDock() {

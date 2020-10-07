@@ -68,6 +68,7 @@ class StationsHeaderView : View() {
                     showWhen {
                         libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))
                     }
+                    addClass(Styles.coloredButton)
                 }
             }
         }

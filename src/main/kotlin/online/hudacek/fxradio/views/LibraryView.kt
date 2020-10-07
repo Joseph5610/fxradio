@@ -142,5 +142,6 @@ class LibraryView : View() {
                 }
             }
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 }

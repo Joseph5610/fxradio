@@ -15,10 +15,10 @@ class StylesDark : Stylesheet() {
         const val primaryHover = "#0097EA"
 
         const val background = "#333232"
-        const val backgroundBorder = "#E8E8E8"
+        const val backgroundBorder = "#525356"
 
-        const val label = "#2b2b2b"
-        const val grayLabel = "#8B8B8B"
+        const val label = "#ffffff"
+        const val grayLabel = "#a0a1a2"
 
         const val transparent = "transparent"
     }
@@ -37,6 +37,7 @@ class StylesDark : Stylesheet() {
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
+        val coloredButton by cssclass()
 
         val header by cssclass()
         val subheader by cssclass()
@@ -49,6 +50,9 @@ class StylesDark : Stylesheet() {
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
         val statusBar by cssclass()
+
+        //for Text()
+        val defaultTextColor by cssclass()
     }
 
     init {
@@ -59,6 +63,11 @@ class StylesDark : Stylesheet() {
 
         searchBoxLabel {
             padding = box(0.px, 2.px, 0.px, 7.px)
+        }
+
+        textInput {
+            backgroundColor += c(ColorValues.backgroundBorder)
+            textFill = Color.WHITESMOKE
         }
 
         playerMainBox {
@@ -85,11 +94,12 @@ class StylesDark : Stylesheet() {
             borderColor += box(c(ColorValues.backgroundBorder))
 
             and(hover) {
-                textFill = Color.BLACK
+                textFill = Color.WHITESMOKE
             }
         }
 
         header {
+            textFill = c(ColorValues.label)
             wrapText = true
             fontSize = 20.px
         }
@@ -99,10 +109,14 @@ class StylesDark : Stylesheet() {
             fontSize = 16.px
         }
 
+        defaultTextColor {
+            fill = Color.WHITESMOKE
+        }
+
         playerControls {
             unsafe("-fx-padding", raw("0"))
             unsafe("-fx-background-insets", raw("0"))
-            unsafe("-fx-background-color", raw("-fx-background"))
+            unsafe("-fx-background-color", raw(ColorValues.background))
             unsafe("-fx-border-color", raw("transparent"))
             unsafe("-fx-faint-focus-color", raw("transparent"))
         }
@@ -110,6 +124,11 @@ class StylesDark : Stylesheet() {
         grayLabel {
             fontSize = 11.px
             textFill = c(ColorValues.grayLabel)
+        }
+
+        coloredButton {
+            backgroundColor += c(ColorValues.backgroundBorder)
+            textFill = Color.WHITESMOKE
         }
 
         primaryButton {
@@ -134,23 +153,23 @@ class StylesDark : Stylesheet() {
             textFill = c(ColorValues.label)
             backgroundColor += c("#333232")
             and(hover) {
-                backgroundColor += c(ColorValues.background)
+                backgroundColor += c(ColorValues.backgroundBorder)
                 borderColor += box(c(ColorValues.backgroundBorder))
-                textFill = Color.BLACK
+                textFill = Color.WHITESMOKE
             }
             and(selected) {
-                backgroundColor += c(ColorValues.background)
+                backgroundColor += c(ColorValues.backgroundBorder)
                 borderColor += box(c(ColorValues.backgroundBorder))
-                textFill = Color.BLACK
+                textFill = Color.WHITESMOKE
             }
             padding = box(5.px, 10.px, 5.px, 15.px)
         }
 
         libraryListItemTag {
             padding = box(2.px)
-            textFill = Color.BLACK
+            textFill = Color.WHITESMOKE
             backgroundRadius += box(3.px)
-            backgroundColor += Color.GHOSTWHITE
+            backgroundColor += c("#424346")
             borderRadius += box(3.px)
             borderColor += box(c(ColorValues.backgroundBorder))
         }
@@ -205,7 +224,7 @@ class StylesDark : Stylesheet() {
             }
 
             thumb {
-                unsafe("-fx-background-color", raw("derive(white,90.0%)"))
+                unsafe("-fx-background-color", raw("derive(#9c9d9e,90.0%)"))
                 unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
                 unsafe("-fx-background-radius", raw("2.0em"))
 
@@ -250,6 +269,9 @@ class StylesDark : Stylesheet() {
         }
 
         slider {
+            track {
+                prefHeight = 5.px
+            }
             and(focused) {
                 thumb {
                     unsafe("-fx-background-color", raw("-fx-outer-border, -fx-inner-border, -fx-body-color"))

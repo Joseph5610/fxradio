@@ -26,6 +26,7 @@ import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
+import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -69,6 +70,7 @@ class TickerView : View() {
     private fun createText(content: String) = text(content) {
         layoutY = 12.0
         isVisible = false
+        addClass(Styles.defaultTextColor)
     }
 
     //Actual implementation of Ticker

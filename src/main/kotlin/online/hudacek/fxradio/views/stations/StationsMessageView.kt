@@ -16,7 +16,6 @@
 package online.hudacek.fxradio.views.stations
 
 import javafx.geometry.Pos
-import javafx.scene.Node
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -48,8 +47,8 @@ class StationsMessageView : View() {
 
     private val headerGraphicProperty = viewModel.stationsViewStateProperty.objectBinding {
         when (it) {
-            StationsViewState.Error -> errorGlyph as Node
-            StationsViewState.ShortQuery -> searchGlyph as Node
+            StationsViewState.Error -> errorGlyph
+            StationsViewState.ShortQuery -> searchGlyph
             else -> null
         }
     }
@@ -94,6 +93,7 @@ class StationsMessageView : View() {
             }
 
             textProperty().bind(noResultsTextProperty)
+            addClass(Styles.defaultTextColor)
         }
     }
 

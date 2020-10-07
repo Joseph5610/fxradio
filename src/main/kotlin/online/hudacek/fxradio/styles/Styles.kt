@@ -37,6 +37,7 @@ class Styles : Stylesheet() {
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
+        val coloredButton by cssclass()
 
         val header by cssclass()
         val subheader by cssclass()
@@ -49,6 +50,9 @@ class Styles : Stylesheet() {
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
         val statusBar by cssclass()
+
+        //For Text() elements
+        val defaultTextColor by cssclass()
     }
 
     init {
@@ -97,6 +101,14 @@ class Styles : Stylesheet() {
         subheader {
             wrapText = true
             fontSize = 16.px
+        }
+
+        defaultTextColor {
+            fill = Color.BLACK
+        }
+
+        coloredButton {
+
         }
 
         playerControls {
