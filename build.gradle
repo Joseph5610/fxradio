@@ -47,7 +47,8 @@ ext.versions = [
         nsmenufx           : "2.1.7",
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
-        junit              : "5.3.1"
+        junit              : "5.3.1",
+        awaitility         : "4.0.3"
 ]
 
 dependencies {
@@ -94,6 +95,7 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-api:$versions.junit"
     testCompile "org.testfx:testfx-core:$versions.testfx"
     testCompile "org.testfx:testfx-junit5:$versions.testfx"
+    testCompile "org.awaitility:awaitility:$versions.awaitility"
 }
 
 sourceSets {

@@ -48,6 +48,7 @@ class PlayerMainView : View() {
     private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 18.0, useStyle = false)
 
     private val playerControls = button {
+        id = "playerControls"
         graphic = playGlyph
         requestFocusOnSceneAvailable()
         disableWhen {
@@ -62,6 +63,7 @@ class PlayerMainView : View() {
     }
 
     private val volumeSlider = slider(-30..5) {
+        id = "volumeSlider"
         bind(playerViewModel.volumeProperty)
         majorTickUnit = 8.0
         isSnapToTicks = true
@@ -110,6 +112,7 @@ class PlayerMainView : View() {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
                 button {
+                    id = "volumeMinIcon"
                     addClass(Styles.playerControls)
                     graphic = volumeDown
                     onLeftClick {
@@ -118,6 +121,7 @@ class PlayerMainView : View() {
                 }
                 add(volumeSlider)
                 button {
+                    id = "volumeMaxIcon"
                     addClass(Styles.playerControls)
                     graphic = volumeUp
                     minWidth = 20.0

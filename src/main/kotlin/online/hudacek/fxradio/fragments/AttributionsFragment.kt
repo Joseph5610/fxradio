@@ -31,7 +31,7 @@ class AttributionsFragment : Fragment() {
     private val viewModel: AttributionViewModel by inject()
 
     override val root = vbox {
-        title = "${messages["title"]} ${FxRadio.appName}"
+        title = "${messages["attributions.title"]} ${FxRadio.appName}"
         prefWidth = 500.0
 
         vbox {
@@ -40,8 +40,8 @@ class AttributionsFragment : Fragment() {
 
             tableview(Attributions.all) {
                 columnResizePolicy = SmartResize.POLICY
-                readonlyColumn(messages["name"], AttributionModel::name).remainingWidth()
-                readonlyColumn(messages["version"], AttributionModel::version)
+                readonlyColumn(messages["attributions.name"], AttributionModel::name).remainingWidth()
+                readonlyColumn(messages["attributions.version"], AttributionModel::version)
 
                 bindSelected(viewModel)
 

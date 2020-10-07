@@ -28,34 +28,43 @@ import java.util.*
  */
 object MacMenu {
 
+    var isInTest = false
+
     //NSMenu toolkit
     private val tk by lazy { MenuToolkit.toolkit(Locale.getDefault()) }
 
     fun menuBar(op: MenuBar.() -> Menu): MenuBar {
         return MenuBar().apply {
-            useSystemMenuBarProperty().set(true)
-            tk.setApplicationMenu(op.invoke(this))
-            tk.setMenuBar(this)
+            if (!isInTest) {
+                useSystemMenuBarProperty().set(true)
+                tk.setApplicationMenu(op.invoke(this))
+                tk.setMenuBar(this)
+            }
+
         }
     }
 
     fun appMenu(op: Menu.() -> Unit = {}) = Menu(FxRadio.appName).apply {
-        op.invoke(this)
-        items.addAll(
-                tk.createHideMenuItem(FxRadio.appName),
-                tk.createHideOthersMenuItem(),
-                tk.createUnhideAllMenuItem(),
-                SeparatorMenuItem(),
-                tk.createQuitMenuItem(FxRadio.appName))
+        if (!isInTest) {
+            op.invoke(this)
+            items.addAll(
+                    tk.createHideMenuItem(FxRadio.appName),
+                    tk.createHideOthersMenuItem(),
+                    tk.createUnhideAllMenuItem(),
+                    SeparatorMenuItem(),
+                    tk.createQuitMenuItem(FxRadio.appName))
+        }
     }
 
     fun windowMenu(name: String) = Menu(name).apply {
-        tk.autoAddWindowMenuItems(this)
-        items.addAll(
-                tk.createMinimizeMenuItem(),
-                tk.createZoomMenuItem(),
-                tk.createCycleWindowsItem(),
-                SeparatorMenuItem(),
-                tk.createBringAllToFrontItem())
+        if (!isInTest) {
+            tk.autoAddWindowMenuItems(this)
+            items.addAll(
+                    tk.createMinimizeMenuItem(),
+                    tk.createZoomMenuItem(),
+                    tk.createCycleWindowsItem(),
+                    SeparatorMenuItem(),
+                    tk.createBringAllToFrontItem())
+        }
     }
 }

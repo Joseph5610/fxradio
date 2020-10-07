@@ -14,63 +14,23 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.unit
 
-import javafx.stage.Stage
+import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.api.ApiClient
 import online.hudacek.fxradio.api.BasicHttpClient
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.Station
+import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.testfx.api.FxAssert.verifyThat
-import org.testfx.api.FxRobot
-import org.testfx.framework.junit5.ApplicationExtension
-import org.testfx.framework.junit5.Start
-import org.testfx.framework.junit5.Stop
-import tornadofx.*
 
-@ExtendWith(ApplicationExtension::class)
-class BaseTest {
-
-    private lateinit var app: FxRadio
-
-    private val nowPlayingLabel = "#nowStreaming"
-    private val stationsDataGrid = "#stations"
-
-    @Start
-    fun start(stage: Stage) {
-        app = FxRadioLight()
-        app.start(stage)
-    }
-
-    @Stop
-    fun stop() {
-        app.stop()
-    }
-
-    /**
-     * Basic interactions test
-     * macOS: enable IntelliJ in Settings > Privacy > Accessibility to make it work
-     */
-    @Test
-    fun basicTest(robot: FxRobot) {
-        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
-
-        //Wait for stations to load
-        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
-        waitFor(10) {
-            stations.isVisible && stations.items.size > 1
-        }
-
-        //wait until loaded
-        sleep(2)
-        robot.clickOn(stations.items[0].name)
-    }
+class ApiTest {
 
     @Test
     fun apiTest() {
-        StationsApi.service
+        val hostname = "https://de1.api.radio-browser.info"
+        val client = ApiClient(hostname)
+        client.create(StationsApi::class)
                 .getTopStations()
                 .subscribe { stations ->
                     Assertions.assertEquals(50, stations.size)
@@ -82,6 +42,7 @@ class BaseTest {
                 }.dispose()
     }
 
+
     @Test
     fun basicHttpTest() {
         val client = BasicHttpClient(FxRadio.appUrl)
@@ -89,6 +50,7 @@ class BaseTest {
 
         client.call(
                 success = {
+                    //Check response
                     Assertions.assertTrue(code() == 200)
                     println(this.body()?.string())
                     performed = true
@@ -99,9 +61,7 @@ class BaseTest {
                 }
         )
 
-        //wait until async task finishes
-        waitFor(10) {
-            performed
-        }
+        //Wait for finish
+        await().until { performed }
     }
 }

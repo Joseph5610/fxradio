@@ -39,7 +39,8 @@ object MediaPlayerWrapper : Component() {
     private val playerViewModel: PlayerViewModel by inject()
 
     private var internalMediaPlayer: MediaPlayer = MediaPlayer.stub
-    private var internalPlayingStatus = PlayingStatus.Stopped
+
+    var playingStatus = PlayingStatus.Stopped
 
     init {
         //Update internal player type
@@ -60,8 +61,8 @@ object MediaPlayerWrapper : Component() {
 
         //Toggle playing
         subscribe<PlaybackChangeEvent> {
-            internalPlayingStatus = it.playingStatus
-            if (internalPlayingStatus == PlayingStatus.Playing) {
+            playingStatus = it.playingStatus
+            if (playingStatus == PlayingStatus.Playing) {
                 //Ignore stations with empty stream URL
                 playerViewModel.stationProperty.value.url_resolved?.let {
                     play(it)
@@ -85,7 +86,7 @@ object MediaPlayerWrapper : Component() {
 
     fun release() = internalMediaPlayer.releasePlayer()
 
-    fun togglePlaying() = if (internalPlayingStatus == PlayingStatus.Playing) {
+    fun togglePlaying() = if (playingStatus == PlayingStatus.Playing) {
         fire(PlaybackChangeEvent(PlayingStatus.Stopped))
     } else {
         fire(PlaybackChangeEvent(PlayingStatus.Playing))

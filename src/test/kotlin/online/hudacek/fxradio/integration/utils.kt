@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.integration
 
 import javafx.scene.Node
 import javafx.scene.control.Labeled

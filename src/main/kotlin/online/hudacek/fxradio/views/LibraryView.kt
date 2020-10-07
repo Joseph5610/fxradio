@@ -40,6 +40,7 @@ class LibraryView : View() {
     }
 
     private val libraryListView = listview(viewModel.librariesProperty) {
+        id = "libraryListView"
         cellFormat {
             graphic = glyph(item.graphic, size = 14.0, useStyle = false)
             text = messages[item.type.toString()]
