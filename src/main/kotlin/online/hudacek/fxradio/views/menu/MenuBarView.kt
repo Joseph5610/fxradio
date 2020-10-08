@@ -16,19 +16,10 @@
 
 package online.hudacek.fxradio.views.menu
 
-import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.macos.MacMenu
-import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.shouldBeVisible
 import online.hudacek.fxradio.viewmodel.MenuModel
 import online.hudacek.fxradio.viewmodel.MenuViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -39,66 +30,14 @@ class MenuBarView : View() {
     private val menuViewModel: MenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
-    private var playerCheck: CheckMenuItem by singleAssign()
-
-    private val favouritesMenu = Menus.favouritesMenu
-    private val stationMenu = Menus.stationMenu
-    private val helpMenu = Menus.helpMenu
-    private val historyMenu = Menus.historyMenu
-
-    private val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
-    private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
-
-    private val playerMenu = menu(messages["menu.player.controls"]) {
-        item(messages["menu.player.start"], keyPlay) {
-            shouldBeVisible(playerViewModel.stationProperty)
-            action {
-                fire(PlaybackChangeEvent(PlayingStatus.Playing))
-            }
-        }
-
-        item(messages["menu.player.stop"], keyStop) {
-            shouldBeVisible(playerViewModel.stationProperty)
-            action {
-                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-            }
-        }
-
-        playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-            isSelected = playerViewModel.playerTypeProperty.value == PlayerType.Custom
-            action {
-                fire(PlaybackChangeEvent(PlayingStatus.Stopped))
-                playerViewModel.playerTypeProperty.value =
-                        if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
-                            PlayerType.VLC
-                        } else {
-                            PlayerType.Custom
-                        }
-                playerViewModel.commit()
-            }
-        }
-
-        checkmenuitem(messages["menu.player.animate"]) {
-            bind(playerViewModel.animateProperty)
-            action {
-                playerViewModel.commit()
-            }
-        }
-
-        checkmenuitem(messages["menu.player.notifications"]) {
-            bind(playerViewModel.notificationsProperty)
-            action {
-                playerViewModel.commit()
-            }
-        }
-    }
+    private val historyMenu: HistoryMenu by inject()
+    private val favouritesMenu: FavouritesMenu by inject()
+    private val helpMenu: HelpMenu by inject()
+    private val stationMenu: StationMenu by inject()
+    private val playerMenu: PlayerMenu by inject()
 
     init {
         menuViewModel.item = MenuModel()
-
-        playerViewModel.playerTypeProperty.onChange {
-            playerCheck.isSelected = it == PlayerType.Custom
-        }
     }
 
     override val root = if (menuViewModel.useNative) {
@@ -115,11 +54,11 @@ class MenuBarView : View() {
                 playerViewModel.releasePlayer()
             }
         }
-        menus.addAll(stationMenu,
-                playerMenu,
-                favouritesMenu,
-                historyMenu,
-                helpMenu)
+        menus.addAll(stationMenu.menu,
+                playerMenu.menu,
+                favouritesMenu.menu,
+                historyMenu.menu,
+                helpMenu.menu)
     }
 
     /**
@@ -132,12 +71,12 @@ class MenuBarView : View() {
                 addAppMenuContent()
             }
         }.apply {
-            menus.addAll(stationMenu,
-                    playerMenu,
-                    favouritesMenu,
-                    historyMenu,
+            menus.addAll(stationMenu.menu,
+                    playerMenu.menu,
+                    favouritesMenu.menu,
+                    historyMenu.menu,
                     MacMenu.windowMenu(messages["macos.menu.window"]),
-                    helpMenu)
+                    helpMenu.menu)
         }
     }
 

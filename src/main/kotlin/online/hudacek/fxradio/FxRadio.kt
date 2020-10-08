@@ -49,6 +49,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     private val logViewModel: LogViewModel by inject()
 
     override fun start(stage: Stage) {
+        Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0

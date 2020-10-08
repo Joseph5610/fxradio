@@ -19,6 +19,7 @@ package online.hudacek.fxradio.fragments
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
+import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.viewmodel.AddStationModel
@@ -28,7 +29,6 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
-//TODO finish
 class AddStationFragment : Fragment() {
 
     private val viewModel: AddStationViewModel by inject()
@@ -107,18 +107,18 @@ class AddStationFragment : Fragment() {
                                 else
                                     error(messages["field.invalid.length"])
                             }
-                            promptText = "English"
+                            promptText = messages["add.language.prompt"]
                         }
                     }
                     field(messages["add.country"]) {
                         textfield(viewModel.country) {
                             required()
-                            promptText = "United Kingdom"
+                            promptText = messages["add.country.prompt"]
                         }
                     }
                     field(messages["add.tags"]) {
                         textfield(viewModel.tags) {
-                            promptText = "Separated by comma and space"
+                            promptText = messages["add.tags.prompt"]
                         }
                     }
                 }
@@ -130,7 +130,6 @@ class AddStationFragment : Fragment() {
                         addClass(Styles.primaryButton)
                         action {
                             viewModel.commit {
-                                this@notificationPane[FontAwesome.Glyph.CHECK] = messages["add.success"]
                                 viewModel.item = AddStationModel(AddStationBody())
                                 StationsApi.service
                                         .add(AddStationBody(
@@ -145,9 +144,10 @@ class AddStationFragment : Fragment() {
                                                 tags = viewModel.tags.value
                                         ))
                                         .subscribe({
-                                            println(it)
+                                            fire(NotificationEvent(messages["add.success"]))
+                                            close()
                                         }, {
-                                            println(it)
+                                            this@notificationPane[FontAwesome.Glyph.CHECK] = messages["add.error"]
                                         })
                             }
                         }
