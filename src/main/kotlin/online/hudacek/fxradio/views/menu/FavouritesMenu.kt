@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.RefreshFavourites
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -45,15 +46,16 @@ class FavouritesMenu : Component(), ScopedInstance {
             separator()
             item(messages["menu.station.favourite"], keyFavourites) {
                 disableWhen(playerViewModel.stationProperty.booleanBinding {
-                    it == null || !it.isValid() || it.isFavourite.blockingGet()
+                    it == null || !it.isValid() || Database.isFavourite(it).blockingGet()
                 })
 
                 actionEvents()
-                        .flatMapSingle { playerViewModel.stationProperty.value.isFavourite }
+                        .flatMapSingle { Database.isFavourite(playerViewModel.stationProperty) }
                         .filter { !it }
-                        .flatMapSingle { playerViewModel.stationProperty.value.addFavourite() }
+                        .flatMapSingle { Database.addFavourite(playerViewModel.stationProperty) }
                         .subscribe({
                             fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
+                            fire(RefreshFavourites())
                         }, {
                             fire(NotificationEvent(messages["menu.station.favourite.error"]))
                         })
@@ -61,13 +63,13 @@ class FavouritesMenu : Component(), ScopedInstance {
 
             item(messages["menu.station.favourite.remove"]) {
                 visibleWhen(playerViewModel.stationProperty.booleanBinding {
-                    it != null && it.isValid() && it.isFavourite.blockingGet()
+                    it != null && it.isValid() && Database.isFavourite(it).blockingGet()
                 })
 
                 actionEvents()
-                        .flatMapSingle { playerViewModel.stationProperty.value.isFavourite }
+                        .flatMapSingle { Database.isFavourite(playerViewModel.stationProperty) }
                         .filter { it }
-                        .flatMapSingle { playerViewModel.stationProperty.value.removeFavourite() }
+                        .flatMapSingle { Database.removeFavourite(playerViewModel.stationProperty) }
                         .subscribe({
                             fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
                             fire(RefreshFavourites())

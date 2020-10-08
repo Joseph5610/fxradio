@@ -16,9 +16,8 @@
 
 package online.hudacek.fxradio.integration
 
-import javafx.scene.control.Button
-import javafx.scene.control.ListView
-import javafx.scene.control.Slider
+import javafx.scene.control.*
+import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
@@ -27,21 +26,26 @@ import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.viewmodel.LibraryItem
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
+import org.testfx.util.WaitForAsyncUtils
 import tornadofx.*
 
 /**
  * Basic interactions test
  * macOS: enable IntelliJ in Settings > Privacy > Accessibility to make it work
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @ExtendWith(ApplicationExtension::class)
-class IntegrationTests {
+class BasicFunctionalityTests {
 
     private lateinit var app: FxRadio
 
@@ -52,6 +56,9 @@ class IntegrationTests {
     private val volumeMaxIcon = "#volumeMaxIcon"
     private val volumeSlider = "#volumeSlider"
     private val playerControls = "#playerControls"
+    private val search = "#search"
+    private val stationMessageHeader = "#stationMessageHeader"
+    private val stationMessageSubHeader = "#stationMessageSubHeader"
 
     init {
         MacMenu.isInTest = true
@@ -67,29 +74,34 @@ class IntegrationTests {
     fun stop() = app.stop()
 
     @Test
-    fun basicTest(robot: FxRobot) {
+    @Order(1)
+    fun basicPlayPauseTest(robot: FxRobot) {
         verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
 
         //Wait for stations to load
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
-        waitFor(10) {
+        waitFor(5) {
             stations.isVisible && stations.items.size > 1
         }
 
         //wait until loaded
         sleep(2)
-        robot.clickOn(stations.items[0].name)
+        robot.doubleClickOn(stations.items[0].name)
+
+        WaitForAsyncUtils.waitForFxEvents()
 
         //Wait for stream start
-        waitFor(10) {
+        waitFor(5) {
             MediaPlayerWrapper.playingStatus == PlayingStatus.Playing
         }
 
         val stopButton = robot.find(playerControls) as Button
         robot.clickOn(stopButton)
 
+        WaitForAsyncUtils.waitForFxEvents()
+
         //Wait for stream stop
-        waitFor(10) {
+        waitFor(2) {
             MediaPlayerWrapper.playingStatus == PlayingStatus.Stopped
         }
 
@@ -97,7 +109,7 @@ class IntegrationTests {
     }
 
     @Test
-    fun checkHistoryTab(robot: FxRobot) {
+    fun testHistoryTab(robot: FxRobot) {
         verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
 
         //Wait for stations to load
@@ -116,19 +128,19 @@ class IntegrationTests {
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
         //Stations library is empty
-        waitFor(10) {
+        waitFor(2) {
             !stations.isVisible
         }
     }
 
     @Test
-    fun checkVolumeSliderIcons(robot: FxRobot) {
+    fun testVolumeSliderIcons(robot: FxRobot) {
         verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
 
         //Wait for stations to load
         val minIcon = robot.find(volumeMinIcon) as Button
         val maxIcon = robot.find(volumeMaxIcon) as Button
-        waitFor(10) {
+        waitFor(1) {
             minIcon.isVisible
             maxIcon.isVisible
         }
@@ -136,13 +148,45 @@ class IntegrationTests {
         robot.clickOn(minIcon)
 
         val slider = robot.find(volumeSlider) as Slider
-        waitFor(10) {
+        waitFor(2) {
             slider.value == -30.0
         }
 
         robot.clickOn(maxIcon)
-        waitFor(10) {
+        waitFor(2) {
             slider.value == 5.0
+        }
+    }
+
+    @Test
+    fun testSearch(robot: FxRobot) {
+        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
+        val searchField = robot.find(search) as TextField
+        waitFor(1) {
+            searchField.isVisible
+        }
+        robot.doubleClickOn(searchField)
+        robot.press(KeyCode.DELETE)
+        robot.write("sta")
+
+        val msgHeader = robot.find(stationMessageHeader) as Label
+        val msgSubHeader = robot.find(stationMessageSubHeader) as Label
+
+        waitFor(2) {
+            searchField.text == "sta" && msgHeader.isVisible && msgSubHeader.isVisible
+        }
+
+        robot.doubleClickOn(searchField)
+        robot.press(KeyCode.DELETE)
+        robot.write("station")
+
+        waitFor(1) {
+            searchField.text == "station"
+        }
+
+        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
+        waitFor(5) {
+            stations.isVisible && stations.items.size > 1
         }
     }
 }

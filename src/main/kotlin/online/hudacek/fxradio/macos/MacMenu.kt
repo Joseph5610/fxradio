@@ -40,7 +40,6 @@ object MacMenu {
                 tk.setApplicationMenu(op.invoke(this))
                 tk.setMenuBar(this)
             }
-
         }
     }
 

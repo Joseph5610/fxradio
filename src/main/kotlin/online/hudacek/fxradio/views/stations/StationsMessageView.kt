@@ -74,6 +74,7 @@ class StationsMessageView : View() {
     //Main live for message
     private val header by lazy {
         label(headerTextProperty) {
+            id = "stationMessageHeader"
             graphicProperty().bind(headerGraphicProperty)
             addClass(Styles.header)
             showWhen {
@@ -100,6 +101,7 @@ class StationsMessageView : View() {
     //Description of a message, shown only if relevant
     private val subHeader by lazy {
         label(subHeaderTextProperty) {
+            id = "stationMessageSubHeader"
             addClass(Styles.grayLabel)
         }
     }

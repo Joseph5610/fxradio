@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.storage
 
 import io.reactivex.Single
+import javafx.beans.property.Property
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
@@ -69,11 +70,14 @@ object Database {
                     .toList()
 
 
+    fun isFavourite(stationProperty: Property<Station>) = isFavourite(stationProperty.value)
+
     fun isFavourite(station: Station): Single<Boolean> =
             connection.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
                     .parameter("uuid", station.stationuuid)
                     .toSingle { it.getInt(1) > 0 }
 
+    fun addFavourite(stationProperty: Property<Station>) = addFavourite(stationProperty.value)
     fun addFavourite(station: Station): Single<Boolean> =
             connection.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
                     "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
@@ -92,6 +96,7 @@ object Database {
                     .parameter("bitrate", station.bitrate)
                     .toSingle { it.getInt(1) > 0 }
 
+    fun removeFavourite(stationProperty: Property<Station>) = removeFavourite(stationProperty.value)
     fun removeFavourite(station: Station): Single<Boolean> =
             connection.insert("delete from favourites where stationuuid = :stationuuid")
                     .parameter("stationuuid", station.stationuuid)

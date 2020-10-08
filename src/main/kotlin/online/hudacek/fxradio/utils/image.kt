@@ -46,7 +46,7 @@ internal fun ImageView.createImage(station: Station) {
     if (ImageCache.isImageInCache(station)) {
         this.image = ImageCache.getImageFromCache(station)
     } else {
-        if (station.isInvalidImage()) {
+        if (station.favicon.isNullOrEmpty()) {
             logger.debug { "Image for ${station.name} is null or empty" }
             return
         }

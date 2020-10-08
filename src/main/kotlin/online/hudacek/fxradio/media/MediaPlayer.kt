@@ -16,26 +16,16 @@
 
 package online.hudacek.fxradio.media
 
+/**
+ * Common interface for all available players
+ */
 interface MediaPlayer {
-    fun play(url: String)
-    fun changeVolume(volume: Double): Boolean
-    fun cancelPlaying()
-    fun releasePlayer()
 
-    companion object {
-        //Dummy media player object
-        val stub by lazy {
-            object : MediaPlayer {
-                override fun play(url: String) {}
+    fun play(streamUrl: String)
 
-                override fun changeVolume(volume: Double) = false
+    fun changeVolume(newVolume: Double): Boolean
 
-                override fun cancelPlaying() {}
+    fun stop()
 
-                override fun releasePlayer() {}
-
-                override fun toString() = "Stub Player"
-            }
-        }
-    }
+    fun release()
 }

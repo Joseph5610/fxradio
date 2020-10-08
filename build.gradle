@@ -47,7 +47,7 @@ ext.versions = [
         nsmenufx           : "2.1.7",
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
-        junit              : "5.3.1",
+        junit              : "5.4.0",
         awaitility         : "4.0.3"
 ]
 

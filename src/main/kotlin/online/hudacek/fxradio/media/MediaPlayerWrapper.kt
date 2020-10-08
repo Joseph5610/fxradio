@@ -22,8 +22,8 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
-import online.hudacek.fxradio.media.player.CustomPlayer
-import online.hudacek.fxradio.media.player.VLCPlayer
+import online.hudacek.fxradio.media.players.CustomPlayer
+import online.hudacek.fxradio.media.players.VLCPlayer
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
@@ -38,7 +38,7 @@ object MediaPlayerWrapper : Component() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private var internalMediaPlayer: MediaPlayer = MediaPlayer.stub
+    private lateinit var internalMediaPlayer: MediaPlayer
 
     var playingStatus = PlayingStatus.Stopped
 
@@ -49,7 +49,7 @@ object MediaPlayerWrapper : Component() {
                 .map { it.newVal }
                 .subscribe {
                     logger.info { "Player type has changed: $it" }
-                    internalMediaPlayer.releasePlayer()
+                    internalMediaPlayer.release()
                     internalMediaPlayer = changePlayer(it)
                 }
 
@@ -68,7 +68,7 @@ object MediaPlayerWrapper : Component() {
                     play(it)
                 }
             } else {
-                internalMediaPlayer.cancelPlaying()
+                internalMediaPlayer.stop()
             }
         }
 
@@ -84,7 +84,7 @@ object MediaPlayerWrapper : Component() {
         internalMediaPlayer = changePlayer(playerType.value)
     }
 
-    fun release() = internalMediaPlayer.releasePlayer()
+    fun release() = internalMediaPlayer.release()
 
     fun togglePlaying() = if (playingStatus == PlayingStatus.Playing) {
         fire(PlaybackChangeEvent(PlayingStatus.Stopped))

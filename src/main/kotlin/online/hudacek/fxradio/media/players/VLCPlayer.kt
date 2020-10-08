@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.media.player
+package online.hudacek.fxradio.media.players
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.MediaMeta
@@ -93,16 +93,16 @@ internal class VLCPlayer : Component(), MediaPlayer {
         }
     }
 
-    override fun play(url: String) {
-        audioPlayerComponent?.mediaPlayer()?.media()?.play(url)
+    override fun play(streamUrl: String) {
+        audioPlayerComponent?.mediaPlayer()?.media()?.play(streamUrl)
     }
 
-    override fun changeVolume(volume: Double): Boolean {
+    override fun changeVolume(newVolume: Double): Boolean {
         val vlcVolume: Int =
-                if (volume < -29.5) {
+                if (newVolume < -29.5) {
                     0
                 } else {
-                    ((volume + 50) * (100 / 95)).toInt()
+                    ((newVolume + 50) * (100 / 95)).toInt()
                 }
 
         return audioPlayerComponent?.mediaPlayer()?.audio()?.setVolume(vlcVolume) ?: false
@@ -132,7 +132,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
         }
     }
 
-    override fun cancelPlaying() {
+    override fun stop() {
         audioPlayerComponent?.mediaPlayer()?.let {
             if (it.status().isPlaying) {
                 it.controls().stop()
@@ -140,7 +140,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
         }
     }
 
-    override fun releasePlayer() {
+    override fun release() {
         audioPlayerComponent?.let {
             logger.debug { "Releasing events" }
 

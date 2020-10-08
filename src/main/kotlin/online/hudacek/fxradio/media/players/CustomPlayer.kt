@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.media.player
+package online.hudacek.fxradio.media.players
 
 import io.humble.video.*
 import io.humble.video.javaxsound.AudioFrame
@@ -45,12 +45,12 @@ internal class CustomPlayer : Component(), MediaPlayer {
         logger.error(exception) { "Unhandled exception." }
     }
 
-    override fun play(url: String) {
-        cancelPlaying() //this player should stop itself before playing new stream
+    override fun play(streamUrl: String) {
+        stop() //this player should stop itself before playing new stream
         mediaPlayerCoroutine = GlobalScope.launch(handler) {
             val demuxer = Demuxer.make()
             try {
-                val numStreams = demuxer.stream(url)
+                val numStreams = demuxer.stream(streamUrl)
 
                 var audioStreamId = -1
                 var audioDecoder: Decoder? = null
@@ -120,33 +120,33 @@ internal class CustomPlayer : Component(), MediaPlayer {
         }
     }
 
-    override fun changeVolume(volume: Double): Boolean {
+    override fun changeVolume(newVolume: Double): Boolean {
         return try {
             //Dirty hack, since the api does not provide direct access to field,
             //we use reflection to get access to line field to change volume
-            lastTriedVolumeChange = volume
+            lastTriedVolumeChange = newVolume
 
             AudioFrame::class.memberProperties
                     .filter { it.name == "mLine" }[0].apply {
                 isAccessible = true
                 val lineValue = getter.call(audioFrame) as SourceDataLine
                 val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
-                gainControl.value = volume.toFloat()
+                gainControl.value = newVolume.toFloat()
             }
             true
         } catch (e: Exception) {
-            logger.error(e) { "Can't change volume to : $volume, will try later" }
+            logger.error(e) { "Can't change volume to : $newVolume, will try later" }
             false
         }
     }
 
-    override fun cancelPlaying() {
+    override fun stop() {
         mediaPlayerCoroutine?.isActive.let {
             mediaPlayerCoroutine?.cancel()
         }
     }
 
-    override fun releasePlayer() = cancelPlaying()
+    override fun release() = stop()
 
     private fun Decoder.open() = this.open(null, null)
 
