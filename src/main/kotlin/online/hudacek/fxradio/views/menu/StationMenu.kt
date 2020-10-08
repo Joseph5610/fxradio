@@ -58,7 +58,7 @@ class StationMenu : Component(), ScopedInstance {
 
                 enableWhen {
                     playerViewModel.stationProperty.booleanBinding {
-                        it != null && it.url_resolved != null
+                        it?.url_resolved != null
                     }
                 }
             }

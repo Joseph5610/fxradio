@@ -43,7 +43,7 @@ class StatsFragment : Fragment() {
     override fun onDock() {
         //We want to show progress bar each time fragment is opened
         statsViewModel.let {
-            logger.debug { "Clearing up ${statsViewModel}" }
+            logger.debug { "Clearing up $statsViewModel" }
             //Cleanup stored variable
             it.item = null
 

@@ -60,7 +60,7 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph, size: Double = 35.0, us
     }
 }
 
-internal fun EventTarget.tickerView(op: TickerView.() -> Unit = {}): TickerView {
+internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
         op.invoke(this)
     }

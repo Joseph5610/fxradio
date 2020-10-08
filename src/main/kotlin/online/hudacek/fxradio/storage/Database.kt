@@ -78,7 +78,7 @@ object Database {
                     .toSingle { it.getInt(1) > 0 }
 
     fun addFavourite(stationProperty: Property<Station>) = addFavourite(stationProperty.value)
-    fun addFavourite(station: Station): Single<Boolean> =
+    private fun addFavourite(station: Station): Single<Boolean> =
             connection.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
                     "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
                     "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
@@ -97,7 +97,7 @@ object Database {
                     .toSingle { it.getInt(1) > 0 }
 
     fun removeFavourite(stationProperty: Property<Station>) = removeFavourite(stationProperty.value)
-    fun removeFavourite(station: Station): Single<Boolean> =
+    private fun removeFavourite(station: Station): Single<Boolean> =
             connection.insert("delete from favourites where stationuuid = :stationuuid")
                     .parameter("stationuuid", station.stationuuid)
                     .toSingle { it.getInt(1) > 0 }
