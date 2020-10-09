@@ -18,7 +18,6 @@ package online.hudacek.fxradio.views.menu
 
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.utils.VersionCheck
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.viewmodel.LogViewModel
@@ -63,11 +62,6 @@ class HelpMenu : Component(), ScopedInstance {
             item(messages["menu.help.openhomepage"]).action {
                 menuViewModel.openWebsite()
             }
-
-            item(messages["menu.help.vcs.check"]).action {
-                VersionCheck.perform()
-            }
-
             separator()
 
             menu(messages["menu.help.loglevel"]) {

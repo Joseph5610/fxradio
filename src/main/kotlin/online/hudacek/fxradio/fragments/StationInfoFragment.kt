@@ -71,16 +71,19 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             paddingAll = 5.0
 
             stationInfoViewModel.infoItemsProperty.forEach {
-                val text =
-                        if (it.key.isNotEmpty()) messages[it.key] + ": " + it.value
-                        else it.value
+                //Don't display not not relevant values
+                if (it.value != "0") {
+                    val text =
+                            if (it.key.isNotEmpty()) messages[it.key] + ": " + it.value
+                            else it.value
 
-                label(text) {
-                    addClass(Styles.grayLabel)
-                    addClass(Styles.tag)
-                    copyMenu(clipboard,
-                            name = messages["copy"],
-                            value = it.value)
+                    label(text) {
+                        addClass(Styles.grayLabel)
+                        addClass(Styles.tag)
+                        copyMenu(clipboard,
+                                name = messages["copy"],
+                                value = it.value)
+                    }
                 }
             }
         }
@@ -90,6 +93,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             vgap = 5.0
             alignment = Pos.CENTER
             paddingAll = 5.0
+
             stationInfoViewModel.tagsProperty.forEach {
                 label(it) {
                     addClass(Styles.tag)

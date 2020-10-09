@@ -147,10 +147,10 @@ class PlayerMainView : View() {
      * @param playingStatus new Playing status (Playing/Stopped)
      */
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
-        if (playingStatus == PlayingStatus.Stopped) {
-            playerControls.graphic = playGlyph
-        } else {
+        if (playingStatus == PlayingStatus.Playing) {
             playerControls.graphic = stopGlyph
+        } else {
+            playerControls.graphic = playGlyph
         }
     }
 }

@@ -39,7 +39,7 @@ class StationsHeaderView : View() {
         it?.let {
             when (it.type) {
                 LibraryType.Country -> it.params
-                LibraryType.Search -> messages[it.type.toString()] + " \"${it.params}\""
+                LibraryType.Search -> messages[LibraryType.Search.toString()] + " \"${it.params}\""
                 else -> messages[it.type.toString()]
             }
         }

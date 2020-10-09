@@ -20,6 +20,7 @@ import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.macos.MacMenu
+import online.hudacek.fxradio.utils.VersionCheck
 import online.hudacek.fxradio.viewmodel.MenuModel
 import online.hudacek.fxradio.viewmodel.MenuViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -35,6 +36,7 @@ class MenuBarView : View() {
     private val helpMenu: HelpMenu by inject()
     private val stationMenu: StationMenu by inject()
     private val playerMenu: PlayerMenu by inject()
+
 
     init {
         menuViewModel.item = MenuModel()
@@ -83,6 +85,9 @@ class MenuBarView : View() {
     private fun Menu.addAppMenuContent() {
         item(messages["menu.app.about"] + " " + FxRadio.appName).action {
             menuViewModel.openAbout()
+        }
+        item(messages["menu.help.vcs.check"]).action {
+            VersionCheck.perform()
         }
         separator()
         item(messages["menu.app.attributions"]).action {

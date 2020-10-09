@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
-import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
@@ -26,7 +25,9 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
+import online.hudacek.fxradio.api.model.isValidCountry
 import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.utils.applySchedulers
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -67,8 +68,6 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     //Currently selected library type
     val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
 
-    val isErrorProperty = bind(LibraryModel::isError) as BooleanProperty
-
     val searchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
 
     init {
@@ -81,12 +80,11 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             .subscribe({ response ->
                 //Ignore invalid states
                 val result = response.filter {
-                    it.name.length > 1 && !it.name.contains(".")
+                    it.name.length > 1 && it.isValidCountry
                 }.asObservable()
                 countriesProperty.setAll(result)
-                isErrorProperty.value = false
             }, {
-                isErrorProperty.value = true
+                fire(NotificationEvent(messages["downloadError"]))
             })
 
     fun handleSearch(searchedValue: String) {

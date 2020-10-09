@@ -87,6 +87,8 @@ dependencies {
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"
     compile "com.vdurmont:semver4j:$versions.semver"
 
+    compile 'org.codehaus.griffon.plugins:griffon-flagicons-javafx:1.1.0'
+
     //Players
     compile "io.humble:humble-video-all:$versions.humble"
     compile "uk.co.caprica:vlcj:$versions.vlcj"

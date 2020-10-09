@@ -24,14 +24,25 @@ import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
 
 class AddStationFragment : Fragment() {
 
     private val viewModel: AddStationViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
+
+    private val names = observableListOf<String>()
+
+    init {
+        names.bind(libraryViewModel.countriesProperty, {
+            it.name
+        })
+    }
 
     override val root = notificationPane {
         title = messages["add.title"]
@@ -112,6 +123,7 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.country"]) {
                         textfield(viewModel.country) {
+                            bindAutoCompletion(names)
                             required()
                             promptText = messages["add.country.prompt"]
                         }

@@ -16,7 +16,10 @@
 
 package online.hudacek.fxradio.views
 
+import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
+import mu.KotlinLogging
+import online.hudacek.fxradio.api.model.countryCode
 import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -30,13 +33,15 @@ import tornadofx.controlsfx.customTextfield
 
 class LibraryView : View() {
 
+    private val logger = KotlinLogging.logger {}
+
     private val viewModel: LibraryViewModel by inject()
 
     private val retryLink = hyperlink(messages["downloadRetry"]) {
         action {
             viewModel.showCountries()
         }
-        showWhen { viewModel.isErrorProperty }
+        showWhen { viewModel.countriesProperty.sizeProperty.isEqualTo(0) }
     }
 
     private val libraryListView = listview(viewModel.librariesProperty) {
@@ -53,6 +58,17 @@ class LibraryView : View() {
     private val countriesListView = listview(viewModel.countriesProperty) {
         cellFormat {
             graphic = hbox(5) {
+
+                item.countryCode?.let {
+                    try {
+                        imageview {
+                            image = FlagIcon(it)
+                        }
+                    } catch (e: Exception) {
+                        logger.debug { "Exception while displaying country flag" }
+                    }
+                }
+
                 val stationWord = if (item.stationcount > 1)
                     messages["stations"] else messages["station"]
 
@@ -71,7 +87,7 @@ class LibraryView : View() {
             viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
         }
         showWhen {
-            viewModel.isErrorProperty.not()
+            viewModel.countriesProperty.sizeProperty.isNotEqualTo(0)
         }
     }
 

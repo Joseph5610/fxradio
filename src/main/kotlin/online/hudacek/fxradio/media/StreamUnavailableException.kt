@@ -31,7 +31,7 @@ class StreamUnavailableException(message: String, cause: Throwable?) : Exception
 
     init {
         Platform.runLater {
-            FX.eventbus.fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+            FX.eventbus.fire(PlaybackChangeEvent(PlayingStatus.Error))
             FX.eventbus.fire(NotificationEvent(localizedMessage))
             logger.error(this) { "Stream can't be played" }
         }

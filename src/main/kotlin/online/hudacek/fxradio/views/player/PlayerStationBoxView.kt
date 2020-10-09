@@ -133,6 +133,8 @@ class PlayerStationBoxView : View() {
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
         if (playingStatus == PlayingStatus.Stopped) {
             nowStreamingLabel.text = messages["player.streamingStopped"]
+        } else if (playingStatus == PlayingStatus.Error) {
+            nowStreamingLabel.text = messages["player.streamingError"]
         } else {
             nowStreamingLabel.text = messages["player.nowStreaming"]
         }
