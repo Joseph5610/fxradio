@@ -14,6 +14,7 @@ object Attributions {
                 AttributionModel("slf4j-api", "1.7.5", Licenses.sl4fj),
                 AttributionModel("log4j", "2.9.1", Licenses.apache20),
                 AttributionModel("kotlin-logging", "1.7.9", Licenses.apache20),
+                AttributionModel("FlagIcon", "1.1.0", Licenses.apache20),
                 AttributionModel("TickerView", license = Licenses.tickerView),
                 AttributionModel("macOS install disk background", license = Licenses.bg),
                 AttributionModel("Application logo, radio station icon", license = Licenses.iconArchive)

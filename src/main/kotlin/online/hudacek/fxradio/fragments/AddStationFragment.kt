@@ -36,10 +36,11 @@ class AddStationFragment : Fragment() {
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val names = observableListOf<String>()
+    //Bind Countries object to just country name
+    private val autoCompleteCountries = observableListOf<String>()
 
     init {
-        names.bind(libraryViewModel.countriesProperty, {
+        autoCompleteCountries.bind(libraryViewModel.countriesProperty, {
             it.name
         })
     }
@@ -113,7 +114,7 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.language) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.homepage))
+                                if (viewModel.validate(viewModel.language))
                                     null
                                 else
                                     error(messages["field.invalid.length"])
@@ -123,7 +124,7 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.country"]) {
                         textfield(viewModel.country) {
-                            bindAutoCompletion(names)
+                            bindAutoCompletion(autoCompleteCountries)
                             required()
                             promptText = messages["add.country.prompt"]
                         }

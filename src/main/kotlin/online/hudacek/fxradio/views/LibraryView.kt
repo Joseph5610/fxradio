@@ -58,7 +58,6 @@ class LibraryView : View() {
     private val countriesListView = listview(viewModel.countriesProperty) {
         cellFormat {
             graphic = hbox(5) {
-
                 item.countryCode?.let {
                     try {
                         imageview {
