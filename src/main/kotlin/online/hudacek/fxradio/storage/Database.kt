@@ -44,61 +44,93 @@ object Database {
                 " )")
                 .toSingle()
                 .subscribe({}, {
-                    logger.error(it) { "There was an error creating database!" }
+                    logger.error(it) { "There was an error creating favourites table!" }
+                })
+
+        execute("CREATE TABLE IF NOT EXISTS HISTORY (ID INTEGER PRIMARY KEY," +
+                " stationuuid VARCHAR, name VARCHAR, " +
+                " url_resolved VARCHAR, homepage VARCHAR," +
+                " favicon VARCHAR, tags VARCHAR, country VARCHAR, " +
+                " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
+                " )")
+                .toSingle()
+                .subscribe({}, {
+                    logger.error(it) { "There was an error creating favourites table!" }
                 })
     }
 
-    fun cleanup(): Single<Int> = connection.execute("delete from favourites").toSingle()
+    object Favourites {
 
-    //get data about station from db and return latest info from API about it
-    fun favourites(): Single<MutableList<Station>> =
-            connection.select("SELECT * FROM FAVOURITES")
-                    .toObservable {
-                        Station(it.getString("stationuuid"),
-                                it.getString("name"),
-                                it.getString("url_resolved"),
-                                it.getString("homepage"),
-                                it.getString("favicon"),
-                                it.getString("tags"),
-                                it.getString("country"),
-                                it.getString("countrycode"),
-                                it.getString("state"),
-                                it.getString("language"),
-                                it.getString("codec"),
-                                it.getInt("bitrate"))
-                    }
-                    .toList()
+        private const val tableName = "FAVOURITES"
+
+        //get data about station from db and return latest info from API about it
+        fun get(): Single<MutableList<Station>> = select(tableName)
+
+        fun has(stationProperty: Property<Station>) = has(stationProperty.value)
+
+        fun has(station: Station): Single<Boolean> =
+                connection.select("SELECT COUNT(*) FROM $tableName WHERE stationuuid = :uuid")
+                        .parameter("uuid", station.stationuuid)
+                        .toSingle { it.getInt(1) > 0 }
+
+        fun add(stationProperty: Property<Station>) = addFavourite(stationProperty.value)
+        private fun addFavourite(station: Station): Single<Boolean> = insert(tableName, station)
+
+        fun remove(stationProperty: Property<Station>) = removeFavourite(stationProperty.value)
+        private fun removeFavourite(station: Station): Single<Boolean> =
+                connection.insert("delete from $tableName where stationuuid = :stationuuid")
+                        .parameter("stationuuid", station.stationuuid)
+                        .toSingle { it.getInt(1) > 0 }
 
 
-    fun isFavourite(stationProperty: Property<Station>) = isFavourite(stationProperty.value)
+        fun cleanup(): Single<Int> = delete(tableName)
+    }
 
-    fun isFavourite(station: Station): Single<Boolean> =
-            connection.select("SELECT COUNT(*) FROM FAVOURITES WHERE stationuuid = :uuid")
-                    .parameter("uuid", station.stationuuid)
-                    .toSingle { it.getInt(1) > 0 }
+    object History {
 
-    fun addFavourite(stationProperty: Property<Station>) = addFavourite(stationProperty.value)
-    private fun addFavourite(station: Station): Single<Boolean> =
-            connection.insert("INSERT INTO FAVOURITES (name, stationuuid, url_resolved, " +
-                    "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
-                    "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
-                    .parameter("name", station.name)
-                    .parameter("stationuuid", station.stationuuid)
-                    .parameter("url_resolved", station.url_resolved)
-                    .parameter("homepage", station.homepage)
-                    .parameter("country", station.country)
-                    .parameter("countrycode", station.countrycode)
-                    .parameter("state", station.state)
-                    .parameter("language", station.language)
-                    .parameter("favicon", station.favicon)
-                    .parameter("tags", station.tags)
-                    .parameter("codec", station.codec)
-                    .parameter("bitrate", station.bitrate)
-                    .toSingle { it.getInt(1) > 0 }
+        private const val tableName = "HISTORY"
 
-    fun removeFavourite(stationProperty: Property<Station>) = removeFavourite(stationProperty.value)
-    private fun removeFavourite(station: Station): Single<Boolean> =
-            connection.insert("delete from favourites where stationuuid = :stationuuid")
-                    .parameter("stationuuid", station.stationuuid)
-                    .toSingle { it.getInt(1) > 0 }
+        fun cleanup(): Single<Int> = delete(tableName)
+
+        fun get(): Single<MutableList<Station>> = select(tableName)
+
+        fun add(station: Station): Single<Boolean> = insert(tableName, station)
+
+    }
+
+    private fun select(table: String) = connection.select("SELECT * FROM $table")
+            .toObservable {
+                Station(it.getString("stationuuid"),
+                        it.getString("name"),
+                        it.getString("url_resolved"),
+                        it.getString("homepage"),
+                        it.getString("favicon"),
+                        it.getString("tags"),
+                        it.getString("country"),
+                        it.getString("countrycode"),
+                        it.getString("state"),
+                        it.getString("language"),
+                        it.getString("codec"),
+                        it.getInt("bitrate"))
+            }
+            .toList()
+
+    private fun delete(table: String) = connection.execute("delete from $table").toSingle()
+
+    private fun insert(table: String, station: Station) = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
+            "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
+            "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
+            .parameter("name", station.name)
+            .parameter("stationuuid", station.stationuuid)
+            .parameter("url_resolved", station.url_resolved)
+            .parameter("homepage", station.homepage)
+            .parameter("country", station.country)
+            .parameter("countrycode", station.countrycode)
+            .parameter("state", station.state)
+            .parameter("language", station.language)
+            .parameter("favicon", station.favicon)
+            .parameter("tags", station.tags)
+            .parameter("codec", station.codec)
+            .parameter("bitrate", station.bitrate)
+            .toSingle { it.getInt(1) > 0 }
 }

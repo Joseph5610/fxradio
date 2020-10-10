@@ -1,11 +1,13 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ListProperty
+import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.storage.Database
 import tornadofx.*
 
-class StationsHistoryModel {
-    val stations = observableListOf<Station>()
+class StationsHistoryModel(stations: ObservableList<Station> = observableListOf()) {
+    val stations: ObservableList<Station> by property(stations)
 }
 
 /**
@@ -21,11 +23,16 @@ class StationsHistoryViewModel : ItemViewModel<StationsHistoryModel>() {
         if (!station.isValid()) return
         with(stationsProperty) {
             if (!contains(station)) {
-                if (size > 10) {
-                    removeAt(0)
-                }
                 add(station)
+                Database.History.add(station)
+                        .subscribe()
             }
         }
+    }
+
+    fun cleanup() {
+        item = StationsHistoryModel()
+        Database.History.cleanup()
+                .subscribe()
     }
 }

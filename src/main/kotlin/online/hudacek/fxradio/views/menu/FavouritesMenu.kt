@@ -20,9 +20,8 @@ import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -41,21 +40,21 @@ class FavouritesMenu : Component(), ScopedInstance {
     val menu by lazy {
         menu(messages["menu.favourites"]) {
             item(messages["menu.favourites.show"]).action {
-                libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Favourites)
+                libraryViewModel.select(SelectedLibrary(LibraryType.Favourites))
             }
             separator()
             item(messages["menu.station.favourite"], keyFavourites) {
                 disableWhen(playerViewModel.stationProperty.booleanBinding {
-                    it == null || !it.isValid() || Database.isFavourite(it).blockingGet()
+                    it == null || !it.isValid() || Database.Favourites.has(it).blockingGet()
                 })
 
                 actionEvents()
-                        .flatMapSingle { Database.isFavourite(playerViewModel.stationProperty) }
+                        .flatMapSingle { Database.Favourites.add(playerViewModel.stationProperty) }
                         .filter { !it }
-                        .flatMapSingle { Database.addFavourite(playerViewModel.stationProperty) }
+                        .flatMapSingle { Database.Favourites.add(playerViewModel.stationProperty) }
                         .subscribe({
                             fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
-                            fire(RefreshFavourites())
+                            libraryViewModel.refreshLibrary(LibraryType.Favourites)
                         }, {
                             fire(NotificationEvent(messages["menu.station.favourite.error"]))
                         })
@@ -63,16 +62,16 @@ class FavouritesMenu : Component(), ScopedInstance {
 
             item(messages["menu.station.favourite.remove"]) {
                 visibleWhen(playerViewModel.stationProperty.booleanBinding {
-                    it != null && it.isValid() && Database.isFavourite(it).blockingGet()
+                    it != null && it.isValid() && Database.Favourites.has(it).blockingGet()
                 })
 
                 actionEvents()
-                        .flatMapSingle { Database.isFavourite(playerViewModel.stationProperty) }
+                        .flatMapSingle { Database.Favourites.has(playerViewModel.stationProperty) }
                         .filter { it }
-                        .flatMapSingle { Database.removeFavourite(playerViewModel.stationProperty) }
+                        .flatMapSingle { Database.Favourites.remove(playerViewModel.stationProperty) }
                         .subscribe({
                             fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
-                            fire(RefreshFavourites())
+                            libraryViewModel.refreshLibrary(LibraryType.Favourites)
                         }, {
                             fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
                         })

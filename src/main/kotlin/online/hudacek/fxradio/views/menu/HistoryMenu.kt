@@ -16,7 +16,8 @@
 
 package online.hudacek.fxradio.views.menu
 
-import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryType
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.viewmodel.*
@@ -31,13 +32,19 @@ class HistoryMenu : Component(), ScopedInstance {
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        stationsHistoryViewModel.item = StationsHistoryModel()
+        Database.History.get().subscribe({
+            println(it)
+            stationsHistoryViewModel.item = StationsHistoryModel(it.asObservable())
+        }, {
+            it.printStackTrace()
+            stationsHistoryViewModel.item = StationsHistoryModel()
+        })
     }
 
     val menu by lazy {
         menu(messages["menu.history"]) {
             item(messages["menu.history.show"]).action {
-                libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
+                libraryViewModel.select(SelectedLibrary(LibraryType.History))
             }
             separator()
             menu(messages["menu.history.recent"]) {
@@ -69,7 +76,8 @@ class HistoryMenu : Component(), ScopedInstance {
                 }
                 action {
                     confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
-                        stationsHistoryViewModel.item = StationsHistoryModel()
+                        stationsHistoryViewModel.cleanup()
+                        libraryViewModel.refreshLibrary(LibraryType.History)
                     }
                 }
             }

@@ -22,8 +22,7 @@ import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.LibraryType
-import online.hudacek.fxradio.events.RefreshFavourites
+import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.showWhen
@@ -51,14 +50,6 @@ class StationsDataGridView : View() {
         libraryViewModel.selectedProperty.onChange {
             logger.debug { "selectedProperty changed: $it" }
             it?.let(::showLibraryType)
-        }
-
-        subscribe<RefreshFavourites> {
-            libraryViewModel.selectedProperty.value.let { value ->
-                if (value.type == LibraryType.Favourites) {
-                    showLibraryType(value)
-                }
-            }
         }
     }
 

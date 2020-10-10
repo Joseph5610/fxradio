@@ -26,7 +26,6 @@ import tornadofx.*
 
 class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf()) {
     val stats: ObservableList<Pair<String, String>> by property(map)
-    val isError by booleanProperty()
 }
 
 /**
@@ -37,7 +36,6 @@ class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf())
  */
 class StatsViewModel : ItemViewModel<StatsModel>() {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
-    val isErrorProperty = bind(StatsModel::isError) as BooleanProperty
 
     fun getStats(): Disposable =
             StationsApi.service.getStats()
@@ -53,11 +51,9 @@ class StatsViewModel : ItemViewModel<StatsModel>() {
                                 Pair(messages["stats.tags"], it.tags)
                         )
                         item = StatsModel(statsPair)
-                        isErrorProperty.value = false
                     }, {
                         item = StatsModel()
-                        isErrorProperty.value = true
                     })
 
-    override fun toString() = "StatsViewModel(statsProperty=${statsProperty.value}, isErrorProperty=${isErrorProperty.value})"
+    override fun toString() = "StatsViewModel(statsProperty=${statsProperty.value})"
 }

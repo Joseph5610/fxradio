@@ -37,7 +37,6 @@ class MenuBarView : View() {
     private val stationMenu: StationMenu by inject()
     private val playerMenu: PlayerMenu by inject()
 
-
     init {
         menuViewModel.item = MenuModel()
     }

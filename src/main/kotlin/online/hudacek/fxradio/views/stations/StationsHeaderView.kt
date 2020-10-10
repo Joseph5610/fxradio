@@ -17,13 +17,9 @@
 package online.hudacek.fxradio.views.stations
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.SelectedLibrary
-import online.hudacek.fxradio.viewmodel.StationsViewModel
-import online.hudacek.fxradio.viewmodel.StationsViewState
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 /**
@@ -66,6 +62,7 @@ class StationsHeaderView : View() {
                 button(messages["favourites.clean"]) {
                     action {
                         viewModel.cleanFavourites()
+                        libraryViewModel.refreshLibrary(LibraryType.Favourites)
                     }
                     showWhen {
                         libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))

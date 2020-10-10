@@ -20,7 +20,7 @@ import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.countryCode
-import online.hudacek.fxradio.events.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.showWhen
@@ -83,7 +83,7 @@ class LibraryView : View() {
         addClass(Styles.libraryListView)
         onUserSelect(1) {
             libraryListView.selectionModel.clearSelection()
-            viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
+            viewModel.select(SelectedLibrary(LibraryType.Country, it.name))
         }
         showWhen {
             viewModel.countriesProperty.sizeProperty.isNotEqualTo(0)
@@ -100,7 +100,7 @@ class LibraryView : View() {
 
         libraryListView.onUserSelect(1) {
             countriesListView.selectionModel.clearSelection()
-            viewModel.selectedProperty.value = SelectedLibrary(it.type)
+            viewModel.select(SelectedLibrary(it.type))
         }
     }
 

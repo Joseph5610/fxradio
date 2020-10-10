@@ -10,7 +10,6 @@ import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.events.RefreshFavourites
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
@@ -46,7 +45,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
 
     //retrieve favourites from DB
     val favourites: Disposable
-        get() = Database.favourites()
+        get() = Database.Favourites.get()
                 .compose(applySchedulers())
                 .subscribe(::show, ::handleError)
 
@@ -80,10 +79,9 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     fun cleanFavourites() {
         confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
             Database
-                    .cleanup()
+                    .Favourites.cleanup()
                     .subscribe({
                         fire(NotificationEvent(messages["database.clear.ok"]))
-                        fire(RefreshFavourites())
                     }, {
                         logger.error(it) { "Can't remove favourites!" }
                         fire(NotificationEvent(messages["database.clear.error"]))

@@ -26,11 +26,14 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.isValidCountry
-import online.hudacek.fxradio.events.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.utils.applySchedulers
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+
+enum class LibraryType {
+    Favourites, Search, History, Country, TopStations
+}
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 
@@ -50,7 +53,6 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
     ))
 
     val selected: SelectedLibrary by property(selected)
-    val isError by booleanProperty()
     val searchQuery: String by property(searchQuery)
 }
 
@@ -95,7 +97,16 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
         }
     }
 
-    fun handleSearchInputClick() {
-        selectedProperty.value = SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim())
+    fun handleSearchInputClick() = select(SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim()))
+
+    fun refreshLibrary(libraryType: LibraryType) {
+        if (selectedProperty.value.type == libraryType) {
+            selectedProperty.value = null
+            selectedProperty.value = SelectedLibrary(libraryType)
+        }
+    }
+
+    fun select(selectedLibrary: SelectedLibrary) {
+        selectedProperty.value = selectedLibrary
     }
 }
