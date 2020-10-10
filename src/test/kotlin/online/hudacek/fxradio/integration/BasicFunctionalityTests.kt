@@ -25,11 +25,9 @@ import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.media.MediaPlayerWrapper
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.viewmodel.LibraryItem
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
@@ -127,9 +125,19 @@ class BasicFunctionalityTests {
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        //Stations library is empty
-        waitFor(2) {
-            !stations.isVisible
+        val historydbCount = Database.History.get().blockingGet().size
+
+        if (historydbCount == 0) {
+            //Stations library is containing all stations
+            waitFor(2) {
+                !stations.isVisible
+            }
+        } else {
+            waitFor(2) {
+                stations.isVisible
+            }
+
+            Assertions.assertTrue(stations.items.size == historydbCount)
         }
     }
 
