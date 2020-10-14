@@ -51,7 +51,7 @@ class FavouritesMenu : Controller() {
                 })
 
                 actionEvents()
-                        .flatMapSingle { Database.Favourites.add(playerViewModel.stationProperty) }
+                        .flatMapSingle { Database.Favourites.has(playerViewModel.stationProperty) }
                         .filter { !it }
                         .flatMapSingle { Database.Favourites.add(playerViewModel.stationProperty) }
                         .subscribe({

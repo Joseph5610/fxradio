@@ -43,14 +43,9 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
 
 internal fun NotificationPane.show(glyph: FontAwesome.Glyph,
                                    message: String,
-                                   stayOnScreen: Boolean,
                                    op: NotificationPane.() -> Unit = {}) {
     op.invoke(this)
-    if (stayOnScreen) {
-        show(message, glyph("FontAwesome", glyph))
-    } else {
-        this[glyph] = message
-    }
+    this[glyph] = message
 }
 
 /**

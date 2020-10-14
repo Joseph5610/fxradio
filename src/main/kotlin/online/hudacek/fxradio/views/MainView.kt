@@ -80,7 +80,7 @@ class MainView : View(FxRadio.appName) {
             isShowFromTop = true
 
             subscribe<NotificationEvent> {
-                show(it.glyph, it.text, it.stayOnScreen, it.op)
+                show(it.glyph, it.text, it.op)
             }
 
             if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {

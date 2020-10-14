@@ -45,7 +45,7 @@ object VersionCheck : Component() {
                         if (FxRadio.version.isEqualTo(latestVersion)) {
                             fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
                         } else if (latestVersion.isGreaterThan(FxRadio.version)) {
-                            fire(NotificationEvent(vcs.languages[0].message, stayOnScreen = false, op = {
+                            fire(NotificationEvent(vcs.languages[0].message, op = {
                                 actions.setAll(Action(messages["vcs.download"]) {
                                     app.openUrl(vcs.downloadUrl)
                                 })
