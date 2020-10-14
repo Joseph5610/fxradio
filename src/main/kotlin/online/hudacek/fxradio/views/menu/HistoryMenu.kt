@@ -32,7 +32,6 @@ class HistoryMenu : Controller() {
 
     init {
         Database.History.get().subscribe({
-            println(it)
             stationsHistoryViewModel.item = StationsHistoryModel(it.asObservable())
         }, {
             it.printStackTrace()
