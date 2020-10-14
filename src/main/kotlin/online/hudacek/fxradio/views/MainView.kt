@@ -62,6 +62,7 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
+        //VersionCheck.vcsService.start()
         MediaPlayerWrapper.init(playerViewModel.playerTypeProperty)
 
         //Correctly shutdown all classes
@@ -79,7 +80,7 @@ class MainView : View(FxRadio.appName) {
             isShowFromTop = true
 
             subscribe<NotificationEvent> {
-                show(it.glyph, it.text, it.op)
+                show(it.glyph, it.text, it.stayOnScreen, it.op)
             }
 
             if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {

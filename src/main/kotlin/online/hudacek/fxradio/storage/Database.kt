@@ -55,7 +55,7 @@ object Database {
                 " )")
                 .toSingle()
                 .subscribe({}, {
-                    logger.error(it) { "There was an error creating favourites table!" }
+                    logger.error(it) { "There was an error creating history table!" }
                 })
     }
 
@@ -90,12 +90,11 @@ object Database {
 
         private const val tableName = "HISTORY"
 
-        fun cleanup(): Single<Int> = delete(tableName)
-
         fun get(): Single<MutableList<Station>> = select(tableName)
 
         fun add(station: Station): Single<Boolean> = insert(tableName, station)
 
+        fun cleanup(): Single<Int> = delete(tableName)
     }
 
     private fun select(table: String) = connection.select("SELECT * FROM $table")

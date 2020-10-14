@@ -20,17 +20,17 @@ import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.menu
+import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedLibrary
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class FavouritesMenu : Component(), ScopedInstance {
+class FavouritesMenu : Controller() {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
@@ -43,6 +43,8 @@ class FavouritesMenu : Component(), ScopedInstance {
                 libraryViewModel.select(SelectedLibrary(LibraryType.Favourites))
             }
             separator()
+
+            //Add favourite
             item(messages["menu.station.favourite"], keyFavourites) {
                 disableWhen(playerViewModel.stationProperty.booleanBinding {
                     it == null || !it.isValid() || Database.Favourites.has(it).blockingGet()
@@ -60,6 +62,7 @@ class FavouritesMenu : Component(), ScopedInstance {
                         })
             }
 
+            //Remove favourite
             item(messages["menu.station.favourite.remove"]) {
                 visibleWhen(playerViewModel.stationProperty.booleanBinding {
                     it != null && it.isValid() && Database.Favourites.has(it).blockingGet()

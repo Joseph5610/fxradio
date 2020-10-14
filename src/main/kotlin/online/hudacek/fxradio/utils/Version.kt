@@ -18,7 +18,6 @@ package online.hudacek.fxradio.utils
 
 import com.vdurmont.semver4j.Semver
 import com.vdurmont.semver4j.SemverException
-import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.VCSApi
@@ -46,18 +45,11 @@ object VersionCheck : Component() {
                         if (FxRadio.version.isEqualTo(latestVersion)) {
                             fire(NotificationEvent(messages["vcs.uptodate"], FontAwesome.Glyph.CHECK))
                         } else if (latestVersion.isGreaterThan(FxRadio.version)) {
-                            logger.info { "There is a new version ${vcs.currentVersion}" }
-                            if (vcs.required) {
-                                confirm(vcs.languages[0].message, vcs.languages[0].description, owner = primaryStage) {
-                                    Platform.exit()
-                                }
-                            } else {
-                                fire(NotificationEvent(vcs.languages[0].message, op = {
-                                    actions.setAll(Action(messages["vcs.download"]) {
-                                        app.openUrl(vcs.downloadUrl)
-                                    })
-                                }))
-                            }
+                            fire(NotificationEvent(vcs.languages[0].message, stayOnScreen = false, op = {
+                                actions.setAll(Action(messages["vcs.download"]) {
+                                    app.openUrl(vcs.downloadUrl)
+                                })
+                            }))
                         }
                     } catch (e: SemverException) {
                         logger.error(e) { "Can't parse version string, acting as no update available" }

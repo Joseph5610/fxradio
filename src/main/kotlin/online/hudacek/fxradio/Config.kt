@@ -64,6 +64,7 @@ object Config {
      */
     object Flags {
         const val addStationEnabled = true
+        const val enableVersionCheck = false
         const val darkStylesEnabled = false
     }
 }

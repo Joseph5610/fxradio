@@ -25,7 +25,7 @@ import online.hudacek.fxradio.viewmodel.MenuViewModel
 import org.apache.logging.log4j.Level
 import tornadofx.*
 
-class HelpMenu : Component(), ScopedInstance {
+class HelpMenu : Controller() {
 
     private val menuViewModel: MenuViewModel by inject()
     private val logViewModel: LogViewModel by inject()

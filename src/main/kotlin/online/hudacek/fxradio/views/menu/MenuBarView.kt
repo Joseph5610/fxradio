@@ -18,6 +18,7 @@ package online.hudacek.fxradio.views.menu
 
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.utils.VersionCheck
@@ -85,8 +86,10 @@ class MenuBarView : View() {
         item(messages["menu.app.about"] + " " + FxRadio.appName).action {
             menuViewModel.openAbout()
         }
-        item(messages["menu.help.vcs.check"]).action {
-            VersionCheck.perform()
+        if (Config.Flags.enableVersionCheck) {
+            item(messages["menu.help.vcs.check"]).action {
+                VersionCheck.perform()
+            }
         }
         separator()
         item(messages["menu.app.attributions"]).action {

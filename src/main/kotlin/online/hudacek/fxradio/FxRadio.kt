@@ -50,6 +50,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
+
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0
@@ -57,9 +58,10 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
 
         //init logger level based on stored settings
-        val savedLevel = Level.valueOf(config.string(Config.Keys.logLevel))
+        val savedLevel = Level.valueOf(config.string(Config.Keys.logLevel, "INFO"))
         logViewModel.item = LogModel(savedLevel)
         logViewModel.commit()
+
     }
 
     /**

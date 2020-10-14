@@ -43,8 +43,8 @@ internal fun ImageView.createImage(station: Station) {
 
     if (!station.isValid()) return
 
-    if (ImageCache.isImageInCache(station)) {
-        this.image = ImageCache.getImageFromCache(station)
+    if (ImageCache.has(station)) {
+        this.image = ImageCache.get(station)
     } else {
         if (station.favicon.isNullOrEmpty()) {
             logger.debug { "Image for ${station.name} is null or empty" }
@@ -55,11 +55,11 @@ internal fun ImageView.createImage(station: Station) {
             URL(station.favicon).openConnection().apply {
                 setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
                 getInputStream().use { stream ->
-                    ImageCache.saveImage(station, stream)
+                    ImageCache.save(station, stream)
                 }
             }
         } success {
-            this.image = ImageCache.getImageFromCache(station)
+            this.image = ImageCache.get(station)
         } fail {
             logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
             this.image = defaultRadioLogo

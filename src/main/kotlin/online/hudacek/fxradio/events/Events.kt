@@ -22,4 +22,5 @@ import tornadofx.*
 
 class NotificationEvent(val text: String,
                         val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,
+                        val stayOnScreen: Boolean = false,
                         val op: NotificationPane.() -> Unit = {}) : FXEvent()

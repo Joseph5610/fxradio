@@ -24,11 +24,11 @@ import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.shouldBeVisible
+import online.hudacek.fxradio.utils.shouldBeDisabled
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class PlayerMenu : Component(), ScopedInstance {
+class PlayerMenu : Controller() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -46,14 +46,14 @@ class PlayerMenu : Component(), ScopedInstance {
     val menu by lazy {
         menu(messages["menu.player.controls"]) {
             item(messages["menu.player.start"], keyPlay) {
-                shouldBeVisible(playerViewModel.stationProperty)
+                shouldBeDisabled(playerViewModel.stationProperty)
                 action {
                     fire(PlaybackChangeEvent(PlayingStatus.Playing))
                 }
             }
 
             item(messages["menu.player.stop"], keyStop) {
-                shouldBeVisible(playerViewModel.stationProperty)
+                shouldBeDisabled(playerViewModel.stationProperty)
                 action {
                     fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                 }
@@ -62,7 +62,6 @@ class PlayerMenu : Component(), ScopedInstance {
             separator()
 
             playerCheck = checkmenuitem(messages["menu.player.switch"]) {
-                isSelected = playerViewModel.playerTypeProperty.value == PlayerType.Custom
                 action {
                     fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                     playerViewModel.playerTypeProperty.value =

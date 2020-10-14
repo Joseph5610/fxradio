@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.views.menu
 
-import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.menu
@@ -24,7 +23,7 @@ import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 //History Menu
-class HistoryMenu : Component(), ScopedInstance {
+class HistoryMenu : Controller() {
 
     private val menuViewModel: MenuViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()

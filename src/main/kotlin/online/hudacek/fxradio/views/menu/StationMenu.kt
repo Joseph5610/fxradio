@@ -27,7 +27,7 @@ import online.hudacek.fxradio.viewmodel.MenuViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class StationMenu : Component(), ScopedInstance {
+class StationMenu : Controller() {
 
     private val menuViewModel: MenuViewModel by inject()
 

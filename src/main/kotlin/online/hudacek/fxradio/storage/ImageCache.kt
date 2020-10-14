@@ -23,6 +23,7 @@ import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.utils.defaultRadioLogo
 import org.apache.commons.io.FileUtils
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -48,21 +49,27 @@ object ImageCache {
 
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
-    fun isImageInCache(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
+    //Check if Station is in cache
+    fun has(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
 
-    fun getImageFromCache(station: Station): Image {
+    //Get image from cache
+    fun get(station: Station): Image {
         val imagePath = cacheBasePath.resolve(station.stationuuid)
-        val image = Image(FileInputStream(imagePath.toFile()))
-        return if (image.isError) {
-            logger.error { "Can't show image for ${station.name} (${image.exception.localizedMessage}) " }
+        return try {
+            val image = Image(FileInputStream(imagePath.toFile()))
+            if (image.isError) {
+                logger.error { "Can't show image for ${station.name} (${image.exception.localizedMessage}) " }
+                defaultRadioLogo
+            } else {
+                image
+            }
+        } catch (e: FileNotFoundException) {
             defaultRadioLogo
-        } else {
-            image
         }
     }
 
-    fun saveImage(station: Station, inputStream: InputStream) {
-        if (isImageInCache(station)) return
+    fun save(station: Station, inputStream: InputStream) {
+        if (has(station)) return
         val imagePath = cacheBasePath.resolve(station.stationuuid)
         try {
             Files.copy(
