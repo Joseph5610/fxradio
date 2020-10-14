@@ -69,6 +69,11 @@ class PlayerMainView : View() {
         isSnapToTicks = true
         isShowTickMarks = true
         paddingTop = 10.0
+
+        //Save the ViewModel after setting new value
+        valueProperty().onChange {
+            playerViewModel.commit()
+        }
     }
 
     init {
