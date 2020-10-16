@@ -18,12 +18,6 @@ package online.hudacek.fxradio.events
 
 import tornadofx.*
 
-enum class PlayingStatus {
-    Playing, Stopped, Error
-}
-
 data class MediaMeta(val title: String, val genre: String, val nowPlaying: String)
-
-class PlaybackChangeEvent(val playingStatus: PlayingStatus) : FXEvent()
 
 class PlaybackMetaChangedEvent(val mediaMeta: MediaMeta) : FXEvent()

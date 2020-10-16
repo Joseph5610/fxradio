@@ -19,8 +19,6 @@ package online.hudacek.fxradio.views.player
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -28,6 +26,8 @@ import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.setOnSpacePressed
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayingStatus
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -47,9 +47,17 @@ class PlayerMainView : View() {
     private val volumeDown = glyph(FontAwesome.Glyph.VOLUME_DOWN, size = 18.0, useStyle = false)
     private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 18.0, useStyle = false)
 
+    private val playerControlsBinding = playerViewModel.playingStatusProperty.objectBinding {
+        if (it == PlayingStatus.Playing) {
+            stopGlyph
+        } else {
+            playGlyph
+        }
+    }
+
     private val playerControls = button {
         id = "playerControls"
-        graphic = playGlyph
+        graphicProperty().bind(playerControlsBinding)
         requestFocusOnSceneAvailable()
         disableWhen {
             playerViewModel.stationProperty.booleanBinding {
@@ -89,9 +97,6 @@ class PlayerMainView : View() {
                 playerType = playerType,
                 notifications = notifications,
                 volume = volume)
-
-        //subscribe to events
-        subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
     }
 
     override val root = vbox {
@@ -145,19 +150,6 @@ class PlayerMainView : View() {
     override fun onDock() {
         currentWindow?.setOnSpacePressed {
             playerViewModel.togglePlayer()
-        }
-    }
-
-    /**
-     * Called when playback status is changed,
-     * usually by pressing button in PlayerView or externally (e.g change of player type)
-     * @param playingStatus new Playing status (Playing/Stopped)
-     */
-    private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
-        if (playingStatus == PlayingStatus.Playing) {
-            playerControls.graphic = stopGlyph
-        } else {
-            playerControls.graphic = playGlyph
         }
     }
 }

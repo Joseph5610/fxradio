@@ -20,12 +20,11 @@ import javafx.scene.control.CheckMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.shouldBeDisabled
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayingStatus
 import tornadofx.*
 
 class PlayerMenu : Controller() {
@@ -48,14 +47,14 @@ class PlayerMenu : Controller() {
             item(messages["menu.player.start"], keyPlay) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    fire(PlaybackChangeEvent(PlayingStatus.Playing))
+                    playerViewModel.playingStatusProperty.value = PlayingStatus.Playing
                 }
             }
 
             item(messages["menu.player.stop"], keyStop) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    fire(PlaybackChangeEvent(PlayingStatus.Stopped))
+                    playerViewModel.playingStatusProperty.value = PlayingStatus.Stopped
                 }
             }
 
@@ -63,7 +62,6 @@ class PlayerMenu : Controller() {
 
             playerCheck = checkmenuitem(messages["menu.player.switch"]) {
                 action {
-                    fire(PlaybackChangeEvent(PlayingStatus.Stopped))
                     playerViewModel.playerTypeProperty.value =
                             if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
                                 PlayerType.VLC

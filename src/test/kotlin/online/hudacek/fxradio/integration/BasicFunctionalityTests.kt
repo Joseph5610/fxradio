@@ -22,11 +22,12 @@ import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.viewmodel.LibraryItem
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayingStatus
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
@@ -76,6 +77,8 @@ class BasicFunctionalityTests {
     fun basicPlayPauseTest(robot: FxRobot) {
         verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
 
+        val player = find<PlayerViewModel>()
+
         //Wait for stations to load
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
         waitFor(5) {
@@ -90,7 +93,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream start
         waitFor(5) {
-            MediaPlayerWrapper.playingStatus == PlayingStatus.Playing
+            player.playingStatusProperty.value == PlayingStatus.Playing
         }
 
         val stopButton = robot.find(playerControls) as Button
@@ -100,7 +103,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream stop
         waitFor(2) {
-            MediaPlayerWrapper.playingStatus == PlayingStatus.Stopped
+            player.playingStatusProperty.value == PlayingStatus.Stopped
         }
 
         verifyThat(nowPlayingLabel, hasText("Streaming stopped"))

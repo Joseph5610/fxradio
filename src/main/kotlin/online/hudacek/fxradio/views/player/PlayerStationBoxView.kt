@@ -22,15 +22,14 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.PlaybackChangeEvent
 import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
-import online.hudacek.fxradio.events.PlayingStatus
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.notification
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.tickerView
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayingStatus
 import tornadofx.*
 
 /**
@@ -58,8 +57,8 @@ class PlayerStationBoxView : View() {
         //Subscribe to property changes
         ticker.tickerTextProperty.bindBidirectional(stationNameProperty)
         playerViewModel.stationProperty.onChange { it?.let(::onStationChange) }
+        playerViewModel.playingStatusProperty.onChange { it?.let(::onPlaybackStatusChanged) }
         subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataChanged) }
-        subscribe<PlaybackChangeEvent> { it.playingStatus.let(::onPlaybackStatusChanged) }
     }
 
     override val root = hbox(5) {

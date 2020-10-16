@@ -24,15 +24,12 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menu.MenuBarView
 import online.hudacek.fxradio.views.player.PlayerMainView
 import online.hudacek.fxradio.views.stations.StationsMainView
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
@@ -62,9 +59,10 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
-        //VersionCheck.vcsService.start()
-        MediaPlayerWrapper.init(playerViewModel.playerTypeProperty)
 
+        if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
+            fire(NotificationEvent(messages["player.ffmpeg.info"]))
+        }
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             playerViewModel.releasePlayer()
@@ -81,10 +79,6 @@ class MainView : View(FxRadio.appName) {
 
             subscribe<NotificationEvent> {
                 show(it.glyph, it.text, it.op)
-            }
-
-            if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
-                this[FontAwesome.Glyph.WARNING] = messages["player.ffmpeg.info"]
             }
 
             content {

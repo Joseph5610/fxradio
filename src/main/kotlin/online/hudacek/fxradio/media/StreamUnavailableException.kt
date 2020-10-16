@@ -19,8 +19,8 @@ package online.hudacek.fxradio.media
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.events.PlaybackChangeEvent
-import online.hudacek.fxradio.events.PlayingStatus
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayingStatus
 import tornadofx.*
 
 class StreamUnavailableException(message: String, cause: Throwable?) : Exception(message, cause) {
@@ -31,7 +31,7 @@ class StreamUnavailableException(message: String, cause: Throwable?) : Exception
 
     init {
         Platform.runLater {
-            FX.eventbus.fire(PlaybackChangeEvent(PlayingStatus.Error))
+            find<PlayerViewModel>().playingStatusProperty.value = PlayingStatus.Error
             FX.eventbus.fire(NotificationEvent(localizedMessage))
             logger.error(this) { "Stream can't be played" }
         }

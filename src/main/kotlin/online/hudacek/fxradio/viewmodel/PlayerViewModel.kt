@@ -5,18 +5,27 @@ import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import tornadofx.*
 
-class PlayerModel(animate: Boolean = true, station: Station = Station.stub,
-                  playerType: PlayerType, notifications: Boolean = true, volume: Double) {
+enum class PlayingStatus {
+    Playing, Stopped, Error
+}
 
-    var animate: Boolean by property(animate)
-    var notifications: Boolean by property(notifications)
-    var station: Station by property(station)
-    var playerType: PlayerType by property(playerType)
-    var volume: Double by property(volume)
+class PlayerModel(animate: Boolean = true, station: Station = Station.stub,
+                  playerType: PlayerType, notifications: Boolean = true,
+                  volume: Double,
+                  playingStatus: PlayingStatus = PlayingStatus.Stopped) {
+
+
+    val animate: Boolean by property(animate)
+    val notifications: Boolean by property(notifications)
+    val station: Station by property(station)
+    val playerType: PlayerType by property(playerType)
+    val volume: Double by property(volume)
+    val playingStatus: PlayingStatus by property(playingStatus)
 }
 
 /**
@@ -35,16 +44,57 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     val stationProperty = bind(PlayerModel::station) as ObjectProperty
     val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
     val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
+    val playingStatusProperty = bind(PlayerModel::playingStatus) as ObjectProperty
 
     init {
         stationProperty.onChange {
-            it?.let(stationsHistoryView::add)
+            it?.let {
+                stationsHistoryView::add
+                if (it.isValid()) {
+                    playingStatusProperty.value = PlayingStatus.Stopped
+                    playingStatusProperty.value = PlayingStatus.Playing
+                }
+            }
+        }
+
+        playerTypeProperty.onChange {
+            it?.let {
+                playingStatusProperty.value = PlayingStatus.Stopped
+                MediaPlayerWrapper.init(it)
+
+                if (it == PlayerType.Custom) {
+                    fire(NotificationEvent(messages["player.ffmpeg.info"]))
+                }
+            }
+        }
+
+        //Set volume for current player
+        volumeProperty.onChange {
+            MediaPlayerWrapper.changeVolume(it)
+        }
+
+        playingStatusProperty.onChange {
+            if (it == PlayingStatus.Playing) {
+                //Ignore stations with empty stream URL
+                stationProperty.value.url_resolved?.let { url ->
+                    MediaPlayerWrapper.changeVolume(volumeProperty.value)
+                    MediaPlayerWrapper.play(url)
+                }
+            } else {
+                MediaPlayerWrapper.stop()
+            }
         }
     }
 
     fun releasePlayer() = MediaPlayerWrapper.release()
 
-    fun togglePlayer() = MediaPlayerWrapper.togglePlaying()
+    fun togglePlayer() {
+        if (playingStatusProperty.value == PlayingStatus.Playing) {
+            playingStatusProperty.value = PlayingStatus.Stopped
+        } else {
+            playingStatusProperty.value = PlayingStatus.Playing
+        }
+    }
 
     override fun onCommit() {
         //Save API server
