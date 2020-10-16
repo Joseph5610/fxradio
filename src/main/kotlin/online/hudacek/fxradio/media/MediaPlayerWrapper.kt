@@ -26,7 +26,7 @@ enum class PlayerType {
     Custom, VLC
 }
 
-object MediaPlayerWrapper : Component() {
+object MediaPlayerWrapper : Component(), MediaPlayer {
 
     private val logger = KotlinLogging.logger {}
 
@@ -49,11 +49,17 @@ object MediaPlayerWrapper : Component() {
         }
     }
 
-    fun play(url: String) = internalMediaPlayer?.play(url)
+    override fun play(streamUrl: String) {
+        internalMediaPlayer?.play(streamUrl)
+    }
 
-    fun stop() = internalMediaPlayer?.stop()
+    override fun stop() {
+        internalMediaPlayer?.stop()
+    }
 
-    fun release() = internalMediaPlayer?.release()
+    override fun release() {
+        internalMediaPlayer?.release()
+    }
 
-    fun changeVolume(volume: Double) = internalMediaPlayer?.changeVolume(volume)
+    override fun changeVolume(newVolume: Double) = internalMediaPlayer?.changeVolume(newVolume) ?: false
 }
