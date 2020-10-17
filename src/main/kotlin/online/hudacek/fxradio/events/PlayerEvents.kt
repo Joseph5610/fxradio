@@ -18,6 +18,6 @@ package online.hudacek.fxradio.events
 
 import tornadofx.*
 
-data class MediaMeta(val title: String, val genre: String, val nowPlaying: String)
+data class MediaMeta(val title: String, val nowPlaying: String)
 
 class PlaybackMetaChangedEvent(val mediaMeta: MediaMeta) : FXEvent()

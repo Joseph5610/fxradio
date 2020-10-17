@@ -65,10 +65,8 @@ internal class VLCPlayer : Component(), MediaPlayer {
         override fun mediaMetaChanged(media: Media?, metaType: Meta?) {
             media?.meta()?.let {
                 if (it[Meta.NOW_PLAYING] != null
-                        && it[Meta.TITLE] != null
-                        && it[Meta.GENRE] != null) {
+                        && it[Meta.TITLE] != null) {
                     val metaData = MediaMeta(it[Meta.TITLE],
-                            it[Meta.GENRE],
                             it[Meta.NOW_PLAYING]
                                     .replace("\r", "")
                                     .replace("\n", ""))
