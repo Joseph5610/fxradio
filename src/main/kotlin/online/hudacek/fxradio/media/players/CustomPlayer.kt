@@ -25,11 +25,9 @@ import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.*
 import java.nio.ByteBuffer
+import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.FloatControl
 import javax.sound.sampled.LineUnavailableException
-import javax.sound.sampled.SourceDataLine
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
 
 //Custom Audio player using ffmpeg lib
 internal class CustomPlayer : Component(), MediaPlayer {
@@ -68,14 +66,16 @@ internal class CustomPlayer : Component(), MediaPlayer {
                 if (audioStreamId == -1) throw RuntimeException("could not find audio stream in container")
                 if (audioDecoder == null) throw RuntimeException("could not find audio decoder")
 
-                audioDecoder.apply {
-                    open()
+                audioDecoder.open().let {
                     val samples = MediaAudio.make(
-                            this.frameSize,
-                            this.sampleRate,
-                            this.channels,
-                            this.channelLayout,
-                            this.sampleFormat)
+                            it.frameSize,
+                            it.sampleRate,
+                            it.channels,
+                            it.channelLayout,
+                            it.sampleFormat)
+
+                    //Info about decoder
+                    logger.debug { it }
 
                     val converter = MediaAudioConverterFactory.createConverter(
                             MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
@@ -86,6 +86,9 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
                     var rawAudio: ByteBuffer? = null
 
+                    //Log audio format
+                    logger.info { audioFrame?.format }
+
                     val packet = MediaPacket.make()
                     while (demuxer.read(packet) >= 0) {
                         if (!isActive) break
@@ -93,7 +96,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
                             var offset = 0
                             var bytesRead = 0
                             do {
-                                bytesRead += decode(samples, packet, offset)
+                                bytesRead += it.decode(samples, packet, offset)
                                 if (samples.isComplete) {
                                     rawAudio = converter.toJavaAudio(rawAudio, samples)
                                     audioFrame?.play(rawAudio)
@@ -104,7 +107,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
                     }
 
                     do {
-                        decode(samples, null, 0)
+                        it.decode(samples, null, 0)
                         if (samples.isComplete) {
                             rawAudio = converter.toJavaAudio(rawAudio, samples)
                             audioFrame?.play(rawAudio)
@@ -122,18 +125,19 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     override fun changeVolume(newVolume: Double): Boolean {
         return try {
-            //Dirty hack, since the api does not provide direct access to field,
-            //we use reflection to get access to line field to change volume
             lastTriedVolumeChange = newVolume
 
-            AudioFrame::class.memberProperties
-                    .filter { it.name == "mLine" }[0].apply {
-                isAccessible = true
-                val lineValue = getter.call(audioFrame) as SourceDataLine
-                val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
-                gainControl.value = newVolume.toFloat()
+            audioFrame?.let {
+                val mixer = AudioSystem.getMixer(null)
+                val line = mixer.sourceLines.firstOrNull { line -> line.isOpen }
+                line?.let {
+                    val gainControl = it.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
+                    gainControl.value = newVolume.toFloat()
+                    true
+                }
+                false
             }
-            true
+            false
         } catch (e: Exception) {
             logger.error(e) { "Can't change volume to : $newVolume, will try later" }
             false
@@ -148,10 +152,12 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     override fun release() = stop()
 
-    private fun Decoder.open() = this.open(null, null)
+    private fun Decoder.open() = this.apply {
+        open(null, null)
+    }
 
     private fun Demuxer.stream(streamUrl: String?): Int {
         this.open(streamUrl, null, false, true, null, null)
-        return this.numStreams
+        return numStreams
     }
 }
