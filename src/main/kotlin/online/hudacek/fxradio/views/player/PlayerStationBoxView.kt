@@ -42,7 +42,7 @@ class PlayerStationBoxView : View() {
     private val ticker = tickerView()
     private val stationNameProperty = stringProperty()
 
-    private val stationLogo = imageview(Config.Resources.musicIcon) {
+    private val stationLogo = imageview(Config.Resources.waveIcon) {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true
@@ -130,12 +130,10 @@ class PlayerStationBoxView : View() {
     }
 
     private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
-        if (playingStatus == PlayingStatus.Stopped) {
-            nowStreamingLabel.text = messages["player.streamingStopped"]
-        } else if (playingStatus == PlayingStatus.Error) {
-            nowStreamingLabel.text = messages["player.streamingError"]
-        } else {
-            nowStreamingLabel.text = messages["player.nowStreaming"]
+        when (playingStatus) {
+            PlayingStatus.Stopped -> nowStreamingLabel.text = messages["player.streamingStopped"]
+            PlayingStatus.Error -> nowStreamingLabel.text = messages["player.streamingError"]
+            else -> nowStreamingLabel.text = messages["player.nowStreaming"]
         }
     }
 }

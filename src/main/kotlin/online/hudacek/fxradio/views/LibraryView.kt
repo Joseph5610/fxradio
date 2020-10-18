@@ -18,13 +18,15 @@ package online.hudacek.fxradio.views
 
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
+import javafx.scene.layout.Priority
 import mu.KotlinLogging
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.countryCode
-import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
+import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedLibrary
 import org.controlsfx.glyphfont.FontAwesome
@@ -36,6 +38,13 @@ class LibraryView : View() {
     private val logger = KotlinLogging.logger {}
 
     private val viewModel: LibraryViewModel by inject()
+
+    private val showCountriesList = booleanProperty(true)
+
+    private val showCountriesListLabel = showCountriesList.stringBinding {
+        if (it!!) messages["hide"]  else messages["show"]
+    }
+
 
     private val retryLink = hyperlink(messages["downloadRetry"]) {
         action {
@@ -56,6 +65,7 @@ class LibraryView : View() {
     }
 
     private val countriesListView = listview(viewModel.countriesProperty) {
+
         cellFormat {
             graphic = hbox(5) {
                 item.countryCode?.let {
@@ -73,7 +83,12 @@ class LibraryView : View() {
 
                 alignment = Pos.CENTER_LEFT
                 label(item.name.split("(")[0])
-                label("${item.stationcount} $stationWord") {
+                label("${item.stationcount}") {
+                    tooltip("${item.stationcount} $stationWord")
+                    graphic = imageview(Config.Resources.waveIcon) {
+                        fitWidth = 16.0
+                        isPreserveRatio = true
+                    }
                     addClass(Styles.libraryListItemTag)
                 }
             }
@@ -86,7 +101,7 @@ class LibraryView : View() {
             viewModel.select(SelectedLibrary(LibraryType.Country, it.name))
         }
         showWhen {
-            viewModel.countriesProperty.sizeProperty.isNotEqualTo(0)
+            viewModel.countriesProperty.sizeProperty.isNotEqualTo(0).and(showCountriesList)
         }
     }
 
@@ -151,11 +166,27 @@ class LibraryView : View() {
 
         center {
             vbox {
-                smallLabel(messages["countries"])
-                vbox(alignment = Pos.CENTER) {
-                    add(countriesListView)
-                    add(retryLink)
+                hbox {
+                    smallLabel(messages["countries"])
+                    region { hgrow = Priority.ALWAYS }
+                    smallLabel() {
+                        textProperty().bind(showCountriesListLabel)
+
+                        paddingRight = 10.0
+
+                        setOnMouseClicked {
+                            showCountriesList.value = !showCountriesList.value
+                        }
+
+                        showWhen {
+                            this@hbox.hoverProperty()
+                        }
+                    }
                 }
+
+                add(countriesListView)
+                add(retryLink)
+                countriesListView.prefHeightProperty().bind(heightProperty())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

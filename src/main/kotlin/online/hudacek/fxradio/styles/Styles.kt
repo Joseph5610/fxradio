@@ -262,6 +262,9 @@ class Styles : Stylesheet() {
         }
 
         slider {
+            track {
+                prefHeight = 5.px
+            }
             and(focused) {
                 thumb {
                     unsafe("-fx-background-color", raw("-fx-outer-border, -fx-inner-border, -fx-body-color"))
