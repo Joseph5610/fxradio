@@ -40,9 +40,7 @@ class AddStationFragment : Fragment() {
     private val autoCompleteCountries = observableListOf<String>()
 
     init {
-        autoCompleteCountries.bind(libraryViewModel.countriesProperty, {
-            it.name
-        })
+        autoCompleteCountries.bind(libraryViewModel.countriesProperty) { it.name }
     }
 
     override val root = notificationPane {
