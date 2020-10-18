@@ -24,7 +24,6 @@ object Config {
     object Resources {
         const val appLogo = "appLogo.png"
         const val stageIcon = "Industry-Radio-Tower-icon.png"
-        const val musicIcon = "Music-icon.png"
         const val waveIcon = "Sound-Wave-icon.png"
     }
 

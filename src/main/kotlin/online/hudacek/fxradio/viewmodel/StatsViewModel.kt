@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
-import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.StationsApi

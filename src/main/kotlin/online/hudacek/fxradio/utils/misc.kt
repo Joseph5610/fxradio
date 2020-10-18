@@ -24,6 +24,7 @@ import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.Node
 import javafx.scene.control.ContextMenu
+import javafx.scene.control.Label
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -45,10 +46,11 @@ private val logger = KotlinLogging.logger {}
 /*
  * Helper extension functions for UI
  */
-internal fun EventTarget.smallLabel(text: String) = label(text) {
+internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}) = label(text) {
     paddingLeft = 10.0
     addClass(Styles.boldText)
     addClass(Styles.grayLabel)
+    op.invoke(this)
 }
 
 internal fun EventTarget.glyph(glyph: FontAwesome.Glyph, size: Double = 35.0, useStyle: Boolean = true) = glyph("FontAwesome", glyph) {

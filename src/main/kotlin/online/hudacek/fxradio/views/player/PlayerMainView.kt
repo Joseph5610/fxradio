@@ -27,7 +27,6 @@ import online.hudacek.fxradio.utils.setOnSpacePressed
 import online.hudacek.fxradio.viewmodel.PlayerModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PlayingStatus
-import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -44,8 +43,8 @@ class PlayerMainView : View() {
     private val playGlyph = glyph(FontAwesome.Glyph.PLAY, size = 22.0, useStyle = false)
     private val stopGlyph = glyph(FontAwesome.Glyph.STOP, size = 22.0, useStyle = false)
 
-    private val volumeDown = glyph(FontAwesome.Glyph.VOLUME_DOWN, size = 18.0, useStyle = false)
-    private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 18.0, useStyle = false)
+    private val volumeDown = glyph(FontAwesome.Glyph.VOLUME_DOWN, size = 16.0, useStyle = false)
+    private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 16.0, useStyle = false)
 
     private val playerControlsBinding = playerViewModel.playingStatusProperty.objectBinding {
         if (it == PlayingStatus.Playing) {
@@ -72,6 +71,7 @@ class PlayerMainView : View() {
 
     private val volumeSlider by lazy {
         slider(-30..5) {
+            maxWidth = 100.0
             id = "volumeSlider"
             bind(playerViewModel.volumeProperty)
             majorTickUnit = 8.0

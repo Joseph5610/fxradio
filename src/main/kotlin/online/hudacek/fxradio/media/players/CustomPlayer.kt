@@ -50,7 +50,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     private var streamUrl = ""
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         logger.error(throwable) { "Stream unavailable..." }
     }
 
@@ -66,58 +66,59 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
             val deMuxer = Demuxer.make()
             val streamInfo = deMuxer.getStream(streamUrl)
-
             val audioStreamId = streamInfo?.streamId
             val audioDecoder = streamInfo?.decoder
 
-            audioDecoder?.let {
-                val samples = MediaAudio.make(
-                        it.frameSize,
-                        it.sampleRate,
-                        it.channels,
-                        it.channelLayout,
-                        it.sampleFormat)
+            try {
+                audioDecoder?.let {
+                    val samples = MediaAudio.make(
+                            it.frameSize,
+                            it.sampleRate,
+                            it.channels,
+                            it.channelLayout,
+                            it.sampleFormat)
 
-                //Info about decoder
-                logger.debug { it }
+                    //Info about decoder
+                    logger.debug { it }
 
-                val converter = MediaAudioConverterFactory.createConverter(
-                        MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
-                        samples)
-                audioFrame = AudioFrame.make(converter.javaFormat)
-                        ?: throw StreamUnavailableException("No output device available!")
+                    val converter = MediaAudioConverterFactory.createConverter(
+                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
+                            samples)
+                    audioFrame = AudioFrame.make(converter.javaFormat)
+                            ?: throw StreamUnavailableException("No output device available!")
 
-                var rawAudio: ByteBuffer? = null
+                    var rawAudio: ByteBuffer? = null
 
-                //Log audio format
-                logger.info { audioFrame?.format }
+                    //Log audio format
+                    logger.info { audioFrame?.format }
 
-                changeVolume(lastTriedVolumeChange)
+                    changeVolume(lastTriedVolumeChange)
 
-                val packet = MediaPacket.make()
-                while (deMuxer.read(packet) >= 0) {
-                    if (!isActive) break
-                    if (packet.streamIndex == audioStreamId) {
-                        var offset = 0
-                        var bytesRead = 0
-                        do {
-                            bytesRead += it.decode(samples, packet, offset)
-                            if (samples.isComplete) {
-                                rawAudio = converter.toJavaAudio(rawAudio, samples)
-                                audioFrame?.play(rawAudio)
-                            }
-                            offset += bytesRead
-                        } while (offset < packet.size)
+                    val packet = MediaPacket.make()
+                    while (deMuxer.read(packet) >= 0) {
+                        if (!isActive) break
+                        if (packet.streamIndex == audioStreamId) {
+                            var offset = 0
+                            var bytesRead = 0
+                            do {
+                                bytesRead += it.decode(samples, packet, offset)
+                                if (samples.isComplete) {
+                                    rawAudio = converter.toJavaAudio(rawAudio, samples)
+                                    audioFrame?.play(rawAudio)
+                                }
+                                offset += bytesRead
+                            } while (offset < packet.size)
+                        }
                     }
+                    do {
+                        it.decode(samples, null, 0)
+                        if (samples.isComplete) {
+                            rawAudio = converter.toJavaAudio(rawAudio, samples)
+                            audioFrame?.play(rawAudio)
+                        }
+                    } while (samples.isComplete)
                 }
-
-                do {
-                    it.decode(samples, null, 0)
-                    if (samples.isComplete) {
-                        rawAudio = converter.toJavaAudio(rawAudio, samples)
-                        audioFrame?.play(rawAudio)
-                    }
-                } while (samples.isComplete)
+            } finally {
                 deMuxer.close()
                 audioFrame?.dispose()
             }
