@@ -31,14 +31,14 @@ class PlayerMenu : Controller() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private var playerCheck: CheckMenuItem by singleAssign()
+    private var playerTypeItem: CheckMenuItem by singleAssign()
 
     private val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
     private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
 
     init {
         playerViewModel.playerTypeProperty.onChange {
-            playerCheck.isSelected = it == PlayerType.Custom
+            playerTypeItem.isSelected = it == PlayerType.Custom
         }
     }
 
@@ -60,7 +60,8 @@ class PlayerMenu : Controller() {
 
             separator()
 
-            playerCheck = checkmenuitem(messages["menu.player.switch"]) {
+            playerTypeItem = checkmenuitem(messages["menu.player.switch"]) {
+                isSelected = playerViewModel.playerTypeProperty.value == PlayerType.Custom
                 action {
                     playerViewModel.playerTypeProperty.value =
                             if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
