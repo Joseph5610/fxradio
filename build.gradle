@@ -48,7 +48,8 @@ ext.versions = [
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
         junit              : "5.4.0",
-        awaitility         : "4.0.3"
+        awaitility         : "4.0.3",
+        flagIcon           : "1.1.0"
 ]
 
 dependencies {
@@ -87,7 +88,7 @@ dependencies {
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"
     compile "com.vdurmont:semver4j:$versions.semver"
 
-    compile 'org.codehaus.griffon.plugins:griffon-flagicons-javafx:1.1.0'
+    compile "org.codehaus.griffon.plugins:griffon-flagicons-javafx:$versions.flagIcon"
 
     //Players
     compile "io.humble:humble-video-all:$versions.humble"
