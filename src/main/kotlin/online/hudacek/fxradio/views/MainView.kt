@@ -24,7 +24,6 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.events.NotificationEvent
-import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menu.MenuBarView
@@ -43,7 +42,9 @@ class MainView : View(FxRadio.appName) {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private val leftPaneView: LibraryView by inject()
+    //Main views of the app
+    private val menuBarView: MenuBarView by inject()
+    private val libraryView: LibraryView by inject()
     private val playerMainView: PlayerMainView by inject()
     private val stationsMainView: StationsMainView by inject()
 
@@ -59,10 +60,6 @@ class MainView : View(FxRadio.appName) {
     }
 
     override fun onDock() {
-
-        if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
-            fire(NotificationEvent(messages["player.ffmpeg.info"]))
-        }
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             playerViewModel.releasePlayer()
@@ -73,7 +70,8 @@ class MainView : View(FxRadio.appName) {
 
     override val root = vbox {
         setPrefSize(800.0, 600.0)
-        add<MenuBarView>()
+        add(menuBarView)
+
         notificationPane {
             isShowFromTop = true
 
@@ -82,11 +80,12 @@ class MainView : View(FxRadio.appName) {
             }
 
             content {
-                splitpane(Orientation.HORIZONTAL, leftPaneView.root, rightPane) {
+                splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
                     setDividerPositions(app.config.double(Config.Keys.windowDivider, 0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
 
+                    //Save position of divider to config file
                     dividers[0].positionProperty().onChange {
                         with(app.config) {
                             set(Config.Keys.windowDivider to it)
@@ -95,8 +94,8 @@ class MainView : View(FxRadio.appName) {
                     }
 
                     //Constrains width of left pane
-                    leftPaneView.root.minWidthProperty().bind(widthProperty().divide(5))
-                    leftPaneView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
+                    libraryView.root.minWidthProperty().bind(widthProperty().divide(5))
+                    libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
                 }
             }
         }
