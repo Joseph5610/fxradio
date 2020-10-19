@@ -49,7 +49,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     init {
         stationProperty.onChange {
             it?.let {
-                stationsHistoryView::add
+                stationsHistoryView.add(it)
                 if (it.isValid()) {
                     playingStatusProperty.value = PlayingStatus.Stopped
                     playingStatusProperty.value = PlayingStatus.Playing
