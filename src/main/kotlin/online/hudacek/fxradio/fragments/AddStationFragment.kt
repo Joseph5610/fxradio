@@ -19,7 +19,7 @@ package online.hudacek.fxradio.fragments
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.viewmodel.AddStationModel

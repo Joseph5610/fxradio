@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.api
 
 import io.reactivex.Single
+import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.*
 import retrofit2.http.Body
@@ -61,22 +62,33 @@ interface StationsApi {
     fun vote(@Path("uuid") uuid: String): Single<VoteResult>
 
     companion object : Component() {
+        private val logger = KotlinLogging.logger {}
 
         private const val defaultApiServer = "de1.api.radio-browser.info"
         private const val defaultDnsHost = "all.api.radio-browser.info"
 
-        //try to connect to working API server
+        //try to find working API server
         private val inetAddressHostname: String by lazy {
             try {
-                InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
+                logger.debug { "Getting hostname from DNS..." }
+                val hostname = InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
+                //Save the hostname for future
+                with(app.config) {
+                    set(Config.Keys.apiServer to hostname)
+                    save()
+                }
+                hostname
             } catch (e: Exception) {
-                //fallback
+                logger.error(e) { "Hostname resolving failed" }
+
+                //use stored value or hardcoded value as fallback
                 app.config.string(Config.Keys.apiServer, defaultApiServer)
             }
         }
 
-        //API server URL property which is actually used for requests
-        //Can be changed in app: About -> server selection
+        //API server URL property which is used for requests
+        //If nothing is stored in app.properties, it will try to find working API server from inetAddressHostname property
+        //Otherwise stored value is uses
         val hostname: String = ""
             get() = when {
                 app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
@@ -85,6 +97,6 @@ interface StationsApi {
             }
 
         val client by lazy { ApiClient("https://$hostname") }
-        val service by lazy { client.create(StationsApi::class)}
+        val service by lazy { client.create(StationsApi::class) }
     }
 }

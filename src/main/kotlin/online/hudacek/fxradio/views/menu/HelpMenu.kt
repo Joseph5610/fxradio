@@ -58,6 +58,12 @@ class HelpMenu : Controller() {
                 }
             }
 
+            item(messages["menu.help.clearServer"]).action {
+                confirm(messages["server.clear.confirm"], messages["server.clear.text"], owner = primaryStage) {
+                    menuViewModel.clearServer()
+                }
+            }
+
             separator()
             item(messages["menu.help.openhomepage"]).action {
                 menuViewModel.openWebsite()

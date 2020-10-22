@@ -26,6 +26,7 @@ import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.utils.smallLabel
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 import tornadofx.controlsfx.popover
@@ -73,7 +74,7 @@ class StationsDataGridView : View() {
         }
 
         cellCache {
-            vbox(alignment = Pos.CENTER) {
+            vbox {
                 onRightClick {
                     popover {
                         title = it.name
@@ -104,9 +105,17 @@ class StationsDataGridView : View() {
                 }
                 label(it.name) {
                     style {
-                        fontSize = 14.px
+                        fontSize = 13.px
                     }
                 }
+                val stationTagsSplit = it.tags.split(",")
+                val tagsLabel = if (stationTagsSplit.size > 1) {
+                    stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
+                } else {
+                    stationTagsSplit[0].capitalize()
+                }
+
+                smallLabel(tagsLabel)
             }
         }
 

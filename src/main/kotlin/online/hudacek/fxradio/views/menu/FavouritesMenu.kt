@@ -20,7 +20,7 @@ import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.viewmodel.LibraryType

@@ -54,6 +54,8 @@ object Config {
         const val playerAnimate = "player.animate"
         const val notifications = "notifications"
         const val windowDivider = "window.divider"
+        const val windowShowLibrary = "window.showLibrary"
+        const val windowShowCountries = "window.showCountries"
         const val logLevel = "log.level"
     }
 

@@ -9,7 +9,7 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*

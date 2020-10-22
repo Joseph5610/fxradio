@@ -42,12 +42,16 @@ import java.net.URLEncoder
 
 private val logger = KotlinLogging.logger {}
 
-
 /*
  * Helper extension functions for UI
  */
+internal fun EventTarget.smallLabel(observableValue: ObservableValue<String>, op: Label.() -> Unit = {}) = label(observableValue) {
+    addClass(Styles.boldText)
+    addClass(Styles.grayLabel)
+    op.invoke(this)
+}
+
 internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}) = label(text) {
-    paddingLeft = 10.0
     addClass(Styles.boldText)
     addClass(Styles.grayLabel)
     op.invoke(this)

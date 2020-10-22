@@ -22,7 +22,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.storage.ImageCache
@@ -61,6 +61,19 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
         fire(NotificationEvent(messages["cache.clear.error"]))
         logger.error(it) { "Exception when clearing cache" }
     }
+
+    fun clearServer() = runAsync(daemon = true) {
+        with(app.config) {
+            remove(Config.Keys.apiServer)
+            save()
+        }
+    } success {
+        fire(NotificationEvent(messages["server.clear.ok"], FontAwesome.Glyph.CHECK))
+    } fail {
+        fire(NotificationEvent(messages["server.clear.error"]))
+        logger.error(it) { "Exception when clearing server" }
+    }
+
 
     fun handleVote(): Disposable = StationsApi.service
             .vote(playerViewModel.stationProperty.value.stationuuid)

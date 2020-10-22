@@ -23,7 +23,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menu.MenuBarView

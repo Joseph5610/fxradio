@@ -5,7 +5,7 @@ import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import tornadofx.*
@@ -77,8 +77,15 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
             if (it == PlayingStatus.Playing) {
                 //Ignore stations with empty stream URL
                 stationProperty.value.url_resolved?.let { url ->
-                    MediaPlayerWrapper.changeVolume(volumeProperty.value)
-                    MediaPlayerWrapper.play(url)
+                    with(MediaPlayerWrapper) {
+                        if (isInitialized) {
+                            changeVolume(volumeProperty.value)
+                            play(url)
+                        } else {
+                            //Error while initializing player
+                            fire(NotificationEvent(messages["player.init.error"]))
+                        }
+                    }
                 }
             } else {
                 MediaPlayerWrapper.stop()

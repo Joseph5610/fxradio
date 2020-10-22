@@ -16,6 +16,12 @@
 
 package online.hudacek.fxradio.media
 
+import tornadofx.FXEvent
+
+data class MetaData(val stationName: String, val nowPlaying: String)
+
+class MetaDataChanged(val newMetaData: MetaData) : FXEvent()
+
 /**
  * Common interface for all available players
  */
