@@ -18,7 +18,8 @@ package online.hudacek.fxradio.views.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Property
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -87,16 +88,11 @@ class PlayerMainView : View() {
     }
 
     init {
-        val animate = app.config.boolean(Config.Keys.playerAnimate, true)
-        val notifications = app.config.boolean(Config.Keys.notifications, true)
-        val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
-        val volume = app.config.double(Config.Keys.volume, 0.0)
-
         playerViewModel.item = PlayerModel(
-                animate = animate,
-                playerType = playerType,
-                notifications = notifications,
-                volume = volume)
+                animate = Property(Properties.PLAYER_ANIMATE).get(true),
+                playerType = PlayerType.valueOf(Property(Properties.PLAYER).get("VLC")),
+                notifications = Property(Properties.NOTIFICATIONS).get(true),
+                volume = Property(Properties.VOLUME).get(0.0))
     }
 
     override val root = vbox {

@@ -19,10 +19,8 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.disposables.Disposable
 import javafx.stage.StageStyle
 import mu.KotlinLogging
-import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.*
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.storage.ImageCache
@@ -41,7 +39,7 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
     private val playerViewModel: PlayerViewModel by inject()
 
     val useNative: Boolean
-        get() = MacUtils.isMac && app.config.boolean(Config.Keys.useNativeMenuBar, true)
+        get() = MacUtils.isMac && Property(Properties.NATIVE_MENU_BAR).get(true)
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -63,10 +61,7 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
     }
 
     fun clearServer() = runAsync(daemon = true) {
-        with(app.config) {
-            remove(Config.Keys.apiServer)
-            save()
-        }
+        Property(Properties.API_SERVER).remove()
     } success {
         fire(NotificationEvent(messages["server.clear.ok"], FontAwesome.Glyph.CHECK))
     } fail {

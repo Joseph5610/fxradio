@@ -20,6 +20,7 @@ import javafx.stage.Stage
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.styles.StylesDark
 import online.hudacek.fxradio.utils.Version
+import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
 import online.hudacek.fxradio.viewmodel.LogModel
 import online.hudacek.fxradio.viewmodel.LogViewModel
@@ -58,10 +59,9 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
 
         //init logger level based on stored settings
-        val savedLevel = Level.valueOf(config.string(Config.Keys.logLevel, "INFO"))
+        val savedLevel = Property(Properties.LOG_LEVEL).get("INFO").asLevel()
         logViewModel.item = LogModel(savedLevel)
         logViewModel.commit()
-
     }
 
     /**

@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.views
 
-import com.sun.org.apache.bcel.internal.generic.Select
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
@@ -202,7 +201,10 @@ class LibraryView : View() {
                 }
 
                 add(countriesListView)
-                add(retryLink)
+
+                vbox(alignment = Pos.CENTER) {
+                    add(retryLink)
+                }
                 countriesListView.prefHeightProperty().bind(heightProperty())
             }
         }

@@ -16,9 +16,6 @@
 
 package online.hudacek.fxradio
 
-/**
- * Basic app configuration
- */
 object Config {
 
     object Resources {
@@ -34,30 +31,12 @@ object Config {
     object Paths {
         private val appName = FxRadio.appName.toLowerCase()
 
-        const val youtubeSearchUrl = "https://www.youtube.com/results?search_query="
-
         val baseAppPath = System.getProperty("user.home") + "/.$appName/"
         val confDirPath = "$baseAppPath/conf"
         val cacheDirPath = "$baseAppPath/cache"
         val dbPath = "$baseAppPath/$appName.db"
     }
 
-    /**
-     * Keys for values stored in app.properties
-     */
-    object Keys {
-        const val useNativeMenuBar = "menu.native"
-        const val volume = "player.volume"
-        const val playerType = "player.type"
-        const val apiServer = "app.server"
-        const val searchQuery = "search.query"
-        const val playerAnimate = "player.animate"
-        const val notifications = "notifications"
-        const val windowDivider = "window.divider"
-        const val windowShowLibrary = "window.showLibrary"
-        const val windowShowCountries = "window.showCountries"
-        const val logLevel = "log.level"
-    }
 
     /**
      * Flags that change app behaviour

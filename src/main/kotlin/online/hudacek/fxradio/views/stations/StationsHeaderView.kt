@@ -65,7 +65,7 @@ class StationsHeaderView : View() {
                         libraryViewModel.refreshLibrary(LibraryType.Favourites)
                     }
                     showWhen {
-                        libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))
+                        libraryViewModel.selected(LibraryType.Favourites)
                     }
                     addClass(Styles.coloredButton)
                 }

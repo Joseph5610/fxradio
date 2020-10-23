@@ -17,18 +17,20 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
+import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.*
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.isValidCountry
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
+import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -79,9 +81,10 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
 
     init {
-        item = LibraryModel(searchQuery = app.config.string(Config.Keys.searchQuery, ""),
-                showLibrary = app.config.boolean(Config.Keys.windowShowLibrary, true),
-                showCountries = app.config.boolean(Config.Keys.windowShowCountries, true))
+        item = LibraryModel(
+                searchQuery = Property(Properties.SEARCH_QUERY).get(""),
+                showLibrary = Property(Properties.WINDOW_SHOW_LIBRARY).get(true),
+                showCountries = Property(Properties.WINDOW_SHOW_COUNTRIES).get(true))
     }
 
     fun showCountries(): Disposable = StationsApi.service
@@ -94,16 +97,19 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
                 }.asObservable()
                 countriesProperty.setAll(result)
             }, {
-                fire(NotificationEvent(messages["downloadError"]))
+                fire(NotificationEvent(messages["downloadError"], op = {
+                    actions.setAll(Action(messages["retry"]) {
+                        showCountries()
+                    })
+                }))
             })
 
     override fun onCommit() {
-        with(app.config) {
-            set(Config.Keys.searchQuery to searchQueryProperty.value)
-            set(Config.Keys.windowShowCountries to showCountriesProperty.value)
-            set(Config.Keys.windowShowLibrary to showLibraryProperty.value)
-            save()
-        }
+        saveProperties(listOf(
+                Pair(Properties.SEARCH_QUERY, searchQueryProperty.value),
+                Pair(Properties.WINDOW_SHOW_COUNTRIES, showCountriesProperty.value),
+                Pair(Properties.WINDOW_SHOW_LIBRARY, showLibraryProperty.value)
+        ))
     }
 
     fun showSearchResults() = select(SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim()))
@@ -118,4 +124,6 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     fun select(selectedLibrary: SelectedLibrary) {
         selectedProperty.value = selectedLibrary
     }
+
+    fun selected(libraryType: LibraryType): BooleanBinding = selectedProperty.isEqualTo(SelectedLibrary(libraryType))
 }

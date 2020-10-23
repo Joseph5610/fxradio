@@ -3,22 +3,23 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.saveProperties
 import tornadofx.*
 
 enum class PlayingStatus {
     Playing, Stopped, Error
 }
 
-class PlayerModel(animate: Boolean = true, station: Station = Station.stub,
+class PlayerModel(station: Station = Station.stub,
+                  animate: Boolean = true,
                   playerType: PlayerType, notifications: Boolean = true,
                   volume: Double,
                   playingStatus: PlayingStatus = PlayingStatus.Stopped) {
-
 
     val animate: Boolean by property(animate)
     val notifications: Boolean by property(notifications)
@@ -105,13 +106,14 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
     override fun onCommit() {
         //Save API server
-        with(app.config) {
-            set(Config.Keys.playerAnimate to animateProperty.value)
-            set(Config.Keys.playerType to playerTypeProperty.value)
-            set(Config.Keys.notifications to notificationsProperty.value)
-            set(Config.Keys.volume to volumeProperty.value)
-            save()
-        }
+        saveProperties(
+                listOf(
+                        Pair(Properties.PLAYER_ANIMATE, animateProperty.value),
+                        Pair(Properties.PLAYER, playerTypeProperty.value),
+                        Pair(Properties.NOTIFICATIONS, notificationsProperty.value),
+                        Pair(Properties.VOLUME, volumeProperty.value)
+                )
+        )
     }
 }
 

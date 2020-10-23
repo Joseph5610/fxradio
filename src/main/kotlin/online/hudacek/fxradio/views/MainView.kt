@@ -19,11 +19,13 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Orientation
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
 import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menu.MenuBarView
@@ -32,6 +34,7 @@ import online.hudacek.fxradio.views.stations.StationsMainView
 import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
+import java.util.*
 
 /**
  * Main View
@@ -81,16 +84,13 @@ class MainView : View(FxRadio.appName) {
 
             content {
                 splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
-                    setDividerPositions(app.config.double(Config.Keys.windowDivider, 0.30))
+                    setDividerPositions(Property(Properties.WINDOW_DIVIDER).get(0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
 
                     //Save position of divider to config file
                     dividers[0].positionProperty().onChange {
-                        with(app.config) {
-                            set(Config.Keys.windowDivider to it)
-                            save()
-                        }
+                        Property(Properties.WINDOW_DIVIDER).save(it)
                     }
 
                     //Constrains width of left pane

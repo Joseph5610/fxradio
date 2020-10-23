@@ -18,7 +18,9 @@ package online.hudacek.fxradio.api
 
 import io.reactivex.Single
 import mu.KotlinLogging
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.model.*
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -73,25 +75,25 @@ interface StationsApi {
                 logger.debug { "Getting hostname from DNS..." }
                 val hostname = InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
                 //Save the hostname for future
-                with(app.config) {
-                    set(Config.Keys.apiServer to hostname)
-                    save()
-                }
+                val a = Property(Properties.API_SERVER)
+                a.save(hostname)
                 hostname
             } catch (e: Exception) {
                 logger.error(e) { "Hostname resolving failed" }
 
                 //use stored value or hardcoded value as fallback
-                app.config.string(Config.Keys.apiServer, defaultApiServer)
+                Property(Properties.API_SERVER).get(defaultApiServer)
             }
         }
+
+        private val appConfig = Property(Properties.API_SERVER)
 
         //API server URL property which is used for requests
         //If nothing is stored in app.properties, it will try to find working API server from inetAddressHostname property
         //Otherwise stored value is uses
         val hostname: String = ""
             get() = when {
-                app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
+                appConfig.isPresent -> appConfig.get()
                 field.isEmpty() -> inetAddressHostname
                 else -> field
             }

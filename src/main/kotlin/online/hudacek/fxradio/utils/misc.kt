@@ -33,6 +33,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.views.player.TickerView
+import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
@@ -122,6 +123,8 @@ internal fun <T> applySchedulers(): SingleTransformer<T, T>? =
 
 //Command line utilities
 internal fun command(command: String) = Runtime.getRuntime().exec(command)
+
+internal fun String.asLevel() = Level.valueOf(this)
 
 internal val Process.result: String
     get() {
