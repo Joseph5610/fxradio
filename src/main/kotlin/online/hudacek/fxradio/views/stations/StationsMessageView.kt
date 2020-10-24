@@ -37,7 +37,7 @@ class StationsMessageView : View() {
     private val searchGlyph by lazy { glyph(FontAwesome.Glyph.SEARCH) }
     private val errorGlyph by lazy { glyph(FontAwesome.Glyph.WARNING) }
 
-    private val headerTextProperty = viewModel.stationsViewStateProperty.stringBinding {
+    private val headerTextProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionError"]
             StationsViewState.ShortQuery -> messages["searchingLibrary"]
@@ -45,7 +45,7 @@ class StationsMessageView : View() {
         }
     }
 
-    private val headerGraphicProperty = viewModel.stationsViewStateProperty.objectBinding {
+    private val headerGraphicProperty = viewModel.viewStateProperty.objectBinding {
         when (it) {
             StationsViewState.Error -> errorGlyph
             StationsViewState.ShortQuery -> searchGlyph
@@ -53,7 +53,7 @@ class StationsMessageView : View() {
         }
     }
 
-    private val subHeaderTextProperty = viewModel.stationsViewStateProperty.stringBinding {
+    private val subHeaderTextProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionErrorDesc"]
             StationsViewState.ShortQuery -> messages["searchingLibraryDesc"]
@@ -78,7 +78,7 @@ class StationsMessageView : View() {
             graphicProperty().bind(headerGraphicProperty)
             addClass(Styles.header)
             showWhen {
-                viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.NoResults)
+                viewModel.viewStateProperty.isNotEqualTo(StationsViewState.NoResults)
             }
         }
     }
@@ -90,7 +90,7 @@ class StationsMessageView : View() {
             textAlignment = TextAlignment.CENTER
 
             showWhen {
-                viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.NoResults)
+                viewModel.viewStateProperty.isEqualTo(StationsViewState.NoResults)
             }
 
             textProperty().bind(noResultsTextProperty)
@@ -114,7 +114,7 @@ class StationsMessageView : View() {
         add(subHeader)
         
         showWhen {
-            viewModel.stationsViewStateProperty.isNotEqualTo(StationsViewState.Normal)
+            viewModel.viewStateProperty.isNotEqualTo(StationsViewState.Normal)
         }
     }
 }

@@ -18,6 +18,7 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import javafx.scene.paint.Paint
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.flagIcon
 import online.hudacek.fxradio.styles.Styles
@@ -27,9 +28,12 @@ import online.hudacek.fxradio.utils.smallLabel
 import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedLibrary
+import org.controlsfx.control.SegmentedButton
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.customTextfield
+import tornadofx.controlsfx.plusAssign
+import tornadofx.controlsfx.segmentedbutton
 
 class LibraryView : View() {
 

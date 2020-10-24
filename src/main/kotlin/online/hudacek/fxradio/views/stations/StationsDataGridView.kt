@@ -109,10 +109,10 @@ class StationsDataGridView : View() {
                     }
                 }
                 val stationTagsSplit = it.tags.split(",")
-                val tagsLabel = if (stationTagsSplit.size > 1) {
-                    stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
-                } else {
-                    stationTagsSplit[0].capitalize()
+                val tagsLabel = when {
+                    it.tags.isEmpty() -> it.country
+                    stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
+                    else -> stationTagsSplit[0].capitalize()
                 }
 
                 smallLabel(tagsLabel)
@@ -120,12 +120,12 @@ class StationsDataGridView : View() {
         }
 
         showWhen {
-            stationsViewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
+            stationsViewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)
         }
     }
 
     private fun showLibraryType(selected: SelectedLibrary) {
-        stationsViewModel.stationsViewStateProperty.value = StationsViewState.Loading
+        stationsViewModel.viewStateProperty.value = StationsViewState.Loading
         with(selected) {
             when (type) {
                 LibraryType.Country -> stationsViewModel.stationsByCountry(params)

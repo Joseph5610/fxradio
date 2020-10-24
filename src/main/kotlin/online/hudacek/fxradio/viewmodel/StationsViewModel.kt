@@ -14,13 +14,13 @@ import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
-class StationsModel {
-    val stations: ObservableList<Station> by property(observableListOf())
-    val stationsViewState: StationsViewState by objectProperty(StationsViewState.NoResults)
-}
-
 enum class StationsViewState {
     Normal, Error, Loading, NoResults, ShortQuery
+}
+
+class StationsModel {
+    val stations: ObservableList<Station> by property(observableListOf())
+    val viewState: StationsViewState by objectProperty(StationsViewState.NoResults)
 }
 
 /**
@@ -34,7 +34,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     private val logger = KotlinLogging.logger {}
 
     val stationsProperty = bind(StationsModel::stations) as ListProperty
-    val stationsViewStateProperty = bind(StationsModel::stationsViewState) as ObjectProperty
+    val viewStateProperty = bind(StationsModel::viewState) as ObjectProperty
 
     //retrieve top voted stations list from endpoint
     val topStations: Disposable
@@ -63,16 +63,16 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
                     .compose(applySchedulers())
                     .subscribe(::show, ::handleError)
         } else {
-            stationsViewStateProperty.value = StationsViewState.ShortQuery
+            viewStateProperty.value = StationsViewState.ShortQuery
         }
     }
 
     fun show(stations: List<Station>) {
         stationsProperty.set(stations.asObservable())
         if (stations.isEmpty()) {
-            stationsViewStateProperty.value = StationsViewState.NoResults
+            viewStateProperty.value = StationsViewState.NoResults
         } else {
-            stationsViewStateProperty.value = StationsViewState.Normal
+            viewStateProperty.value = StationsViewState.Normal
         }
     }
 
@@ -91,7 +91,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
 
     private fun handleError(throwable: Throwable) {
         logger.error(throwable) { "Error showing station library" }
-        stationsViewStateProperty.value = StationsViewState.Error
+        viewStateProperty.value = StationsViewState.Error
     }
 
     override fun toString() = "StationsViewModel(stationsProperty=${stationsProperty.value})"

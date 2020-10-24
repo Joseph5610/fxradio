@@ -69,11 +69,26 @@ class StationsHeaderView : View() {
                     }
                     addClass(Styles.coloredButton)
                 }
+                /*
+                               hbox(alignment = Pos.CENTER) {
+
+                                   segmentedbutton {
+                                       this += togglebutton("Search by name") {
+                                           isSelected = true
+                                       }
+                                       this += togglebutton("Search by tag") {
+                                           isSelected = false
+                                       }
+                                   }
+                                   showWhen {
+                                       libraryViewModel.selected(LibraryType.Search)
+                                   }
+                }*/
             }
         }
 
         showWhen {
-            viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
+            viewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)
         }
 
         addClass(Styles.backgroundWhiteSmoke)

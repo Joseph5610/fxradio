@@ -125,5 +125,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
         selectedProperty.value = selectedLibrary
     }
 
-    fun selected(libraryType: LibraryType): BooleanBinding = selectedProperty.isEqualTo(SelectedLibrary(libraryType))
+    fun selected(libraryType: LibraryType): BooleanBinding = selectedProperty.booleanBinding {
+        it?.type == libraryType
+    }
 }
