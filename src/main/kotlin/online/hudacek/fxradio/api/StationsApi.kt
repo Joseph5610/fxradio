@@ -75,8 +75,7 @@ interface StationsApi {
                 logger.debug { "Getting hostname from DNS..." }
                 val hostname = InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
                 //Save the hostname for future
-                val a = Property(Properties.API_SERVER)
-                a.save(hostname)
+                Property(Properties.API_SERVER).save(hostname)
                 hostname
             } catch (e: Exception) {
                 logger.error(e) { "Hostname resolving failed" }

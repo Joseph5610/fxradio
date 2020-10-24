@@ -12,6 +12,7 @@ import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.applySchedulers
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 enum class StationsViewState {
@@ -81,7 +82,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
             Database
                     .Favourites.cleanup()
                     .subscribe({
-                        fire(NotificationEvent(messages["database.clear.ok"]))
+                        fire(NotificationEvent(messages["database.clear.ok"], FontAwesome.Glyph.CHECK))
                     }, {
                         logger.error(it) { "Can't remove favourites!" }
                         fire(NotificationEvent(messages["database.clear.error"]))

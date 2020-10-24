@@ -73,8 +73,8 @@ object Database {
                         .parameter("uuid", station.stationuuid)
                         .toSingle { it.getInt(1) > 0 }
 
-        fun add(stationProperty: Property<Station>) = addFavourite(stationProperty.value)
-        private fun addFavourite(station: Station): Single<Boolean> = insert(tableName, station)
+        fun add(stationProperty: Property<Station>) = add(stationProperty.value)
+        fun add(station: Station): Single<Boolean> = insert(tableName, station)
 
         fun remove(stationProperty: Property<Station>) = removeFavourite(stationProperty.value)
         private fun removeFavourite(station: Station): Single<Boolean> =

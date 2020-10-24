@@ -17,10 +17,13 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
@@ -30,6 +33,7 @@ import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
+import java.util.*
 
 class AddStationFragment : Fragment() {
 
@@ -38,6 +42,8 @@ class AddStationFragment : Fragment() {
 
     //Bind Countries object to just country name
     private val autoCompleteCountries = observableListOf<String>()
+
+    private val saveToFavourites = booleanProperty(false)
 
     init {
         autoCompleteCountries.bind(libraryViewModel.countriesProperty) { it.name }
@@ -132,6 +138,9 @@ class AddStationFragment : Fragment() {
                             promptText = messages["add.tags.prompt"]
                         }
                     }
+                    field {
+                        checkbox(messages["add.favourites"], saveToFavourites)
+                    }
                 }
 
                 hbox(5) {
@@ -141,7 +150,6 @@ class AddStationFragment : Fragment() {
                         addClass(Styles.primaryButton)
                         action {
                             viewModel.commit {
-                                viewModel.item = AddStationModel(AddStationBody())
                                 StationsApi.service
                                         .add(AddStationBody(
                                                 name = viewModel.name.value,
@@ -154,11 +162,15 @@ class AddStationFragment : Fragment() {
                                                 language = viewModel.language.value,
                                                 tags = viewModel.tags.value
                                         ))
+                                        .compose(applySchedulers())
                                         .subscribe({
-                                            fire(NotificationEvent(messages["add.success"]))
+                                            saveToFavourites()
+                                            fire(NotificationEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
                                             close()
+                                            //Cleanup view model
+                                            viewModel.item = AddStationModel(AddStationBody())
                                         }, {
-                                            this@notificationPane[FontAwesome.Glyph.CHECK] = messages["add.error"]
+                                            this@notificationPane[FontAwesome.Glyph.WARNING] = messages["add.error"]
                                         })
                             }
                         }
@@ -172,6 +184,25 @@ class AddStationFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun saveToFavourites() {
+        if (saveToFavourites.value) {
+            val uuid = UUID.randomUUID()
+            val station = Station(
+                    stationuuid = uuid.toString(),
+                    name = viewModel.name.value,
+                    url_resolved = viewModel.url.value,
+                    homepage = viewModel.homepage.value,
+                    favicon = viewModel.favicon.value,
+                    country = viewModel.country.value,
+                    countrycode = viewModel.countryCode.value,
+                    state = viewModel.state.value,
+                    language = viewModel.language.value,
+                    tags = viewModel.tags.value
+            )
+            Database.Favourites.add(station).subscribe()
         }
     }
 }
