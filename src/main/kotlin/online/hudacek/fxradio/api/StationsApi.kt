@@ -18,10 +18,12 @@ package online.hudacek.fxradio.api
 
 import io.reactivex.Single
 import mu.KotlinLogging
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.model.*
+import online.hudacek.fxradio.viewmodel.ServersModel
+import online.hudacek.fxradio.viewmodel.ServersViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -45,14 +47,8 @@ interface StationsApi {
     @GET("json/stations/topvote/50")
     fun getTopStations(): Single<List<Station>>
 
-    @GET("json/stations/byuuid/{uuid}")
-    fun getStationInfo(@Path("uuid") uuid: String): Single<List<Station>>
-
     @POST("json/add")
     fun add(@Body addBody: AddStationBody): Single<AddStationResult>
-
-    @GET("json/tags")
-    fun getTags(): Single<List<Tags>>
 
     @POST("json/countries")
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
@@ -63,41 +59,37 @@ interface StationsApi {
     @GET("json/vote/{uuid}")
     fun vote(@Path("uuid") uuid: String): Single<VoteResult>
 
+    @GET("json/url/{uuid}")
+    fun click(@Path("uuid") uuid: String): Single<ClickResult>
+
     companion object : Component() {
+
         private val logger = KotlinLogging.logger {}
 
-        private const val defaultApiServer = "de1.api.radio-browser.info"
-        private const val defaultDnsHost = "all.api.radio-browser.info"
+        private val serversViewModel: ServersViewModel by inject()
+        
+        private val appConfig = Property(Properties.API_SERVER)
 
-        //try to find working API server
-        private val inetAddressHostname: String by lazy {
-            try {
-                logger.debug { "Getting hostname from DNS..." }
-                val hostname = InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
-                //Save the hostname for future
-                Property(Properties.API_SERVER).save(hostname)
-                hostname
-            } catch (e: Exception) {
-                logger.error(e) { "Hostname resolving failed" }
-
-                //use stored value or hardcoded value as fallback
-                Property(Properties.API_SERVER).get(defaultApiServer)
+        init {
+            //The little logic here: Try to init model with the previously stored value
+            //Only if the value is not stored try to get it by calling InetAddress.getAllByName
+            if (appConfig.isPresent) {
+                logger.debug { "Setting model from app.config" }
+                serversViewModel.item = ServersModel(appConfig.get())
+            } else {
+                serversViewModel.availableServers.let {
+                    if (it.isNotEmpty()) {
+                        logger.debug { "Setting model from app.config" }
+                        serversViewModel.item = ServersModel(appConfig.get(it[0]), it)
+                    } else {
+                        logger.debug { "Setting fallback default value of model" }
+                        serversViewModel.item = ServersModel(Config.Resources.defaultApiServer)
+                    }
+                }
             }
         }
 
-        private val appConfig = Property(Properties.API_SERVER)
-
-        //API server URL property which is used for requests
-        //If nothing is stored in app.properties, it will try to find working API server from inetAddressHostname property
-        //Otherwise stored value is uses
-        val hostname: String = ""
-            get() = when {
-                appConfig.isPresent -> appConfig.get()
-                field.isEmpty() -> inetAddressHostname
-                else -> field
-            }
-
-        val client by lazy { ApiClient("https://$hostname") }
+        val client by lazy { ApiClient("https://${serversViewModel.selectedProperty.value}") }
         val service by lazy { client.create(StationsApi::class) }
     }
 }

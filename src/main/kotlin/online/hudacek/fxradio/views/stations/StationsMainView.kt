@@ -30,12 +30,11 @@ class StationsMainView : View() {
     private val dataGridView: StationsDataGridView by inject()
 
     override val root = vbox {
-        addClass(Styles.backgroundWhite)
         vgrow = Priority.ALWAYS
         add(messageView)
         add(headerView)
         add(dataGridView)
         dataGridView.root.fitToParentHeight()
-        messageView.root.prefWidthProperty().bind(widthProperty())
+        addClass(Styles.backgroundWhite)
     }
 }

@@ -6,9 +6,11 @@ import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.saveProperties
+import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
 enum class PlayingStatus {
@@ -50,10 +52,18 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     init {
         stationProperty.onChange {
             it?.let {
-                stationsHistoryView.add(it)
                 if (it.isValid()) {
+                    stationsHistoryView.add(it)
+
+                    //Restart playing status
                     playingStatusProperty.value = PlayingStatus.Stopped
                     playingStatusProperty.value = PlayingStatus.Playing
+
+                    //Increase count of the station
+                    StationsApi.service
+                            .click(it.stationuuid)
+                            .compose(applySchedulers())
+                            .subscribe()
                 }
             }
         }
@@ -70,8 +80,10 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
         }
 
         //Set volume for current player
+        //Save the ViewModel after setting new value
         volumeProperty.onChange {
             MediaPlayerWrapper.changeVolume(it)
+            commit()
         }
 
         playingStatusProperty.onChange {

@@ -132,7 +132,7 @@ class StationsDataGridView : View() {
                 LibraryType.Favourites -> stationsViewModel.favourites
                 LibraryType.History -> stationsViewModel.show(stationsHistoryView.stationsProperty)
                 LibraryType.Search -> stationsViewModel.search(params)
-                else -> stationsViewModel.topStations
+                    else -> stationsViewModel.topStations
             }
         }
     }

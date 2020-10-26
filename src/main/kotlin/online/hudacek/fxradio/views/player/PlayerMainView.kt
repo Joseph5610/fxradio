@@ -72,18 +72,14 @@ class PlayerMainView : View() {
 
     private val volumeSlider by lazy {
         slider(-30..5) {
+            bind(playerViewModel.volumeProperty)
+
             maxWidth = 100.0
             id = "volumeSlider"
-            bind(playerViewModel.volumeProperty)
             majorTickUnit = 8.0
             isSnapToTicks = true
             isShowTickMarks = true
             paddingTop = 10.0
-
-            //Save the ViewModel after setting new value
-            valueProperty().onChange {
-                playerViewModel.commit()
-            }
         }
     }
 

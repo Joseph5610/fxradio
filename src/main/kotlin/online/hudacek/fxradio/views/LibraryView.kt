@@ -145,7 +145,11 @@ class LibraryView : View() {
         }
 
         validator {
-            if (it!!.length >= 49) error(messages["field.max.length"]) else null
+            when {
+                it!!.isNotEmpty() && it.length < 3 -> error(messages["searchingLibraryDesc"])
+                it.length >= 49 -> error(messages["field.max.length"])
+                else -> null
+            }
         }
     }
 

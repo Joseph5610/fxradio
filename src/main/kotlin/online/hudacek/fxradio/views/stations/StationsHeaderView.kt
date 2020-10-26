@@ -41,20 +41,16 @@ class StationsHeaderView : View() {
         }
     }
 
-    private val libraryName by lazy {
-        label(libraryNameTextProperty) {
-            paddingTop = 8.0
-            paddingBottom = 8.0
-            addClass(Styles.subheader)
-        }
-    }
-
     override val root = borderpane {
         padding = insets(horizontal = 10.0, vertical = 0.0)
         maxHeight = 10.0
 
         left {
-            add(libraryName)
+            label(libraryNameTextProperty) {
+                paddingTop = 8.0
+                paddingBottom = 8.0
+                addClass(Styles.subheader)
+            }
         }
 
         right {
@@ -69,21 +65,6 @@ class StationsHeaderView : View() {
                     }
                     addClass(Styles.coloredButton)
                 }
-                /*
-                               hbox(alignment = Pos.CENTER) {
-
-                                   segmentedbutton {
-                                       this += togglebutton("Search by name") {
-                                           isSelected = true
-                                       }
-                                       this += togglebutton("Search by tag") {
-                                           isSelected = false
-                                       }
-                                   }
-                                   showWhen {
-                                       libraryViewModel.selected(LibraryType.Search)
-                                   }
-                }*/
             }
         }
 

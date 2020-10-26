@@ -17,12 +17,12 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.copyMenu
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.viewmodel.ServersViewModel
 import online.hudacek.fxradio.viewmodel.StatsModel
 import online.hudacek.fxradio.viewmodel.StatsViewModel
 import online.hudacek.fxradio.viewmodel.StatsViewState
@@ -34,6 +34,7 @@ import tornadofx.*
 class StatsFragment : Fragment() {
 
     private val viewModel: StatsViewModel by inject()
+    private val serversViewModel: ServersViewModel by inject()
 
     private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
@@ -67,7 +68,7 @@ class StatsFragment : Fragment() {
 
         vbox(alignment = Pos.CENTER) {
             requestFocusOnSceneAvailable()
-            hyperlink(StationsApi.hostname) {
+            hyperlink(serversViewModel.selectedProperty) {
                 paddingAll = 10.0
                 addClass(Styles.header)
                 action {
