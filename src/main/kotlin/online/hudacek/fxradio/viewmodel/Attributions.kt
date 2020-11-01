@@ -1,7 +1,9 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.StringProperty
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.observableListOf
+import tornadofx.property
 
 object Attributions {
     val all by lazy {
@@ -15,6 +17,12 @@ object Attributions {
                 AttributionModel("log4j", "2.9.1", Licenses.apache20),
                 AttributionModel("kotlin-logging", "1.7.9", Licenses.apache20),
                 AttributionModel("FlagIcon", "1.1.0", Licenses.apache20),
+                AttributionModel("nsmenufx", "2.1.7", license = Licenses.nsMenuFx),
+                AttributionModel("commons-io", "2.6", license = Licenses.apache20),
+                AttributionModel("rxkotlinfx", "2.2.2", license = Licenses.apache20),
+                AttributionModel("sqliteJdbc", "3.21.0.1", license = Licenses.apache20),
+                AttributionModel("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),
+                AttributionModel("Semver4j", "3.1.0", license = Licenses.semver),
                 AttributionModel("TickerView", license = Licenses.tickerView),
                 AttributionModel("macOS install disk background", license = Licenses.bg),
                 AttributionModel("Application logo, radio station icon", license = Licenses.iconArchive)
@@ -106,6 +114,39 @@ private object Licenses {
             "limitations under the License.")
 
     val tickerView = License(content = "https://gitlab.light.kow.is/kowis-projects/deskscreen")
+    val nsMenuFx = License("BSD 3-Clause \"New\" or \"Revised\" License", "Copyright (c) 2015, codecentric AG\n" +
+            "All rights reserved.\n" +
+            "\n" +
+            "Redistribution and use in source and binary forms, with or without\n" +
+            "modification, are permitted provided that the following conditions are met:\n" +
+            "    * Redistributions of source code must retain the above copyright\n" +
+            "      notice, this list of conditions and the following disclaimer.\n" +
+            "    * Redistributions in binary form must reproduce the above copyright\n" +
+            "      notice, this list of conditions and the following disclaimer in the\n" +
+            "      documentation and/or other materials provided with the distribution.\n" +
+            "    * Neither the name of the codecentric AG nor the\n" +
+            "      names of its contributors may be used to endorse or promote products\n" +
+            "      derived from this software without specific prior written permission.\n" +
+            "\n" +
+            "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n" +
+            "ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n" +
+            "WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n" +
+            "DISCLAIMED. IN NO EVENT SHALL CODECENTRIC AG BE LIABLE FOR ANY\n" +
+            "DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n" +
+            "(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n" +
+            "LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n" +
+            "ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n" +
+            "(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n" +
+            "SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.")
+    val semver = License("The MIT License (MIT)", "The MIT License (MIT)\n" +
+            "\n" +
+            "Copyright (c) 2015-present Vincent DURMONT vdurmont@gmail.com\n" +
+            "\n" +
+            "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n" +
+            "\n" +
+            "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n" +
+            "\n" +
+            "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.")
     val controlsfx = License("BSD 3-Clause license", "BSD 3-Clause License\n" +
             "\n" +
             "Copyright (c) 2013, ControlsFX\n" +

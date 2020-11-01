@@ -48,7 +48,7 @@ class LibraryView : View() {
             action {
                 viewModel.showCountries()
             }
-            showWhen { viewModel.countriesProperty.sizeProperty.isEqualTo(0) }
+            showWhen { viewModel.countriesProperty.emptyProperty() }
         }
     }
 
@@ -96,7 +96,7 @@ class LibraryView : View() {
                 viewModel.select(SelectedLibrary(LibraryType.Country, it.name))
             }
             showWhen {
-                viewModel.countriesProperty.sizeProperty.isNotEqualTo(0).and(viewModel.showCountriesProperty)
+                viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
             }
             addClass(Styles.libraryListView)
         }

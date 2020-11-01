@@ -93,7 +93,9 @@ internal fun EventTarget.autoUpdatingCopyMenu(clipboard: Clipboard,
                                               value: StringProperty) = contextmenu {
     item(name) {
         action {
-            clipboard.update(value.value)
+            if (value.value != null) {
+                clipboard.update(value.value)
+            }
         }
 
         value.onChange {
