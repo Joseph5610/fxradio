@@ -19,8 +19,8 @@ package online.hudacek.fxradio.api
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.model.*
 import online.hudacek.fxradio.viewmodel.ServersModel
 import online.hudacek.fxradio.viewmodel.ServersViewModel
@@ -28,8 +28,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import tornadofx.*
-import java.net.InetAddress
+import tornadofx.Component
 
 /**
  * Stations API
@@ -38,8 +37,8 @@ import java.net.InetAddress
  */
 interface StationsApi {
 
-    @POST("json/stations/bycountry/{countryCode}")
-    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryCode") countryCode: String): Single<List<Station>>
+    @POST("json/stations/bycountryexact/{countryName}")
+    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryName") countryName: String): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>

@@ -23,11 +23,16 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.ImageCache
+import tornadofx.observableListOf
 import tornadofx.runLater
 
 private val logger = KotlinLogging.logger {}
 
 val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
+
+//If the downloading failed, store the station here and
+//don't download the file again until next run of the app
+private val invalidStations by lazy { observableListOf<Station>() }
 
 /**
  * This method is used for custom downloading of station's logo
@@ -36,17 +41,20 @@ val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
  * It is using custom URLConnection with fake user-agent because some servers deny
  * response when no user agent is send
  *
- * In case of error Industry-Radio-Tower-icon static png file is used as station logo
+ * In case of error defaultRadioLogo static png file is used as station logo
  */
 internal fun ImageView.createImage(station: Station) {
-    this.image = defaultRadioLogo
+    image = defaultRadioLogo
 
+    //Ignore invalid stations
     if (!station.isValid()) return
+    if (invalidStations.contains(station)) return
 
     if (ImageCache.has(station)) {
-        this.image = ImageCache.get(station)
+        image = ImageCache.get(station)
     } else {
         if (station.favicon.isNullOrEmpty()) {
+            invalidStations.add(station)
             logger.debug { "Image for ${station.name} is null or empty" }
             return
         }
@@ -58,12 +66,13 @@ internal fun ImageView.createImage(station: Station) {
                         response.body()?.let {
                             ImageCache.save(station, it.byteStream())
                             runLater {
-                                this.image = ImageCache.get(station)
+                                image = ImageCache.get(station)
                             }
                         }
                     },
                     {
                         logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
+                        invalidStations.add(station)
                     })
         }
     }
