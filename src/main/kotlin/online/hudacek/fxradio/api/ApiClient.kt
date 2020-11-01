@@ -17,14 +17,9 @@
 package online.hudacek.fxradio.api
 
 import mu.KotlinLogging
-import okhttp3.ConnectionPool
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import online.hudacek.fxradio.FxRadio
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
@@ -33,41 +28,12 @@ import kotlin.reflect.KClass
  * Helper to construct Retrofit instance with custom HTTP client with
  * enabled logging and custom User-Agent string
  */
-class ApiClient(private val baseUrl: String) {
+class ApiClient(private val baseUrl: String) : OkHttpHelper() {
 
     private val logger = KotlinLogging.logger {}
 
-    //To Limit the active connections
-    private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
-
-    //What is app sending as a User Agent string
-    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
-
-    //Logging of http requests
-    private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }
-
     //Stores created type of service, Just a convenience for logging
     private var service: Any? = null
-
-    //Construct http client with custom user agent
-    private val httpClient by lazy {
-        //Set logging level for HTTP requests to full request and response
-        //Http requests are logged only on debug app logger level
-        loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        OkHttpClient.Builder()
-                .addNetworkInterceptor { chain ->
-                    chain.proceed(
-                            chain.request()
-                                    .newBuilder()
-                                    .header("User-Agent", userAgent)
-                                    .build()
-                    )
-                }
-                .addInterceptor(loggerInterceptor)
-                .connectionPool(connectionPool)
-                .build()
-    }
 
     //Retrofit instance
     private val client: Retrofit
@@ -83,13 +49,5 @@ class ApiClient(private val baseUrl: String) {
         logger.debug { "Creating service: $service" }
         this.service = service.java
         return client.create(service.java)
-    }
-
-    fun shutdown() {
-        logger.info { "Shutting down client for service $service" }
-        logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }
-        //Kill all OkHttp Threads
-        httpClient.dispatcher().executorService().shutdown()
-        httpClient.connectionPool().evictAll()
     }
 }

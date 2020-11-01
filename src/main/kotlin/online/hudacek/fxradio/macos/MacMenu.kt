@@ -37,7 +37,7 @@ object MacMenu {
         return MenuBar().apply {
             if (!isInTest) {
                 useSystemMenuBarProperty().set(true)
-                tk.setApplicationMenu(op.invoke(this))
+                tk.setApplicationMenu(op(this))
                 tk.setMenuBar(this)
             }
         }
@@ -45,7 +45,7 @@ object MacMenu {
 
     fun appMenu(op: Menu.() -> Unit = {}) = Menu(FxRadio.appName).apply {
         if (!isInTest) {
-            op.invoke(this)
+            op(this)
             items.addAll(
                     tk.createHideMenuItem(FxRadio.appName),
                     tk.createHideOthersMenuItem(),

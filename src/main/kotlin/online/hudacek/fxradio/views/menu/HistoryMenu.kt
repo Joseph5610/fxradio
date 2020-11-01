@@ -27,15 +27,15 @@ class HistoryMenu : Controller() {
 
     private val menuViewModel: MenuViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val stationsHistoryViewModel: StationsHistoryViewModel by inject()
+    private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        Database.History.get().subscribe({
-            stationsHistoryViewModel.item = StationsHistoryModel(it.asObservable())
+        Database.history.select().subscribe({
+            historyViewModel.item = HistoryModel(it.asObservable())
         }, {
             it.printStackTrace()
-            stationsHistoryViewModel.item = StationsHistoryModel()
+            historyViewModel.item = HistoryModel()
         })
     }
 
@@ -47,9 +47,9 @@ class HistoryMenu : Controller() {
             separator()
             menu(messages["menu.history.recent"]) {
                 disableWhen {
-                    stationsHistoryViewModel.stationsProperty.emptyProperty()
+                    historyViewModel.stationsProperty.emptyProperty()
                 }
-                items.bind(stationsHistoryViewModel.stationsProperty) {
+                items.bind(historyViewModel.stationsProperty) {
                     item("${it.name} (${it.countrycode})") {
                         //for some reason macos native menu does not respect
                         //width/height setting so it is disabled for now
@@ -70,11 +70,11 @@ class HistoryMenu : Controller() {
             separator()
             item(messages["menu.history.clear"]) {
                 disableWhen {
-                    stationsHistoryViewModel.stationsProperty.emptyProperty()
+                    historyViewModel.stationsProperty.emptyProperty()
                 }
                 action {
                     confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
-                        stationsHistoryViewModel.cleanup()
+                        historyViewModel.cleanup()
                         libraryViewModel.refreshLibrary(LibraryType.History)
                     }
                 }

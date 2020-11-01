@@ -44,7 +44,7 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
 internal fun NotificationPane.show(glyph: FontAwesome.Glyph,
                                    message: String,
                                    op: NotificationPane.() -> Unit = {}) {
-    op.invoke(this)
+    op(this)
     this[glyph] = message
 }
 

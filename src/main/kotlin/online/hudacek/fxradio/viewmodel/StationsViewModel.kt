@@ -9,10 +9,7 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.NotificationEvent
-import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.applySchedulers
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 enum class StationsViewState {
@@ -44,12 +41,6 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
                 .compose(applySchedulers())
                 .subscribe(::show, ::handleError)
 
-    //retrieve favourites from DB
-    val favourites: Disposable
-        get() = Database.Favourites.get()
-                .compose(applySchedulers())
-                .subscribe(::show, ::handleError)
-
     //retrieve all stations from given country from endpoint
     fun stationsByCountry(country: String): Disposable = StationsApi.service
             .getStationsByCountry(CountriesBody(), country)
@@ -74,19 +65,6 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
             viewStateProperty.value = StationsViewState.NoResults
         } else {
             viewStateProperty.value = StationsViewState.Normal
-        }
-    }
-
-    fun cleanFavourites() {
-        confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-            Database
-                    .Favourites.cleanup()
-                    .subscribe({
-                        fire(NotificationEvent(messages["database.clear.ok"], FontAwesome.Glyph.CHECK))
-                    }, {
-                        logger.error(it) { "Can't remove favourites!" }
-                        fire(NotificationEvent(messages["database.clear.error"]))
-                    })
         }
     }
 

@@ -202,7 +202,7 @@ class AddStationFragment : Fragment() {
                     language = viewModel.language.value,
                     tags = viewModel.tags.value
             )
-            Database.Favourites.add(station).subscribe()
+            Database.favourites.insert(station).subscribe()
         }
     }
 }

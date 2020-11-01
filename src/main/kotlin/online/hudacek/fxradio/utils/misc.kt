@@ -20,10 +20,10 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
+import javafx.beans.property.StringProperty
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.Node
-import javafx.scene.control.ContextMenu
 import javafx.scene.control.Label
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
@@ -35,6 +35,7 @@ import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.views.player.TickerView
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.glyph
 import java.io.BufferedReader
@@ -49,41 +50,58 @@ private val logger = KotlinLogging.logger {}
 internal fun EventTarget.smallLabel(observableValue: ObservableValue<String>, op: Label.() -> Unit = {}) = label(observableValue) {
     addClass(Styles.boldText)
     addClass(Styles.grayLabel)
-    op.invoke(this)
+    op(this)
 }
 
 internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}) = label(text) {
     addClass(Styles.boldText)
     addClass(Styles.grayLabel)
-    op.invoke(this)
+    op(this)
 }
 
-internal fun EventTarget.glyph(glyph: FontAwesome.Glyph, size: Double = 35.0, useStyle: Boolean = true) = glyph("FontAwesome", glyph) {
+internal fun EventTarget.glyph(glyph: FontAwesome.Glyph,
+                               size: Double = 35.0,
+                               useStyle: Boolean = true,
+                               op: Glyph.() -> Unit = {}) = glyph("FontAwesome", glyph) {
     size(size)
     if (useStyle) {
         style {
             padding = box(10.px, 5.px)
         }
     }
+    op(this)
 }
 
 internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
-        op.invoke(this)
+        op(this)
     }
 }
 
 internal fun EventTarget.copyMenu(clipboard: Clipboard,
                                   name: String,
-                                  value: String = "", op: ContextMenu.() -> Unit = {}) = contextmenu {
+                                  value: String = "") = contextmenu {
     item(name) {
         action {
-            clipboard.setContent {
-                putString(value)
+            clipboard.update(value)
+        }
+    }
+}
+
+internal fun EventTarget.autoUpdatingCopyMenu(clipboard: Clipboard,
+                                              name: String,
+                                              value: StringProperty) = contextmenu {
+    item(name) {
+        action {
+            clipboard.update(value.value)
+        }
+
+        value.onChange {
+            action {
+                clipboard.update(it!!)
             }
         }
     }
-    op(this)
 }
 
 internal fun Clipboard.update(newValue: String) = setContent {
@@ -93,7 +111,7 @@ internal fun Clipboard.update(newValue: String) = setContent {
 internal fun Window.setOnSpacePressed(action: () -> Unit) {
     addEventHandler(KeyEvent.KEY_PRESSED) {
         if (it.code == KeyCode.SPACE) {
-            action.invoke()
+            action()
         }
     }
 }

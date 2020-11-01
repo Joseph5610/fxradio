@@ -22,7 +22,6 @@ import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import mu.KotlinLogging
-import online.hudacek.fxradio.viewmodel.LibraryType
 import online.hudacek.fxradio.fragments.StationInfoFragment
 import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.showWhen
@@ -41,9 +40,9 @@ class StationsDataGridView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
-    private val stationsHistoryView: StationsHistoryViewModel by inject()
-
+    private val historyViewModel: HistoryViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+    private val favouritesViewModel: FavouritesViewModel by inject()
 
     init {
         stationsViewModel.item = StationsModel()
@@ -108,6 +107,7 @@ class StationsDataGridView : View() {
                         fontSize = 13.px
                     }
                 }
+
                 val stationTagsSplit = it.tags.split(",")
                 val tagsLabel = when {
                     it.tags.isEmpty() -> it.country
@@ -129,10 +129,10 @@ class StationsDataGridView : View() {
         with(selected) {
             when (type) {
                 LibraryType.Country -> stationsViewModel.stationsByCountry(params)
-                LibraryType.Favourites -> stationsViewModel.favourites
-                LibraryType.History -> stationsViewModel.show(stationsHistoryView.stationsProperty)
+                LibraryType.Favourites -> stationsViewModel.show(favouritesViewModel.stationsProperty)
+                LibraryType.History -> stationsViewModel.show(historyViewModel.stationsProperty)
                 LibraryType.Search -> stationsViewModel.search(params)
-                    else -> stationsViewModel.topStations
+                else -> stationsViewModel.topStations
             }
         }
     }

@@ -16,10 +16,12 @@
 
 package online.hudacek.fxradio.views.stations
 
-import javafx.geometry.Pos
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.viewmodel.*
+import online.hudacek.fxradio.viewmodel.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
 
 /**
@@ -50,21 +52,6 @@ class StationsHeaderView : View() {
                 paddingTop = 8.0
                 paddingBottom = 8.0
                 addClass(Styles.subheader)
-            }
-        }
-
-        right {
-            vbox(alignment = Pos.CENTER_RIGHT) {
-                button(messages["favourites.clean"]) {
-                    action {
-                        viewModel.cleanFavourites()
-                        libraryViewModel.refreshLibrary(LibraryType.Favourites)
-                    }
-                    showWhen {
-                        libraryViewModel.selected(LibraryType.Favourites)
-                    }
-                    addClass(Styles.coloredButton)
-                }
             }
         }
 

@@ -20,10 +20,10 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.ImageCache
-import tornadofx.*
-import java.net.URL
+import tornadofx.runLater
 
 private val logger = KotlinLogging.logger {}
 
@@ -51,18 +51,20 @@ internal fun ImageView.createImage(station: Station) {
             return
         }
 
-        runAsync(daemon = true) {
-            URL(station.favicon).openConnection().apply {
-                setRequestProperty("User-Agent", "Wget/1.13.4 (linux-gnu)")
-                getInputStream().use { stream ->
-                    ImageCache.save(station, stream)
-                }
-            }
-        } success {
-            this.image = ImageCache.get(station)
-        } fail {
-            logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
-            this.image = defaultRadioLogo
+        //Download the image with OkHttp client
+        station.favicon?.let { url ->
+            HttpClientHolder.client.call(url,
+                    { response ->
+                        response.body()?.let {
+                            ImageCache.save(station, it.byteStream())
+                            runLater {
+                                this.image = ImageCache.get(station)
+                            }
+                        }
+                    },
+                    {
+                        logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
+                    })
         }
     }
 }

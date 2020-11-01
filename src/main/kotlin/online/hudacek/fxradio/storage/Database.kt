@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.storage
 
 import io.reactivex.Single
-import javafx.beans.property.Property
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
@@ -59,77 +58,53 @@ object Database {
                 })
     }
 
-    object Favourites {
+    val favourites by lazy { Table("FAVOURITES") }
+    val history by lazy { Table("HISTORY") }
 
-        private const val tableName = "FAVOURITES"
+    /**
+     * Common operations on database of stations with different tables
+     */
+    class Table(val table: String) {
+        fun select() = connection.select("SELECT * FROM $table")
+                .toObservable {
+                    Station(it.getString("stationuuid"),
+                            it.getString("name"),
+                            it.getString("url_resolved"),
+                            it.getString("homepage"),
+                            it.getString("favicon"),
+                            it.getString("tags"),
+                            it.getString("country"),
+                            it.getString("countrycode"),
+                            it.getString("state"),
+                            it.getString("language"),
+                            it.getString("codec"),
+                            it.getInt("bitrate"))
+                }
+                .toList()
 
-        //get data about station from db and return latest info from API about it
-        fun get(): Single<MutableList<Station>> = select(tableName)
+        fun delete() = connection.execute("delete from $table").toSingle()
 
-        fun has(stationProperty: Property<Station>) = has(stationProperty.value)
+        fun insert(station: Station) = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
+                "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
+                "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
+                .parameter("name", station.name)
+                .parameter("stationuuid", station.stationuuid)
+                .parameter("url_resolved", station.url_resolved)
+                .parameter("homepage", station.homepage)
+                .parameter("country", station.country)
+                .parameter("countrycode", station.countrycode)
+                .parameter("state", station.state)
+                .parameter("language", station.language)
+                .parameter("favicon", station.favicon)
+                .parameter("tags", station.tags)
+                .parameter("codec", station.codec)
+                .parameter("bitrate", station.bitrate)
+                .toSingle { it.getInt(1) > 0 }
 
-        fun has(station: Station): Single<Boolean> =
-                connection.select("SELECT COUNT(*) FROM $tableName WHERE stationuuid = :uuid")
-                        .parameter("uuid", station.stationuuid)
-                        .toSingle { it.getInt(1) > 0 }
-
-        fun add(stationProperty: Property<Station>) = add(stationProperty.value)
-        fun add(station: Station): Single<Boolean> = insert(tableName, station)
-
-        fun remove(stationProperty: Property<Station>) = removeFavourite(stationProperty.value)
-        private fun removeFavourite(station: Station): Single<Boolean> =
-                connection.insert("delete from $tableName where stationuuid = :stationuuid")
+        fun remove(station: Station): Single<Boolean> =
+                connection.insert("delete from $table where stationuuid = :stationuuid")
                         .parameter("stationuuid", station.stationuuid)
                         .toSingle { it.getInt(1) > 0 }
 
-
-        fun cleanup(): Single<Int> = delete(tableName)
     }
-
-    object History {
-
-        private const val tableName = "HISTORY"
-
-        fun get(): Single<MutableList<Station>> = select(tableName)
-
-        fun add(station: Station): Single<Boolean> = insert(tableName, station)
-
-        fun cleanup(): Single<Int> = delete(tableName)
-    }
-
-    private fun select(table: String) = connection.select("SELECT * FROM $table")
-            .toObservable {
-                Station(it.getString("stationuuid"),
-                        it.getString("name"),
-                        it.getString("url_resolved"),
-                        it.getString("homepage"),
-                        it.getString("favicon"),
-                        it.getString("tags"),
-                        it.getString("country"),
-                        it.getString("countrycode"),
-                        it.getString("state"),
-                        it.getString("language"),
-                        it.getString("codec"),
-                        it.getInt("bitrate"))
-            }
-            .toList()
-
-    private fun delete(table: String) = connection.execute("delete from $table").toSingle()
-
-    private fun insert(table: String, station: Station) = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
-            "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
-            "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
-            .parameter("name", station.name)
-            .parameter("stationuuid", station.stationuuid)
-            .parameter("url_resolved", station.url_resolved)
-            .parameter("homepage", station.homepage)
-            .parameter("country", station.country)
-            .parameter("countrycode", station.countrycode)
-            .parameter("state", station.state)
-            .parameter("language", station.language)
-            .parameter("favicon", station.favicon)
-            .parameter("tags", station.tags)
-            .parameter("codec", station.codec)
-            .parameter("bitrate", station.bitrate)
-            .toSingle { it.getInt(1) > 0 }
 }

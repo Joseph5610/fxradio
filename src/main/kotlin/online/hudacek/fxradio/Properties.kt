@@ -17,7 +17,6 @@
 package online.hudacek.fxradio
 
 import tornadofx.Component
-import java.lang.IllegalArgumentException
 
 /**
  * Keys for values stored in app.properties
@@ -45,7 +44,7 @@ class Property(property: Properties) : Component() {
     val key = property.key
 
     val isPresent: Boolean
-        get() = app.config.getProperty(key) != null
+        get() = app.config.containsKey(key)
 
     inline fun <reified T> get(): T {
         return when (T::class) {

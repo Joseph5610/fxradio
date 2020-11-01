@@ -3,15 +3,19 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
-import online.hudacek.fxradio.api.model.Station
+import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.get
+import tornadofx.onChange
+import tornadofx.property
 
 enum class PlayingStatus {
     Playing, Stopped, Error
@@ -40,7 +44,9 @@ class PlayerModel(station: Station = Station.stub,
  */
 class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
-    private val stationsHistoryView: StationsHistoryViewModel by inject()
+    private val logger = KotlinLogging.logger {}
+
+    private val historyViewModel: HistoryViewModel by inject()
 
     val animateProperty = bind(PlayerModel::animate) as BooleanProperty
     val notificationsProperty = bind(PlayerModel::notifications) as BooleanProperty
@@ -53,7 +59,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
         stationProperty.onChange {
             it?.let {
                 if (it.isValid()) {
-                    stationsHistoryView.add(it)
+                    historyViewModel.add(it)
 
                     //Restart playing status
                     playingStatusProperty.value = PlayingStatus.Stopped
@@ -63,7 +69,11 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                     StationsApi.service
                             .click(it.stationuuid)
                             .compose(applySchedulers())
-                            .subscribe()
+                            .subscribe({
+                                logger.debug { "Click registered: $it" }
+                            }, {
+                                logger.debug { "Click registering failed, ignoring the response" }
+                            })
                 }
             }
         }
@@ -83,7 +93,6 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
         //Save the ViewModel after setting new value
         volumeProperty.onChange {
             MediaPlayerWrapper.changeVolume(it)
-            commit()
         }
 
         playingStatusProperty.onChange {

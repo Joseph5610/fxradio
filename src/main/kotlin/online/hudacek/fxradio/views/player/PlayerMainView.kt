@@ -18,8 +18,8 @@ package online.hudacek.fxradio.views.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -80,6 +80,11 @@ class PlayerMainView : View() {
             isSnapToTicks = true
             isShowTickMarks = true
             paddingTop = 10.0
+
+            //Save new value
+            valueProperty().onChange {
+                playerViewModel.commit()
+            }
         }
     }
 

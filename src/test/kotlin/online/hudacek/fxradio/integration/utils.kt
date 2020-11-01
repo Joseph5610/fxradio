@@ -34,7 +34,7 @@ internal fun waitFor(seconds: Long, op: () -> Boolean = { false }) =
         try {
             println("Wait $seconds secs for operation to finish")
             WaitForAsyncUtils.waitFor(seconds, TimeUnit.SECONDS) {
-                op.invoke()
+                op()
             }
         } catch (e: Throwable) {
             fail<Unit>("waitFor $op didn't finish in $seconds secs.", e)

@@ -20,7 +20,8 @@ import javafx.beans.property.Property
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.api.model.Station
-import tornadofx.*
+import tornadofx.booleanBinding
+import tornadofx.disableWhen
 
 /**
  * Convenience methods for boolean bindings
@@ -32,5 +33,5 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
 }
 
 internal fun menu(name: String, op: Menu.() -> Unit = {}) = Menu(name).apply {
-    op.invoke(this)
+    op(this)
 }
