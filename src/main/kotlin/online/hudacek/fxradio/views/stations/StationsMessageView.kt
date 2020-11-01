@@ -25,6 +25,7 @@ import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+import tornadofx.controlsfx.glyph
 
 /**
  * This is a view that shows different errors or info messages on stationsView
@@ -41,6 +42,14 @@ class StationsMessageView : View() {
         when (it) {
             StationsViewState.Error -> messages["connectionError"]
             StationsViewState.ShortQuery -> messages["searchingLibrary"]
+            StationsViewState.NoResults -> {
+                val params = libraryViewModel.selectedProperty.value.params
+                if (params.isEmpty()) {
+                    messages["noResults"]
+                } else {
+                    "${messages["noResultsFor"]} \"$params\""
+                }
+            }
             else -> ""
         }
     }
@@ -60,39 +69,15 @@ class StationsMessageView : View() {
         }
     }
 
-    private val noResultsTextProperty = libraryViewModel.selectedProperty.stringBinding {
-        it?.let {
-            if (it.params.isEmpty()) {
-                messages["noResults"]
-            } else {
-                "${messages["noResultsFor"]} \"${it.params}\""
-            }
-        }
-    }
-
-    //Main live for message
     private val header by lazy {
-        label(headerTextProperty) {
-            id = "stationMessageHeader"
-            graphicProperty().bind(headerGraphicProperty)
-            addClass(Styles.header)
-            showWhen {
-                viewModel.viewStateProperty.isNotEqualTo(StationsViewState.NoResults)
-            }
-        }
-    }
-
-    private val noResultsText by lazy {
         text {
-            addClass(Styles.header)
+            bind(headerTextProperty)
+
+            id = "stationMessageHeader"
             wrappingWidth = 350.0
             textAlignment = TextAlignment.CENTER
 
-            showWhen {
-                viewModel.viewStateProperty.isEqualTo(StationsViewState.NoResults)
-            }
-
-            textProperty().bind(noResultsTextProperty)
+            addClass(Styles.header)
             addClass(Styles.defaultTextColor)
         }
     }
@@ -107,11 +92,13 @@ class StationsMessageView : View() {
 
     override val root = vbox(alignment = Pos.CENTER) {
         paddingTop = 120.0
+        glyph {
+            graphicProperty().bind(headerGraphicProperty)
+        }
 
         add(header)
-        add(noResultsText)
         add(subHeader)
-        
+
         showWhen {
             viewModel.viewStateProperty.isNotEqualTo(StationsViewState.Normal)
         }

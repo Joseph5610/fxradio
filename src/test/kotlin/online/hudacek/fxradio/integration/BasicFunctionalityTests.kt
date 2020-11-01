@@ -18,9 +18,12 @@ package online.hudacek.fxradio.integration
 
 import javafx.scene.control.*
 import javafx.scene.input.KeyCode
+import javafx.scene.text.Text
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
+import online.hudacek.fxradio.api.ApiClient
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.storage.Database
@@ -35,7 +38,9 @@ import org.testfx.framework.junit5.ApplicationExtension
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
-import tornadofx.*
+import tornadofx.DataGrid
+import tornadofx.SmartListCell
+import tornadofx.find
 
 /**
  * Basic interactions test
@@ -70,6 +75,22 @@ class BasicFunctionalityTests {
 
     @Stop
     fun stop() = app.stop()
+
+    @Test
+    fun apiTest() {
+        val hostname = "https://de1.api.radio-browser.info"
+        val client = ApiClient(hostname)
+        client.create(StationsApi::class)
+                .getTopStations()
+                .subscribe { stations ->
+                    Assertions.assertEquals(50, stations.size)
+                    stations.forEach {
+                        //top 50 stations should not have empty URL and have name
+                        Assertions.assertTrue(it.name.isNotEmpty())
+                        Assertions.assertTrue(it.url_resolved != null)
+                    }
+                }.dispose()
+    }
 
     @Test
     @Order(1)
@@ -127,7 +148,7 @@ class BasicFunctionalityTests {
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        val historydbCount = Database.History.get().blockingGet().size
+        val historydbCount = Database.history.select().blockingGet().size
 
         if (historydbCount == 0) {
             //Stations library is containing all stations
@@ -179,7 +200,7 @@ class BasicFunctionalityTests {
         robot.press(KeyCode.DELETE)
         robot.write("sta")
 
-        val msgHeader = robot.find(stationMessageHeader) as Label
+        val msgHeader = robot.find(stationMessageHeader) as Text
         val msgSubHeader = robot.find(stationMessageSubHeader) as Label
 
         waitFor(2) {
