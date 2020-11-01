@@ -19,7 +19,10 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.disposables.Disposable
 import javafx.stage.StageStyle
 import mu.KotlinLogging
-import online.hudacek.fxradio.*
+import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.macos.MacUtils
@@ -27,7 +30,10 @@ import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.fail
+import tornadofx.get
+import tornadofx.success
 
 //WIP
 class MenuModel
@@ -48,6 +54,8 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
+
+    fun openAvailableServer() = find<AvailableServersFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 

@@ -44,13 +44,13 @@ class StationMenu : Controller() {
                     menuViewModel.openStationInfo()
                 }
             }
+            separator()
             item(messages["menu.station.vote"]) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
                     menuViewModel.handleVote()
                 }
             }
-
             item(messages["copy.stream.url"]) {
                 action {
                     playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }

@@ -66,24 +66,26 @@ interface StationsApi {
         private val logger = KotlinLogging.logger {}
 
         private val serversViewModel: ServersViewModel by inject()
-        
-        private val appConfig = Property(Properties.API_SERVER)
+
+        private val savedServerValue = Property(Properties.API_SERVER)
 
         init {
             //The little logic here: Try to init model with the previously stored value
             //Only if the value is not stored try to get it by calling InetAddress.getAllByName
-            if (appConfig.isPresent) {
-                logger.debug { "Setting model from app.config" }
-                serversViewModel.item = ServersModel(appConfig.get())
+            if (savedServerValue.isPresent) {
+                logger.debug { "Setting model from saved state" }
+                serversViewModel.item = ServersModel(savedServerValue.get())
             } else {
                 serversViewModel.availableServers.let {
                     if (it.isNotEmpty()) {
-                        logger.debug { "Setting model from app.config" }
-                        serversViewModel.item = ServersModel(appConfig.get(it[0]), it)
+                        logger.debug { "Setting model from available servers" }
+                        serversViewModel.item = ServersModel(savedServerValue.get(it[0]), it)
                     } else {
                         logger.debug { "Setting fallback default value of model" }
                         serversViewModel.item = ServersModel(Config.Resources.defaultApiServer)
                     }
+                    //Save the value for later use
+                    savedServerValue.save(serversViewModel.selectedProperty.value)
                 }
             }
         }

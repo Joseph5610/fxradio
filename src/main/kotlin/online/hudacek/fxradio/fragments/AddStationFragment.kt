@@ -21,12 +21,12 @@ import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.set
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -39,11 +39,12 @@ class AddStationFragment : Fragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+    private val favouritesViewModel: FavouritesViewModel by inject()
 
     //Bind Countries object to just country name
     private val autoCompleteCountries = observableListOf<String>()
 
-    private val saveToFavourites = booleanProperty(false)
+    private val saveToFavourites = booleanProperty()
 
     init {
         autoCompleteCountries.bind(libraryViewModel.countriesProperty) { it.name }
@@ -202,7 +203,7 @@ class AddStationFragment : Fragment() {
                     language = viewModel.language.value,
                     tags = viewModel.tags.value
             )
-            Database.favourites.insert(station).subscribe()
+            favouritesViewModel.add(station)
         }
     }
 }

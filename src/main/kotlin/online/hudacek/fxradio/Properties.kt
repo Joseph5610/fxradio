@@ -44,7 +44,7 @@ class Property(property: Properties) : Component() {
     val key = property.key
 
     val isPresent: Boolean
-        get() = app.config.containsKey(key)
+        get() = app.config.keys.any { it == key }
 
     inline fun <reified T> get(): T {
         return when (T::class) {

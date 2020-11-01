@@ -48,6 +48,10 @@ class HelpMenu : Controller() {
 
     val menu by lazy {
         menu(messages["menu.help"]) {
+            item(messages["menu.app.attributions"]).action {
+                menuViewModel.openAttributions()
+            }
+            separator()
             item(messages["menu.help.stats"]).action {
                 menuViewModel.openStats()
             }

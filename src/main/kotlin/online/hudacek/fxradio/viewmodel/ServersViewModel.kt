@@ -20,7 +20,6 @@ import javafx.beans.property.ListProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.StationsApi
 import tornadofx.ItemViewModel
 import tornadofx.asObservable
 import tornadofx.observableListOf
@@ -33,11 +32,8 @@ class ServersModel(selectedServer: String, availableServers: ObservableList<Stri
 }
 
 class ServersViewModel : ItemViewModel<ServersModel>() {
-
-
     val serversProperty = bind(ServersModel::servers) as ListProperty<String>
     val selectedProperty = bind(ServersModel::selected) as StringProperty
-
 
     val availableServers by lazy {
         InetAddress.getAllByName(Config.Resources.defaultDnsHost).map { it.canonicalHostName }.asObservable()

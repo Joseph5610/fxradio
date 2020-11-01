@@ -50,5 +50,6 @@ object Config {
         const val enableVersionCheck = false
         const val darkStylesEnabled = false
         const val fetchMetadataForCustomPlayerEnabled = false
+        const val enableServerSelection = false
     }
 }
