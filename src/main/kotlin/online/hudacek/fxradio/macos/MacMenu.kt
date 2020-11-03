@@ -33,13 +33,11 @@ object MacMenu {
     //NSMenu toolkit
     private val tk by lazy { MenuToolkit.toolkit(Locale.getDefault()) }
 
-    fun menuBar(op: MenuBar.() -> Menu): MenuBar {
-        return MenuBar().apply {
-            if (!isInTest) {
-                useSystemMenuBarProperty().set(true)
-                tk.setApplicationMenu(op(this))
-                tk.setMenuBar(this)
-            }
+    fun menuBar(op: MenuBar.() -> Menu) = MenuBar().apply {
+        if (!isInTest) {
+            useSystemMenuBarProperty().set(true)
+            tk.setApplicationMenu(op(this))
+            tk.setMenuBar(this)
         }
     }
 

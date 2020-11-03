@@ -17,9 +17,11 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.scene.layout.Priority
+import okhttp3.HttpUrl
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
+import online.hudacek.fxradio.api.model.AddStationResult
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.applySchedulers
@@ -33,7 +35,6 @@ import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
-import java.util.*
 
 class AddStationFragment : Fragment() {
 
@@ -41,13 +42,8 @@ class AddStationFragment : Fragment() {
     private val libraryViewModel: LibraryViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
-    //Bind Countries object to just country name
-    private val autoCompleteCountries = observableListOf<String>()
-
-    private val saveToFavourites = booleanProperty()
-
     init {
-        autoCompleteCountries.bind(libraryViewModel.countriesProperty) { it.name }
+        viewModel.autoCompleteCountriesProperty.bind(libraryViewModel.countriesProperty) { it.name }
     }
 
     override val root = notificationPane {
@@ -69,7 +65,7 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.name) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.name, maxValue = 400))
+                                if (validate(it, maxValue = 400))
                                     null
                                 else
                                     error(messages["field.invalid.length"])
@@ -82,10 +78,10 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.homepage) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.homepage, minValue = 7))
+                                if (it != null && HttpUrl.parse(it) != null)
                                     null
                                 else
-                                    error(messages["field.invalid.length"])
+                                    error(messages["field.invalid.url"])
 
                             }
                             promptText = "https://example.com/"
@@ -95,10 +91,10 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.url) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.url, minValue = 7))
+                                if (it != null && HttpUrl.parse(it) != null)
                                     null
                                 else
-                                    error(messages["field.invalid.length"])
+                                    error(messages["field.invalid.url"])
                             }
                             promptText = "https://example.com/stream.m3u"
                         }
@@ -107,10 +103,10 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.favicon) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.favicon, minValue = 7))
+                                if (it != null && HttpUrl.parse(it) != null)
                                     null
                                 else
-                                    error(messages["field.invalid.length"])
+                                    error(messages["field.invalid.url"])
                             }
                             promptText = "https://example.com/favicon.ico"
                         }
@@ -119,7 +115,7 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.language) {
                             required()
                             validator {
-                                if (viewModel.validate(viewModel.language))
+                                if (validate(it))
                                     null
                                 else
                                     error(messages["field.invalid.length"])
@@ -129,8 +125,15 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.country"]) {
                         textfield(viewModel.country) {
-                            bindAutoCompletion(autoCompleteCountries)
+                            bindAutoCompletion(viewModel.autoCompleteCountriesProperty)
                             required()
+
+                            validator {
+                                if (viewModel.autoCompleteCountriesProperty.contains(it))
+                                    null
+                                else
+                                    error(messages["field.invalid.country"])
+                            }
                             promptText = messages["add.country.prompt"]
                         }
                     }
@@ -140,7 +143,7 @@ class AddStationFragment : Fragment() {
                         }
                     }
                     field {
-                        checkbox(messages["add.favourites"], saveToFavourites)
+                        checkbox(messages["add.favourites"], viewModel.saveToFavouritesProperty)
                     }
                 }
 
@@ -165,7 +168,7 @@ class AddStationFragment : Fragment() {
                                         ))
                                         .compose(applySchedulers())
                                         .subscribe({
-                                            saveToFavourites()
+                                            saveToFavourites(it)
                                             fire(NotificationEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
                                             close()
                                             //Cleanup view model
@@ -188,11 +191,13 @@ class AddStationFragment : Fragment() {
         }
     }
 
-    private fun saveToFavourites() {
-        if (saveToFavourites.value) {
-            val uuid = UUID.randomUUID()
+    private fun validate(property: String?, minValue: Int = 3, maxValue: Int = 150) =
+            property?.length in (minValue + 1) until maxValue
+
+    private fun saveToFavourites(result: AddStationResult) {
+        if (viewModel.saveToFavouritesProperty.value) {
             val station = Station(
-                    stationuuid = uuid.toString(),
+                    stationuuid = result.uuid,
                     name = viewModel.name.value,
                     url_resolved = viewModel.url.value,
                     homepage = viewModel.homepage.value,

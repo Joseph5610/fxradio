@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.utils
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
-import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.StringProperty
@@ -123,7 +122,6 @@ internal fun Window.setOnSpacePressed(action: () -> Unit) {
  */
 internal fun App.openUrl(url: String, query: String = "") {
     val queryEncoded = URLEncoder.encode(query, "UTF-8")
-    val hostServices = HostServicesFactory.getInstance(this)
     hostServices.showDocument(url + queryEncoded)
 }
 

@@ -1,10 +1,17 @@
 package online.hudacek.fxradio.viewmodel
 
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.ListProperty
 import javafx.beans.property.StringProperty
+import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.model.AddStationBody
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.observableListOf
+import tornadofx.property
 
-class AddStationModel(station: AddStationBody) {
+class AddStationModel(station: AddStationBody,
+                      saveToFavourites: Boolean = false,
+                      autoCompleteCountries: ObservableList<String> = observableListOf()) {
     val name: String by property(station.name)
     val url: String by property(station.url)
     val homepage: String by property(station.homepage)
@@ -14,6 +21,8 @@ class AddStationModel(station: AddStationBody) {
     val state: String by property(station.state)
     val language: String by property(station.language)
     val tags: String by property(station.tags)
+    val saveToFavourites: Boolean by property(saveToFavourites)
+    val autoCompleteCountries: ObservableList<String> by property(autoCompleteCountries)
 }
 
 /**
@@ -32,13 +41,12 @@ class AddStationViewModel : ItemViewModel<AddStationModel>() {
     val state = bind(AddStationModel::state) as StringProperty
     val language = bind(AddStationModel::language) as StringProperty
     val tags = bind(AddStationModel::tags) as StringProperty
+    val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
+    val autoCompleteCountriesProperty = bind(AddStationModel::autoCompleteCountries) as ListProperty
 
     init {
         item = AddStationModel(AddStationBody())
     }
-
-    fun validate(property: StringProperty, minValue: Int = 3, maxValue: Int = 150) =
-            property.length() > minValue && property.length() < maxValue
 
     override fun toString(): String {
         return "AddStationViewModel(name=${name.value}," +

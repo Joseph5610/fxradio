@@ -32,9 +32,6 @@ class ApiClient(private val baseUrl: String) : OkHttpHelper() {
 
     private val logger = KotlinLogging.logger {}
 
-    //Stores created type of service, Just a convenience for logging
-    private var service: Any? = null
-
     //Retrofit instance
     private val client: Retrofit
         get() = Retrofit.Builder()
@@ -47,7 +44,6 @@ class ApiClient(private val baseUrl: String) : OkHttpHelper() {
     //Helper to construct Retrofit service class
     fun <T : Any> create(service: KClass<T>): T {
         logger.debug { "Creating service: $service" }
-        this.service = service.java
         return client.create(service.java)
     }
 }
