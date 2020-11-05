@@ -18,10 +18,17 @@ package online.hudacek.fxradio.integration
 
 import javafx.scene.Node
 import javafx.scene.control.Labeled
+import javafx.scene.control.TextField
+import javafx.scene.control.TextInputControl
+import javafx.scene.input.KeyCode
+import javafx.scene.text.Text
 import org.hamcrest.Matcher
 import org.junit.jupiter.api.Assertions.fail
 import org.testfx.api.FxRobot
+import org.testfx.matcher.base.NodeMatchers
 import org.testfx.matcher.control.LabeledMatchers
+import org.testfx.matcher.control.TextInputControlMatchers
+import org.testfx.matcher.control.TextMatchers
 import org.testfx.util.WaitForAsyncUtils
 import java.util.concurrent.TimeUnit
 
@@ -45,12 +52,32 @@ internal fun sleep(seconds: Long) {
     WaitForAsyncUtils.sleep(seconds, TimeUnit.SECONDS)
 }
 
-internal fun hasText(txt: String): Matcher<Labeled> {
+internal fun hasLabel(txt: String): Matcher<Labeled> {
     println("Check element has text: $txt ")
     return LabeledMatchers.hasText(txt)
 }
 
-internal fun <T : Node> FxRobot.find(name: String): T {
+internal fun hasText(txt: String): Matcher<Text> {
+    println("Check element has text: $txt ")
+    return TextMatchers.hasText(txt)
+}
+
+internal fun hasValue(txt: String): Matcher<TextInputControl> {
+    println("Check textfield has value: $txt ")
+    return TextInputControlMatchers.hasText(txt)
+}
+
+internal fun visible() = NodeMatchers.isVisible()
+internal fun invisible() = NodeMatchers.isInvisible()
+
+internal inline fun <reified T : Node> FxRobot.find(name: String): T {
     println("Find element: $name ")
-    return lookup(name).query()
+    return lookup(name).query() as T
+}
+
+internal fun FxRobot.enterText(fieldQuery: String, textToEnter: String) {
+    //Remove existing value
+    doubleClickOn(find(fieldQuery) as TextField)
+    press(KeyCode.DELETE)
+    write(textToEnter)
 }

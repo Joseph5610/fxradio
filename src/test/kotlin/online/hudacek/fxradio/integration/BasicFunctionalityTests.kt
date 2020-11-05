@@ -16,14 +16,14 @@
 
 package online.hudacek.fxradio.integration
 
-import javafx.scene.control.*
-import javafx.scene.input.KeyCode
-import javafx.scene.text.Text
+import javafx.scene.control.Button
+import javafx.scene.control.ListView
+import javafx.scene.control.Slider
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
-import online.hudacek.fxradio.api.ApiClient
 import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.storage.Database
@@ -52,6 +52,7 @@ class BasicFunctionalityTests {
 
     private lateinit var app: FxRadio
 
+    //IDs
     private val nowPlayingLabel = "#nowStreaming"
     private val stationsDataGrid = "#stations"
     private val libraryListView = "#libraryListView"
@@ -62,6 +63,9 @@ class BasicFunctionalityTests {
     private val search = "#search"
     private val stationMessageHeader = "#stationMessageHeader"
     private val stationMessageSubHeader = "#stationMessageSubHeader"
+
+    //Http Client, init only once needed
+    private val service by lazy { StationsApi.service }
 
     init {
         MacMenu.isInTest = true
@@ -78,10 +82,7 @@ class BasicFunctionalityTests {
 
     @Test
     fun apiTest() {
-        val hostname = "https://de1.api.radio-browser.info"
-        val client = ApiClient(hostname)
-        client.create(StationsApi::class)
-                .getTopStations()
+        service.getTopStations()
                 .subscribe { stations ->
                     Assertions.assertEquals(50, stations.size)
                     stations.forEach {
@@ -95,7 +96,7 @@ class BasicFunctionalityTests {
     @Test
     @Order(1)
     fun basicPlayPauseTest(robot: FxRobot) {
-        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
+        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         val player = find<PlayerViewModel>()
 
@@ -126,12 +127,12 @@ class BasicFunctionalityTests {
             player.playingStatusProperty.value == PlayingStatus.Stopped
         }
 
-        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
+        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
     }
 
     @Test
     fun testHistoryTab(robot: FxRobot) {
-        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
+        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         //Wait for stations to load
         val libraries = robot.find(libraryListView) as ListView<LibraryItem>
@@ -160,30 +161,26 @@ class BasicFunctionalityTests {
                 stations.isVisible
             }
 
-            Assertions.assertTrue(stations.items.size == historydbCount)
+            Assertions.assertEquals(historydbCount, stations.items.size)
         }
     }
 
     @Test
     fun testVolumeSliderIcons(robot: FxRobot) {
-        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
+        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         //Wait for stations to load
-        val minIcon = robot.find(volumeMinIcon) as Button
-        val maxIcon = robot.find(volumeMaxIcon) as Button
-        waitFor(1) {
-            minIcon.isVisible
-            maxIcon.isVisible
-        }
+        verifyThat(volumeMinIcon, visible())
+        verifyThat(volumeMaxIcon, visible())
 
-        robot.clickOn(minIcon)
+        robot.clickOn(volumeMinIcon)
 
         val slider = robot.find(volumeSlider) as Slider
         waitFor(2) {
             slider.value == -30.0
         }
 
-        robot.clickOn(maxIcon)
+        robot.clickOn(volumeMaxIcon)
         waitFor(2) {
             slider.value == 5.0
         }
@@ -191,33 +188,33 @@ class BasicFunctionalityTests {
 
     @Test
     fun testSearch(robot: FxRobot) {
-        verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
-        val searchField = robot.find(search) as TextField
-        waitFor(1) {
-            searchField.isVisible
-        }
-        robot.doubleClickOn(searchField)
-        robot.press(KeyCode.DELETE)
-        robot.write("sta")
+        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
-        val msgHeader = robot.find(stationMessageHeader) as Text
-        val msgSubHeader = robot.find(stationMessageSubHeader) as Label
+        //Verify search field is present
+        verifyThat(search, visible())
+        robot.enterText(search, "st")
 
-        waitFor(2) {
-            searchField.text == "sta" && msgHeader.isVisible && msgSubHeader.isVisible
-        }
+        verifyThat(stationMessageHeader, visible())
+        verifyThat(stationMessageSubHeader, visible())
+        verifyThat(search, hasValue("st"))
 
-        robot.doubleClickOn(searchField)
-        robot.press(KeyCode.DELETE)
-        robot.write("station")
+        verifyThat(stationMessageHeader, hasText("Searching Your Library"))
 
-        waitFor(1) {
-            searchField.text == "station"
-        }
+        robot.enterText(search, "station")
+
+        verifyThat(stationMessageHeader, hasText(""))
+        verifyThat(stationMessageSubHeader, hasLabel(""))
+        verifyThat(search, hasValue("station"))
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
-        waitFor(5) {
-            stations.isVisible && stations.items.size > 1
-        }
+        verifyThat(stationMessageHeader, visible())
+
+        //Perform API search
+        val stationResults = service.searchStationByName(SearchBody("station")).blockingGet()
+
+        println("search result items: " + stations.items.size)
+        println("search Results: " + stationResults.size)
+
+        Assertions.assertEquals(stationResults.size, stations.items.size)
     }
 }
