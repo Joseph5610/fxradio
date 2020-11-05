@@ -23,7 +23,9 @@ import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.*
+import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
@@ -92,9 +94,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             .compose(applySchedulers())
             .subscribe({ response ->
                 //Ignore invalid states
-                val result = response.filter {
-                    it.name.length > 1 && it.isValidCountry
-                }.asObservable()
+                val result = response.filter { it.isValidCountry }.asObservable()
                 countriesProperty.setAll(result)
             }, {
                 fire(NotificationEvent(messages["downloadError"], op = {
