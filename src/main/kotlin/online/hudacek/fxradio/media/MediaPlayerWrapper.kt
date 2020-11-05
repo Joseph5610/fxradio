@@ -17,20 +17,21 @@
 package online.hudacek.fxradio.media
 
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.media.players.CustomPlayer
 import online.hudacek.fxradio.media.players.VLCPlayer
-import tornadofx.*
 
 enum class PlayerType {
     Custom, VLC
 }
 
-object MediaPlayerWrapper : Component(), MediaPlayer {
+object MediaPlayerWrapper {
 
     private val logger = KotlinLogging.logger {}
 
     private var internalMediaPlayer: MediaPlayer? = null
+
+    val isInitialized: Boolean
+        get() = internalMediaPlayer != null
 
     fun init(playerType: PlayerType) {
         logger.info { "MediaPlayer $playerType initialized" }
@@ -44,22 +45,15 @@ object MediaPlayerWrapper : Component(), MediaPlayer {
                 internalMediaPlayer = VLCPlayer()
             } catch (e: Exception) {
                 logger.error(e) { "VLC player failed to initialize!" }
-                fire(NotificationEvent(messages["player.vlc.error"]))
             }
         }
     }
 
-    override fun play(streamUrl: String) {
-        internalMediaPlayer?.play(streamUrl)
-    }
+    fun play(streamUrl: String) = internalMediaPlayer?.play(streamUrl)
 
-    override fun stop() {
-        internalMediaPlayer?.stop()
-    }
+    fun stop() = internalMediaPlayer?.stop()
 
-    override fun release() {
-        internalMediaPlayer?.release()
-    }
+    fun release() = internalMediaPlayer?.release()
 
-    override fun changeVolume(newVolume: Double) = internalMediaPlayer?.changeVolume(newVolume) ?: false
+    fun changeVolume(newVolume: Double) = internalMediaPlayer?.changeVolume(newVolume)
 }

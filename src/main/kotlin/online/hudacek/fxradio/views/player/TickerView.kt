@@ -45,8 +45,9 @@ open class TickerEntry<T : Node>(
 class TickerView : View() {
 
     val tickerTextProperty = stringProperty()
+    val isScheduled = booleanProperty(true)
 
-    private var entry = TickerEntry<Node>(content = createText(""))
+    private var entry = TickerEntry<Node>(content = createText())
 
     private val marqueeView: MarqueeView by inject()
 
@@ -61,15 +62,25 @@ class TickerView : View() {
         tickerTextProperty.onChange {
             if (it != null) {
                 marqueeView.clear(entry)
-                entry = TickerEntry(content = createText(it), reschedule = true)
+                entry = TickerEntry(content = createText(it), reschedule = isScheduled.value)
                 marqueeView.enqueueTickEntry(entry)
             }
         }
     }
 
-    private fun createText(content: String) = text(content) {
+    private fun createText(content: String = "") = text(content) {
         layoutY = 12.0
         isVisible = false
+        opacity = 0.8
+
+        onHover {
+            opacity = if (it) {
+                1.0
+            } else {
+                0.8
+            }
+        }
+
         addClass(Styles.defaultTextColor)
     }
 

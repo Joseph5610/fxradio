@@ -17,14 +17,18 @@
 package online.hudacek.fxradio.api
 
 import io.reactivex.Single
+import mu.KotlinLogging
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.model.*
+import online.hudacek.fxradio.viewmodel.ServersModel
+import online.hudacek.fxradio.viewmodel.ServersViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import tornadofx.*
-import java.net.InetAddress
+import tornadofx.Component
 
 /**
  * Stations API
@@ -33,8 +37,8 @@ import java.net.InetAddress
  */
 interface StationsApi {
 
-    @POST("json/stations/bycountry/{countryCode}")
-    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryCode") countryCode: String): Single<List<Station>>
+    @POST("json/stations/bycountryexact/{countryName}")
+    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryName") countryName: String): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
@@ -42,14 +46,8 @@ interface StationsApi {
     @GET("json/stations/topvote/50")
     fun getTopStations(): Single<List<Station>>
 
-    @GET("json/stations/byuuid/{uuid}")
-    fun getStationInfo(@Path("uuid") uuid: String): Single<List<Station>>
-
     @POST("json/add")
     fun add(@Body addBody: AddStationBody): Single<AddStationResult>
-
-    @GET("json/tags")
-    fun getTags(): Single<List<Tags>>
 
     @POST("json/countries")
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
@@ -60,31 +58,39 @@ interface StationsApi {
     @GET("json/vote/{uuid}")
     fun vote(@Path("uuid") uuid: String): Single<VoteResult>
 
+    @GET("json/url/{uuid}")
+    fun click(@Path("uuid") uuid: String): Single<ClickResult>
+
     companion object : Component() {
 
-        private const val defaultApiServer = "de1.api.radio-browser.info"
-        private const val defaultDnsHost = "all.api.radio-browser.info"
+        private val logger = KotlinLogging.logger {}
 
-        //try to connect to working API server
-        private val inetAddressHostname: String by lazy {
-            try {
-                InetAddress.getAllByName(defaultDnsHost)[0].canonicalHostName
-            } catch (e: Exception) {
-                //fallback
-                app.config.string(Config.Keys.apiServer, defaultApiServer)
+        private val serversViewModel: ServersViewModel by inject()
+
+        private val savedServerValue = Property(Properties.API_SERVER)
+
+        init {
+            //The little logic here: Try to init model with the previously stored value
+            //Only if the value is not stored try to get it by calling InetAddress.getAllByName
+            if (savedServerValue.isPresent) {
+                logger.debug { "Setting model from saved state" }
+                serversViewModel.item = ServersModel(savedServerValue.get())
+            } else {
+                serversViewModel.availableServers.let {
+                    if (it.isNotEmpty()) {
+                        logger.debug { "Setting model from available servers" }
+                        serversViewModel.item = ServersModel(savedServerValue.get(it[0]), it)
+                    } else {
+                        logger.debug { "Setting fallback default value of model" }
+                        serversViewModel.item = ServersModel(Config.Resources.defaultApiServer)
+                    }
+                    //Save the value for later use
+                    savedServerValue.save(serversViewModel.selectedProperty.value)
+                }
             }
         }
 
-        //API server URL property which is actually used for requests
-        //Can be changed in app: About -> server selection
-        val hostname: String = ""
-            get() = when {
-                app.config.string(Config.Keys.apiServer) != null -> app.config.string(Config.Keys.apiServer)!!
-                field.isEmpty() -> inetAddressHostname
-                else -> field
-            }
-
-        val client by lazy { ApiClient("https://$hostname") }
-        val service by lazy { client.create(StationsApi::class)}
+        val client by lazy { ApiClient("https://${serversViewModel.selectedProperty.value}") }
+        val service by lazy { client.create(StationsApi::class) }
     }
 }

@@ -19,17 +19,21 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.disposables.Disposable
 import javafx.stage.StageStyle
 import mu.KotlinLogging
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.fragments.*
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.fail
+import tornadofx.get
+import tornadofx.success
 
 //WIP
 class MenuModel
@@ -41,7 +45,7 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
     private val playerViewModel: PlayerViewModel by inject()
 
     val useNative: Boolean
-        get() = MacUtils.isMac && app.config.boolean(Config.Keys.useNativeMenuBar, true)
+        get() = MacUtils.isMac && Property(Properties.NATIVE_MENU_BAR).get(true)
 
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -50,6 +54,8 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
     fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
     fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
+
+    fun openAvailableServer() = find<AvailableServersFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
@@ -61,6 +67,16 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
         fire(NotificationEvent(messages["cache.clear.error"]))
         logger.error(it) { "Exception when clearing cache" }
     }
+
+    fun clearServer() = runAsync(daemon = true) {
+        Property(Properties.API_SERVER).remove()
+    } success {
+        fire(NotificationEvent(messages["server.clear.ok"], FontAwesome.Glyph.CHECK))
+    } fail {
+        fire(NotificationEvent(messages["server.clear.error"]))
+        logger.error(it) { "Exception when clearing server" }
+    }
+
 
     fun handleVote(): Disposable = StationsApi.service
             .vote(playerViewModel.stationProperty.value.stationuuid)

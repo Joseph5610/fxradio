@@ -14,12 +14,10 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events
+package online.hudacek.fxradio.api.model
 
-import org.controlsfx.control.NotificationPane
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
-
-class NotificationEvent(val text: String,
-                        val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,
-                        val op: NotificationPane.() -> Unit = {}) : FXEvent()
+data class ClickResult(val ok: Boolean,
+                       val message: String,
+                       val stationuuid: String,
+                       val name: String,
+                       val url: String)

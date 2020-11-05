@@ -18,7 +18,7 @@ package online.hudacek.fxradio.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PlayingStatus
 import tornadofx.*

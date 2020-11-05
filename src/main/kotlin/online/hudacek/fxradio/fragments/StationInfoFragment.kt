@@ -38,9 +38,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        stationInfoViewModel.item = StationInfoModel(
-                station ?: playerViewModel.stationProperty.value
-        )
+        stationInfoViewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
     }
 
     override fun onBeforeShow() {

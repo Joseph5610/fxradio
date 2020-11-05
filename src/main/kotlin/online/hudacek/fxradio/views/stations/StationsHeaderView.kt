@@ -16,10 +16,12 @@
 
 package online.hudacek.fxradio.views.stations
 
-import javafx.geometry.Pos
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.viewmodel.*
+import online.hudacek.fxradio.viewmodel.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
 
 /**
@@ -41,39 +43,20 @@ class StationsHeaderView : View() {
         }
     }
 
-    private val libraryName by lazy {
-        label(libraryNameTextProperty) {
-            paddingTop = 8.0
-            paddingBottom = 8.0
-            addClass(Styles.subheader)
-        }
-    }
-
     override val root = borderpane {
         padding = insets(horizontal = 10.0, vertical = 0.0)
         maxHeight = 10.0
 
         left {
-            add(libraryName)
-        }
-
-        right {
-            vbox(alignment = Pos.CENTER_RIGHT) {
-                button(messages["favourites.clean"]) {
-                    action {
-                        viewModel.cleanFavourites()
-                        libraryViewModel.refreshLibrary(LibraryType.Favourites)
-                    }
-                    showWhen {
-                        libraryViewModel.selectedProperty.isEqualTo(SelectedLibrary(LibraryType.Favourites))
-                    }
-                    addClass(Styles.coloredButton)
-                }
+            label(libraryNameTextProperty) {
+                paddingTop = 8.0
+                paddingBottom = 8.0
+                addClass(Styles.subheader)
             }
         }
 
         showWhen {
-            viewModel.stationsViewStateProperty.isEqualTo(StationsViewState.Normal)
+            viewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)
         }
 
         addClass(Styles.backgroundWhiteSmoke)

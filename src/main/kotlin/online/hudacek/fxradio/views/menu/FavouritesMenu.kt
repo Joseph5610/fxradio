@@ -16,26 +16,30 @@
 
 package online.hudacek.fxradio.views.menu
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.events.NotificationEvent
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.viewmodel.LibraryType
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.SelectedLibrary
-import org.controlsfx.glyphfont.FontAwesome
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 class FavouritesMenu : Controller() {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
+    private val favouritesViewModel: FavouritesViewModel by inject()
 
     private val keyFavourites = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
+
+    init {
+        Database.favourites.select().subscribe({
+            favouritesViewModel.item = FavouritesModel(it.asObservable())
+        }, {
+            it.printStackTrace()
+            favouritesViewModel.item = FavouritesModel()
+        })
+    }
 
     val menu by lazy {
         menu(messages["menu.favourites"]) {
@@ -46,38 +50,36 @@ class FavouritesMenu : Controller() {
 
             //Add favourite
             item(messages["menu.station.favourite"], keyFavourites) {
-                disableWhen(playerViewModel.stationProperty.booleanBinding {
-                    it == null || !it.isValid() || Database.Favourites.has(it).blockingGet()
+                enableWhen(playerViewModel.stationProperty.booleanBinding {
+                    it != null && it.isValid() && !favouritesViewModel.isPresent(it)
                 })
-
-                actionEvents()
-                        .flatMapSingle { Database.Favourites.has(playerViewModel.stationProperty) }
-                        .filter { !it }
-                        .flatMapSingle { Database.Favourites.add(playerViewModel.stationProperty) }
-                        .subscribe({
-                            fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
-                            libraryViewModel.refreshLibrary(LibraryType.Favourites)
-                        }, {
-                            fire(NotificationEvent(messages["menu.station.favourite.error"]))
-                        })
+                action {
+                    favouritesViewModel.add(playerViewModel.stationProperty.value)
+                    libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                }
             }
 
             //Remove favourite
             item(messages["menu.station.favourite.remove"]) {
-                visibleWhen(playerViewModel.stationProperty.booleanBinding {
-                    it != null && it.isValid() && Database.Favourites.has(it).blockingGet()
+                enableWhen(playerViewModel.stationProperty.booleanBinding {
+                    it != null && it.isValid() && favouritesViewModel.isPresent(it)
                 })
+                action {
+                    favouritesViewModel.remove(playerViewModel.stationProperty.value)
+                    libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                }
+            }
 
-                actionEvents()
-                        .flatMapSingle { Database.Favourites.has(playerViewModel.stationProperty) }
-                        .filter { it }
-                        .flatMapSingle { Database.Favourites.remove(playerViewModel.stationProperty) }
-                        .subscribe({
-                            fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
-                            libraryViewModel.refreshLibrary(LibraryType.Favourites)
-                        }, {
-                            fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
-                        })
+            //Clean all favourites
+            separator()
+            item(messages["menu.station.favourite.clear"]) {
+                disableWhen {
+                    favouritesViewModel.stationsProperty.emptyProperty()
+                }
+                action {
+                    favouritesViewModel.cleanup()
+                    libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                }
             }
         }
     }

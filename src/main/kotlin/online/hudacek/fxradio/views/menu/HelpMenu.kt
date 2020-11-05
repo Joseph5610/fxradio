@@ -48,6 +48,10 @@ class HelpMenu : Controller() {
 
     val menu by lazy {
         menu(messages["menu.help"]) {
+            item(messages["menu.app.attributions"]).action {
+                menuViewModel.openAttributions()
+            }
+            separator()
             item(messages["menu.help.stats"]).action {
                 menuViewModel.openStats()
             }
@@ -55,6 +59,12 @@ class HelpMenu : Controller() {
             item(messages["menu.help.clearCache"]).action {
                 confirm(messages["cache.clear.confirm"], messages["cache.clear.text"], owner = primaryStage) {
                     menuViewModel.clearCache()
+                }
+            }
+
+            item(messages["menu.help.clearServer"]).action {
+                confirm(messages["server.clear.confirm"], messages["server.clear.text"], owner = primaryStage) {
+                    menuViewModel.clearServer()
                 }
             }
 

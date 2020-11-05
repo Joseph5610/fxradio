@@ -17,17 +17,22 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
+import javafx.beans.binding.BooleanBinding
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.isValidCountry
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
+import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -41,7 +46,7 @@ data class SelectedLibrary(val type: LibraryType, val params: String = "")
 
 class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
                    selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations),
-                   searchQuery: String = "") {
+                   searchQuery: String = "", showLibrary: Boolean, showCountries: Boolean) {
     //Countries shown in Countries ListView
     val countries: ObservableList<Countries> by property(countries)
 
@@ -54,6 +59,8 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
 
     val selected: SelectedLibrary by property(selected)
     val searchQuery: String by property(searchQuery)
+    val showLibrary: Boolean by property(showLibrary)
+    val showCountries: Boolean by property(showCountries)
 }
 
 /**
@@ -72,8 +79,14 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     val searchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
 
+    val showLibraryProperty = bind(LibraryModel::showLibrary) as BooleanProperty
+    val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
+
     init {
-        item = LibraryModel(searchQuery = app.config.string(Config.Keys.searchQuery, ""))
+        item = LibraryModel(
+                searchQuery = Property(Properties.SEARCH_QUERY).get(""),
+                showLibrary = Property(Properties.WINDOW_SHOW_LIBRARY).get(true),
+                showCountries = Property(Properties.WINDOW_SHOW_COUNTRIES).get(true))
     }
 
     fun showCountries(): Disposable = StationsApi.service
@@ -81,23 +94,25 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             .compose(applySchedulers())
             .subscribe({ response ->
                 //Ignore invalid states
-                val result = response.filter {
-                    it.name.length > 1 && it.isValidCountry
-                }.asObservable()
+                val result = response.filter { it.isValidCountry }.asObservable()
                 countriesProperty.setAll(result)
             }, {
-                fire(NotificationEvent(messages["downloadError"]))
+                fire(NotificationEvent(messages["downloadError"], op = {
+                    actions.setAll(Action(messages["retry"]) {
+                        showCountries()
+                    })
+                }))
             })
 
-    fun handleSearch(searchedValue: String) {
-        handleSearchInputClick()
-        with(app.config) {
-            set(Config.Keys.searchQuery to searchedValue)
-            save()
-        }
+    override fun onCommit() {
+        saveProperties(listOf(
+                Pair(Properties.SEARCH_QUERY, searchQueryProperty.value),
+                Pair(Properties.WINDOW_SHOW_COUNTRIES, showCountriesProperty.value),
+                Pair(Properties.WINDOW_SHOW_LIBRARY, showLibraryProperty.value)
+        ))
     }
 
-    fun handleSearchInputClick() = select(SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim()))
+    fun showSearchResults() = select(SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim()))
 
     fun refreshLibrary(libraryType: LibraryType) {
         if (selectedProperty.value.type == libraryType) {
@@ -108,5 +123,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     fun select(selectedLibrary: SelectedLibrary) {
         selectedProperty.value = selectedLibrary
+    }
+
+    fun selected(libraryType: LibraryType): BooleanBinding = selectedProperty.booleanBinding {
+        it?.type == libraryType
     }
 }

@@ -18,7 +18,8 @@ package online.hudacek.fxradio.views.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -36,17 +37,16 @@ import tornadofx.*
  */
 class PlayerMainView : View() {
 
-    private val playerViewModel: PlayerViewModel by inject()
+    private val viewModel: PlayerViewModel by inject()
 
     private val playerStationBoxView: PlayerStationBoxView by inject()
 
     private val playGlyph = glyph(FontAwesome.Glyph.PLAY, size = 22.0, useStyle = false)
     private val stopGlyph = glyph(FontAwesome.Glyph.STOP, size = 22.0, useStyle = false)
-
     private val volumeDown = glyph(FontAwesome.Glyph.VOLUME_DOWN, size = 16.0, useStyle = false)
     private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 16.0, useStyle = false)
 
-    private val playerControlsBinding = playerViewModel.playingStatusProperty.objectBinding {
+    private val playerControlsBinding = viewModel.playingStatusProperty.objectBinding {
         if (it == PlayingStatus.Playing) {
             stopGlyph
         } else {
@@ -59,44 +59,40 @@ class PlayerMainView : View() {
         graphicProperty().bind(playerControlsBinding)
         requestFocusOnSceneAvailable()
         disableWhen {
-            playerViewModel.stationProperty.booleanBinding {
+            viewModel.stationProperty.booleanBinding {
                 it == null || !it.isValid()
             }
         }
-        addClass(Styles.playerControls)
         action {
-            playerViewModel.togglePlayer()
+            viewModel.togglePlayer()
         }
+        addClass(Styles.playerControls)
     }
 
     private val volumeSlider by lazy {
         slider(-30..5) {
+            bind(viewModel.volumeProperty)
+
             maxWidth = 100.0
             id = "volumeSlider"
-            bind(playerViewModel.volumeProperty)
             majorTickUnit = 8.0
             isSnapToTicks = true
             isShowTickMarks = true
             paddingTop = 10.0
 
-            //Save the ViewModel after setting new value
+            //Save new value
             valueProperty().onChange {
-                playerViewModel.commit()
+                viewModel.commit()
             }
         }
     }
 
     init {
-        val animate = app.config.boolean(Config.Keys.playerAnimate, true)
-        val notifications = app.config.boolean(Config.Keys.notifications, true)
-        val playerType = PlayerType.valueOf(app.config.string(Config.Keys.playerType, "VLC"))
-        val volume = app.config.double(Config.Keys.volume, 0.0)
-
-        playerViewModel.item = PlayerModel(
-                animate = animate,
-                playerType = playerType,
-                notifications = notifications,
-                volume = volume)
+        viewModel.item = PlayerModel(
+                animate = Property(Properties.PLAYER_ANIMATE).get(true),
+                playerType = PlayerType.valueOf(Property(Properties.PLAYER).get("VLC")),
+                notifications = Property(Properties.NOTIFICATIONS).get(true),
+                volume = Property(Properties.VOLUME).get(0.0))
     }
 
     override val root = vbox {
@@ -125,21 +121,21 @@ class PlayerMainView : View() {
                 alignment = Pos.CENTER_LEFT
                 button {
                     id = "volumeMinIcon"
-                    addClass(Styles.playerControls)
                     graphic = volumeDown
                     onLeftClick {
                         volumeSlider.value = volumeSlider.min
                     }
+                    addClass(Styles.playerControls)
                 }
                 add(volumeSlider)
                 button {
                     id = "volumeMaxIcon"
-                    addClass(Styles.playerControls)
                     graphic = volumeUp
                     minWidth = 20.0
                     onLeftClick {
                         volumeSlider.value = volumeSlider.max
                     }
+                    addClass(Styles.playerControls)
                 }
             }
         }
@@ -149,7 +145,7 @@ class PlayerMainView : View() {
 
     override fun onDock() {
         currentWindow?.setOnSpacePressed {
-            playerViewModel.togglePlayer()
+            viewModel.togglePlayer()
         }
     }
 }

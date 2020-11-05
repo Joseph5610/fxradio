@@ -17,14 +17,15 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
-import mu.KotlinLogging
-import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.copyMenu
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.viewmodel.ServersViewModel
+import online.hudacek.fxradio.viewmodel.StatsModel
 import online.hudacek.fxradio.viewmodel.StatsViewModel
+import online.hudacek.fxradio.viewmodel.StatsViewState
 import tornadofx.*
 
 /**
@@ -32,24 +33,33 @@ import tornadofx.*
  */
 class StatsFragment : Fragment() {
 
-    private val logger = KotlinLogging.logger {}
+    private val viewModel: StatsViewModel by inject()
+    private val serversViewModel: ServersViewModel by inject()
 
-    private val statsViewModel: StatsViewModel by inject()
+    private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
+        when (it) {
+            StatsViewState.Loading -> {
+                messages["loading"]
+            }
+            StatsViewState.Error -> {
+                messages["statsUnavailable"]
+            }
+            else -> {
+                "State is $it"
+            }
+        }
+    }
+
+    init {
+        viewModel.item = StatsModel(viewState = StatsViewState.Loading)
+    }
 
     override fun onBeforeShow() {
         currentWindow?.opacity = 0.85
     }
 
     override fun onDock() {
-        //We want to show progress bar each time fragment is opened
-        statsViewModel.let {
-            logger.debug { "Clearing up $statsViewModel" }
-            //Cleanup stored variable
-            it.item = null
-
-            //Retrieve new stats
-            it.getStats()
-        }
+        viewModel.getStats()
     }
 
     override val root = vbox {
@@ -58,7 +68,7 @@ class StatsFragment : Fragment() {
 
         vbox(alignment = Pos.CENTER) {
             requestFocusOnSceneAvailable()
-            hyperlink(StationsApi.hostname) {
+            hyperlink(serversViewModel.selectedProperty) {
                 paddingAll = 10.0
                 addClass(Styles.header)
                 action {
@@ -68,16 +78,16 @@ class StatsFragment : Fragment() {
 
             vbox {
                 alignment = Pos.BASELINE_CENTER
-                label(messages["statsUnavailable"]) {
+                label(labelTextProperty) {
                     paddingAll = 20.0
                 }
                 showWhen {
-                    statsViewModel.statsProperty.emptyProperty()
+                    viewModel.viewStateProperty.isNotEqualTo(StatsViewState.Normal)
                 }
             }
         }
 
-        listview(statsViewModel.statsProperty) {
+        listview(viewModel.statsProperty) {
             cellFormat {
                 paddingAll = 0.0
                 graphic = hbox(5) {
@@ -88,6 +98,9 @@ class StatsFragment : Fragment() {
                 copyMenu(clipboard,
                         name = messages["copy"],
                         value = "${item.first}: ${item.second}")
+            }
+            showWhen {
+                viewModel.viewStateProperty.isEqualTo(StatsViewState.Normal)
             }
             addClass(Styles.libraryListView)
         }

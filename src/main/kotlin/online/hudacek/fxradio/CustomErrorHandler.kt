@@ -17,20 +17,22 @@
 package online.hudacek.fxradio
 
 import javafx.application.Platform.runLater
-import javafx.scene.control.Alert
+import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType.ERROR
-import javafx.scene.control.Label
-import javafx.scene.control.TextArea
+import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
 import tornadofx.*
 import tornadofx.FX.Companion.primaryStage
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
+import java.net.URLEncoder
 import java.util.logging.Level
 import java.util.logging.Logger
 
 class CustomErrorHandler : Thread.UncaughtExceptionHandler {
     private val log = Logger.getLogger("ErrorHandler")
+
+    private val issueUrl = "https://github.com/Joseph5610/fxradio-main/issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
     class ErrorEvent(val thread: Thread, val error: Throwable) {
         internal var consumed = false
@@ -89,7 +91,23 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
                 add(textarea)
             }
 
-            showAndWait()
+            val reportButton = ButtonType("Report issue", ButtonBar.ButtonData.HELP)
+            val copyButton = ButtonType("Copy to clipboard", ButtonBar.ButtonData.HELP_2)
+            buttonTypes.addAll(reportButton, copyButton)
+
+            val result = showAndWait()
+            if (result.get().buttonData == ButtonBar.ButtonData.HELP) {
+                val titleQuery = URLEncoder.encode("[${FxRadio.version.version}] $error", "UTF-8")
+                val bodyQuery = URLEncoder.encode(textarea.text, "UTF-8")
+                FX.application.hostServices.showDocument("$issueUrl$titleQuery&body=$bodyQuery")
+            }
+
+            if (result.get().buttonData == ButtonBar.ButtonData.HELP_2) {
+                val clipboard = Clipboard.getSystemClipboard()
+                clipboard.setContent {
+                    putString(textarea.text)
+                }
+            }
         }
     }
 

@@ -38,9 +38,17 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version.version}") 
             }
             label("${FxRadio.appName} - ${FxRadio.appDesc}") {
                 style {
-                    paddingBottom = 5.0
+                    paddingBottom = 8.0
                 }
             }
+
+            label(messages["about.datasource"]) {
+                style {
+                    paddingBottom = 8.0
+                }
+                addClass(Styles.grayLabel)
+            }
+
             label("${FxRadio.copyright} ${FxRadio.author}") {
                 addClass(Styles.grayLabel)
             }

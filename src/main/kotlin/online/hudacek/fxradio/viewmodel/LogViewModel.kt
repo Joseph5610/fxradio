@@ -17,7 +17,9 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ObjectProperty
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator
@@ -43,9 +45,6 @@ class LogViewModel : ItemViewModel<LogModel>() {
         Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
 
         //Save it
-        with(app.config) {
-            set(Config.Keys.logLevel to levelProperty.value)
-            save()
-        }
+        Property(Properties.LOG_LEVEL).save(levelProperty.value)
     }
 }

@@ -21,7 +21,7 @@ import com.vdurmont.semver4j.SemverException
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.VCSApi
-import online.hudacek.fxradio.events.NotificationEvent
+import online.hudacek.fxradio.NotificationEvent
 import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*

@@ -18,13 +18,19 @@ package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
+import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
-class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf()) {
+enum class StatsViewState {
+    Loading, Normal, Error
+}
+
+class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf(), viewState: StatsViewState = StatsViewState.Loading) {
     val stats: ObservableList<Pair<String, String>> by property(map)
+    val viewState: StatsViewState by property(viewState)
 }
 
 /**
@@ -35,6 +41,7 @@ class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf())
  */
 class StatsViewModel : ItemViewModel<StatsModel>() {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
+    val viewStateProperty = bind(StatsModel::viewState) as ObjectProperty
 
     fun getStats(): Disposable =
             StationsApi.service.getStats()
@@ -49,9 +56,9 @@ class StatsViewModel : ItemViewModel<StatsModel>() {
                                 Pair(messages["stats.brokenStations"], it.stations_broken),
                                 Pair(messages["stats.tags"], it.tags)
                         )
-                        item = StatsModel(statsPair)
+                        item = StatsModel(statsPair, StatsViewState.Normal)
                     }, {
-                        item = StatsModel()
+                        item = StatsModel(viewState = StatsViewState.Error)
                     })
 
     override fun toString() = "StatsViewModel(statsProperty=${statsProperty.value})"

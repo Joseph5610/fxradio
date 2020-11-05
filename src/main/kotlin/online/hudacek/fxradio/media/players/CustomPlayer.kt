@@ -25,9 +25,9 @@ import javafx.util.Duration
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.events.MediaMeta
-import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.MetaData
+import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.*
 import java.nio.ByteBuffer
@@ -204,8 +204,8 @@ internal class CustomPlayer : Component(), MediaPlayer {
         override fun succeeded() {
             if (value.getValue("StreamTitle") != null
                     && value.getValue("icy-name") != null) {
-                val mediaMeta = MediaMeta(value.getValue("icy-name"), value.getValue("StreamTitle"))
-                fire(PlaybackMetaChangedEvent(mediaMeta))
+                val mediaMeta = MetaData(value.getValue("icy-name"), value.getValue("StreamTitle"))
+                fire(MetaDataChanged(mediaMeta))
             }
         }
 

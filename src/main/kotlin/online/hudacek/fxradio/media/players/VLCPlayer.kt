@@ -17,11 +17,12 @@
 package online.hudacek.fxradio.media.players
 
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.MediaMeta
-import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
 import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.MetaData
+import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.media.StreamUnavailableException
-import tornadofx.*
+import tornadofx.Component
+import tornadofx.get
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
@@ -66,11 +67,11 @@ internal class VLCPlayer : Component(), MediaPlayer {
             media?.meta()?.let {
                 if (it[Meta.NOW_PLAYING] != null
                         && it[Meta.TITLE] != null) {
-                    val metaData = MediaMeta(it[Meta.TITLE],
+                    val metaData = MetaData(it[Meta.TITLE],
                             it[Meta.NOW_PLAYING]
                                     .replace("\r", "")
                                     .replace("\n", ""))
-                    fire(PlaybackMetaChangedEvent(metaData))
+                    fire(MetaDataChanged(metaData))
                 }
             }
         }
@@ -100,7 +101,7 @@ internal class VLCPlayer : Component(), MediaPlayer {
                 if (newVolume < -29.5) {
                     0
                 } else {
-                    ((newVolume + 50) * (100 / 95)).toInt()
+                    ((newVolume + 65) * (100 / 95)).toInt()
                 }
 
         return audioPlayerComponent?.mediaPlayer()?.audio()?.setVolume(vlcVolume) ?: false

@@ -29,7 +29,7 @@ import tornadofx.*
 
 class StationMenu : Controller() {
 
-    private val menuViewModel: MenuViewModel by inject()
+    private val viewModel: MenuViewModel by inject()
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -41,16 +41,16 @@ class StationMenu : Controller() {
             item(messages["menu.station.info"], keyInfo) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    menuViewModel.openStationInfo()
+                    viewModel.openStationInfo()
                 }
             }
+            separator()
             item(messages["menu.station.vote"]) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    menuViewModel.handleVote()
+                    viewModel.handleVote()
                 }
             }
-
             item(messages["copy.stream.url"]) {
                 action {
                     playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
@@ -67,7 +67,7 @@ class StationMenu : Controller() {
             item(messages["menu.station.add"], keyAdd) {
                 isVisible = Config.Flags.addStationEnabled
                 action {
-                    menuViewModel.openAddNewStation()
+                    viewModel.openAddNewStation()
                 }
             }
         }

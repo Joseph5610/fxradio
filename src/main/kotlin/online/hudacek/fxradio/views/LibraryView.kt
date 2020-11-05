@@ -16,12 +16,10 @@
 
 package online.hudacek.fxradio.views
 
-import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.model.countryCode
+import online.hudacek.fxradio.api.model.flagIcon
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.showWhen
@@ -35,73 +33,78 @@ import tornadofx.controlsfx.customTextfield
 
 class LibraryView : View() {
 
-    private val logger = KotlinLogging.logger {}
-
     private val viewModel: LibraryViewModel by inject()
 
-    private val showCountriesList = booleanProperty(true)
-
-    private val showCountriesListLabel = showCountriesList.stringBinding {
-        if (it!!) messages["hide"]  else messages["show"]
+    private val showCountriesListLabel = viewModel.showCountriesProperty.stringBinding {
+        if (it!!) messages["hide"] else messages["show"]
     }
 
-
-    private val retryLink = hyperlink(messages["downloadRetry"]) {
-        action {
-            viewModel.showCountries()
-        }
-        showWhen { viewModel.countriesProperty.sizeProperty.isEqualTo(0) }
+    private val showLibraryListLabel = viewModel.showLibraryProperty.stringBinding {
+        if (it!!) messages["hide"] else messages["show"]
     }
 
-    private val libraryListView = listview(viewModel.librariesProperty) {
-        id = "libraryListView"
-        cellFormat {
-            graphic = glyph(item.graphic, size = 14.0, useStyle = false)
-            text = messages[item.type.toString()]
-            addClass(Styles.libraryListItem)
-        }
-
-        addClass(Styles.libraryListView)
-    }
-
-    private val countriesListView = listview(viewModel.countriesProperty) {
-
-        cellFormat {
-            graphic = hbox(5) {
-                item.countryCode?.let {
-                    try {
-                        imageview {
-                            image = FlagIcon(it)
-                        }
-                    } catch (e: Exception) {
-                        logger.debug { "Exception while displaying country flag" }
-                    }
-                }
-
-                val stationWord = if (item.stationcount > 1)
-                    messages["stations"] else messages["station"]
-
-                alignment = Pos.CENTER_LEFT
-                label(item.name.split("(")[0])
-                label("${item.stationcount}") {
-                    tooltip("${item.stationcount} $stationWord")
-                    graphic = imageview(Config.Resources.waveIcon) {
-                        fitWidth = 16.0
-                        isPreserveRatio = true
-                    }
-                    addClass(Styles.libraryListItemTag)
-                }
+    private val retryLink by lazy {
+        hyperlink(messages["downloadRetry"]) {
+            action {
+                viewModel.showCountries()
             }
-            addClass(Styles.libraryListItem)
+            showWhen { viewModel.countriesProperty.emptyProperty() }
         }
+    }
 
-        addClass(Styles.libraryListView)
-        onUserSelect(1) {
-            libraryListView.selectionModel.clearSelection()
-            viewModel.select(SelectedLibrary(LibraryType.Country, it.name))
+    private val libraryListView by lazy {
+        listview(viewModel.librariesProperty) {
+            id = "libraryListView"
+            cellFormat {
+                graphic = glyph(item.graphic, size = 14.0, useStyle = false)
+                text = messages[item.type.toString()]
+                addClass(Styles.libraryListItem)
+            }
+            showWhen { viewModel.showLibraryProperty }
+            onUserSelect(1) {
+                viewModel.select(SelectedLibrary(it.type))
+            }
+            addClass(Styles.libraryListView)
         }
-        showWhen {
-            viewModel.countriesProperty.sizeProperty.isNotEqualTo(0).and(showCountriesList)
+    }
+
+    private val countriesListView by lazy {
+        listview(viewModel.countriesProperty) {
+            cellFormat {
+                graphic = hbox(5) {
+                    imageview {
+                        image = item.flagIcon
+                    }
+
+                    val stationWord = if (item.stationcount > 1)
+                        messages["stations"] else messages["station"]
+
+                    alignment = Pos.CENTER_LEFT
+                    label(item.name.split("(")[0])
+                    label("${item.stationcount}") {
+                        tooltip("${item.stationcount} $stationWord")
+                        graphic = imageview(Config.Resources.waveIcon) {
+                            fitWidth = 16.0
+                            isPreserveRatio = true
+                        }
+                        addClass(Styles.libraryListItemTag)
+                    }
+                }
+                addClass(Styles.libraryListItem)
+            }
+            onUserSelect(1) {
+                viewModel.select(SelectedLibrary(LibraryType.Country, it.name))
+            }
+            showWhen {
+                viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
+            }
+            addClass(Styles.libraryListView)
+        }
+    }
+
+    init {
+        viewModel.selectedProperty.onChange {
+            handleSelectionChange(it)
         }
     }
 
@@ -111,11 +114,6 @@ class LibraryView : View() {
         with(libraryListView) {
             prefHeight = viewModel.librariesProperty.size * 30.0 + 10
             selectionModel.select(viewModel.librariesProperty[0])
-        }
-
-        libraryListView.onUserSelect(1) {
-            countriesListView.selectionModel.clearSelection()
-            viewModel.select(SelectedLibrary(it.type))
         }
     }
 
@@ -133,19 +131,21 @@ class LibraryView : View() {
         textProperty().onChange {
             if (text.length >= 50) {
                 text = text.substring(0, 49)
-            } else {
-                it?.let(viewModel::handleSearch)
             }
+            viewModel.showSearchResults()
+            viewModel.commit()
         }
 
         setOnMouseClicked {
-            viewModel.handleSearchInputClick()
-            countriesListView.selectionModel.clearSelection()
-            libraryListView.selectionModel.clearSelection()
+            viewModel.showSearchResults()
         }
 
         validator {
-            if (it!!.length >= 49) error(messages["field.max.length"]) else null
+            when {
+                it!!.isNotEmpty() && it.length < 3 -> error(messages["searchingLibraryDesc"])
+                it.length >= 49 -> error(messages["field.max.length"])
+                else -> null
+            }
         }
     }
 
@@ -159,7 +159,25 @@ class LibraryView : View() {
                     }
                 }
 
-                smallLabel(messages["library"])
+                hbox {
+                    smallLabel(messages["library"]) {
+                        paddingLeft = 10.0
+                    }
+                    region { hgrow = Priority.ALWAYS }
+                    smallLabel(showLibraryListLabel) {
+                        paddingLeft = 10.0
+                        paddingRight = 10.0
+
+                        setOnMouseClicked {
+                            viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
+                            viewModel.commit()
+                        }
+
+                        showWhen {
+                            this@hbox.hoverProperty()
+                        }
+                    }
+                }
                 add(libraryListView)
             }
         }
@@ -167,15 +185,17 @@ class LibraryView : View() {
         center {
             vbox {
                 hbox {
-                    smallLabel(messages["countries"])
+                    smallLabel(messages["countries"]) {
+                        paddingLeft = 10.0
+                    }
                     region { hgrow = Priority.ALWAYS }
-                    smallLabel() {
-                        textProperty().bind(showCountriesListLabel)
-
+                    smallLabel(showCountriesListLabel) {
+                        paddingLeft = 10.0
                         paddingRight = 10.0
 
                         setOnMouseClicked {
-                            showCountriesList.value = !showCountriesList.value
+                            viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
+                            viewModel.commit()
                         }
 
                         showWhen {
@@ -185,10 +205,28 @@ class LibraryView : View() {
                 }
 
                 add(countriesListView)
-                add(retryLink)
+
+                vbox(alignment = Pos.CENTER) {
+                    add(retryLink)
+                }
                 countriesListView.prefHeightProperty().bind(heightProperty())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
+    }
+
+    private fun handleSelectionChange(it: SelectedLibrary?) {
+        when (it?.type) {
+            LibraryType.Country -> {
+                libraryListView.selectionModel.clearSelection()
+            }
+            LibraryType.Favourites, LibraryType.History, LibraryType.TopStations -> {
+                countriesListView.selectionModel.clearSelection()
+            }
+            LibraryType.Search -> {
+                countriesListView.selectionModel.clearSelection()
+                libraryListView.selectionModel.clearSelection()
+            }
+        }
     }
 }

@@ -46,7 +46,7 @@ class DarkModeTests {
 
     @Test
     fun darkModeTest(robot: FxRobot) {
-        FxAssert.verifyThat(nowPlayingLabel, hasText("Streaming stopped"))
+        FxAssert.verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
         //TODO check app in dark mode
     }
 }

@@ -14,10 +14,12 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events
+package online.hudacek.fxradio
 
+import org.controlsfx.control.NotificationPane
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-data class MediaMeta(val title: String, val nowPlaying: String)
-
-class PlaybackMetaChangedEvent(val mediaMeta: MediaMeta) : FXEvent()
+class NotificationEvent(val text: String,
+                        val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,
+                        val op: NotificationPane.() -> Unit = {}) : FXEvent()

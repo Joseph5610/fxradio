@@ -22,12 +22,9 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.PlaybackMetaChangedEvent
+import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.createImage
-import online.hudacek.fxradio.utils.notification
-import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.tickerView
+import online.hudacek.fxradio.utils.*
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PlayingStatus
 import tornadofx.*
@@ -39,8 +36,22 @@ class PlayerStationBoxView : View() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private val ticker = tickerView()
-    private val stationNameProperty = stringProperty()
+    private val trackNameProperty by lazy { stringProperty() }
+    //private val showEllipsisMenuProperty by lazy { booleanProperty() }
+
+    private val ticker by lazy {
+        tickerView {
+            tickerTextProperty.bind(trackNameProperty)
+        }
+    }
+
+    private val playingStatusLabel = playerViewModel.playingStatusProperty.stringBinding {
+        when (it) {
+            PlayingStatus.Stopped -> messages["player.streamingStopped"]
+            PlayingStatus.Error -> messages["player.streamingError"]
+            else -> playerViewModel.stationProperty.value.name
+        }
+    }
 
     private val stationLogo = imageview(Config.Resources.waveIcon) {
         effect = DropShadow(20.0, Color.WHITE)
@@ -48,17 +59,15 @@ class PlayerStationBoxView : View() {
         isPreserveRatio = true
     }
 
-    private val nowStreamingLabel = label(messages["player.streamingStopped"]) {
+    private val nowStreamingLabel = label(playingStatusLabel) {
         id = "nowStreaming"
         addClass(Styles.grayLabel)
     }
 
     init {
         //Subscribe to property changes
-        ticker.tickerTextProperty.bindBidirectional(stationNameProperty)
-        playerViewModel.stationProperty.onChange { it?.let(::onStationChange) }
-        playerViewModel.playingStatusProperty.onChange { it?.let(::onPlaybackStatusChanged) }
-        subscribe<PlaybackMetaChangedEvent> { it.let(::onMetaDataChanged) }
+        playerViewModel.stationProperty.onChange { it?.let(::handleStationChange) }
+        subscribe<MetaDataChanged> { it.let(::onMetaDataChanged) }
     }
 
     override val root = hbox(5) {
@@ -72,11 +81,17 @@ class PlayerStationBoxView : View() {
         }
 
         separator(Orientation.VERTICAL)
-
         //Radio name and label
         borderpane {
             prefWidthProperty().bind(this@hbox.maxWidthProperty())
+
+            onHover {
+                //showEllipsisMenuProperty.value = it
+            }
+
             top {
+                autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], trackNameProperty)
+                // hbox {
                 vbox(alignment = Pos.CENTER) {
                     //Dynamic ticker for station name
                     vbox {
@@ -87,12 +102,30 @@ class PlayerStationBoxView : View() {
                     }
 
                     //Static label for station name
-                    label(stationNameProperty) {
+                    label(trackNameProperty) {
+                        onHover { tooltip(text) }
                         showWhen {
                             playerViewModel.animateProperty.not()
                         }
                     }
                 }
+                /*
+                vbox {
+                    glyph(FontAwesome.Glyph.ELLIPSIS_H, useStyle = false, size = 14.0) {
+                        style {
+                            alignment = Pos.BASELINE_CENTER
+                            paddingLeft = 10.0
+                        }
+
+                        showWhen {
+                            playerViewModel.stationProperty.booleanBinding {
+                                it != null && it.isValid()
+                            }.and(showEllipsisMenuProperty)
+                        }
+                    }
+                }*/
+                //   }
+
             }
             bottom {
                 vbox(alignment = Pos.CENTER) {
@@ -102,38 +135,37 @@ class PlayerStationBoxView : View() {
         }
     }
 
-    private fun onStationChange(station: Station) {
-        if (station.isValid()) {
-            stationNameProperty.value = station.name
-            stationLogo.createImage(station)
-        }
-    }
-
     /**
      * Called when new song starts playing or other metadata of stream changes
      * @param event new stream Meta Data
      */
-    private fun onMetaDataChanged(event: PlaybackMetaChangedEvent) {
-        val newSongName = event.mediaMeta.nowPlaying.trim()
-        val newStreamTitle = event.mediaMeta.title.trim()
+    private fun onMetaDataChanged(event: MetaDataChanged) {
+        val newSongName = event.newMetaData.nowPlaying.trim()
+        val newStreamTitle = event.newMetaData.stationName.trim()
 
         //Do not update if song name is too short
         if (newSongName.length > 1) {
+            ticker.isScheduled.value = true
             if (newStreamTitle.isNotEmpty()) {
                 if (playerViewModel.notificationsProperty.value) {
                     notification(title = newSongName, subtitle = newStreamTitle)
                 }
-                nowStreamingLabel.text = newStreamTitle
+
+                if (newStreamTitle != playerViewModel.stationProperty.value.name) {
+                    trackNameProperty.value = "$newStreamTitle - $newSongName"
+                } else {
+                    trackNameProperty.value = newSongName
+                }
+            } else {
+                trackNameProperty.value = newSongName
             }
-            stationNameProperty.value = newSongName
         }
     }
 
-    private fun onPlaybackStatusChanged(playingStatus: PlayingStatus) {
-        when (playingStatus) {
-            PlayingStatus.Stopped -> nowStreamingLabel.text = messages["player.streamingStopped"]
-            PlayingStatus.Error -> nowStreamingLabel.text = messages["player.streamingError"]
-            else -> nowStreamingLabel.text = messages["player.nowStreaming"]
-        }
+    private fun handleStationChange(station: Station) {
+        if (station.isValid()) {
+            trackNameProperty.value = playerViewModel.stationProperty.value.name + " - " + messages["player.noMetaData"]
+            stationLogo.createImage(station)
+        } else trackNameProperty.value = ""
     }
 }

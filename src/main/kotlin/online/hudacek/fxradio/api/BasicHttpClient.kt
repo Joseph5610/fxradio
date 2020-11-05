@@ -16,36 +16,34 @@
 
 package online.hudacek.fxradio.api
 
-import javafx.beans.property.StringProperty
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 
-/**
- * Basic async http client
- * -----------------------------
- *
- */
-class BasicHttpClient(url: String) {
+object HttpClientHolder {
+    val client = BasicHttpClient()
+}
 
-    constructor(url: StringProperty) : this(url.value)
+class BasicHttpClient : OkHttpHelper() {
 
-    private val client by lazy { OkHttpClient() }
-
-    private val request: Request by lazy {
-        Request.Builder()
-                .url(url)
-                .build()
-    }
-
-    fun call(success: Response.() -> Unit = {}, fail: IOException.() -> Unit = {}) = client.newCall(request).enqueue(
+    fun call(url: String,
+             success: (Response) -> Unit,
+             fail: (IOException) -> Unit) = httpClient.newCall(request(url)).enqueue(
             object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    fail.invoke(e)
+                override fun onResponse(call: Call, response: Response) {
+                    success(response)
+                    response.close()
                 }
 
-                override fun onResponse(call: Call, response: Response) {
-                    success.invoke(response)
+                override fun onFailure(call: Call, e: IOException) {
+                    fail(e)
                 }
             }
     )
+
+    private fun request(url: String) = Request.Builder()
+            .url(url)
+            .build()
 }
