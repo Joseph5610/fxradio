@@ -71,16 +71,6 @@ class TickerView : View() {
     private fun createText(content: String = "") = text(content) {
         layoutY = 12.0
         isVisible = false
-        opacity = 0.8
-
-        onHover {
-            opacity = if (it) {
-                1.0
-            } else {
-                0.8
-            }
-        }
-
         addClass(Styles.defaultTextColor)
     }
 

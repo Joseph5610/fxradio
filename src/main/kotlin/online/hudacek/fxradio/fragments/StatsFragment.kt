@@ -54,10 +54,6 @@ class StatsFragment : Fragment() {
         viewModel.item = StatsModel(viewState = StatsViewState.Loading)
     }
 
-    override fun onBeforeShow() {
-        currentWindow?.opacity = 0.85
-    }
-
     override fun onDock() {
         viewModel.getStats()
     }

@@ -41,9 +41,6 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
         stationInfoViewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
     }
 
-    override fun onBeforeShow() {
-        currentWindow?.opacity = 0.85
-    }
 
     override val root = vbox {
         prefWidth = 300.0

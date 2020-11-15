@@ -81,16 +81,12 @@ class Styles : Stylesheet() {
         }
 
         tag {
-            textFill = Color.BLACK
+            textFill = c(ColorValues.label)
             padding = box(3.0.px, 10.0.px)
-            backgroundRadius += box(3.px)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             backgroundColor += c(ColorValues.background)
-            borderRadius += box(3.px)
             borderColor += box(c(ColorValues.backgroundBorder))
-
-            and(hover) {
-                textFill = Color.BLACK
-            }
         }
 
         header {
@@ -104,7 +100,7 @@ class Styles : Stylesheet() {
         }
 
         defaultTextColor {
-            fill = Color.BLACK
+            fill = c(ColorValues.label)
         }
 
         coloredButton {
@@ -138,6 +134,7 @@ class Styles : Stylesheet() {
 
         libraryListView {
             backgroundColor += Color.WHITESMOKE
+            borderColor += box(Color.WHITESMOKE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
@@ -145,25 +142,21 @@ class Styles : Stylesheet() {
             fontSize = 12.px
             textFill = c(ColorValues.label)
             backgroundColor += Color.WHITESMOKE
-            and(hover) {
-                backgroundColor += c(ColorValues.background)
-                borderColor += box(c(ColorValues.backgroundBorder))
-                textFill = Color.BLACK
-            }
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             and(selected) {
                 backgroundColor += c(ColorValues.background)
                 borderColor += box(c(ColorValues.backgroundBorder))
-                textFill = Color.BLACK
             }
             padding = box(5.px, 10.px, 5.px, 15.px)
         }
 
         libraryListItemTag {
             padding = box(2.px)
-            textFill = Color.BLACK
-            backgroundRadius += box(3.px)
-            backgroundColor += Color.GHOSTWHITE
-            borderRadius += box(3.px)
+            textFill = c(ColorValues.label)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            backgroundColor += c(ColorValues.background)
             borderColor += box(c(ColorValues.backgroundBorder))
         }
 
@@ -243,8 +236,8 @@ class Styles : Stylesheet() {
             padding = box(0.px, 5.px, 5.px, 5.px)
             backgroundColor += c(ColorValues.transparent)
             borderColor += box(c(ColorValues.transparent))
-            backgroundRadius += box(5.px)
-            borderRadius += box(5.px)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
 
             and(hover) {
                 backgroundColor += c(ColorValues.background)
@@ -264,6 +257,11 @@ class Styles : Stylesheet() {
         slider {
             track {
                 prefHeight = 5.px
+            }
+
+            thumb {
+                prefHeight = 14.px
+                prefWidth = 14.px
             }
             and(focused) {
                 thumb {

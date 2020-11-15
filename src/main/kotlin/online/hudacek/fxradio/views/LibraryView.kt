@@ -22,6 +22,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.flagIcon
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
+import online.hudacek.fxradio.utils.searchField
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
 import online.hudacek.fxradio.viewmodel.LibraryType
@@ -29,18 +30,17 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedLibrary
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-import tornadofx.controlsfx.customTextfield
 
 class LibraryView : View() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    private val showCountriesListLabel = viewModel.showCountriesProperty.stringBinding {
-        if (it!!) messages["hide"] else messages["show"]
+    private val showCountriesListLabel = viewModel.showCountriesProperty.objectBinding {
+        showIcon(it!!)
     }
 
-    private val showLibraryListLabel = viewModel.showLibraryProperty.stringBinding {
-        if (it!!) messages["hide"] else messages["show"]
+    private val showLibraryListLabel = viewModel.showLibraryProperty.objectBinding {
+        showIcon(it!!)
     }
 
     private val retryLink by lazy {
@@ -56,7 +56,7 @@ class LibraryView : View() {
         listview(viewModel.librariesProperty) {
             id = "libraryListView"
             cellFormat {
-                graphic = glyph(item.graphic, size = 14.0, useStyle = false)
+                graphic = glyph(item.graphic, 14.0, false, c("#d65458"))
                 text = messages[item.type.toString()]
                 addClass(Styles.libraryListItem)
             }
@@ -117,7 +117,7 @@ class LibraryView : View() {
         }
     }
 
-    private val searchField = customTextfield {
+    private val searchField = searchField {
         promptText = messages["search"]
         id = "search"
 
@@ -164,7 +164,8 @@ class LibraryView : View() {
                         paddingLeft = 10.0
                     }
                     region { hgrow = Priority.ALWAYS }
-                    smallLabel(showLibraryListLabel) {
+                    smallLabel {
+                        graphicProperty().bind(showLibraryListLabel)
                         paddingLeft = 10.0
                         paddingRight = 10.0
 
@@ -189,7 +190,8 @@ class LibraryView : View() {
                         paddingLeft = 10.0
                     }
                     region { hgrow = Priority.ALWAYS }
-                    smallLabel(showCountriesListLabel) {
+                    smallLabel {
+                        graphicProperty().bind(showCountriesListLabel)
                         paddingLeft = 10.0
                         paddingRight = 10.0
 
@@ -229,4 +231,9 @@ class LibraryView : View() {
             }
         }
     }
+
+    private fun showIcon(show: Boolean) = if (show)
+        glyph(FontAwesome.Glyph.CHEVRON_DOWN, size = 11.0, useStyle = false)
+    else
+        glyph(FontAwesome.Glyph.CHEVRON_RIGHT, size = 11.0, useStyle = false)
 }

@@ -27,14 +27,16 @@ import javafx.scene.control.Label
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.paint.Color
 import javafx.stage.Window
 import mu.KotlinLogging
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.views.player.TickerView
 import org.apache.logging.log4j.Level
+import org.controlsfx.control.textfield.CustomTextField
+import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
-import org.controlsfx.glyphfont.Glyph
 import tornadofx.*
 import tornadofx.controlsfx.glyph
 import java.io.BufferedReader
@@ -61,15 +63,22 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
 internal fun EventTarget.glyph(glyph: FontAwesome.Glyph,
                                size: Double = 35.0,
                                useStyle: Boolean = true,
-                               op: Glyph.() -> Unit = {}) = glyph("FontAwesome", glyph) {
+                               color: Color? = null) = glyph("FontAwesome", glyph) {
     size(size)
+    if (color != null) {
+        style {
+            textFill = color
+        }
+    }
     if (useStyle) {
         style {
             padding = box(10.px, 5.px)
         }
     }
-    op(this)
 }
+
+internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): CustomTextField =
+        opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
 
 internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
