@@ -18,7 +18,6 @@ package online.hudacek.fxradio.views
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.flagIcon
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
@@ -83,10 +82,6 @@ class LibraryView : View() {
                     label(item.name.split("(")[0])
                     label("${item.stationcount}") {
                         tooltip("${item.stationcount} $stationWord")
-                        graphic = imageview(Config.Resources.waveIcon) {
-                            fitWidth = 16.0
-                            isPreserveRatio = true
-                        }
                         addClass(Styles.libraryListItemTag)
                     }
                 }
@@ -233,7 +228,7 @@ class LibraryView : View() {
     }
 
     private fun showIcon(show: Boolean) = if (show)
-        glyph(FontAwesome.Glyph.CHEVRON_DOWN, size = 11.0, useStyle = false)
+        glyph(FontAwesome.Glyph.CHEVRON_DOWN, size = 11.0, useStyle = false, color = c(Styles.ColorValues.grayLabel))
     else
-        glyph(FontAwesome.Glyph.CHEVRON_RIGHT, size = 11.0, useStyle = false)
+        glyph(FontAwesome.Glyph.CHEVRON_RIGHT, size = 11.0, useStyle = false, color = c(Styles.ColorValues.grayLabel))
 }

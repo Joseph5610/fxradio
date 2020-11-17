@@ -25,11 +25,13 @@ import online.hudacek.fxradio.utils.isSystemDarkMode
 import online.hudacek.fxradio.viewmodel.LogModel
 import online.hudacek.fxradio.viewmodel.LogViewModel
 import online.hudacek.fxradio.views.MainView
-import org.apache.logging.log4j.Level
-import tornadofx.*
+import tornadofx.App
+import tornadofx.Stylesheet
+import tornadofx.launch
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.reflect.KClass
+
 
 /**
  * Main class of the app
@@ -71,7 +73,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
         const val appUrl = "https://hudacek.online/fxradio/"
-        const val author = "Jozef Hudáček"
+        const val author = "hudacek.online"
         const val copyright = "Copyright (c) 2020"
 
         /**

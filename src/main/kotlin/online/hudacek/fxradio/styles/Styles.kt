@@ -10,7 +10,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private object ColorValues {
+    object ColorValues {
         const val primary = "#0097CE"
         const val primaryHover = "#0097EA"
 
