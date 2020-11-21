@@ -51,8 +51,6 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
 
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun openAttributions() = find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
-
     fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
 
     fun openAvailableServer() = find<AvailableServersFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)

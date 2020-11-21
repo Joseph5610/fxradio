@@ -35,7 +35,7 @@ class ApiClient(private val baseUrl: String) : OkHttpHelper() {
     //Retrofit instance
     private val client: Retrofit
         get() = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(baseUrl)
                 .client(httpClient)

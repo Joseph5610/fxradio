@@ -48,10 +48,12 @@ class HelpMenu : Controller() {
 
     val menu by lazy {
         menu(messages["menu.help"]) {
-            item(messages["menu.app.attributions"]).action {
-                menuViewModel.openAttributions()
+
+            item(messages["menu.help.openhomepage"]).action {
+                menuViewModel.openWebsite()
             }
             separator()
+
             item(messages["menu.help.stats"]).action {
                 menuViewModel.openStats()
             }
@@ -68,10 +70,6 @@ class HelpMenu : Controller() {
                 }
             }
 
-            separator()
-            item(messages["menu.help.openhomepage"]).action {
-                menuViewModel.openWebsite()
-            }
             separator()
 
             menu(messages["menu.help.loglevel"]) {

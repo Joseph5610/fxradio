@@ -92,8 +92,8 @@ class MenuBarView : View() {
                 menuViewModel.openAvailableServer()
             }
         }
-        separator()
         if (Config.Flags.enableVersionCheck) {
+            separator()
             item(messages["menu.help.vcs.check"]).action {
                 VersionCheck.perform()
             }

@@ -10,18 +10,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    object ColorValues {
-        const val primary = "#0097CE"
-        const val primaryHover = "#0097EA"
-
-        const val background = "#E9E9E9"
-        const val backgroundBorder = "#E8E8E8"
-
-        const val label = "#2b2b2b"
-        const val grayLabel = "#8B8B8B"
-
-        const val transparent = "transparent"
-    }
+    private val colors = ColorValues()
 
     companion object {
 
@@ -57,7 +46,7 @@ class Styles : Stylesheet() {
 
     init {
         label {
-            textFill = c(ColorValues.label)
+            textFill = c(colors.label)
             fontSmoothingType = FontSmoothingType.GRAY
         }
 
@@ -67,26 +56,26 @@ class Styles : Stylesheet() {
 
         playerMainBox {
             padding = box(10.0.px, 0.0.px)
-            borderColor += box(c(ColorValues.transparent), c(ColorValues.transparent), c(ColorValues.backgroundBorder), c(ColorValues.transparent))
+            borderColor += box(c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent))
         }
 
         playerStationBox {
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             borderRadius += box(3.px)
-            backgroundColor += c(ColorValues.background)
-            borderColor += box(c(ColorValues.backgroundBorder))
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.backgroundBorder))
             maxWidth = 260.px
             prefWidth = 260.px
         }
 
         tag {
-            textFill = c(ColorValues.label)
+            textFill = c(colors.label)
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            backgroundColor += c(ColorValues.background)
-            borderColor += box(c(ColorValues.backgroundBorder))
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.backgroundBorder))
         }
 
         header {
@@ -100,7 +89,7 @@ class Styles : Stylesheet() {
         }
 
         defaultTextColor {
-            fill = c(ColorValues.label)
+            fill = c(colors.label)
         }
 
         coloredButton {
@@ -117,19 +106,19 @@ class Styles : Stylesheet() {
 
         grayLabel {
             fontSize = 11.px
-            textFill = c(ColorValues.grayLabel)
+            textFill = c(colors.grayLabel)
         }
 
         primaryButton {
-            backgroundColor += c(ColorValues.primary)
+            backgroundColor += c(colors.primary)
             textFill = Color.WHITESMOKE
             and(hover) {
-                backgroundColor += c(ColorValues.primaryHover)
+                backgroundColor += c(colors.primaryHover)
             }
         }
 
         primaryTextColor {
-            textFill = c(ColorValues.primary)
+            textFill = c(colors.primary)
         }
 
         libraryListView {
@@ -140,24 +129,24 @@ class Styles : Stylesheet() {
 
         libraryListItem {
             fontSize = 12.px
-            textFill = c(ColorValues.label)
+            textFill = c(colors.label)
             backgroundColor += Color.WHITESMOKE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(selected) {
-                backgroundColor += c(ColorValues.background)
-                borderColor += box(c(ColorValues.backgroundBorder))
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
             }
             padding = box(5.px, 10.px, 5.px, 15.px)
         }
 
         libraryListItemTag {
             padding = box(2.px)
-            textFill = c(ColorValues.label)
+            textFill = c(colors.label)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            backgroundColor += c(ColorValues.background)
-            borderColor += box(c(ColorValues.backgroundBorder))
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.backgroundBorder))
         }
 
         boldText {
@@ -177,17 +166,17 @@ class Styles : Stylesheet() {
         // ===================================================================
 
         scrollBar {
-            backgroundColor += c(ColorValues.transparent)
-            borderColor += box(c(ColorValues.transparent))
+            backgroundColor += c(colors.transparent)
+            borderColor += box(c(colors.transparent))
 
             incrementButton {
-                backgroundColor += c(ColorValues.transparent)
+                backgroundColor += c(colors.transparent)
                 backgroundRadius += box(0.em)
                 padding = box(0.px, 10.px, 0.px, 0.px)
             }
 
             decrementButton {
-                backgroundColor += c(ColorValues.transparent)
+                backgroundColor += c(colors.transparent)
                 backgroundRadius += box(0.em)
                 padding = box(0.px, 10.px, 0.px, 0.px)
             }
@@ -203,8 +192,8 @@ class Styles : Stylesheet() {
             }
 
             track {
-                backgroundColor += c(ColorValues.transparent)
-                borderColor += box(c(ColorValues.transparent))
+                backgroundColor += c(colors.transparent)
+                borderColor += box(c(colors.transparent))
                 unsafe("-fx-background-radius", raw("0.0em"))
                 unsafe("-fx-border-radius", raw("2.0em"))
             }
@@ -225,7 +214,7 @@ class Styles : Stylesheet() {
         splitPaneDivider {
             padding = box(0.px, 0.001.em)
             backgroundColor += Color.TRANSPARENT
-            borderColor += box(c(ColorValues.backgroundBorder))
+            borderColor += box(c(colors.backgroundBorder))
         }
 
         datagrid {
@@ -234,19 +223,19 @@ class Styles : Stylesheet() {
 
         datagridCell {
             padding = box(0.px, 5.px, 5.px, 5.px)
-            backgroundColor += c(ColorValues.transparent)
-            borderColor += box(c(ColorValues.transparent))
+            backgroundColor += c(colors.transparent)
+            borderColor += box(c(colors.transparent))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
 
             and(hover) {
-                backgroundColor += c(ColorValues.background)
-                borderColor += box(c(ColorValues.backgroundBorder))
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
             }
 
             and(selected) {
-                backgroundColor += c(ColorValues.background)
-                borderColor += box(c(ColorValues.backgroundBorder))
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
             }
         }
 
@@ -283,49 +272,59 @@ class Styles : Stylesheet() {
 
         contextMenu {
             backgroundColor += Color.WHITESMOKE
-            borderColor += box(c(ColorValues.backgroundBorder))
+            borderColor += box(c(colors.backgroundBorder))
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
 
             menuItem {
+                backgroundRadius += box(6.px)
+                borderRadius += box(6.px)
+
                 and(hover) {
-                    backgroundColor += c(ColorValues.background)
+                    backgroundColor += c(colors.background)
                 }
                 and(focused) {
-                    backgroundColor += c(ColorValues.background)
+                    backgroundColor += c(colors.background)
                 }
                 and(selected) {
-                    backgroundColor += c(ColorValues.background)
+                    backgroundColor += c(colors.background)
                 }
             }
         }
 
         menuBar {
-            backgroundColor += c(ColorValues.backgroundBorder)
+            backgroundColor += c(colors.backgroundBorder)
 
             menu {
-                backgroundColor += c(ColorValues.background)
+                backgroundColor += c(colors.background)
 
                 and(hover) {
-                    backgroundColor += c(ColorValues.background)
+                    backgroundColor += c(colors.background)
                 }
                 and(focused) {
-                    backgroundColor += c(ColorValues.background)
+                    backgroundColor += c(colors.background)
                 }
                 and(selected) {
-                    backgroundColor += c(ColorValues.background)
+                    backgroundColor += c(colors.background)
                 }
             }
         }
 
         progressIndicator {
-            progressColor = c(ColorValues.grayLabel)
+            progressColor = c(colors.grayLabel)
         }
 
         statusBar {
             padding = box(5.px)
             borderRadius += box(0.px)
             borderWidth += box(1.px, 0.px, 0.px, 0.px)
-            borderColor += box(c(ColorValues.backgroundBorder), c(ColorValues.transparent), c(ColorValues.transparent), c(ColorValues.transparent))
+            borderColor += box(c(colors.backgroundBorder), c(colors.transparent), c(colors.transparent), c(colors.transparent))
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
+        }
+
+        textField {
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
         }
     }
 }

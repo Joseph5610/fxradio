@@ -3,6 +3,7 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
+import javafx.beans.property.StringProperty
 import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.Properties
@@ -25,7 +26,7 @@ class PlayerModel(station: Station = Station.stub,
                   animate: Boolean = true,
                   playerType: PlayerType, notifications: Boolean = true,
                   volume: Double,
-                  playingStatus: PlayingStatus = PlayingStatus.Stopped) {
+                  playingStatus: PlayingStatus = PlayingStatus.Stopped, trackName: String = "") {
 
     val animate: Boolean by property(animate)
     val notifications: Boolean by property(notifications)
@@ -33,6 +34,7 @@ class PlayerModel(station: Station = Station.stub,
     val playerType: PlayerType by property(playerType)
     val volume: Double by property(volume)
     val playingStatus: PlayingStatus by property(playingStatus)
+    val trackName: String by property(trackName)
 }
 
 /**
@@ -54,6 +56,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
     val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
     val playingStatusProperty = bind(PlayerModel::playingStatus) as ObjectProperty
+    val trackNameProperty = bind(PlayerModel::trackName) as StringProperty
 
     init {
         stationProperty.onChange {
@@ -64,6 +67,9 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                     //Restart playing status
                     playingStatusProperty.value = PlayingStatus.Stopped
                     playingStatusProperty.value = PlayingStatus.Playing
+
+                    //Update the name of the station
+                    trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
 
                     //Increase count of the station
                     StationsApi.service

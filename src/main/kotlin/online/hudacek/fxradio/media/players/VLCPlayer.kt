@@ -33,6 +33,8 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
 internal class VLCPlayer : Component(), MediaPlayer {
+
+
     private val audioPlayerComponent: AudioPlayerComponent? by lazy {
         try {
             AudioPlayerComponent()

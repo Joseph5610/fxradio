@@ -18,7 +18,6 @@ package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.copyMenu
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.showWhen
@@ -84,6 +83,7 @@ class StatsFragment : Fragment() {
         }
 
         listview(viewModel.statsProperty) {
+            isMouseTransparent = true
             cellFormat {
                 paddingAll = 0.0
                 graphic = hbox(5) {
@@ -91,10 +91,8 @@ class StatsFragment : Fragment() {
                     label(item.second)
                     addClass(Styles.libraryListItem)
                 }
-                copyMenu(clipboard,
-                        name = messages["copy"],
-                        value = "${item.first}: ${item.second}")
             }
+
             showWhen {
                 viewModel.viewStateProperty.isEqualTo(StatsViewState.Normal)
             }

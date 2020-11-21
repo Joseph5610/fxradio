@@ -44,7 +44,7 @@ open class OkHttpHelper {
 
         OkHttpClient.Builder()
                 //The whole call should not take longer than 10 secs
-                .callTimeout(10, TimeUnit.SECONDS)
+                .callTimeout(20, TimeUnit.SECONDS)
                 .addNetworkInterceptor { chain ->
                     chain.proceed(
                             chain.request()

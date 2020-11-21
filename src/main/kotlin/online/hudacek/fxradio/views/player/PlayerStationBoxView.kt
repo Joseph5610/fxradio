@@ -21,7 +21,6 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.*
@@ -34,22 +33,19 @@ import tornadofx.*
  */
 class PlayerStationBoxView : View() {
 
-    private val playerViewModel: PlayerViewModel by inject()
-
-    private val trackNameProperty by lazy { stringProperty() }
-    //private val showEllipsisMenuProperty by lazy { booleanProperty() }
+    private val viewModel: PlayerViewModel by inject()
 
     private val ticker by lazy {
         tickerView {
-            tickerTextProperty.bind(trackNameProperty)
+            tickerTextProperty.bind(viewModel.trackNameProperty)
         }
     }
 
-    private val playingStatusLabel = playerViewModel.playingStatusProperty.stringBinding {
+    private val playingStatusLabel = viewModel.playingStatusProperty.stringBinding {
         when (it) {
             PlayingStatus.Stopped -> messages["player.streamingStopped"]
             PlayingStatus.Error -> messages["player.streamingError"]
-            else -> playerViewModel.stationProperty.value.name
+            else -> viewModel.stationProperty.value.name
         }
     }
 
@@ -66,7 +62,11 @@ class PlayerStationBoxView : View() {
 
     init {
         //Subscribe to property changes
-        playerViewModel.stationProperty.onChange { it?.let(::handleStationChange) }
+        viewModel.stationProperty.onChange {
+            if (it != null && it.isValid()) {
+                stationLogo.createImage(it)
+            }
+        }
         subscribe<MetaDataChanged> { it.let(::onMetaDataChanged) }
     }
 
@@ -90,42 +90,24 @@ class PlayerStationBoxView : View() {
             }
 
             top {
-                autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], trackNameProperty)
-                // hbox {
+                autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {
                     //Dynamic ticker for station name
                     vbox {
                         add(ticker)
                         showWhen {
-                            playerViewModel.animateProperty
+                            viewModel.animateProperty
                         }
                     }
 
                     //Static label for station name
-                    label(trackNameProperty) {
+                    label(viewModel.trackNameProperty) {
                         onHover { tooltip(text) }
                         showWhen {
-                            playerViewModel.animateProperty.not()
+                            viewModel.animateProperty.not()
                         }
                     }
                 }
-                /*
-                vbox {
-                    glyph(FontAwesome.Glyph.ELLIPSIS_H, useStyle = false, size = 14.0) {
-                        style {
-                            alignment = Pos.BASELINE_CENTER
-                            paddingLeft = 10.0
-                        }
-
-                        showWhen {
-                            playerViewModel.stationProperty.booleanBinding {
-                                it != null && it.isValid()
-                            }.and(showEllipsisMenuProperty)
-                        }
-                    }
-                }*/
-                //   }
-
             }
             bottom {
                 vbox(alignment = Pos.CENTER) {
@@ -147,25 +129,18 @@ class PlayerStationBoxView : View() {
         if (newSongName.length > 1) {
             ticker.isScheduled.value = true
             if (newStreamTitle.isNotEmpty()) {
-                if (playerViewModel.notificationsProperty.value) {
+                if (viewModel.notificationsProperty.value) {
                     notification(title = newSongName, subtitle = newStreamTitle)
                 }
 
-                if (newStreamTitle != playerViewModel.stationProperty.value.name) {
-                    trackNameProperty.value = "$newStreamTitle - $newSongName"
+                if (newStreamTitle != viewModel.stationProperty.value.name) {
+                    viewModel.trackNameProperty.value = "$newStreamTitle - $newSongName"
                 } else {
-                    trackNameProperty.value = newSongName
+                    viewModel.trackNameProperty.value = newSongName
                 }
             } else {
-                trackNameProperty.value = newSongName
+                viewModel.trackNameProperty.value = newSongName
             }
         }
-    }
-
-    private fun handleStationChange(station: Station) {
-        if (station.isValid()) {
-            trackNameProperty.value = playerViewModel.stationProperty.value.name + " - " + messages["player.noMetaData"]
-            stationLogo.createImage(station)
-        } else trackNameProperty.value = ""
     }
 }

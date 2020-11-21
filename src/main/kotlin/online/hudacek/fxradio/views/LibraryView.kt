@@ -19,6 +19,7 @@ package online.hudacek.fxradio.views
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.api.model.flagIcon
+import online.hudacek.fxradio.styles.ColorValues
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.glyph
 import online.hudacek.fxradio.utils.searchField
@@ -228,7 +229,7 @@ class LibraryView : View() {
     }
 
     private fun showIcon(show: Boolean) = if (show)
-        glyph(FontAwesome.Glyph.CHEVRON_DOWN, size = 11.0, useStyle = false, color = c(Styles.ColorValues.grayLabel))
+        glyph(FontAwesome.Glyph.CHEVRON_DOWN, size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
     else
-        glyph(FontAwesome.Glyph.CHEVRON_RIGHT, size = 11.0, useStyle = false, color = c(Styles.ColorValues.grayLabel))
+        glyph(FontAwesome.Glyph.CHEVRON_RIGHT, size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
 }

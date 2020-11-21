@@ -17,15 +17,18 @@
 package online.hudacek.fxradio.fragments
 
 import javafx.geometry.Pos
+import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.styles.Styles
 import tornadofx.*
+import tornadofx.controlsfx.right
+import tornadofx.controlsfx.statusbar
 
 /***
  * Simple Information about the app
  */
-class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version.version}") {
+class AboutFragment : Fragment(FxRadio.appName) {
 
     override val root = vbox {
         prefWidth = 300.0
@@ -36,10 +39,12 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version.version}") 
                 isPreserveRatio = true
                 paddingAll = 20.0
             }
-            label("${FxRadio.appName} - ${FxRadio.appDesc}") {
+            label(FxRadio.appName + " " + FxRadio.version.version) {
                 style {
+                    paddingTop = 5.0
                     paddingBottom = 8.0
                 }
+                addClass(Styles.grayLabel)
             }
 
             label(messages["about.datasource"]) {
@@ -51,6 +56,16 @@ class AboutFragment : Fragment("${FxRadio.appName} ${FxRadio.version.version}") 
 
             label("${FxRadio.copyright} ${FxRadio.author}") {
                 addClass(Styles.grayLabel)
+            }
+        }
+
+        statusbar {
+            right {
+                hyperlink(messages["menu.app.attributions"]) {
+                    action {
+                        find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
+                    }
+                }
             }
         }
     }

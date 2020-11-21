@@ -51,5 +51,6 @@ object Config {
         const val darkStylesEnabled = false
         const val fetchMetadataForCustomPlayerEnabled = false
         const val enableServerSelection = false
+        const val enableTagSearch = false
     }
 }

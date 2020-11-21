@@ -132,6 +132,7 @@ class StationsDataGridView : View() {
                 LibraryType.Favourites -> stationsViewModel.show(favouritesViewModel.stationsProperty)
                 LibraryType.History -> stationsViewModel.show(historyViewModel.stationsProperty)
                 LibraryType.Search -> stationsViewModel.search(params)
+                LibraryType.SearchByTag -> stationsViewModel.searchByTag(params)
                 else -> stationsViewModel.topStations
             }
         }

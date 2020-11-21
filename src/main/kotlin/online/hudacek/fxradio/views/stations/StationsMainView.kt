@@ -25,7 +25,7 @@ import tornadofx.*
  */
 class StationsMainView : View() {
 
-    private val messageView: StationsMessageView by inject()
+    private val messageView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
 

@@ -43,6 +43,9 @@ interface StationsApi {
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
 
+    @POST("json/stations/search")
+    fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
+
     @GET("json/stations/topvote/50")
     fun getTopStations(): Single<List<Station>>
 

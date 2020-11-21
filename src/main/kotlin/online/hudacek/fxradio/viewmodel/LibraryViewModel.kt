@@ -37,7 +37,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 enum class LibraryType {
-    Favourites, Search, History, Country, TopStations
+    Favourites, Search, SearchByTag, History, Country, TopStations
 }
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)

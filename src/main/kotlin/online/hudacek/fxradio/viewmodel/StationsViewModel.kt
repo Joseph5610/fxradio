@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.SearchBody
+import online.hudacek.fxradio.api.model.SearchByTagBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
@@ -52,6 +53,17 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
         if (name.length > 2) {
             StationsApi.service
                     .searchStationByName(SearchBody(name))
+                    .compose(applySchedulers())
+                    .subscribe(::show, ::handleError)
+        } else {
+            viewStateProperty.value = StationsViewState.ShortQuery
+        }
+    }
+
+    fun searchByTag(tag: String) {
+        if (tag.length > 2) {
+            StationsApi.service
+                    .searchStationByTag(SearchByTagBody(tag))
                     .compose(applySchedulers())
                     .subscribe(::show, ::handleError)
         } else {

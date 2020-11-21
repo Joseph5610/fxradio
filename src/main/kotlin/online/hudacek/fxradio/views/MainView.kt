@@ -81,6 +81,7 @@ class MainView : View(FxRadio.appName) {
 
             content {
                 splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
+
                     setDividerPositions(Property(Properties.WINDOW_DIVIDER).get(0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
@@ -93,6 +94,12 @@ class MainView : View(FxRadio.appName) {
                     //Constrains width of left pane
                     libraryView.root.minWidthProperty().bind(widthProperty().divide(5))
                     libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
+
+                    //Remove 1px border from splitpane
+                    style {
+                        backgroundInsets += box(0.px)
+                        padding = box(0.px)
+                    }
                 }
             }
         }

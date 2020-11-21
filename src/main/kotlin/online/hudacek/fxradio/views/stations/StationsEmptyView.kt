@@ -30,7 +30,7 @@ import tornadofx.controlsfx.glyph
 /**
  * This is a view that shows different errors or info messages on stationsView
  */
-class StationsMessageView : View() {
+class StationsEmptyView : View() {
 
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
