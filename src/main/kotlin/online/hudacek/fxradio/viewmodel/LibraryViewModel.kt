@@ -61,6 +61,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
     val searchQuery: String by property(searchQuery)
     val showLibrary: Boolean by property(showLibrary)
     val showCountries: Boolean by property(showCountries)
+    val useTagSearch: Boolean by property(false)
 }
 
 /**
@@ -78,9 +79,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
 
     val searchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
-
     val showLibraryProperty = bind(LibraryModel::showLibrary) as BooleanProperty
     val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
+    val useTagSearchProperty = bind(LibraryModel::useTagSearch) as BooleanProperty
 
     init {
         item = LibraryModel(
@@ -112,7 +113,14 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
         ))
     }
 
-    fun showSearchResults() = select(SelectedLibrary(LibraryType.Search, searchQueryProperty.value.trim()))
+    fun showSearchResults() {
+        val query = searchQueryProperty.value.trim()
+        if (useTagSearchProperty.value) {
+            select(SelectedLibrary(LibraryType.SearchByTag, query))
+        } else {
+            select(SelectedLibrary(LibraryType.Search, query))
+        }
+    }
 
     fun refreshLibrary(libraryType: LibraryType) {
         if (selectedProperty.value.type == libraryType) {

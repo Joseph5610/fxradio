@@ -18,10 +18,12 @@ package online.hudacek.fxradio.views.stations
 
 import javafx.geometry.Pos
 import javafx.scene.control.ToggleButton
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.viewmodel.*
+import online.hudacek.fxradio.viewmodel.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
 import tornadofx.controlsfx.segmentedbutton
 
@@ -48,7 +50,8 @@ class StationsHeaderView : View() {
         ToggleButton(messages["search.byname"]).apply {
             isSelected = true
             action {
-                libraryViewModel.select(SelectedLibrary(LibraryType.Search, libraryViewModel.selectedProperty.value.params))
+                libraryViewModel.useTagSearchProperty.value = false
+                libraryViewModel.showSearchResults()
             }
         }
     }
@@ -57,7 +60,8 @@ class StationsHeaderView : View() {
         ToggleButton(messages["search.bytag"]).apply {
             isSelected = false
             action {
-                libraryViewModel.select(SelectedLibrary(LibraryType.SearchByTag, libraryViewModel.selectedProperty.value.params))
+                libraryViewModel.useTagSearchProperty.value = true
+                libraryViewModel.showSearchResults()
             }
         }
     }
@@ -81,7 +85,6 @@ class StationsHeaderView : View() {
             }
         }
 
-        if (Config.Flags.enableTagSearch) {
             right {
                 vbox(alignment = Pos.CENTER) {
                     hbox {
@@ -89,12 +92,12 @@ class StationsHeaderView : View() {
                             buttons.addAll(buttonSearchByName, buttonSearchByTag)
                         }
                         showWhen {
-                            libraryViewModel.selected(LibraryType.Search).or(libraryViewModel.selected(LibraryType.SearchByTag))
+                            libraryViewModel.selected(LibraryType.Search)
+                                    .or(libraryViewModel.selected(LibraryType.SearchByTag))
                         }
                     }
                 }
             }
-        }
 
         showWhen {
             viewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)

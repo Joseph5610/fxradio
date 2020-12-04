@@ -50,7 +50,5 @@ object Config {
         const val enableVersionCheck = false
         const val darkStylesEnabled = false
         const val fetchMetadataForCustomPlayerEnabled = true
-        const val enableServerSelection = true
-        const val enableTagSearch = true
     }
 }

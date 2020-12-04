@@ -86,12 +86,11 @@ class MenuBarView : View() {
         item(messages["menu.app.about"] + " " + FxRadio.appName).action {
             menuViewModel.openAbout()
         }
-        if (Config.Flags.enableServerSelection) {
-            separator()
-            item(messages["menu.app.server"]).action {
-                menuViewModel.openAvailableServer()
-            }
+        separator()
+        item(messages["menu.app.server"]).action {
+            menuViewModel.openAvailableServer()
         }
+
         if (Config.Flags.enableVersionCheck) {
             separator()
             item(messages["menu.help.vcs.check"]).action {
