@@ -66,16 +66,6 @@ class MenuViewModel : ItemViewModel<MenuModel>() {
         logger.error(it) { "Exception when clearing cache" }
     }
 
-    fun clearServer() = runAsync(daemon = true) {
-        Property(Properties.API_SERVER).remove()
-    } success {
-        fire(NotificationEvent(messages["server.clear.ok"], FontAwesome.Glyph.CHECK))
-    } fail {
-        fire(NotificationEvent(messages["server.clear.error"]))
-        logger.error(it) { "Exception when clearing server" }
-    }
-
-
     fun handleVote(): Disposable = StationsApi.service
             .vote(playerViewModel.stationProperty.value.stationuuid)
             .compose(applySchedulers())

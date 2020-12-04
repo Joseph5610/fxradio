@@ -31,8 +31,8 @@ class StationsMainView : View() {
 
     override val root = vbox {
         vgrow = Priority.ALWAYS
-        add(messageView)
         add(headerView)
+        add(messageView)
         add(dataGridView)
         dataGridView.root.fitToParentHeight()
         addClass(Styles.backgroundWhite)

@@ -50,9 +50,15 @@ class FavouritesMenu : Controller() {
 
             //Add favourite
             item(messages["menu.station.favourite"], keyFavourites) {
-                enableWhen(playerViewModel.stationProperty.booleanBinding {
-                    it != null && it.isValid() && !favouritesViewModel.isPresent(it)
-                })
+
+                enableWhen {
+                    favouritesViewModel.stationsProperty.booleanBinding {
+                        !it!!.contains(playerViewModel.stationProperty.value)
+                    }.and(playerViewModel.stationProperty.booleanBinding {
+                        it != null && it.isValid() && !favouritesViewModel.stationsProperty.contains(it)
+                    })
+                }
+
                 action {
                     favouritesViewModel.add(playerViewModel.stationProperty.value)
                     libraryViewModel.refreshLibrary(LibraryType.Favourites)
@@ -61,9 +67,13 @@ class FavouritesMenu : Controller() {
 
             //Remove favourite
             item(messages["menu.station.favourite.remove"]) {
-                enableWhen(playerViewModel.stationProperty.booleanBinding {
-                    it != null && it.isValid() && favouritesViewModel.isPresent(it)
-                })
+                enableWhen {
+                    favouritesViewModel.stationsProperty.booleanBinding {
+                        it!!.contains(playerViewModel.stationProperty.value)
+                    }.and(playerViewModel.stationProperty.booleanBinding {
+                        it != null && it.isValid() && favouritesViewModel.stationsProperty.contains(it)
+                    })
+                }
                 action {
                     favouritesViewModel.remove(playerViewModel.stationProperty.value)
                     libraryViewModel.refreshLibrary(LibraryType.Favourites)

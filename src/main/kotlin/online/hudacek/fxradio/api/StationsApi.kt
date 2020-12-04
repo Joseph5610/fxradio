@@ -68,7 +68,7 @@ interface StationsApi {
 
         private val logger = KotlinLogging.logger {}
 
-        private val serversViewModel: ServersViewModel by inject()
+        private val viewModel: ServersViewModel by inject()
 
         private val savedServerValue = Property(Properties.API_SERVER)
 
@@ -77,23 +77,26 @@ interface StationsApi {
             //Only if the value is not stored try to get it by calling InetAddress.getAllByName
             if (savedServerValue.isPresent) {
                 logger.debug { "Setting model from saved state" }
-                serversViewModel.item = ServersModel(savedServerValue.get())
+                viewModel.item = ServersModel(savedServerValue.get())
             } else {
-                serversViewModel.availableServers.let {
+                viewModel.loadAllServers()
+
+                viewModel.serversProperty.let {
                     if (it.isNotEmpty()) {
                         logger.debug { "Setting model from available servers" }
-                        serversViewModel.item = ServersModel(savedServerValue.get(it[0]), it)
+                        viewModel.item = ServersModel(savedServerValue.get(it[0]), it)
                     } else {
                         logger.debug { "Setting fallback default value of model" }
-                        serversViewModel.item = ServersModel(Config.Resources.defaultApiServer)
+                        viewModel.item = ServersModel(Config.Resources.defaultApiServer)
                     }
                     //Save the value for later use
-                    savedServerValue.save(serversViewModel.selectedProperty.value)
+                    savedServerValue.save(viewModel.selectedProperty.value)
+
                 }
             }
         }
 
-        val client by lazy { ApiClient("https://${serversViewModel.selectedProperty.value}") }
+        val client by lazy { ApiClient("https://${viewModel.selectedProperty.value}") }
         val service by lazy { client.create(StationsApi::class) }
     }
 }

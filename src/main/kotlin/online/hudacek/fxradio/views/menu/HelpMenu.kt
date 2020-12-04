@@ -64,12 +64,6 @@ class HelpMenu : Controller() {
                 }
             }
 
-            item(messages["menu.help.clearServer"]).action {
-                confirm(messages["server.clear.confirm"], messages["server.clear.text"], owner = primaryStage) {
-                    menuViewModel.clearServer()
-                }
-            }
-
             separator()
 
             menu(messages["menu.help.loglevel"]) {

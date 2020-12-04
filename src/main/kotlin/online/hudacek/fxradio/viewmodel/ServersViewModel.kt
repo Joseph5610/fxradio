@@ -35,7 +35,16 @@ class ServersViewModel : ItemViewModel<ServersModel>() {
     val serversProperty = bind(ServersModel::servers) as ListProperty<String>
     val selectedProperty = bind(ServersModel::selected) as StringProperty
 
-    val availableServers by lazy {
-        InetAddress.getAllByName(Config.Resources.defaultDnsHost).map { it.canonicalHostName }.asObservable()
+    private val availableServers by lazy {
+        InetAddress.getAllByName(Config.Resources.defaultDnsHost)
+                .map { it.canonicalHostName }
+                .distinct()
+                .asObservable()
+    }
+
+    fun loadAllServers() {
+        if (serversProperty.isEmpty()) {
+            serversProperty.value = availableServers
+        }
     }
 }

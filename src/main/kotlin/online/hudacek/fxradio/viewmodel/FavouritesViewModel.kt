@@ -56,6 +56,4 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>() {
                     fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
                 })
     }
-
-    fun isPresent(station: Station): Boolean = stationsProperty.contains(station)
 }

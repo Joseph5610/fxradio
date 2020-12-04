@@ -49,8 +49,8 @@ object Config {
         const val addStationEnabled = true
         const val enableVersionCheck = false
         const val darkStylesEnabled = false
-        const val fetchMetadataForCustomPlayerEnabled = false
-        const val enableServerSelection = false
-        const val enableTagSearch = false
+        const val fetchMetadataForCustomPlayerEnabled = true
+        const val enableServerSelection = true
+        const val enableTagSearch = true
     }
 }

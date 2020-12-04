@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.views.stations
 
 import javafx.geometry.Pos
+import javafx.scene.control.ToggleButton
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
@@ -43,6 +44,31 @@ class StationsHeaderView : View() {
         }
     }
 
+    private val buttonSearchByName by lazy {
+        ToggleButton(messages["search.byname"]).apply {
+            isSelected = true
+            action {
+                libraryViewModel.select(SelectedLibrary(LibraryType.Search, libraryViewModel.selectedProperty.value.params))
+            }
+        }
+    }
+
+    private val buttonSearchByTag by lazy {
+        ToggleButton(messages["search.bytag"]).apply {
+            isSelected = false
+            action {
+                libraryViewModel.select(SelectedLibrary(LibraryType.SearchByTag, libraryViewModel.selectedProperty.value.params))
+            }
+        }
+    }
+
+    init {
+        libraryViewModel.selectedProperty.onChange {
+            if (it?.type == LibraryType.Search) buttonSearchByName.isSelected = true
+            else if (it?.type == LibraryType.SearchByTag) buttonSearchByTag.isSelected = true
+        }
+    }
+
     override val root = borderpane {
         padding = insets(horizontal = 10.0, vertical = 0.0)
         maxHeight = 10.0
@@ -59,20 +85,8 @@ class StationsHeaderView : View() {
             right {
                 vbox(alignment = Pos.CENTER) {
                     hbox {
-
                         segmentedbutton {
-                            buttons.addAll(
-                                    togglebutton(messages["search.byname"]) {
-                                        isSelected = true
-                                        action {
-                                            libraryViewModel.select(SelectedLibrary(LibraryType.Search, libraryViewModel.selectedProperty.value.params))
-                                        }
-                                    },
-                                    togglebutton(messages["search.bytag"]) {
-                                        action {
-                                            libraryViewModel.select(SelectedLibrary(LibraryType.SearchByTag, libraryViewModel.selectedProperty.value.params))
-                                        }
-                                    })
+                            buttons.addAll(buttonSearchByName, buttonSearchByTag)
                         }
                         showWhen {
                             libraryViewModel.selected(LibraryType.Search).or(libraryViewModel.selected(LibraryType.SearchByTag))
@@ -84,6 +98,7 @@ class StationsHeaderView : View() {
 
         showWhen {
             viewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)
+                    .or(viewModel.viewStateProperty.isEqualTo(StationsViewState.NoResults))
         }
 
         addClass(Styles.backgroundWhiteSmoke)
