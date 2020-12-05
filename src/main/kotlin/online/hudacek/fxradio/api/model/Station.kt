@@ -31,7 +31,7 @@ data class Station(val stationuuid: String,
 
     companion object {
         val stub by lazy {
-            Station("0", "No stations found", null,
+            Station("0", "Not playing", null,
                     FxRadio.appUrl, null)
         }
     }

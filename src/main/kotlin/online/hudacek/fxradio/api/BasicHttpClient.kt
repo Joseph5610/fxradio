@@ -22,8 +22,12 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
+/**
+ * Creates and holds single instance of OkHttpClient
+ * Plain OkHttpClient is used mostly for downloading images of stations
+ */
 object HttpClientHolder {
-    val client = BasicHttpClient()
+    val client by lazy { BasicHttpClient() }
 }
 
 class BasicHttpClient : OkHttpHelper() {

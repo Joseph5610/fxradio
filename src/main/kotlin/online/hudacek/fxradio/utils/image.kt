@@ -30,9 +30,9 @@ private val logger = KotlinLogging.logger {}
 
 val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
 
-//If the downloading failed, store the station here and
+//If the downloading failed, store the station uuid here and
 //don't download the file again until next run of the app
-private val invalidStations by lazy { observableListOf<Station>() }
+private val invalidStationUuids by lazy { observableListOf<String>() }
 
 /**
  * This method is used for custom downloading of station's logo
@@ -48,13 +48,13 @@ internal fun ImageView.createImage(station: Station) {
 
     //Ignore invalid stations
     if (!station.isValid()) return
-    if (invalidStations.contains(station)) return
+    if (invalidStationUuids.contains(station.stationuuid)) return
 
     if (ImageCache.has(station)) {
         image = ImageCache.get(station)
     } else {
         if (station.favicon.isNullOrEmpty()) {
-            invalidStations.add(station)
+            invalidStationUuids.add(station.stationuuid)
             logger.debug { "Image for ${station.name} is null or empty" }
             return
         }
@@ -72,7 +72,7 @@ internal fun ImageView.createImage(station: Station) {
                     },
                     {
                         logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
-                        invalidStations.add(station)
+                        invalidStationUuids.add(station.stationuuid)
                     })
         }
     }
