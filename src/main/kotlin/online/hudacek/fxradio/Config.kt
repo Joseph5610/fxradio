@@ -46,7 +46,6 @@ object Config {
      * Experimental features
      */
     object Flags {
-        const val addStationEnabled = true
         const val enableVersionCheck = false
         const val darkStylesEnabled = false
     }

@@ -19,7 +19,6 @@ package online.hudacek.fxradio.views.menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.shouldBeDisabled
 import online.hudacek.fxradio.utils.update
@@ -65,7 +64,6 @@ class StationMenu : Controller() {
 
             separator()
             item(messages["menu.station.add"], keyAdd) {
-                isVisible = Config.Flags.addStationEnabled
                 action {
                     viewModel.openAddNewStation()
                 }
