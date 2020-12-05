@@ -49,6 +49,5 @@ object Config {
         const val addStationEnabled = true
         const val enableVersionCheck = false
         const val darkStylesEnabled = false
-        const val fetchMetadataForCustomPlayerEnabled = true
     }
 }

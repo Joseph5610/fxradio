@@ -24,12 +24,14 @@ import javafx.concurrent.Task
 import javafx.util.Duration
 import kotlinx.coroutines.*
 import mu.KotlinLogging
-import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MetaData
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.media.StreamUnavailableException
-import tornadofx.*
+import tornadofx.Component
+import tornadofx.get
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
 import javax.sound.sampled.SourceDataLine
@@ -50,6 +52,8 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     private var streamUrl = ""
 
+    private val playerRefreshMetaProperty = Property(Properties.PLAYER_CUSTOM_REFRESH_META).get(true)
+
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         logger.error(throwable) { "Stream unavailable..." }
     }
@@ -59,9 +63,10 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
         this.streamUrl = streamUrl
 
-        if (Config.Flags.fetchMetadataForCustomPlayerEnabled) {
+        if (playerRefreshMetaProperty) {
             metaDataService.restart()
         }
+
         mediaPlayerCoroutine = GlobalScope.launch(coroutineExceptionHandler) {
 
             val deMuxer = Demuxer.make()
@@ -146,7 +151,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
     }
 
     override fun stop() {
-        if (Config.Flags.fetchMetadataForCustomPlayerEnabled) {
+        if (playerRefreshMetaProperty) {
             metaDataService.cancel()
         }
 

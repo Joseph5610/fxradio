@@ -26,6 +26,7 @@ enum class Properties(val key: String) {
     VOLUME("player.volume"),
     PLAYER("player.type"),
     PLAYER_ANIMATE("player.animate"),
+    PLAYER_CUSTOM_REFRESH_META("player.refreshMeta"),
     API_SERVER("app.server"),
     SEARCH_QUERY("search.query"),
     NOTIFICATIONS("notifications"),
