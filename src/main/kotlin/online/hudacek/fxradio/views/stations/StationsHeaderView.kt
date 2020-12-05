@@ -47,7 +47,7 @@ class StationsHeaderView : View() {
     }
 
     private val buttonSearchByName by lazy {
-        ToggleButton(messages["search.byname"]).apply {
+        ToggleButton(messages["search.byName"]).apply {
             isSelected = true
             action {
                 libraryViewModel.useTagSearchProperty.value = false
@@ -57,7 +57,7 @@ class StationsHeaderView : View() {
     }
 
     private val buttonSearchByTag by lazy {
-        ToggleButton(messages["search.bytag"]).apply {
+        ToggleButton(messages["search.byTag"]).apply {
             isSelected = false
             action {
                 libraryViewModel.useTagSearchProperty.value = true

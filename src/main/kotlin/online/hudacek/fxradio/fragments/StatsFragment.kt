@@ -41,7 +41,7 @@ class StatsFragment : Fragment() {
                 messages["loading"]
             }
             StatsViewState.Error -> {
-                messages["statsUnavailable"]
+                messages["stats.statsUnavailable"]
             }
             else -> {
                 "State is $it"
