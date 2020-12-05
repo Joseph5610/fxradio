@@ -29,7 +29,6 @@ import tornadofx.*
 class StationMenu : Controller() {
 
     private val viewModel: MenuViewModel by inject()
-
     private val playerViewModel: PlayerViewModel by inject()
 
     private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
@@ -47,7 +46,7 @@ class StationMenu : Controller() {
             item(messages["menu.station.vote"]) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    viewModel.handleVote()
+                    playerViewModel.addVote()
                 }
             }
             item(messages["copy.stream.url"]) {

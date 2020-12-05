@@ -62,7 +62,7 @@ class StatsFragment : Fragment() {
         setPrefSize(300.0, 250.0)
 
         vbox(alignment = Pos.CENTER) {
-            requestFocusOnSceneAvailable()
+            requestFocusOnSceneAvailable() //To get rid of the blue box around the hyperlink
             hyperlink(serversViewModel.selectedProperty) {
                 paddingAll = 10.0
                 addClass(Styles.header)

@@ -1,5 +1,6 @@
 package online.hudacek.fxradio.viewmodel
 
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
@@ -13,6 +14,7 @@ import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.onChange
@@ -130,6 +132,16 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
             playingStatusProperty.value = PlayingStatus.Playing
         }
     }
+
+    //Increase vote count on the server
+    fun addVote(): Disposable = StationsApi.service
+            .vote(stationProperty.value.stationuuid)
+            .compose(applySchedulers())
+            .subscribe({
+                fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+            }, {
+                fire(NotificationEvent(messages["vote.error"]))
+            })
 
     override fun onCommit() {
         //Save API server

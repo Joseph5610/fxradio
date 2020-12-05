@@ -36,8 +36,7 @@ class AttributionsFragment : Fragment() {
 
         vbox {
             paddingAll = 10.0
-            requestFocusOnSceneAvailable()
-
+            requestFocusOnSceneAvailable() //To get rid of the blue box around the table
             tableview(Attributions.all) {
                 columnResizePolicy = SmartResize.POLICY
                 readonlyColumn(messages["attributions.name"], AttributionModel::name).remainingWidth()
