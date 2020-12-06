@@ -78,6 +78,7 @@ class Styles : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
         }
 
+
         header {
             wrapText = true
             fontSize = 20.px

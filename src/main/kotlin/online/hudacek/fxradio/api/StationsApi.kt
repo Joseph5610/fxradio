@@ -79,7 +79,7 @@ interface StationsApi {
                 logger.debug { "Setting model from saved state" }
                 viewModel.item = ServersModel(savedServerValue.get())
             } else {
-                viewModel.loadAllServers()
+                viewModel.loadAvailableServers()
 
                 viewModel.serversProperty.let {
                     if (it.isNotEmpty()) {

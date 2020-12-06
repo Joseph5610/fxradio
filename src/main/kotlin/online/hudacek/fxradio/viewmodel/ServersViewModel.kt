@@ -17,34 +17,50 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ListProperty
+import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
-import tornadofx.ItemViewModel
-import tornadofx.asObservable
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 import java.net.InetAddress
 
-class ServersModel(selectedServer: String, availableServers: ObservableList<String> = observableListOf()) {
+enum class ServersViewState {
+    Loading, Normal, Error
+}
+
+class ServersModel(selectedServer: String, availableServers: ObservableList<String> = observableListOf(), viewState: ServersViewState = ServersViewState.Loading) {
     val selected: String by property(selectedServer)
     val servers: ObservableList<String> by property(availableServers)
+    val viewState: ServersViewState by property(viewState)
 }
 
 class ServersViewModel : ItemViewModel<ServersModel>() {
     val serversProperty = bind(ServersModel::servers) as ListProperty<String>
     val selectedProperty = bind(ServersModel::selected) as StringProperty
+    val viewStateProperty = bind(ServersModel::viewState) as ObjectProperty
 
-    private val availableServers by lazy {
-        InetAddress.getAllByName(Config.Resources.defaultDnsHost)
-                .map { it.canonicalHostName }
-                .distinct()
-                .asObservable()
-    }
-
-    fun loadAllServers() {
-        if (serversProperty.isEmpty()) {
-            serversProperty.value = availableServers
+    /**
+     * Perform async DNS lookup to find working API servers
+     */
+    fun loadAvailableServers(forceReload: Boolean = false) {
+        if (serversProperty.isEmpty() || forceReload) {
+            viewStateProperty.value = ServersViewState.Loading //set loading state of the fragment
+            runAsync(daemon = true) {
+                InetAddress.getAllByName(Config.Resources.defaultDnsHost)
+                        .map { it.canonicalHostName }
+                        .distinct()
+                        .asObservable()
+            } success {
+                println("loadeeeed" + it)
+                if (it.isNullOrEmpty()) {
+                    viewStateProperty.value = ServersViewState.Error
+                } else {
+                    viewStateProperty.value = ServersViewState.Normal
+                    serversProperty.value = it
+                }
+            } fail {
+                viewStateProperty.value = ServersViewState.Error
+            }
         }
     }
 }

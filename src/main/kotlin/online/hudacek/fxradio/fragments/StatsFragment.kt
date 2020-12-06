@@ -44,7 +44,7 @@ class StatsFragment : Fragment() {
                 messages["stats.statsUnavailable"]
             }
             else -> {
-                "State is $it"
+                ""
             }
         }
     }

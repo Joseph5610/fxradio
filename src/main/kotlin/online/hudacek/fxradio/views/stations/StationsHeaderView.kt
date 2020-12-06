@@ -53,6 +53,7 @@ class StationsHeaderView : View() {
                 libraryViewModel.useTagSearchProperty.value = false
                 libraryViewModel.showSearchResults()
             }
+            addClass(Styles.coloredButton)
         }
     }
 
@@ -63,6 +64,7 @@ class StationsHeaderView : View() {
                 libraryViewModel.useTagSearchProperty.value = true
                 libraryViewModel.showSearchResults()
             }
+            addClass(Styles.coloredButton)
         }
     }
 

@@ -22,7 +22,9 @@ import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.styles.Styles
+import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.ServersViewModel
+import online.hudacek.fxradio.viewmodel.ServersViewState
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -39,12 +41,22 @@ class AvailableServersFragment : Fragment() {
 
     private val serverSavedProperty = Property(Properties.API_SERVER)
 
-    override fun onDock() {
-        runAsync {
-            //In some cases, the list of servers might not be loaded when opening this fragment
-            //This ensures the list is loaded at all times
-            viewModel.loadAllServers()
+    private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
+        when (it) {
+            ServersViewState.Loading -> {
+                messages["loading"]
+            }
+            ServersViewState.Error -> {
+                messages["servers.notAvailable"]
+            }
+            else -> {
+                ""
+            }
         }
+    }
+
+    override fun onDock() {
+        viewModel.loadAvailableServers()
     }
 
     override val root = vbox {
@@ -57,6 +69,17 @@ class AvailableServersFragment : Fragment() {
                 label(messages["servers.title"]) {
                     paddingBottom = 15.0
                     addClass(Styles.header)
+                }
+            }
+
+            vbox {
+                prefHeight = 120.0
+                alignment = Pos.BASELINE_CENTER
+                label(labelTextProperty) {
+                    paddingAll = 15.0
+                }
+                showWhen {
+                    viewModel.viewStateProperty.isNotEqualTo(ServersViewState.Normal)
                 }
             }
 
@@ -84,6 +107,11 @@ class AvailableServersFragment : Fragment() {
                 onUserSelect {
                     saveSelectedServer(it)
                 }
+
+                showWhen {
+                    viewModel.viewStateProperty.isEqualTo(ServersViewState.Normal)
+                }
+
                 addClass(Styles.libraryListView)
             }
         }
@@ -92,6 +120,11 @@ class AvailableServersFragment : Fragment() {
             alignment = Pos.CENTER_RIGHT
             paddingAll = 10.0
 
+            button(messages["servers.reload"]) {
+                action {
+                    viewModel.loadAvailableServers(forceReload = true)
+                }
+            }
             button(messages["close"]) {
                 isCancelButton = true
                 action {

@@ -77,9 +77,9 @@ class StylesDark : Stylesheet() {
         tag {
             textFill = Color.BLACK
             padding = box(3.0.px, 10.0.px)
-            backgroundRadius += box(3.px)
             backgroundColor += c(colors.background)
-            borderRadius += box(3.px)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             borderColor += box(c(colors.backgroundBorder))
 
             and(hover) {
@@ -116,8 +116,19 @@ class StylesDark : Stylesheet() {
         }
 
         coloredButton {
-            backgroundColor += c(colors.backgroundBorder)
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.backgroundBorder))
             textFill = Color.WHITESMOKE
+
+            and(hover) {
+                backgroundColor += c(colors.backgroundSelected)
+            }
+            and(focused) {
+                backgroundColor += c(colors.backgroundSelected)
+            }
+            and(selected) {
+                backgroundColor += c(colors.backgroundSelected)
+            }
         }
 
         primaryButton {
@@ -141,11 +152,8 @@ class StylesDark : Stylesheet() {
             fontSize = 12.px
             textFill = c(colors.label)
             backgroundColor += c("#333232")
-            and(hover) {
-                backgroundColor += c(colors.backgroundBorder)
-                borderColor += box(c(colors.backgroundBorder))
-                textFill = Color.WHITESMOKE
-            }
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             and(selected) {
                 backgroundColor += c(colors.backgroundBorder)
                 borderColor += box(c(colors.backgroundBorder))
@@ -157,10 +165,9 @@ class StylesDark : Stylesheet() {
         libraryListItemTag {
             padding = box(2.px)
             textFill = Color.WHITESMOKE
-            backgroundRadius += box(3.px)
-            backgroundColor += c("#424346")
-            borderRadius += box(3.px)
             borderColor += box(c(colors.backgroundBorder))
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
         }
 
         boldText {
@@ -237,10 +244,10 @@ class StylesDark : Stylesheet() {
 
         datagridCell {
             padding = box(0.px, 5.px, 5.px, 5.px)
-            backgroundColor += c(colors.transparent)
-            borderColor += box(c(colors.transparent))
-            backgroundRadius += box(5.px)
-            borderRadius += box(5.px)
+            backgroundColor += c("#6e6e6e")
+            borderColor += box(c("#6e6e6e"))
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
 
             and(hover) {
                 backgroundColor += c(colors.background)
@@ -259,8 +266,10 @@ class StylesDark : Stylesheet() {
 
         slider {
             track {
-                prefHeight = 5.px
+                prefHeight = 3.px
+                backgroundColor += c(colors.backgroundBorder)
             }
+
             and(focused) {
                 thumb {
                     unsafe("-fx-background-color", raw("-fx-outer-border, -fx-inner-border, -fx-body-color"))
@@ -280,18 +289,23 @@ class StylesDark : Stylesheet() {
         }
 
         contextMenu {
-            backgroundColor += Color.WHITESMOKE
+            backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
 
             menuItem {
+                backgroundRadius += box(6.px)
+                borderRadius += box(6.px)
+
                 and(hover) {
-                    backgroundColor += c(colors.background)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
                 and(focused) {
-                    backgroundColor += c(colors.background)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
                 and(selected) {
-                    backgroundColor += c(colors.background)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
             }
         }
@@ -303,13 +317,13 @@ class StylesDark : Stylesheet() {
                 backgroundColor += c(colors.background)
 
                 and(hover) {
-                    backgroundColor += c(colors.background)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
                 and(focused) {
-                    backgroundColor += c(colors.background)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
                 and(selected) {
-                    backgroundColor += c(colors.background)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
             }
         }
@@ -324,6 +338,11 @@ class StylesDark : Stylesheet() {
             borderWidth += box(1.px, 0.px, 0.px, 0.px)
             borderColor += box(c(colors.backgroundBorder), c(colors.transparent), c(colors.transparent), c(colors.transparent))
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
+        }
+
+        textField {
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
         }
     }
 }

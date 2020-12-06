@@ -85,10 +85,6 @@ class PlayerStationBoxView : View() {
         borderpane {
             prefWidthProperty().bind(this@hbox.maxWidthProperty())
 
-            onHover {
-                //showEllipsisMenuProperty.value = it
-            }
-
             top {
                 autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {

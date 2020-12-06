@@ -22,6 +22,7 @@ open class ColorValues {
 
     open val background = "#E9E9E9"
     open val backgroundBorder = "#E8E8E8"
+    open val backgroundSelected = "#E9E9E9"
 
     open val label = "#2b2b2b"
     open val grayLabel = "#8B8B8B"
@@ -35,6 +36,7 @@ class DarkColorValues : ColorValues() {
 
     override val background = "#333232"
     override val backgroundBorder = "#525356"
+    override val backgroundSelected = "#525356"
 
     override val label = "#ffffff"
     override val grayLabel = "#a0a1a2"

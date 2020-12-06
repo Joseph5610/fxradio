@@ -47,6 +47,6 @@ object Config {
      */
     object Flags {
         const val enableVersionCheck = false
-        const val darkStylesEnabled = false
+        const val darkStylesEnabled = true
     }
 }
