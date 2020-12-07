@@ -17,13 +17,13 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ObjectProperty
-import online.hudacek.fxradio.Property
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.property
 
 class LogModel(level: Level) {
     val level: Level by property(level)

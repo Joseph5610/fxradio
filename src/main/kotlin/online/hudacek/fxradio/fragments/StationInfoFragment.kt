@@ -22,9 +22,9 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.copyMenu
-import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.utils.stationImage
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.StationInfoModel
 import online.hudacek.fxradio.viewmodel.StationInfoViewModel
@@ -50,7 +50,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10.0
                 imageview {
-                    createImage(stationInfoViewModel.stationProperty.value)
+                    stationInfoViewModel.stationProperty.stationImage(this)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 100.0
                     fitHeight = 100.0
@@ -117,5 +117,6 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                 stationInfoViewModel.homePageProperty.isNotEmpty
             }
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 }

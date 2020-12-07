@@ -42,6 +42,8 @@ class Styles : Stylesheet() {
 
         //For Text() elements
         val defaultTextColor by cssclass()
+
+        val noBorder by cssclass()
     }
 
     init {
@@ -326,6 +328,11 @@ class Styles : Stylesheet() {
         textField {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+        }
+
+        noBorder {
+            backgroundInsets += box(0.px)
+            padding = box(0.px)
         }
     }
 }

@@ -132,6 +132,7 @@ class AvailableServersFragment : Fragment() {
                 }
             }
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     //Save the server in the app.config property file

@@ -22,7 +22,7 @@ import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.glyph
+import online.hudacek.fxradio.utils.make
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.utils.setOnSpacePressed
 import online.hudacek.fxradio.viewmodel.PlayerModel
@@ -41,10 +41,10 @@ class PlayerMainView : View() {
 
     private val playerStationBoxView: PlayerStationBoxView by inject()
 
-    private val playGlyph = glyph(FontAwesome.Glyph.PLAY, size = 22.0, useStyle = false)
-    private val stopGlyph = glyph(FontAwesome.Glyph.STOP, size = 22.0, useStyle = false)
-    private val volumeDown = glyph(FontAwesome.Glyph.VOLUME_DOWN, size = 14.0, useStyle = false)
-    private val volumeUp = glyph(FontAwesome.Glyph.VOLUME_UP, size = 14.0, useStyle = false)
+    private val playGlyph = FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false)
+    private val stopGlyph = FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false)
+    private val volumeDown = FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false)
+    private val volumeUp = FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false)
 
     private val playerControlsBinding = viewModel.playingStatusProperty.objectBinding {
         if (it == PlayingStatus.Playing) {
@@ -73,8 +73,8 @@ class PlayerMainView : View() {
         slider(-30..5) {
             bind(viewModel.volumeProperty)
 
-            maxWidth = 90.0
             id = "volumeSlider"
+            maxWidth = 90.0
             majorTickUnit = 8.0
             isSnapToTicks = true
             isShowTickMarks = true

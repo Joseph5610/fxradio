@@ -14,12 +14,12 @@ import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
 enum class StationsViewState {
-    Normal, Error, Loading, NoResults, ShortQuery
+    Normal, Error, Loading, Empty, ShortQuery
 }
 
 class StationsModel {
     val stations: ObservableList<Station> by property(observableListOf())
-    val viewState: StationsViewState by objectProperty(StationsViewState.NoResults)
+    val viewState: StationsViewState by objectProperty(StationsViewState.Empty)
 }
 
 /**
@@ -74,7 +74,7 @@ class StationsViewModel : ItemViewModel<StationsModel>() {
     fun show(stations: List<Station>) {
         stationsProperty.set(stations.asObservable())
         if (stations.isEmpty()) {
-            viewStateProperty.value = StationsViewState.NoResults
+            viewStateProperty.value = StationsViewState.Empty
         } else {
             viewStateProperty.value = StationsViewState.Normal
         }

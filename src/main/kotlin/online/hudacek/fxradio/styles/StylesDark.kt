@@ -42,12 +42,18 @@ class StylesDark : Stylesheet() {
 
         //for Text()
         val defaultTextColor by cssclass()
+
+        val noBorder by cssclass()
     }
 
     init {
         label {
             textFill = c(colors.label)
             fontSmoothingType = FontSmoothingType.GRAY
+        }
+
+        checkBox {
+            textFill = c(colors.label)
         }
 
         searchBoxLabel {
@@ -343,6 +349,11 @@ class StylesDark : Stylesheet() {
         textField {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+        }
+
+        noBorder {
+            backgroundInsets += box(0.px)
+            padding = box(0.px)
         }
     }
 }

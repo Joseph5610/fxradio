@@ -21,8 +21,12 @@ import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType.ERROR
 import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
-import tornadofx.*
+import online.hudacek.fxradio.styles.Styles
+import tornadofx.FX
 import tornadofx.FX.Companion.primaryStage
+import tornadofx.add
+import tornadofx.addClass
+import tornadofx.setContent
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import java.net.URLEncoder
@@ -79,6 +83,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             prefRowCount = 20
             prefColumnCount = 50
             text = stringFromError(error)
+            addClass(Styles.backgroundWhiteSmoke)
         }
 
         Alert(ERROR).apply {
@@ -89,6 +94,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             dialogPane.content = VBox().apply {
                 add(cause)
                 add(textarea)
+                addClass(Styles.backgroundWhiteSmoke)
             }
 
             val reportButton = ButtonType("Report issue", ButtonBar.ButtonData.HELP)

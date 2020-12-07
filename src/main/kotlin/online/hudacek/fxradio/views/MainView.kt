@@ -23,11 +23,13 @@ import online.hudacek.fxradio.*
 import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.VCSApi
+import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.views.menu.MenuBarView
 import online.hudacek.fxradio.views.player.PlayerMainView
 import online.hudacek.fxradio.views.stations.StationsMainView
+import org.controlsfx.control.NotificationPane
 import tornadofx.*
 import tornadofx.controlsfx.content
 import tornadofx.controlsfx.notificationPane
@@ -51,13 +53,6 @@ class MainView : View(FxRadio.appName) {
         setStageIcon(Image(Config.Resources.stageIcon))
     }
 
-    //Right pane of the app (Player + Stations)
-    private val rightPane = vbox {
-        hgrow = Priority.NEVER
-        add(playerMainView)
-        add(stationsMainView)
-    }
-
     override fun onDock() {
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
@@ -68,6 +63,15 @@ class MainView : View(FxRadio.appName) {
         }
     }
 
+    //Right pane of the app (Player + Stations)
+    private val rightPane by lazy {
+        vbox {
+            hgrow = Priority.NEVER
+            add(playerMainView)
+            add(stationsMainView)
+        }
+    }
+
     override val root = vbox {
         setPrefSize(800.0, 600.0)
         add(menuBarView)
@@ -75,13 +79,17 @@ class MainView : View(FxRadio.appName) {
         notificationPane {
             isShowFromTop = true
 
+            //Show dark notifications
+            if (FxRadio.isDarkModeAppStyle) {
+                styleClass.add(NotificationPane.STYLE_CLASS_DARK)
+            }
+
             subscribe<NotificationEvent> {
                 show(it.glyph, it.text, it.op)
             }
 
             content {
                 splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
-
                     setDividerPositions(Property(Properties.WINDOW_DIVIDER).get(0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
@@ -96,10 +104,7 @@ class MainView : View(FxRadio.appName) {
                     libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
 
                     //Remove 1px border from splitpane
-                    style {
-                        backgroundInsets += box(0.px)
-                        padding = box(0.px)
-                    }
+                    addClass(Styles.noBorder)
                 }
             }
         }

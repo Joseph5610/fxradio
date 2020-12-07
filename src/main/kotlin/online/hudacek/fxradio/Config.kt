@@ -40,7 +40,6 @@ object Config {
         val dbPath = "$baseAppPath/$appName.db"
     }
 
-
     /**
      * Flags that change app behaviour
      * Experimental features

@@ -20,7 +20,6 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.*
@@ -36,9 +35,7 @@ class PlayerStationBoxView : View() {
     private val viewModel: PlayerViewModel by inject()
 
     private val ticker by lazy {
-        tickerView {
-            tickerTextProperty.bind(viewModel.trackNameProperty)
-        }
+        tickerView(viewModel.trackNameProperty)
     }
 
     private val playingStatusLabel = viewModel.playingStatusProperty.stringBinding {
@@ -49,7 +46,7 @@ class PlayerStationBoxView : View() {
         }
     }
 
-    private val stationLogo = imageview(Config.Resources.waveIcon) {
+    private val stationLogo = imageview(defaultRadioLogo) {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true
@@ -62,17 +59,11 @@ class PlayerStationBoxView : View() {
 
     init {
         //Subscribe to property changes
-        viewModel.stationProperty.onChange {
-            if (it != null && it.isValid()) {
-                stationLogo.createImage(it)
-            }
-        }
+        viewModel.stationProperty.stationImage(stationLogo)
         subscribe<MetaDataChanged> { it.let(::onMetaDataChanged) }
     }
 
     override val root = hbox(5) {
-        addClass(Styles.playerStationBox)
-
         //Radio logo
         vbox(alignment = Pos.CENTER_LEFT) {
             minHeight = 30.0
@@ -81,6 +72,7 @@ class PlayerStationBoxView : View() {
         }
 
         separator(Orientation.VERTICAL)
+
         //Radio name and label
         borderpane {
             prefWidthProperty().bind(this@hbox.maxWidthProperty())
@@ -111,6 +103,7 @@ class PlayerStationBoxView : View() {
                 }
             }
         }
+        addClass(Styles.playerStationBox)
     }
 
     /**

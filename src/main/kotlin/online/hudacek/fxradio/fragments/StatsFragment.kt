@@ -98,5 +98,6 @@ class StatsFragment : Fragment() {
             }
             addClass(Styles.libraryListView)
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 }

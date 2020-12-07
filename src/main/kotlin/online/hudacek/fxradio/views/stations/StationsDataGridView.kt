@@ -23,9 +23,9 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import mu.KotlinLogging
 import online.hudacek.fxradio.fragments.StationInfoFragment
-import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
+import online.hudacek.fxradio.utils.stationImage
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 import tornadofx.controlsfx.popover
@@ -49,13 +49,13 @@ class StationsDataGridView : View() {
 
         libraryViewModel.selectedProperty.onChange {
             logger.debug { "selectedProperty changed: $it" }
-            it?.let(::showLibraryType)
+            it?.let(::showLibrary)
         }
     }
 
     override fun onDock() {
         //Default View
-        showLibraryType(libraryViewModel.selectedProperty.value)
+        showLibrary(libraryViewModel.selectedProperty.value)
     }
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
@@ -93,7 +93,7 @@ class StationsDataGridView : View() {
                     prefHeight = 120.0
                     paddingAll = 5
                     imageview {
-                        createImage(it)
+                        it.stationImage(this)
                         effect = DropShadow(15.0, Color.LIGHTGRAY)
                         isCache = true
                         cacheHint = CacheHint.SPEED
@@ -124,7 +124,7 @@ class StationsDataGridView : View() {
         }
     }
 
-    private fun showLibraryType(selected: SelectedLibrary) {
+    private fun showLibrary(selected: SelectedLibrary) {
         stationsViewModel.viewStateProperty.value = StationsViewState.Loading
         with(selected) {
             when (type) {

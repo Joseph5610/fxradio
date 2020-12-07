@@ -38,7 +38,7 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-import tornadofx.controlsfx.glyph
+import tornadofx.controlsfx.toGlyph
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URLEncoder
@@ -60,10 +60,10 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
     op(this)
 }
 
-internal fun EventTarget.glyph(glyph: FontAwesome.Glyph,
-                               size: Double = 35.0,
-                               useStyle: Boolean = true,
-                               color: Color? = null) = glyph("FontAwesome", glyph) {
+internal fun FontAwesome.Glyph.make(
+        size: Double = 35.0,
+        useStyle: Boolean = true,
+        color: Color? = null) = toGlyph {
     size(size)
     if (color != null) {
         style {
@@ -80,8 +80,11 @@ internal fun EventTarget.glyph(glyph: FontAwesome.Glyph,
 internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): CustomTextField =
         opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
 
-internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
+internal fun tickerView(property: StringProperty? = null, op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
+        if (property != null) {
+            tickerTextProperty.bind(property)
+        }
         op(this)
     }
 }

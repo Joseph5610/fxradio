@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.utils
 
+import javafx.beans.property.Property
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
@@ -24,6 +25,7 @@ import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.ImageCache
 import tornadofx.observableListOf
+import tornadofx.onChange
 import tornadofx.runLater
 
 private val logger = KotlinLogging.logger {}
@@ -43,36 +45,43 @@ private val invalidStationUuids by lazy { observableListOf<String>() }
  *
  * In case of error defaultRadioLogo static png file is used as station logo
  */
-internal fun ImageView.createImage(station: Station) {
-    image = defaultRadioLogo
 
-    //Ignore invalid stations
-    if (!station.isValid()) return
-    if (invalidStationUuids.contains(station.stationuuid)) return
+internal fun Property<Station>.stationImage(view: ImageView) {
+    value.stationImage(view)
 
-    if (ImageCache.has(station)) {
-        image = ImageCache.get(station)
+    onChange {
+        it?.stationImage(view)
+    }
+}
+
+internal fun Station.stationImage(view: ImageView) {
+    view.image = defaultRadioLogo
+
+    if (invalidStationUuids.contains(stationuuid)) return
+
+    if (ImageCache.has(this)) {
+        view.image = ImageCache.get(this)
     } else {
-        if (station.favicon.isNullOrEmpty()) {
-            invalidStationUuids.add(station.stationuuid)
-            logger.debug { "Image for ${station.name} is null or empty" }
+        if (favicon.isNullOrEmpty()) {
+            invalidStationUuids.add(stationuuid)
+            logger.debug { "Image for $name is null or empty" }
             return
         }
 
         //Download the image with OkHttp client
-        station.favicon?.let { url ->
+        favicon?.let { url ->
             HttpClientHolder.client.call(url,
                     { response ->
-                        response.body()?.let {
-                            ImageCache.save(station, it.byteStream())
+                        response.body()?.let { body ->
+                            ImageCache.save(this, body.byteStream())
                             runLater {
-                                image = ImageCache.get(station)
+                                view.image = ImageCache.get(this)
                             }
                         }
                     },
-                    {
-                        logger.error { "Downloading failed for ${station.name} (${it::class} : ${it.localizedMessage}) " }
-                        invalidStationUuids.add(station.stationuuid)
+                    { e ->
+                        logger.error { "Downloading failed for $name (${this::class} : ${e.localizedMessage}) " }
+                        invalidStationUuids.add(stationuuid)
                     })
         }
     }

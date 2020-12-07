@@ -17,8 +17,8 @@
 package online.hudacek.fxradio.views.menu
 
 import online.hudacek.fxradio.storage.Database
-import online.hudacek.fxradio.utils.createImage
 import online.hudacek.fxradio.utils.menu
+import online.hudacek.fxradio.utils.stationImage
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
@@ -42,7 +42,7 @@ class HistoryMenu : Controller() {
     val menu by lazy {
         menu(messages["menu.history"]) {
             item(messages["menu.history.show"]).action {
-                libraryViewModel.select(SelectedLibrary(LibraryType.History))
+                libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
             }
             separator()
             menu(messages["menu.history.recent"]) {
@@ -55,7 +55,7 @@ class HistoryMenu : Controller() {
                         //width/height setting so it is disabled for now
                         if (!menuViewModel.useNative) {
                             graphic = imageview {
-                                createImage(it)
+                                it.stationImage(this)
                                 fitHeight = 15.0
                                 fitWidth = 15.0
                                 isPreserveRatio = true

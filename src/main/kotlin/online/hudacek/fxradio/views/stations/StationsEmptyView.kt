@@ -18,7 +18,7 @@ package online.hudacek.fxradio.views.stations
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.glyph
+import online.hudacek.fxradio.utils.make
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
@@ -35,14 +35,14 @@ class StationsEmptyView : View() {
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val searchGlyph by lazy { glyph(FontAwesome.Glyph.SEARCH) }
-    private val errorGlyph by lazy { glyph(FontAwesome.Glyph.WARNING) }
+    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
+    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
 
     private val headerTextProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionError"]
             StationsViewState.ShortQuery -> messages["searchingLibrary"]
-            StationsViewState.NoResults -> {
+            StationsViewState.Empty -> {
                 val params = libraryViewModel.selectedProperty.value.params
                 if (params.isEmpty()) {
                     messages["noResults"]

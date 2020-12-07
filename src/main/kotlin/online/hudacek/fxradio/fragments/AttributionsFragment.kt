@@ -20,6 +20,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.viewmodel.AttributionModel
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
@@ -59,6 +60,7 @@ class AttributionsFragment : Fragment() {
                 }
             }
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     /**
@@ -76,6 +78,7 @@ class AttributionsFragment : Fragment() {
             textarea(viewModel.licenseContentProperty) {
                 vgrow = Priority.ALWAYS
             }
+            addClass(Styles.backgroundWhiteSmoke)
         }
     }
 }

@@ -16,8 +16,6 @@
 
 package online.hudacek.fxradio.views.stations
 
-import javafx.geometry.Pos
-import javafx.scene.control.ToggleButton
 import online.hudacek.fxradio.styles.Styles
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryType
@@ -25,7 +23,6 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import online.hudacek.fxradio.viewmodel.StationsViewState
 import tornadofx.*
-import tornadofx.controlsfx.segmentedbutton
 
 /**
  * Bar with opened library name and action button within stationsView
@@ -35,6 +32,8 @@ class StationsHeaderView : View() {
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
+    private val stationsHeaderSearchView: StationsHeaderSearchView by inject()
+
     //Bindings for library name based on selected library
     private val libraryNameTextProperty = libraryViewModel.selectedProperty.stringBinding {
         it?.let {
@@ -43,35 +42,6 @@ class StationsHeaderView : View() {
                 LibraryType.Search, LibraryType.SearchByTag -> messages[LibraryType.Search.toString()] + " \"${it.params}\""
                 else -> messages[it.type.toString()]
             }
-        }
-    }
-
-    private val buttonSearchByName by lazy {
-        ToggleButton(messages["search.byName"]).apply {
-            isSelected = true
-            action {
-                libraryViewModel.useTagSearchProperty.value = false
-                libraryViewModel.showSearchResults()
-            }
-            addClass(Styles.coloredButton)
-        }
-    }
-
-    private val buttonSearchByTag by lazy {
-        ToggleButton(messages["search.byTag"]).apply {
-            isSelected = false
-            action {
-                libraryViewModel.useTagSearchProperty.value = true
-                libraryViewModel.showSearchResults()
-            }
-            addClass(Styles.coloredButton)
-        }
-    }
-
-    init {
-        libraryViewModel.selectedProperty.onChange {
-            if (it?.type == LibraryType.Search) buttonSearchByName.isSelected = true
-            else if (it?.type == LibraryType.SearchByTag) buttonSearchByTag.isSelected = true
         }
     }
 
@@ -87,23 +57,12 @@ class StationsHeaderView : View() {
             }
         }
 
-            right {
-                vbox(alignment = Pos.CENTER) {
-                    hbox {
-                        segmentedbutton {
-                            buttons.addAll(buttonSearchByName, buttonSearchByTag)
-                        }
-                        showWhen {
-                            libraryViewModel.selected(LibraryType.Search)
-                                    .or(libraryViewModel.selected(LibraryType.SearchByTag))
-                        }
-                    }
-                }
-            }
+        right {
+            add(stationsHeaderSearchView)
+        }
 
         showWhen {
-            viewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)
-                    .or(viewModel.viewStateProperty.isEqualTo(StationsViewState.NoResults))
+            viewModel.viewStateProperty.isNotEqualTo(StationsViewState.ShortQuery)
         }
 
         addClass(Styles.backgroundWhiteSmoke)

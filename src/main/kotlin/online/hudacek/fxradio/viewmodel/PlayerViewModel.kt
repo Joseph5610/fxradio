@@ -138,7 +138,12 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
             .vote(stationProperty.value.stationuuid)
             .compose(applySchedulers())
             .subscribe({
-                fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+                if (!it.ok) {
+                    //Why this API returns error 200 on error is beyond me..
+                    fire(NotificationEvent(messages["vote.error"]))
+                } else {
+                    fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+                }
             }, {
                 fire(NotificationEvent(messages["vote.error"]))
             })

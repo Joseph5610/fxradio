@@ -82,11 +82,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         val version: Version by lazy {
             Version(FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT")
         }
+
+        var isDarkModeAppStyle = false
     }
 }
 
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
+        FxRadio.isDarkModeAppStyle = true
         launch<FxRadioDark>(args)
     } else {
         launch<FxRadioLight>(args)

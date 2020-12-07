@@ -68,5 +68,6 @@ class AboutFragment : Fragment(FxRadio.appName) {
                 }
             }
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 }

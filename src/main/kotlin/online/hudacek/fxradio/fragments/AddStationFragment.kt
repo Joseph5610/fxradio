@@ -189,6 +189,7 @@ class AddStationFragment : Fragment() {
                 }
             }
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     private fun validate(property: String?, minValue: Int = 3, maxValue: Int = 150) =

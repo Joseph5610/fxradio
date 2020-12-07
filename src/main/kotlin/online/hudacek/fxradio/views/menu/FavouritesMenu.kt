@@ -44,13 +44,12 @@ class FavouritesMenu : Controller() {
     val menu by lazy {
         menu(messages["menu.favourites"]) {
             item(messages["menu.favourites.show"]).action {
-                libraryViewModel.select(SelectedLibrary(LibraryType.Favourites))
+                libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Favourites)
             }
             separator()
 
             //Add favourite
             item(messages["menu.station.favourite"], keyFavourites) {
-
                 enableWhen {
                     favouritesViewModel.stationsProperty.booleanBinding {
                         !it!!.contains(playerViewModel.stationProperty.value)

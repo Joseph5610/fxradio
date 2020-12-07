@@ -47,6 +47,7 @@ data class SelectedLibrary(val type: LibraryType, val params: String = "")
 class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
                    selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations),
                    searchQuery: String = "", showLibrary: Boolean, showCountries: Boolean) {
+
     //Countries shown in Countries ListView
     val countries: ObservableList<Countries> by property(countries)
 
@@ -116,9 +117,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     fun showSearchResults() {
         val query = searchQueryProperty.value.trim()
         if (useTagSearchProperty.value) {
-            select(SelectedLibrary(LibraryType.SearchByTag, query))
+            selectedProperty.value = SelectedLibrary(LibraryType.SearchByTag, query)
         } else {
-            select(SelectedLibrary(LibraryType.Search, query))
+            selectedProperty.value = SelectedLibrary(LibraryType.Search, query)
         }
     }
 
@@ -127,10 +128,6 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             selectedProperty.value = null
             selectedProperty.value = SelectedLibrary(libraryType)
         }
-    }
-
-    fun select(selectedLibrary: SelectedLibrary) {
-        selectedProperty.value = selectedLibrary
     }
 
     fun selected(libraryType: LibraryType): BooleanBinding = selectedProperty.booleanBinding {

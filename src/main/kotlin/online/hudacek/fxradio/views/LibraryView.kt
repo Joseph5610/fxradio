@@ -21,7 +21,7 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.api.model.flagIcon
 import online.hudacek.fxradio.styles.ColorValues
 import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.utils.glyph
+import online.hudacek.fxradio.utils.make
 import online.hudacek.fxradio.utils.searchField
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
@@ -56,13 +56,13 @@ class LibraryView : View() {
         listview(viewModel.librariesProperty) {
             id = "libraryListView"
             cellFormat {
-                graphic = glyph(item.graphic, 14.0, false, c("#d65458"))
+                graphic = item.graphic.make(14.0, false, c("#d65458"))
                 text = messages[item.type.toString()]
                 addClass(Styles.libraryListItem)
             }
             showWhen { viewModel.showLibraryProperty }
             onUserSelect(1) {
-                viewModel.select(SelectedLibrary(it.type))
+                viewModel.selectedProperty.value = SelectedLibrary(it.type)
             }
             addClass(Styles.libraryListView)
         }
@@ -89,7 +89,7 @@ class LibraryView : View() {
                 addClass(Styles.libraryListItem)
             }
             onUserSelect(1) {
-                viewModel.select(SelectedLibrary(LibraryType.Country, it.name))
+                viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
             }
             showWhen {
                 viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
@@ -120,7 +120,7 @@ class LibraryView : View() {
         bind(viewModel.searchQueryProperty)
 
         left = label {
-            graphic = glyph(FontAwesome.Glyph.SEARCH, size = 14.0)
+            graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0)
         }
 
         //Fire up search results after input is written to text field
@@ -221,7 +221,7 @@ class LibraryView : View() {
             LibraryType.Favourites, LibraryType.History, LibraryType.TopStations -> {
                 countriesListView.selectionModel.clearSelection()
             }
-            LibraryType.Search -> {
+            LibraryType.Search, LibraryType.SearchByTag -> {
                 countriesListView.selectionModel.clearSelection()
                 libraryListView.selectionModel.clearSelection()
             }
@@ -229,7 +229,7 @@ class LibraryView : View() {
     }
 
     private fun showIcon(show: Boolean) = if (show)
-        glyph(FontAwesome.Glyph.CHEVRON_DOWN, size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
+        FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
     else
-        glyph(FontAwesome.Glyph.CHEVRON_RIGHT, size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
+        FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
 }

@@ -50,14 +50,9 @@ class StationMenu : Controller() {
                 }
             }
             item(messages["copy.stream.url"]) {
+                shouldBeDisabled(playerViewModel.stationProperty)
                 action {
                     playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
-                }
-
-                enableWhen {
-                    playerViewModel.stationProperty.booleanBinding {
-                        it?.url_resolved != null
-                    }
                 }
             }
 
