@@ -62,6 +62,7 @@ class StationsHeaderView : View() {
         }
 
         showWhen {
+            //This view is shown always, except when clicking on empty search textfield
             viewModel.viewStateProperty.isNotEqualTo(StationsViewState.ShortQuery)
         }
 

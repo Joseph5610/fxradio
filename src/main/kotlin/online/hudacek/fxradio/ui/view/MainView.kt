@@ -22,8 +22,6 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.NotificationEvent
-import online.hudacek.fxradio.api.HttpClientHolder
-import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.menu.MenuBarView
@@ -60,8 +58,7 @@ class MainView : View(FxRadio.appName) {
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             playerViewModel.releasePlayer()
-            StationsApi.client.shutdown()
-            HttpClientHolder.client.shutdown()
+            FxRadio.shutDown()
         }
     }
 

@@ -32,7 +32,7 @@ class FavouritesModel(stations: ObservableList<Station> = observableListOf()) {
  * Favourites view model
  * -------------------
  * Holds information about last favourites stations
- * shows in [online.hudacek.fxradio.views.stations.StationsDataGridView] and in MenuBar
+ * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
 class FavouritesViewModel : ItemViewModel<FavouritesModel>() {
     val stationsProperty = bind(FavouritesModel::stations) as ListProperty

@@ -18,6 +18,8 @@ package online.hudacek.fxradio
 
 import com.vdurmont.semver4j.Semver
 import javafx.stage.Stage
+import online.hudacek.fxradio.api.HttpClientHolder
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
@@ -87,6 +89,11 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
          */
         val version: Version by lazy {
             Version(FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT")
+        }
+
+        fun shutDown() {
+            StationsApi.client.shutdown()
+            HttpClientHolder.client.shutdown()
         }
     }
 }

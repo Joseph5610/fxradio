@@ -40,6 +40,7 @@ class StationsHeaderSearchView : View() {
             segmentedbutton {
                 button(messages["search.byName"]) {
                     isSelected = true
+                    //Little hack that allows use to use togglegroup.bind() method
                     properties["tornadofx.toggleGroupValue"] = false
                     addClass(Styles.coloredButton)
                 }
@@ -52,8 +53,10 @@ class StationsHeaderSearchView : View() {
             }
 
             showWhen {
-                libraryViewModel.selected(LibraryType.Search)
-                        .or(libraryViewModel.selected(LibraryType.SearchByTag))
+                //Show only while Search results are shown
+                libraryViewModel.selectedProperty.booleanBinding {
+                    it?.type == LibraryType.Search || it?.type == LibraryType.SearchByTag
+                }
             }
         }
     }

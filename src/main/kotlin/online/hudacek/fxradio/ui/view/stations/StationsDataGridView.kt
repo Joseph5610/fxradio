@@ -117,15 +117,7 @@ class StationsDataGridView : View() {
                         fontSize = 13.px
                     }
                 }
-
-                val stationTagsSplit = it.tags.split(",")
-                val tagsLabel = when {
-                    it.tags.isEmpty() -> it.country
-                    stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
-                    else -> stationTagsSplit[0].capitalize()
-                }
-
-                smallLabel(tagsLabel)
+                smallLabel(createStationTags(it.tags, it.country))
             }
         }
 
@@ -145,6 +137,17 @@ class StationsDataGridView : View() {
                 LibraryType.Search -> stationsViewModel.search(libraryViewModel.searchQueryProperty.value)
                 LibraryType.SearchByTag -> stationsViewModel.searchByTag(libraryViewModel.searchQueryProperty.value)
             }
+        }
+    }
+
+    //Small label shown under the station name in the grid
+    //Contains tag or country name of station
+    private fun createStationTags(tags: String, country: String): String {
+        val stationTagsSplit = tags.split(",")
+        return when {
+            tags.isEmpty() -> country
+            stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
+            else -> stationTagsSplit[0].capitalize()
         }
     }
 }

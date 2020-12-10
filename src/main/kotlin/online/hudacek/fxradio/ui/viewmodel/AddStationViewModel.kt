@@ -44,7 +44,7 @@ class AddStationModel(station: AddStationBody,
 /**
  * Add Station view model
  * -------------------
- * Stores entered information into the form in [online.hudacek.fxradio.fragments.AddStationFragment]
+ * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
  * Handles logic for adding new station into the API
  */
 class AddStationViewModel : ItemViewModel<AddStationModel>() {

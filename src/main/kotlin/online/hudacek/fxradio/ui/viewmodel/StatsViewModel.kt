@@ -40,7 +40,7 @@ class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf(),
  * Stats view model
  * -------------------
  * Holds information about radio-browser API stats and health
- * Shown inside [online.hudacek.fxradio.fragments.StatsFragment]
+ * Shown inside [online.hudacek.fxradio.ui.fragment.StatsFragment]
  */
 class StatsViewModel : ItemViewModel<StatsModel>() {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>

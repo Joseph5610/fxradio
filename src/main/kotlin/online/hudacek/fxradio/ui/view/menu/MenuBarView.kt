@@ -20,9 +20,12 @@ import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.macos.MacMenu
+import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.ui.viewmodel.MenuModel
 import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import tornadofx.*
 
 class MenuBarView : View() {
@@ -37,10 +40,10 @@ class MenuBarView : View() {
     private val playerMenu: PlayerMenu by inject()
 
     init {
-        menuViewModel.item = MenuModel()
+        menuViewModel.item = MenuModel(MacUtils.isMac && Property(Properties.NATIVE_MENU_BAR).get(true))
     }
 
-    override val root = if (menuViewModel.useNative) {
+    override val root = if (menuViewModel.useNativeProperty.value) {
         platformMenuBar()
     } else {
         defaultMenuBar()
@@ -52,6 +55,7 @@ class MenuBarView : View() {
             item(messages["menu.app.quit"]).action {
                 currentStage?.close()
                 playerViewModel.releasePlayer()
+                FxRadio.shutDown()
             }
         }
         menus.addAll(stationMenu.menu,

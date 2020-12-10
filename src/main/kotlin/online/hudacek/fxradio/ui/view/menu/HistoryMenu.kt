@@ -58,7 +58,7 @@ class HistoryMenu : Controller() {
                     item("${it.name} (${it.countrycode})") {
                         //for some reason macos native menu does not respect
                         //width/height setting so it is disabled for now
-                        if (!menuViewModel.useNative) {
+                        if (!menuViewModel.useNativeProperty.value) {
                             graphic = imageview {
                                 it.stationImage(this)
                                 fitHeight = 15.0

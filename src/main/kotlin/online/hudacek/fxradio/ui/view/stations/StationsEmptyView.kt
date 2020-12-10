@@ -37,7 +37,7 @@ class StationsEmptyView : View() {
     private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
     private val noResults by lazy { FontAwesome.Glyph.FROWN_ALT.make() }
 
-    private val headerTextProperty = viewModel.viewStateProperty.stringBinding {
+    private val headerProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionError"]
             StationsViewState.ShortQuery -> messages["searchingLibrary"]
@@ -55,7 +55,7 @@ class StationsEmptyView : View() {
         }
     }
 
-    private val subHeaderTextProperty = viewModel.viewStateProperty.stringBinding {
+    private val subHeaderProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionErrorDesc"]
             else -> ""
@@ -63,9 +63,7 @@ class StationsEmptyView : View() {
     }
 
     private val header by lazy {
-        text {
-            bind(headerTextProperty)
-
+        text(headerProperty) {
             id = "stationMessageHeader"
             wrappingWidth = 350.0
             textAlignment = TextAlignment.CENTER
@@ -77,7 +75,7 @@ class StationsEmptyView : View() {
 
     //Description of a message, shown only if relevant
     private val subHeader by lazy {
-        label(subHeaderTextProperty) {
+        label(subHeaderProperty) {
             id = "stationMessageSubHeader"
             addClass(Styles.grayLabel)
         }

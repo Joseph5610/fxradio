@@ -16,31 +16,26 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import javafx.beans.property.BooleanProperty
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.NotificationEvent
-import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.fragment.*
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.ItemViewModel
-import tornadofx.fail
-import tornadofx.get
-import tornadofx.success
+import tornadofx.*
 
-//WIP
-class MenuModel
+class MenuModel(useNative: Boolean) {
+    val useNative: Boolean by property(useNative)
+}
 
 class MenuViewModel : ItemViewModel<MenuModel>() {
 
     private val logger = KotlinLogging.logger {}
 
-    val useNative: Boolean
-        get() = MacUtils.isMac && Property(Properties.NATIVE_MENU_BAR).get(true)
+    val useNativeProperty = bind(MenuModel::useNative) as BooleanProperty
 
     //Station menu links
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)

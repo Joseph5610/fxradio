@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.ui.viewmodel
 
 import io.reactivex.disposables.Disposable
-import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -69,7 +68,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
  * Library view model
  * -------------------
  * Stores shown libraries and countries in the sidebar
- * Used in [online.hudacek.fxradio.views.LibraryView]
+ * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
 class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
@@ -133,9 +132,5 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             selectedProperty.value = null
             selectedProperty.value = SelectedLibrary(libraryType)
         }
-    }
-
-    fun selected(libraryType: LibraryType): BooleanBinding = selectedProperty.booleanBinding {
-        it?.type == libraryType
     }
 }

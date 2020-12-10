@@ -42,7 +42,7 @@ class StationsModel {
  * Stations view model
  * -------------------
  * Holds information about currently shown
- * stations inside [online.hudacek.fxradio.views.stations.StationsDataGridView]
+ * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
 class StationsViewModel : ItemViewModel<StationsModel>() {
 
