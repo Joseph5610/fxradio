@@ -51,6 +51,16 @@ class StationsDataGridView : View() {
             logger.debug { "selectedProperty changed: $it" }
             it?.let(::showLibrary)
         }
+
+        //Refresh search on query change
+        libraryViewModel.searchQueryProperty.onChange {
+            with(libraryViewModel.selectedProperty.value) {
+                if (type == LibraryType.Search)
+                    stationsViewModel.search(libraryViewModel.searchQueryProperty.value)
+                else if (type == LibraryType.SearchByTag)
+                    stationsViewModel.searchByTag(libraryViewModel.searchQueryProperty.value)
+            }
+        }
     }
 
     override fun onDock() {
@@ -131,9 +141,9 @@ class StationsDataGridView : View() {
                 LibraryType.Country -> stationsViewModel.stationsByCountry(params)
                 LibraryType.Favourites -> stationsViewModel.show(favouritesViewModel.stationsProperty)
                 LibraryType.History -> stationsViewModel.show(historyViewModel.stationsProperty)
-                LibraryType.Search -> stationsViewModel.search(params)
-                LibraryType.SearchByTag -> stationsViewModel.searchByTag(params)
-                else -> stationsViewModel.topStations
+                LibraryType.TopStations -> stationsViewModel.topStations
+                LibraryType.Search -> stationsViewModel.search(libraryViewModel.searchQueryProperty.value)
+                LibraryType.SearchByTag -> stationsViewModel.searchByTag(libraryViewModel.searchQueryProperty.value)
             }
         }
     }

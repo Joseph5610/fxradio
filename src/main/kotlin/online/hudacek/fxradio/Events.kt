@@ -18,7 +18,7 @@ package online.hudacek.fxradio
 
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.FXEvent
 
 class NotificationEvent(val text: String,
                         val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,

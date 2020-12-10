@@ -117,7 +117,7 @@ class StylesDark : Stylesheet() {
 
         subheader {
             wrapText = true
-            fontSize = 16.px
+            fontSize = 15.px
         }
 
         defaultTextColor {
@@ -284,6 +284,10 @@ class StylesDark : Stylesheet() {
 
         textArea {
             fontFamily = "monospace"
+            backgroundColor += c(colors.background)
+            content {
+                backgroundColor += c(colors.background)
+            }
         }
 
         slider {

@@ -16,6 +16,9 @@
 
 package online.hudacek.fxradio.ui.view.menu
 
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
@@ -30,6 +33,8 @@ class HistoryMenu : Controller() {
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
+    private val keyHistory = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
+
     init {
         Database.history.select().subscribe({
             historyViewModel.item = HistoryModel(it.asObservable())
@@ -41,7 +46,7 @@ class HistoryMenu : Controller() {
 
     val menu by lazy {
         menu(messages["menu.history"]) {
-            item(messages["menu.history.show"]).action {
+            item(messages["menu.history.show"], keyHistory).action {
                 libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
             }
             separator()

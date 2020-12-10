@@ -183,7 +183,7 @@ class LibrarySearchView : View() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    override val root = searchField(messages["search"], viewModel.searchQueryProperty) {
+    override val root = searchField(messages["search"], viewModel.bindSearchQueryProperty) {
         id = "search"
 
         left = label {

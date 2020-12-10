@@ -79,10 +79,16 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     //Currently selected library type
     val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
 
-    val searchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
     val showLibraryProperty = bind(LibraryModel::showLibrary) as BooleanProperty
     val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
     val useTagSearchProperty = bind(LibraryModel::useTagSearch) as BooleanProperty
+
+    //Internal only, contains unedited search query
+    val bindSearchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
+
+    val searchQueryProperty = bindSearchQueryProperty.stringBinding {
+        it?.trim()
+    }
 
     init {
         item = LibraryModel(
@@ -108,18 +114,17 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     override fun onCommit() {
         saveProperties(listOf(
-                Pair(Properties.SEARCH_QUERY, searchQueryProperty.value),
+                Pair(Properties.SEARCH_QUERY, bindSearchQueryProperty.value),
                 Pair(Properties.WINDOW_SHOW_COUNTRIES, showCountriesProperty.value),
                 Pair(Properties.WINDOW_SHOW_LIBRARY, showLibraryProperty.value)
         ))
     }
 
     fun showSearchResults() {
-        val query = searchQueryProperty.value.trim()
         if (useTagSearchProperty.value) {
-            selectedProperty.value = SelectedLibrary(LibraryType.SearchByTag, query)
+            selectedProperty.value = SelectedLibrary(LibraryType.SearchByTag)
         } else {
-            selectedProperty.value = SelectedLibrary(LibraryType.Search, query)
+            selectedProperty.value = SelectedLibrary(LibraryType.Search)
         }
     }
 
