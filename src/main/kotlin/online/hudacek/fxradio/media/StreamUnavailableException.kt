@@ -19,9 +19,10 @@ package online.hudacek.fxradio.media
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationEvent
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.PlayingStatus
-import tornadofx.*
+import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
+import tornadofx.FX
+import tornadofx.find
 
 class StreamUnavailableException(message: String, cause: Throwable?) : Exception(message, cause) {
 

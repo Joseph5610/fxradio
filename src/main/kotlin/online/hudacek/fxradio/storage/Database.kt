@@ -65,7 +65,7 @@ object Database {
      * Common operations on database of stations with different tables
      */
     class Table(val table: String) {
-        fun select() = connection.select("SELECT * FROM $table")
+        fun select(): Single<MutableList<Station>> = connection.select("SELECT * FROM $table")
                 .toObservable {
                     Station(it.getString("stationuuid"),
                             it.getString("name"),
@@ -82,9 +82,9 @@ object Database {
                 }
                 .toList()
 
-        fun delete() = connection.execute("delete from $table").toSingle()
+        fun delete(): Single<Int> = connection.execute("delete from $table").toSingle()
 
-        fun insert(station: Station) = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
+        fun insert(station: Station): Single<Boolean> = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
                 "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
                 "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
                 .parameter("name", station.name)

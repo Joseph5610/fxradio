@@ -19,11 +19,11 @@ package online.hudacek.fxradio.api
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.model.*
-import online.hudacek.fxradio.viewmodel.ServersModel
-import online.hudacek.fxradio.viewmodel.ServersViewModel
+import online.hudacek.fxradio.ui.viewmodel.ServersModel
+import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -50,7 +50,7 @@ interface StationsApi {
     fun getTopStations(): Single<List<Station>>
 
     @POST("json/add")
-    fun add(@Body addBody: AddStationBody): Single<AddStationResult>
+    fun add(@Body addBody: AddStationBody): Single<AddStationResponse>
 
     @POST("json/countries")
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
@@ -59,10 +59,10 @@ interface StationsApi {
     fun getStats(): Single<Stats>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Single<VoteResult>
+    fun vote(@Path("uuid") uuid: String): Single<VoteResponse>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<ClickResult>
+    fun click(@Path("uuid") uuid: String): Single<ClickResponse>
 
     companion object : Component() {
 
@@ -87,7 +87,7 @@ interface StationsApi {
                         viewModel.item = ServersModel(savedServerValue.get(it[0]), it)
                     } else {
                         logger.debug { "Setting fallback default value of model" }
-                        viewModel.item = ServersModel(Config.Resources.defaultApiServer)
+                        viewModel.item = ServersModel(Config.API.fallbackApiServerURL)
                     }
                     //Save the value for later use
                     savedServerValue.save(viewModel.selectedProperty.value)

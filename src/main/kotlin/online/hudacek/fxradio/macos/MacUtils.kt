@@ -34,5 +34,6 @@ object MacUtils {
             }
 
 
-    fun isInDarkMode() = command("defaults read -g AppleInterfaceStyle").result == "Dark"
+    val isSystemDarkMode: Boolean
+        get() = command("defaults read -g AppleInterfaceStyle").result == "Dark"
 }

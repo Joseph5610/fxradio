@@ -16,22 +16,25 @@
 
 package online.hudacek.fxradio
 
+import com.vdurmont.semver4j.Semver
 import javafx.stage.Stage
-import online.hudacek.fxradio.styles.Styles
-import online.hudacek.fxradio.styles.StylesDark
-import online.hudacek.fxradio.utils.Version
+import online.hudacek.fxradio.ui.CustomErrorHandler
+import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.style.StylesDark
+import online.hudacek.fxradio.ui.view.MainView
+import online.hudacek.fxradio.ui.viewmodel.LogModel
+import online.hudacek.fxradio.ui.viewmodel.LogViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
-import online.hudacek.fxradio.viewmodel.LogModel
-import online.hudacek.fxradio.viewmodel.LogViewModel
-import online.hudacek.fxradio.views.MainView
 import tornadofx.App
 import tornadofx.Stylesheet
 import tornadofx.launch
+import tornadofx.singleAssign
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.reflect.KClass
-
 
 /**
  * Main class of the app
@@ -70,11 +73,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
      * Basic info about the app
      */
     companion object {
+
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
         const val appUrl = "https://hudacek.online/fxradio/"
         const val author = "hudacek.online"
         const val copyright = "Copyright (c) 2020"
+
+        var useDarkModeStyle: Boolean by singleAssign()
 
         /**
          * Get version from jar MANIFEST.MF file
@@ -82,16 +88,17 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         val version: Version by lazy {
             Version(FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT")
         }
-
-        var isDarkModeAppStyle = false
     }
 }
 
+data class Version(val version: String) : Semver(version, SemverType.LOOSE)
+
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
-        FxRadio.isDarkModeAppStyle = true
+        FxRadio.useDarkModeStyle = true
         launch<FxRadioDark>(args)
     } else {
+        FxRadio.useDarkModeStyle = false
         launch<FxRadioLight>(args)
     }
 }
