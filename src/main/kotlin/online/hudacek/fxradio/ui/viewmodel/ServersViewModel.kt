@@ -21,8 +21,8 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.HttpClientHolder
 import tornadofx.*
-import java.net.InetAddress
 
 enum class ServersViewState {
     Loading, Normal, Error
@@ -46,7 +46,7 @@ class ServersViewModel : ItemViewModel<ServersModel>() {
         if (serversProperty.isEmpty() || forceReload) {
             viewStateProperty.value = ServersViewState.Loading //set loading state of the fragment
             runAsync(daemon = true) {
-                InetAddress.getAllByName(Config.API.dnsLookupURL)
+                HttpClientHolder.client.lookup(Config.API.dnsLookupURL)
                         .map { it.canonicalHostName }
                         .distinct()
                         .asObservable()

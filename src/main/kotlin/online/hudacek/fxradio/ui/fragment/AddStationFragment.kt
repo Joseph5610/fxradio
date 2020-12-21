@@ -50,7 +50,7 @@ class AddStationFragment : Fragment() {
 
     override fun onDock() {
         //Recheck viewmodel validity when reopening fragment
-        viewModel.validate()
+        viewModel.validate(focusFirstError = false)
     }
 
     override val root = stylableNotificationPane {

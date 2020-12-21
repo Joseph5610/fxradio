@@ -21,6 +21,7 @@ import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.net.InetAddress
 
 /**
  * Creates and holds single instance of OkHttpClient
@@ -31,6 +32,9 @@ object HttpClientHolder {
 }
 
 class BasicHttpClient : OkHttpHelper() {
+
+    //Perform DNS lookup
+    fun lookup(address: String): MutableList<InetAddress> = httpClient.dns().lookup(address)
 
     fun call(url: String,
              success: (Response) -> Unit,
