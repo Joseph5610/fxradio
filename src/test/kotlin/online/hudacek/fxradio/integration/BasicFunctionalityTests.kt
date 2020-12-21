@@ -27,9 +27,9 @@ import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.storage.Database
-import online.hudacek.fxradio.viewmodel.LibraryItem
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.PlayingStatus
+import online.hudacek.fxradio.ui.viewmodel.LibraryItem
+import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat

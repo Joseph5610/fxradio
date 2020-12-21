@@ -31,7 +31,7 @@ open class OkHttpHelper {
     private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
 
     //What is app sending as a User Agent string
-    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
+    private val userAgent = "${FxRadio.appName}/${FxRadio.version.version}"
 
     //Logging of http requests
     private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }
@@ -44,7 +44,7 @@ open class OkHttpHelper {
 
         OkHttpClient.Builder()
                 //The whole call should not take longer than 10 secs
-                .callTimeout(10, TimeUnit.SECONDS)
+                .callTimeout(20, TimeUnit.SECONDS)
                 .addNetworkInterceptor { chain ->
                     chain.proceed(
                             chain.request()

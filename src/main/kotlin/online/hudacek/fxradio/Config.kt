@@ -22,9 +22,11 @@ object Config {
         const val appLogo = "appLogo.png"
         const val stageIcon = "Industry-Radio-Tower-icon.png"
         const val waveIcon = "Sound-Wave-icon.png"
+    }
 
-        const val defaultDnsHost = "all.api.radio-browser.info"
-        const val defaultApiServer = "de1.api.radio-browser.info"
+    object API {
+        const val dnsLookupURL = "all.api.radio-browser.info"
+        const val fallbackApiServerURL = "de1.api.radio-browser.info"
     }
 
     /**
@@ -40,16 +42,11 @@ object Config {
         val dbPath = "$baseAppPath/$appName.db"
     }
 
-
     /**
      * Flags that change app behaviour
      * Experimental features
      */
     object Flags {
-        const val addStationEnabled = true
-        const val enableVersionCheck = false
         const val darkStylesEnabled = false
-        const val fetchMetadataForCustomPlayerEnabled = false
-        const val enableServerSelection = false
     }
 }

@@ -23,7 +23,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.macos.MacUtils
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.controlsfx.glyph
+import tornadofx.controlsfx.toGlyph
 
 private val logger = KotlinLogging.logger {}
 
@@ -35,7 +35,7 @@ private val logger = KotlinLogging.logger {}
  * notificationPane[FontAwesome.Glyph.WARNING] = "Custom notification Text"
  */
 internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
-    if (isVisible) show(message, glyph("FontAwesome", glyph))
+    if (isVisible) show(message, glyph.toGlyph())
     val delay = PauseTransition(Duration.seconds(5.0))
     delay.onFinished = EventHandler { hide() }
     delay.play()

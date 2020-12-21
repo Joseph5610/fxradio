@@ -19,11 +19,11 @@ package online.hudacek.fxradio.api
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.model.*
-import online.hudacek.fxradio.viewmodel.ServersModel
-import online.hudacek.fxradio.viewmodel.ServersViewModel
+import online.hudacek.fxradio.ui.viewmodel.ServersModel
+import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -43,11 +43,14 @@ interface StationsApi {
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
 
+    @POST("json/stations/search")
+    fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
+
     @GET("json/stations/topvote/50")
     fun getTopStations(): Single<List<Station>>
 
     @POST("json/add")
-    fun add(@Body addBody: AddStationBody): Single<AddStationResult>
+    fun add(@Body addBody: AddStationBody): Single<AddStationResponse>
 
     @POST("json/countries")
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
@@ -56,16 +59,16 @@ interface StationsApi {
     fun getStats(): Single<Stats>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Single<VoteResult>
+    fun vote(@Path("uuid") uuid: String): Single<VoteResponse>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<ClickResult>
+    fun click(@Path("uuid") uuid: String): Single<ClickResponse>
 
     companion object : Component() {
 
         private val logger = KotlinLogging.logger {}
 
-        private val serversViewModel: ServersViewModel by inject()
+        private val viewModel: ServersViewModel by inject()
 
         private val savedServerValue = Property(Properties.API_SERVER)
 
@@ -74,23 +77,26 @@ interface StationsApi {
             //Only if the value is not stored try to get it by calling InetAddress.getAllByName
             if (savedServerValue.isPresent) {
                 logger.debug { "Setting model from saved state" }
-                serversViewModel.item = ServersModel(savedServerValue.get())
+                viewModel.item = ServersModel(savedServerValue.get())
             } else {
-                serversViewModel.availableServers.let {
+                viewModel.loadAvailableServers()
+
+                viewModel.serversProperty.let {
                     if (it.isNotEmpty()) {
                         logger.debug { "Setting model from available servers" }
-                        serversViewModel.item = ServersModel(savedServerValue.get(it[0]), it)
+                        viewModel.item = ServersModel(savedServerValue.get(it[0]), it)
                     } else {
                         logger.debug { "Setting fallback default value of model" }
-                        serversViewModel.item = ServersModel(Config.Resources.defaultApiServer)
+                        viewModel.item = ServersModel(Config.API.fallbackApiServerURL)
                     }
                     //Save the value for later use
-                    savedServerValue.save(serversViewModel.selectedProperty.value)
+                    savedServerValue.save(viewModel.selectedProperty.value)
+
                 }
             }
         }
 
-        val client by lazy { ApiClient("https://${serversViewModel.selectedProperty.value}") }
+        val client by lazy { ApiClient("https://${viewModel.selectedProperty.value}") }
         val service by lazy { client.create(StationsApi::class) }
     }
 }

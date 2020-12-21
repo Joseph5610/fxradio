@@ -17,8 +17,8 @@
 package online.hudacek.fxradio.media
 
 import mu.KotlinLogging
-import online.hudacek.fxradio.media.players.CustomPlayer
-import online.hudacek.fxradio.media.players.VLCPlayer
+import online.hudacek.fxradio.media.player.CustomPlayer
+import online.hudacek.fxradio.media.player.VLCPlayer
 
 enum class PlayerType {
     Custom, VLC
