@@ -36,7 +36,7 @@ import tornadofx.get
 import tornadofx.onChange
 import tornadofx.property
 
-enum class PlayingStatus {
+enum class PlayerState {
     Playing, Stopped, Error
 }
 
@@ -44,14 +44,14 @@ class PlayerModel(station: Station = Station.stub,
                   animate: Boolean = true,
                   playerType: PlayerType, notifications: Boolean = true,
                   volume: Double,
-                  playingStatus: PlayingStatus = PlayingStatus.Stopped, trackName: String = "") {
+                  playerState: PlayerState = PlayerState.Stopped, trackName: String = "") {
 
     val animate: Boolean by property(animate)
     val notifications: Boolean by property(notifications)
     val station: Station by property(station)
     val playerType: PlayerType by property(playerType)
     val volume: Double by property(volume)
-    val playingStatus: PlayingStatus by property(playingStatus)
+    val playerState: PlayerState by property(playerState)
     val trackName: String by property(trackName)
 }
 
@@ -73,7 +73,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     val stationProperty = bind(PlayerModel::station) as ObjectProperty
     val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
     val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
-    val playingStatusProperty = bind(PlayerModel::playingStatus) as ObjectProperty
+    val playerStateProperty = bind(PlayerModel::playerState) as ObjectProperty
     val trackNameProperty = bind(PlayerModel::trackName) as StringProperty
 
     init {
@@ -83,8 +83,8 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                     historyViewModel.add(it)
 
                     //Restart playing status
-                    playingStatusProperty.value = PlayingStatus.Stopped
-                    playingStatusProperty.value = PlayingStatus.Playing
+                    playerStateProperty.value = PlayerState.Stopped
+                    playerStateProperty.value = PlayerState.Playing
 
                     //Update the name of the station
                     trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
@@ -104,7 +104,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
         playerTypeProperty.onChange {
             it?.let {
-                playingStatusProperty.value = PlayingStatus.Stopped
+                playerStateProperty.value = PlayerState.Stopped
                 MediaPlayerWrapper.init(it)
 
                 if (it == PlayerType.Custom) {
@@ -119,8 +119,8 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
             MediaPlayerWrapper.changeVolume(it)
         }
 
-        playingStatusProperty.onChange {
-            if (it == PlayingStatus.Playing) {
+        playerStateProperty.onChange {
+            if (it == PlayerState.Playing) {
                 //Ignore stations with empty stream URL
                 stationProperty.value.url_resolved?.let { url ->
                     with(MediaPlayerWrapper) {
@@ -142,10 +142,10 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     fun releasePlayer() = MediaPlayerWrapper.release()
 
     fun togglePlayer() {
-        if (playingStatusProperty.value == PlayingStatus.Playing) {
-            playingStatusProperty.value = PlayingStatus.Stopped
+        if (playerStateProperty.value == PlayerState.Playing) {
+            playerStateProperty.value = PlayerState.Stopped
         } else {
-            playingStatusProperty.value = PlayingStatus.Playing
+            playerStateProperty.value = PlayerState.Playing
         }
     }
 

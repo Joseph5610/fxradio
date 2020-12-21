@@ -22,8 +22,8 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
 import online.hudacek.fxradio.utils.*
 import tornadofx.*
 
@@ -38,10 +38,10 @@ class PlayerStationBoxView : View() {
         tickerView(viewModel.trackNameProperty)
     }
 
-    private val playingStatusLabel = viewModel.playingStatusProperty.stringBinding {
+    private val playingStatusLabel = viewModel.playerStateProperty.stringBinding {
         when (it) {
-            PlayingStatus.Stopped -> messages["player.streamingStopped"]
-            PlayingStatus.Error -> messages["player.streamingError"]
+            PlayerState.Stopped -> messages["player.streamingStopped"]
+            PlayerState.Error -> messages["player.streamingError"]
             else -> viewModel.stationProperty.value.name
         }
     }

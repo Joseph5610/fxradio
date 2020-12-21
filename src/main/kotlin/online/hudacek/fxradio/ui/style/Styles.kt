@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private val colors = ColorValues()
+    private val colors = Colors.values
 
     companion object {
 

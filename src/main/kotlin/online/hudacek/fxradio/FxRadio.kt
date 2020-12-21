@@ -30,10 +30,7 @@ import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
-import tornadofx.App
-import tornadofx.Stylesheet
-import tornadofx.launch
-import tornadofx.singleAssign
+import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.reflect.KClass
@@ -44,10 +41,14 @@ import kotlin.reflect.KClass
  */
 
 //Dark mode
-class FxRadioDark : FxRadio(StylesDark::class)
+class FxRadioDark : FxRadio(StylesDark::class) {
+    override var useDarkModeStyle = true
+}
 
 //Light mode
-class FxRadioLight : FxRadio(Styles::class)
+class FxRadioLight : FxRadio(Styles::class) {
+    override var useDarkModeStyle = false
+}
 
 open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
 
@@ -55,6 +56,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
     private val logViewModel: LogViewModel by inject()
+
+    open var useDarkModeStyle: Boolean by singleAssign()
 
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
@@ -74,7 +77,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     /**
      * Basic info about the app
      */
-    companion object {
+    companion object : Component() {
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
@@ -82,7 +85,9 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         const val author = "hudacek.online"
         const val copyright = "Copyright (c) 2020"
 
-        var useDarkModeStyle: Boolean by singleAssign()
+        val isAppInDarkMode by lazy {
+            (app as FxRadio).useDarkModeStyle
+        }
 
         /**
          * Get version from jar MANIFEST.MF file
@@ -102,10 +107,8 @@ data class Version(val version: String) : Semver(version, SemverType.LOOSE)
 
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
-        FxRadio.useDarkModeStyle = true
         launch<FxRadioDark>(args)
     } else {
-        FxRadio.useDarkModeStyle = false
         launch<FxRadioLight>(args)
     }
 }

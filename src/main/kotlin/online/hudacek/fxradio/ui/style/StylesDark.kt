@@ -22,11 +22,11 @@ import javafx.scene.text.FontWeight
 import tornadofx.*
 
 /**
- * Type-safe CSS classes used around the app
+ * Dark mode CSS classes used around the app
  */
 class StylesDark : Stylesheet() {
 
-    private val colors = DarkColorValues()
+    private val colors = Colors.values
 
     companion object {
 

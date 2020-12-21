@@ -21,8 +21,8 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.shouldBeDisabled
 import tornadofx.*
@@ -47,14 +47,14 @@ class PlayerMenu : Controller() {
             item(messages["menu.player.start"], keyPlay) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    playerViewModel.playingStatusProperty.value = PlayingStatus.Playing
+                    playerViewModel.playerStateProperty.value = PlayerState.Playing
                 }
             }
 
             item(messages["menu.player.stop"], keyStop) {
                 shouldBeDisabled(playerViewModel.stationProperty)
                 action {
-                    playerViewModel.playingStatusProperty.value = PlayingStatus.Stopped
+                    playerViewModel.playerStateProperty.value = PlayerState.Stopped
                 }
             }
 

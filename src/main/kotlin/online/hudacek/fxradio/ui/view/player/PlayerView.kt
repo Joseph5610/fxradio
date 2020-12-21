@@ -21,8 +21,8 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerModel
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
 import online.hudacek.fxradio.utils.*
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -42,8 +42,8 @@ class PlayerView : View() {
     private val volumeDown = FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false)
     private val volumeUp = FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false)
 
-    private val playerControlsBinding = viewModel.playingStatusProperty.objectBinding {
-        if (it == PlayingStatus.Playing) {
+    private val playerControlsBinding = viewModel.playerStateProperty.objectBinding {
+        if (it == PlayerState.Playing) {
             stopGlyph
         } else {
             playGlyph

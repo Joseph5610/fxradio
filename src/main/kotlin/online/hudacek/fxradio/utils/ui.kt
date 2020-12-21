@@ -177,7 +177,7 @@ internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
  */
 internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
     //Show dark notifications
-    if (FxRadio.useDarkModeStyle) {
+    if (FxRadio.isAppInDarkMode) {
         styleClass.add(NotificationPane.STYLE_CLASS_DARK)
     }
     op(this)

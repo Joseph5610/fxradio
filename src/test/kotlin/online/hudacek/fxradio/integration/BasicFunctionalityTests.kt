@@ -28,13 +28,14 @@ import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.ui.viewmodel.LibraryItem
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
+import org.testfx.framework.junit5.Init
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
@@ -67,7 +68,8 @@ class BasicFunctionalityTests {
     //Http Client, init only once needed
     private val service by lazy { StationsApi.service }
 
-    init {
+    @Init
+    fun init() {
         MacMenu.isInTest = true
     }
 
@@ -114,7 +116,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream start
         waitFor(5) {
-            player.playingStatusProperty.value == PlayingStatus.Playing
+            player.playerStateProperty.value == PlayerState.Playing
         }
 
         val stopButton = robot.find(playerControls) as Button
@@ -124,7 +126,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream stop
         waitFor(2) {
-            player.playingStatusProperty.value == PlayingStatus.Stopped
+            player.playerStateProperty.value == PlayerState.Stopped
         }
 
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
