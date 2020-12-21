@@ -25,8 +25,8 @@ import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.ItemViewModel
 import tornadofx.property
 
-class LogModel(level: Level) {
-    val level: Level by property(level)
+class LogModel(level: Level = Level.INFO) {
+    var level: Level by property(level)
 }
 
 /**
@@ -35,7 +35,7 @@ class LogModel(level: Level) {
  * Keeps information about current logging level chosen in UI
  * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
  */
-class LogViewModel : ItemViewModel<LogModel>() {
+class LogViewModel : ItemViewModel<LogModel>(LogModel()) {
     val levelProperty = bind(LogModel::level) as ObjectProperty
 
     override fun onCommit() {

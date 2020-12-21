@@ -31,9 +31,10 @@ enum class StatsViewState {
     Loading, Normal, Error
 }
 
-class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf(), viewState: StatsViewState = StatsViewState.Loading) {
-    val stats: ObservableList<Pair<String, String>> by property(map)
-    val viewState: StatsViewState by property(viewState)
+class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf(),
+                 viewState: StatsViewState = StatsViewState.Loading) {
+    var stats: ObservableList<Pair<String, String>> by property(map)
+    var viewState: StatsViewState by property(viewState)
 }
 
 /**
@@ -42,27 +43,27 @@ class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf(),
  * Holds information about radio-browser API stats and health
  * Shown inside [online.hudacek.fxradio.ui.fragment.StatsFragment]
  */
-class StatsViewModel : ItemViewModel<StatsModel>() {
+class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
     val viewStateProperty = bind(StatsModel::viewState) as ObjectProperty
 
-    fun getStats(): Disposable =
-            StationsApi.service.getStats()
-                    .compose(applySchedulers())
-                    .subscribe({
-                        val statsPair = observableListOf(
-                                Pair(messages["stats.status"], it.status),
-                                Pair(messages["stats.apiVersion"], it.software_version),
-                                Pair(messages["stats.supportedVersion"], it.supported_version),
-                                Pair(messages["stats.stations"], it.stations),
-                                Pair(messages["stats.countries"], it.countries),
-                                Pair(messages["stats.brokenStations"], it.stations_broken),
-                                Pair(messages["stats.tags"], it.tags)
-                        )
-                        item = StatsModel(statsPair, StatsViewState.Normal)
-                    }, {
-                        item = StatsModel(viewState = StatsViewState.Error)
-                    })
-
-    override fun toString() = "StatsViewModel(statsProperty=${statsProperty.value})"
+    fun getStats(): Disposable {
+        viewStateProperty.value = StatsViewState.Loading
+        return StationsApi.service.getStats()
+                .compose(applySchedulers())
+                .subscribe({
+                    val statsPair = observableListOf(
+                            Pair(messages["stats.status"], it.status),
+                            Pair(messages["stats.apiVersion"], it.software_version),
+                            Pair(messages["stats.supportedVersion"], it.supported_version),
+                            Pair(messages["stats.stations"], it.stations),
+                            Pair(messages["stats.countries"], it.countries),
+                            Pair(messages["stats.brokenStations"], it.stations_broken),
+                            Pair(messages["stats.tags"], it.tags)
+                    )
+                    item = StatsModel(statsPair, StatsViewState.Normal)
+                }, {
+                    item = StatsModel(viewState = StatsViewState.Error)
+                })
+    }
 }

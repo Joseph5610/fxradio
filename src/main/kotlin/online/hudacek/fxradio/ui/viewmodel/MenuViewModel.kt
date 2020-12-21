@@ -27,11 +27,11 @@ import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class MenuModel(useNative: Boolean) {
-    val useNative: Boolean by property(useNative)
+class MenuModel(useNative: Boolean = false) {
+    var useNative: Boolean by property(useNative)
 }
 
-class MenuViewModel : ItemViewModel<MenuModel>() {
+class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
 
     private val logger = KotlinLogging.logger {}
 

@@ -47,6 +47,6 @@ object Config {
      * Experimental features
      */
     object Flags {
-        const val darkStylesEnabled = true
+        const val darkStylesEnabled = false
     }
 }

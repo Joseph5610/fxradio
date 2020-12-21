@@ -22,7 +22,7 @@ import tornadofx.observableListOf
 import tornadofx.property
 
 object Attributions {
-    val all by lazy {
+    val list by lazy {
         observableListOf(
                 AttributionModel("tornadofx", "1.7.20", Licenses.apache20),
                 AttributionModel("controlsfx", "8.40.17", Licenses.controlsfx),
@@ -46,14 +46,13 @@ object Attributions {
     }
 }
 
-//License Data class
 data class License(val name: String = "", val content: String)
 
 class AttributionModel(name: String, version: String = "", license: License) {
-    val name: String by property(name)
-    val version: String by property(version)
-    val licenseContent: String by property(license.content)
-    val licenseName: String by property(license.name)
+    var name: String by property(name)
+    var version: String by property(version)
+    var licenseContent: String by property(license.content)
+    var licenseName: String by property(license.name)
 }
 
 /**
@@ -63,7 +62,6 @@ class AttributionModel(name: String, version: String = "", license: License) {
  * Used in [online.hudacek.fxradio.ui.fragment.AttributionsFragment]
  */
 class AttributionViewModel : ItemViewModel<AttributionModel>() {
-    val nameProperty = bind(AttributionModel::name) as StringProperty
     val licenseNameProperty = bind(AttributionModel::licenseName) as StringProperty
     val licenseContentProperty = bind(AttributionModel::licenseContent) as StringProperty
 }

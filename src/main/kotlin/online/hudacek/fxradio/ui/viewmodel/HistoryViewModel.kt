@@ -25,7 +25,7 @@ import tornadofx.observableListOf
 import tornadofx.property
 
 class HistoryModel(stations: ObservableList<Station> = observableListOf()) {
-    val stations: ObservableList<Station> by property(stations)
+    var stations: ObservableList<Station> by property(stations)
 }
 
 /**
@@ -34,7 +34,7 @@ class HistoryModel(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about last 10 played stations
  * shows in [online.hudacek.fxradio.views.stations.StationsDataGridView] and in MenuBar
  */
-class HistoryViewModel : ItemViewModel<HistoryModel>() {
+class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
     val stationsProperty = bind(HistoryModel::stations) as ListProperty
 
     fun add(station: Station) {

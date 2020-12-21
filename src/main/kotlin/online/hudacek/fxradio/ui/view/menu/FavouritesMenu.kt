@@ -19,12 +19,14 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import mu.KotlinLogging
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
 import tornadofx.*
 
 class FavouritesMenu : Controller() {
+    private val logger = KotlinLogging.logger {}
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
@@ -36,8 +38,7 @@ class FavouritesMenu : Controller() {
         Database.favourites.select().subscribe({
             favouritesViewModel.item = FavouritesModel(it.asObservable())
         }, {
-            it.printStackTrace()
-            favouritesViewModel.item = FavouritesModel()
+            logger.error(it) { "Error while getting favourite stations" }
         })
     }
 

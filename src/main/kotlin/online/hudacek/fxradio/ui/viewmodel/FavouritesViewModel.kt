@@ -25,7 +25,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class FavouritesModel(stations: ObservableList<Station> = observableListOf()) {
-    val stations: ObservableList<Station> by property(stations)
+    var stations: ObservableList<Station> by property(stations)
 }
 
 /**
@@ -34,7 +34,7 @@ class FavouritesModel(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about last favourites stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
-class FavouritesViewModel : ItemViewModel<FavouritesModel>() {
+class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
     val stationsProperty = bind(FavouritesModel::stations) as ListProperty
 
     fun add(station: Station) {

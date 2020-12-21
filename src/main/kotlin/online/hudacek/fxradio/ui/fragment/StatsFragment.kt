@@ -19,7 +19,6 @@ package online.hudacek.fxradio.ui.fragment
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
-import online.hudacek.fxradio.ui.viewmodel.StatsModel
 import online.hudacek.fxradio.ui.viewmodel.StatsViewModel
 import online.hudacek.fxradio.ui.viewmodel.StatsViewState
 import online.hudacek.fxradio.utils.openUrl
@@ -49,11 +48,8 @@ class StatsFragment : Fragment() {
         }
     }
 
-    init {
-        viewModel.item = StatsModel(viewState = StatsViewState.Loading)
-    }
-
     override fun onDock() {
+        //Refresh stats on every open of fragment
         viewModel.getStats()
     }
 
