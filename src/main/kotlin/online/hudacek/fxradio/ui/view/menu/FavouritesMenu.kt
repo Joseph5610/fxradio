@@ -67,11 +67,11 @@ class FavouritesMenu : Controller() {
 
             //Remove favourite
             item(messages["menu.station.favourite.remove"]) {
-                enableWhen {
+                disableWhen {
                     favouritesViewModel.stationsProperty.booleanBinding {
-                        it!!.contains(playerViewModel.stationProperty.value)
+                        !it!!.contains(playerViewModel.stationProperty.value)
                     }.and(playerViewModel.stationProperty.booleanBinding {
-                        it != null && it.isValid() && favouritesViewModel.stationsProperty.contains(it)
+                        it != null && it.isValid() && !favouritesViewModel.stationsProperty.contains(it)
                     })
                 }
                 action {
