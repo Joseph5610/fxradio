@@ -51,7 +51,6 @@ class ServersViewModel : ItemViewModel<ServersModel>() {
                         .distinct()
                         .asObservable()
             } success {
-                println("loadeeeed" + it)
                 if (it.isNullOrEmpty()) {
                     viewStateProperty.value = ServersViewState.Error
                 } else {
