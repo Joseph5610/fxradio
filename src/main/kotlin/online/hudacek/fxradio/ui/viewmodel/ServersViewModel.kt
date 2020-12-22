@@ -29,9 +29,9 @@ enum class ServersViewState {
 }
 
 class ServersModel(selectedServer: String, availableServers: ObservableList<String> = observableListOf(), viewState: ServersViewState = ServersViewState.Loading) {
-    val selected: String by property(selectedServer)
-    val servers: ObservableList<String> by property(availableServers)
-    val viewState: ServersViewState by property(viewState)
+    var selected: String by property(selectedServer)
+    var servers: ObservableList<String> by property(availableServers)
+    var viewState: ServersViewState by property(viewState)
 }
 
 class ServersViewModel : ItemViewModel<ServersModel>() {

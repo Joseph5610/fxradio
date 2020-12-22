@@ -16,10 +16,12 @@
 
 package online.hudacek.fxradio.utils
 
+import javafx.animation.PauseTransition
 import javafx.beans.property.Property
 import javafx.beans.property.StringProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
+import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.scene.Node
 import javafx.scene.Scene
@@ -31,6 +33,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 import javafx.stage.Window
+import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.ui.style.Styles
@@ -117,16 +120,16 @@ internal fun EventTarget.copyMenu(clipboard: Clipboard,
 }
 
 internal fun EventTarget.autoUpdatingCopyMenu(clipboard: Clipboard,
-                                              name: String,
-                                              value: StringProperty) = contextmenu {
-    item(name) {
+                                              menuItemName: String,
+                                              valueToCopy: StringProperty) = contextmenu {
+    item(menuItemName) {
         action {
-            if (value.value != null) {
-                clipboard.update(value.value)
+            if (valueToCopy.value != null) {
+                clipboard.update(valueToCopy.value)
             }
         }
 
-        value.onChange {
+        valueToCopy.onChange {
             action {
                 clipboard.update(it!!)
             }
@@ -181,4 +184,25 @@ internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Un
         styleClass.add(NotificationPane.STYLE_CLASS_DARK)
     }
     op(this)
+}
+
+/**
+ * Custom function for showing notification in NotificationPane.
+ * Notification disappears after 5 seconds
+ *
+ * Example usage:
+ * notificationPane[FontAwesome.Glyph.WARNING] = "Custom notification Text"
+ */
+internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
+    if (isVisible) show(message, glyph.toGlyph())
+    val delay = PauseTransition(Duration.seconds(5.0))
+    delay.onFinished = EventHandler { hide() }
+    delay.play()
+}
+
+internal fun NotificationPane.show(glyph: FontAwesome.Glyph,
+                                   message: String,
+                                   op: NotificationPane.() -> Unit = {}) {
+    op(this)
+    this[glyph] = message
 }

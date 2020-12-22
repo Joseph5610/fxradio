@@ -27,7 +27,7 @@ import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.shouldBeDisabled
 import tornadofx.*
 
-class PlayerMenu : Controller() {
+class PlayerMenu : FxMenu() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -42,7 +42,7 @@ class PlayerMenu : Controller() {
         }
     }
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.player.controls"]) {
             item(messages["menu.player.start"], keyPlay) {
                 shouldBeDisabled(playerViewModel.stationProperty)

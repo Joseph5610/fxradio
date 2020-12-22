@@ -35,8 +35,9 @@ import java.net.URLEncoder
 
 private const val issueUrl = "https://github.com/Joseph5610/fxradio-main/issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
+private val log = KotlinLogging.logger("ErrorHandler")
+
 class CustomErrorHandler : Thread.UncaughtExceptionHandler {
-    private val log = KotlinLogging.logger("ErrorHandler")
 
     class ErrorEvent(val thread: Thread, val error: Throwable) {
         internal var consumed = false

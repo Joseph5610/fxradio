@@ -70,7 +70,6 @@ class LibraryView : View() {
                         showWhen { viewModel.countriesProperty.emptyProperty() }
                     }
                 }
-
                 libraryCountriesListView.root.prefHeightProperty().bind(heightProperty())
             }
         }

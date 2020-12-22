@@ -36,15 +36,17 @@ import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
 
-class AddStationFragment : Fragment() {
 
-    private val logger = KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
+
+class AddStationFragment : Fragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
     init {
+        //Bind autocomplete list of countries
         viewModel.autoCompleteCountriesProperty.bind(libraryViewModel.countriesProperty) { it.name }
     }
 

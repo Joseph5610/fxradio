@@ -73,7 +73,12 @@ internal fun Station.stationImage(view: ImageView) {
             HttpClientHolder.client.call(url,
                     { response ->
                         response.body()?.let { body ->
-                            ImageCache.save(this, body.byteStream())
+                            try {
+                                ImageCache.save(this, body.byteStream())
+                            } catch (e: Exception) {
+                                logger.error(e) { "Error while saving downloaded station image" }
+                            }
+
                             runLater {
                                 view.image = ImageCache.get(this)
                             }

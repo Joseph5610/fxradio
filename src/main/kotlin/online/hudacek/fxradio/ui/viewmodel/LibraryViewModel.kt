@@ -28,8 +28,8 @@ import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.isValidCountry
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.applySchedulers
+import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
 import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
@@ -48,20 +48,20 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
                    searchQuery: String = "", showLibrary: Boolean, showCountries: Boolean) {
 
     //Countries shown in Countries ListView
-    val countries: ObservableList<Countries> by property(countries)
+    var countries: ObservableList<Countries> by property(countries)
 
     //Default items shown in library ListView
-    val libraries: ObservableList<LibraryItem> by property(observableListOf(
+    var libraries: ObservableList<LibraryItem> by property(observableListOf(
             LibraryItem(LibraryType.TopStations, FontAwesome.Glyph.TROPHY),
             LibraryItem(LibraryType.Favourites, FontAwesome.Glyph.STAR),
             LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
     ))
 
-    val selected: SelectedLibrary by property(selected)
-    val searchQuery: String by property(searchQuery)
-    val showLibrary: Boolean by property(showLibrary)
-    val showCountries: Boolean by property(showCountries)
-    val useTagSearch: Boolean by property(false)
+    var selected: SelectedLibrary by property(selected)
+    var searchQuery: String by property(searchQuery)
+    var showLibrary: Boolean by property(showLibrary)
+    var showCountries: Boolean by property(showCountries)
+    var useTagSearch: Boolean by property(false)
 }
 
 /**
@@ -91,9 +91,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     init {
         item = LibraryModel(
-                searchQuery = Property(Properties.SEARCH_QUERY).get(""),
-                showLibrary = Property(Properties.WINDOW_SHOW_LIBRARY).get(true),
-                showCountries = Property(Properties.WINDOW_SHOW_COUNTRIES).get(true))
+                searchQuery = property(Properties.SEARCH_QUERY, ""),
+                showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
+                showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true))
     }
 
     fun showCountries(): Disposable = StationsApi.service

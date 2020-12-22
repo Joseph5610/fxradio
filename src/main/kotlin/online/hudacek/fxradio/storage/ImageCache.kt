@@ -29,16 +29,18 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import kotlin.math.round
 
 /**
  * Simple image cache
  * Images are saved according to their station id
  * and loaded using fileInputStream
  */
+private val logger = KotlinLogging.logger {}
+
 object ImageCache {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
-    private val logger = KotlinLogging.logger {}
 
     init {
         //prepare cache directory
@@ -46,6 +48,9 @@ object ImageCache {
             Files.createDirectories(cacheBasePath)
         }
     }
+
+    val totalSize
+        get() = round((cacheBasePath.toFile().walkTopDown().filter { it.isFile }.map { it.length() }.sum() / 1024).toDouble())
 
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
@@ -68,16 +73,13 @@ object ImageCache {
         }
     }
 
+    @Throws(java.nio.file.FileAlreadyExistsException::class)
     fun save(station: Station, inputStream: InputStream) {
         if (has(station)) return
         val imagePath = cacheBasePath.resolve(station.stationuuid)
-        try {
-            Files.copy(
-                    inputStream,
-                    imagePath,
-                    StandardCopyOption.REPLACE_EXISTING)
-        } catch (e: FileAlreadyExistsException) {
-            logger.error(e) { "File already exists" }
-        }
+        Files.copy(
+                inputStream,
+                imagePath,
+                StandardCopyOption.REPLACE_EXISTING)
     }
 }

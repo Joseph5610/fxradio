@@ -26,11 +26,10 @@ import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
 
-//History Menu
-class HistoryMenu : Controller() {
-    private val logger = KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
 
-    private val menuViewModel: MenuViewModel by inject()
+class HistoryMenu : FxMenu() {
+
     private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
@@ -38,14 +37,16 @@ class HistoryMenu : Controller() {
     private val keyHistory = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
 
     init {
-        Database.history.select().subscribe({
-            historyViewModel.item = HistoryModel(it.asObservable())
-        }, {
-            logger.error(it) { "Error while getting history from DB!" }
-        })
+        Database.history
+                .select()
+                .subscribe({
+                    historyViewModel.item = HistoryModel(it.asObservable())
+                }, {
+                    logger.error(it) { "Error while getting history from DB!" }
+                })
     }
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.history"]) {
             item(messages["menu.history.show"], keyHistory).action {
                 libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
@@ -59,7 +60,7 @@ class HistoryMenu : Controller() {
                     item("${it.name} (${it.countrycode})") {
                         //for some reason macos native menu does not respect
                         //width/height setting so it is disabled for now
-                        if (!menuViewModel.useNativeProperty.value) {
+                        if (!menuViewModel.usePlatformProperty.value) {
                             graphic = imageview {
                                 it.stationImage(this)
                                 fitHeight = 15.0

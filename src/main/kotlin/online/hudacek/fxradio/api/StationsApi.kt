@@ -35,6 +35,8 @@ import tornadofx.Component
  * --------------
  * HTTP endpoints for radio-browser.info API
  */
+private val logger = KotlinLogging.logger {}
+
 interface StationsApi {
 
     @POST("json/stations/bycountryexact/{countryName}")
@@ -65,8 +67,6 @@ interface StationsApi {
     fun click(@Path("uuid") uuid: String): Single<ClickResponse>
 
     companion object : Component() {
-
-        private val logger = KotlinLogging.logger {}
 
         private val viewModel: ServersViewModel by inject()
 

@@ -25,8 +25,9 @@ import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
 import tornadofx.*
 
-class FavouritesMenu : Controller() {
-    private val logger = KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
+
+class FavouritesMenu : FxMenu() {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
@@ -35,14 +36,16 @@ class FavouritesMenu : Controller() {
     private val keyFavourites = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
 
     init {
-        Database.favourites.select().subscribe({
-            favouritesViewModel.item = FavouritesModel(it.asObservable())
-        }, {
-            logger.error(it) { "Error while getting favourite stations" }
-        })
+        Database.favourites
+                .select()
+                .subscribe({
+                    favouritesViewModel.item = FavouritesModel(it.asObservable())
+                }, {
+                    logger.error(it) { "Error while getting favourite stations" }
+                })
     }
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.favourites"]) {
             item(messages["menu.favourites.show"]).action {
                 libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Favourites)
@@ -87,8 +90,10 @@ class FavouritesMenu : Controller() {
                     favouritesViewModel.stationsProperty.emptyProperty()
                 }
                 action {
-                    favouritesViewModel.cleanup()
-                    libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                    confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
+                        favouritesViewModel.cleanup()
+                        libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                    }
                 }
             }
         }

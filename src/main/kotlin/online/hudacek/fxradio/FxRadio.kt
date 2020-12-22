@@ -27,9 +27,9 @@ import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.viewmodel.LogModel
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
+import online.hudacek.fxradio.utils.property
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -69,7 +69,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
 
         //init logger level based on stored settings
-        val savedLevel = Property(Properties.LOG_LEVEL).get("INFO").asLevel()
+        val savedLevel = property(Properties.LOG_LEVEL, "INFO").asLevel()
         logViewModel.item = LogModel(savedLevel)
         logViewModel.commit()
     }
@@ -96,7 +96,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             Version(FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT")
         }
 
-        fun shutDown() {
+        //Should be called when on every place that is closing the app
+        fun shutdownApp() {
             StationsApi.client.shutdown()
             HttpClientHolder.client.shutdown()
         }

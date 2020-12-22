@@ -75,7 +75,7 @@ class TickerView : View() {
     }
 
     //Actual implementation of Ticker
-    internal class MarqueeView : View() {
+    class MarqueeView : View() {
 
         private val offset = 10.0 //Amount of space between entries!
 

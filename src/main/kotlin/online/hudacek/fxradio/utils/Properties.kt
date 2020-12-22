@@ -96,7 +96,7 @@ class Property(property: Properties) : Component() {
     }
 }
 
-internal fun Component.saveProperties(pairs: List<Pair<Properties, Any>>) {
+fun Component.saveProperties(pairs: List<Pair<Properties, Any>>) {
     with(app.config) {
         pairs.forEach {
             set(it.first.key to it.second)
@@ -104,3 +104,5 @@ internal fun Component.saveProperties(pairs: List<Pair<Properties, Any>>) {
         save()
     }
 }
+
+inline fun <reified T> property(key: Properties, defaultValue: T) = Property(key).get(defaultValue)

@@ -29,6 +29,8 @@ import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
+private val logger = KotlinLogging.logger {}
+
 enum class StationsViewState {
     Normal, Error, Loading, Empty, ShortQuery
 }
@@ -45,8 +47,6 @@ class StationsModel {
  * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
 class StationsViewModel : ItemViewModel<StationsModel>() {
-
-    private val logger = KotlinLogging.logger {}
 
     val stationsProperty = bind(StationsModel::stations) as ListProperty
     val viewStateProperty = bind(StationsModel::viewState) as ObjectProperty

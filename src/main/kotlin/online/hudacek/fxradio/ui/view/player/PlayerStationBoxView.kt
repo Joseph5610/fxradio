@@ -119,7 +119,7 @@ class PlayerStationBoxView : View() {
             ticker.isScheduled.value = true
             if (newStreamTitle.isNotEmpty()) {
                 if (viewModel.notificationsProperty.value) {
-                    notification(title = newSongName, subtitle = newStreamTitle)
+                    Notification.show(title = newSongName, subtitle = newStreamTitle)
                 }
 
                 if (newStreamTitle != viewModel.stationProperty.value.name) {

@@ -29,7 +29,7 @@ import online.hudacek.fxradio.media.MetaData
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.media.StreamUnavailableException
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.utils.property
 import tornadofx.Component
 import tornadofx.get
 import java.nio.ByteBuffer
@@ -38,12 +38,12 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
+private val logger = KotlinLogging.logger {}
+
 data class StreamInfo(val streamId: Int, val stream: DemuxerStream, val decoder: Decoder)
 
 //Custom Audio player using ffmpeg lib
-internal class CustomPlayer : Component(), MediaPlayer {
-
-    private val logger = KotlinLogging.logger {}
+class CustomPlayer : Component(), MediaPlayer {
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
@@ -52,7 +52,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     private var streamUrl = ""
 
-    private val playerRefreshMetaProperty = Property(Properties.PLAYER_CUSTOM_REFRESH_META).get(true)
+    private val playerRefreshMetaProperty = property(Properties.PLAYER_CUSTOM_REFRESH_META, true)
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         logger.error(throwable) { "Stream unavailable..." }
@@ -203,6 +203,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
             deMuxer.open(streamUrl, null, false, true, null, null)
             val data = deMuxer.metaData
             deMuxer.close()
+            logger.debug { "FetchDataTask: $data" }
             return data
         }
 

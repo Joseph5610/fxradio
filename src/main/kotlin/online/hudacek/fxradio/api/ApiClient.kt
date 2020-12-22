@@ -28,9 +28,9 @@ import kotlin.reflect.KClass
  * Helper to construct Retrofit instance with custom HTTP client with
  * enabled logging and custom User-Agent string
  */
-class ApiClient(private val baseUrl: String) : OkHttpHelper() {
+private val logger = KotlinLogging.logger {}
 
-    private val logger = KotlinLogging.logger {}
+class ApiClient(private val baseUrl: String) : OkHttpHelper() {
 
     //Retrofit instance
     private val client: Retrofit

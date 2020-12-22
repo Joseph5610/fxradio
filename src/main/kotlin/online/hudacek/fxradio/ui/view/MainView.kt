@@ -58,7 +58,7 @@ class MainView : View(FxRadio.appName) {
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             playerViewModel.releasePlayer()
-            FxRadio.shutDown()
+            FxRadio.shutdownApp()
         }
     }
 
@@ -82,13 +82,14 @@ class MainView : View(FxRadio.appName) {
 
             content {
                 splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
-                    setDividerPositions(Property(Properties.WINDOW_DIVIDER).get(0.30))
+                    val windowDividerProperty = Property(Properties.WINDOW_DIVIDER)
+                    setDividerPositions(windowDividerProperty.get(0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
 
                     //Save position of divider to config file
                     dividers[0].positionProperty().onChange {
-                        Property(Properties.WINDOW_DIVIDER).save(it)
+                        windowDividerProperty.save(it)
                     }
 
                     //Constrains width of left pane

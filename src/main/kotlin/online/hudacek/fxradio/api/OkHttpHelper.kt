@@ -23,9 +23,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import online.hudacek.fxradio.FxRadio
 import java.util.concurrent.TimeUnit
 
-open class OkHttpHelper {
+private val logger = KotlinLogging.logger {}
 
-    private val logger = KotlinLogging.logger {}
+open class OkHttpHelper {
 
     //To Limit the active connections
     private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)

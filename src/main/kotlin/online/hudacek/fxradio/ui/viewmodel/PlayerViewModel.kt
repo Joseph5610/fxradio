@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
@@ -30,11 +29,12 @@ import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.saveProperties
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.onChange
 import tornadofx.property
+
+private val logger = KotlinLogging.logger {}
 
 enum class PlayerState {
     Playing, Stopped, Error
@@ -64,10 +64,6 @@ class PlayerModel(station: Station = Station.stub,
  */
 class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
-    private val logger = KotlinLogging.logger {}
-
-    private val historyViewModel: HistoryViewModel by inject()
-
     val animateProperty = bind(PlayerModel::animate) as BooleanProperty
     val notificationsProperty = bind(PlayerModel::notifications) as BooleanProperty
     val stationProperty = bind(PlayerModel::station) as ObjectProperty
@@ -80,8 +76,6 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
         stationProperty.onChange {
             it?.let {
                 if (it.isValid()) {
-                    historyViewModel.add(it)
-
                     //Restart playing status
                     playerStateProperty.value = PlayerState.Stopped
                     playerStateProperty.value = PlayerState.Playing
@@ -148,21 +142,6 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
             playerStateProperty.value = PlayerState.Playing
         }
     }
-
-    //Increase vote count on the server
-    fun addVote(): Disposable = StationsApi.service
-            .vote(stationProperty.value.stationuuid)
-            .compose(applySchedulers())
-            .subscribe({
-                if (!it.ok) {
-                    //Why this API returns error 200 on error is beyond me..
-                    fire(NotificationEvent(messages["vote.error"]))
-                } else {
-                    fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
-                }
-            }, {
-                fire(NotificationEvent(messages["vote.error"]))
-            })
 
     override fun onCommit() {
         //Save API server

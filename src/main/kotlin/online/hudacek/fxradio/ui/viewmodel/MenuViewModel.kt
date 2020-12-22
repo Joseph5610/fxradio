@@ -27,15 +27,15 @@ import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
+private val logger = KotlinLogging.logger {}
+
 class MenuModel(useNative: Boolean = false) {
-    var useNative: Boolean by property(useNative)
+    var usePlatform: Boolean by property(useNative)
 }
 
 class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
 
-    private val logger = KotlinLogging.logger {}
-
-    val useNativeProperty = bind(MenuModel::useNative) as BooleanProperty
+    val usePlatformProperty = bind(MenuModel::usePlatform) as BooleanProperty
 
     //Station menu links
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)

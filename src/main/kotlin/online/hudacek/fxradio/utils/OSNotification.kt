@@ -14,27 +14,23 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.media
+package online.hudacek.fxradio.utils
 
-import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.fxradio.NotificationEvent
-import online.hudacek.fxradio.ui.viewmodel.PlayerState
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import tornadofx.FX
-import tornadofx.find
+import online.hudacek.fxradio.macos.MacUtils
 
 private val logger = KotlinLogging.logger {}
 
-class StreamUnavailableException(message: String, cause: Throwable?) : Exception(message, cause) {
-
-    constructor(message: String) : this(message, null)
-
-    init {
-        Platform.runLater {
-            find<PlayerViewModel>().playerStateProperty.value = PlayerState.Error
-            FX.eventbus.fire(NotificationEvent(localizedMessage))
-            logger.error(this) { "Stream can't be played" }
+/**
+ * Show Native OS notification
+ */
+object Notification {
+    fun show(title: String, subtitle: String) {
+        if (MacUtils.isMac) {
+            MacUtils.notification(title, subtitle)
+        } else {
+            //not implemented error
+            logger.debug { "Trying to shown notification on not implemented platform" }
         }
     }
 }

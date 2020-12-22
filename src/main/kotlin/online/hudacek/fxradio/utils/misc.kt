@@ -55,6 +55,6 @@ internal val Process.result: String
 internal val isSystemDarkMode: Boolean
     get() = if (MacUtils.isMac) MacUtils.isSystemDarkMode
     else {
-        logger.debug { "isSystemDarkMode: Unsupported OS" }
+        logger.error { "isSystemDarkMode: Unsupported OS" }
         false
     }

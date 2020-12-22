@@ -31,9 +31,9 @@ enum class StatsViewState {
     Loading, Normal, Error
 }
 
-class StatsModel(map: ObservableList<Pair<String, String>> = observableListOf(),
+class StatsModel(stats: ObservableList<Pair<String, String>> = observableListOf(),
                  viewState: StatsViewState = StatsViewState.Loading) {
-    var stats: ObservableList<Pair<String, String>> by property(map)
+    var stats: ObservableList<Pair<String, String>> by property(stats)
     var viewState: StatsViewState by property(viewState)
 }
 
@@ -52,7 +52,7 @@ class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
         return StationsApi.service.getStats()
                 .compose(applySchedulers())
                 .subscribe({
-                    val statsPair = observableListOf(
+                    val statsList = observableListOf(
                             Pair(messages["stats.status"], it.status),
                             Pair(messages["stats.apiVersion"], it.software_version),
                             Pair(messages["stats.supportedVersion"], it.supported_version),
@@ -61,7 +61,7 @@ class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
                             Pair(messages["stats.brokenStations"], it.stations_broken),
                             Pair(messages["stats.tags"], it.tags)
                     )
-                    item = StatsModel(statsPair, StatsViewState.Normal)
+                    item = StatsModel(statsList, StatsViewState.Normal)
                 }, {
                     item = StatsModel(viewState = StatsViewState.Error)
                 })

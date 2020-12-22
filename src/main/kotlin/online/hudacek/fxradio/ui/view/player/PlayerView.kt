@@ -85,10 +85,10 @@ class PlayerView : View() {
 
     init {
         viewModel.item = PlayerModel(
-                animate = Property(Properties.PLAYER_ANIMATE).get(true),
-                playerType = PlayerType.valueOf(Property(Properties.PLAYER).get("VLC")),
-                notifications = Property(Properties.NOTIFICATIONS).get(true),
-                volume = Property(Properties.VOLUME).get(0.0))
+                animate = property(Properties.PLAYER_ANIMATE, true),
+                playerType = PlayerType.valueOf(property(Properties.PLAYER, "VLC")),
+                notifications = property(Properties.NOTIFICATIONS, true),
+                volume = property(Properties.VOLUME, 0.0))
     }
 
     override val root = vbox {

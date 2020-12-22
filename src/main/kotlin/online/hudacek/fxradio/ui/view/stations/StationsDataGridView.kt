@@ -35,8 +35,9 @@ import tornadofx.controlsfx.showPopover
  * Main view of stations
  * DataGrid shows radio station logo and name
  */
+private val logger = KotlinLogging.logger {}
+
 class StationsDataGridView : View() {
-    private val logger = KotlinLogging.logger {}
 
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()

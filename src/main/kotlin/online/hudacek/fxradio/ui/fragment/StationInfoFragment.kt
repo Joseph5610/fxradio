@@ -29,6 +29,7 @@ import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
+import tornadofx.controlsfx.left
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
@@ -40,7 +41,6 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
     init {
         stationInfoViewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
     }
-
 
     override val root = vbox {
         prefWidth = 300.0
@@ -101,15 +101,23 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
         }
 
         statusbar {
+            left {
+                hyperlink(messages["menu.station.vote"]) {
+                    action {
+                        stationInfoViewModel.addVote()
+                    }
+                    addClass(Styles.primaryTextColor)
+                }
+            }
             right {
                 hyperlink(stationInfoViewModel.homePageProperty) {
-                    addClass(Styles.primaryTextColor)
                     action {
                         app.openUrl(text)
                     }
                     copyMenu(clipboard,
                             name = messages["copy"],
                             value = text)
+                    addClass(Styles.primaryTextColor)
                 }
             }
 
