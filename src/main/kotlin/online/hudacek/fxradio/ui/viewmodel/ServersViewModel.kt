@@ -26,10 +26,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
-import tornadofx.ItemViewModel
-import tornadofx.asObservable
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 
 enum class ServersViewState {
     Loading, Normal, Error
@@ -43,6 +40,13 @@ class ServersModel(selectedServer: String = Config.API.fallbackApiServerURL,
     var viewState: ServersViewState by property(viewState)
 }
 
+/**
+ * Holds available and selected API servers
+ * Item is set in [online.hudacek.fxradio.api.StationsApi.Companion]
+ *
+ * Search for available servers is performed only on first start of the app or when opening
+ * [online.hudacek.fxradio.ui.fragment.AvailableServersFragment]
+ */
 class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
 
     val savedServerValue = Property(Properties.API_SERVER)
@@ -62,16 +66,24 @@ class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
         viewStateObservable
                 .filter { it == ServersViewState.Loading }
                 .subscribe {
-                    val servers = performLookup()
-                    if (servers.isNullOrEmpty()) {
+                    runAsync(daemon = true) {
+                        performLookup()
+                    } success {
+                        if (it.isNullOrEmpty()) {
+                            viewStateProperty.value = ServersViewState.Error
+                        } else {
+                            serversProperty.setAll(it)
+                            viewStateProperty.value = ServersViewState.Normal
+                        }
+                    } fail {
                         viewStateProperty.value = ServersViewState.Error
-                    } else {
-                        serversProperty.setAll(servers)
-                        viewStateProperty.value = ServersViewState.Normal
                     }
                 }
     }
 
+    /**
+     * Blocking operation is needed for the first start of the app
+     */
     fun performLookup() = HttpClientHolder.client.lookup(Config.API.dnsLookupURL)
             .map { it.canonicalHostName }
             .distinct()
