@@ -103,10 +103,10 @@ object Database {
                 .parameter("bitrate", station.bitrate)
                 .toSingle { station }
 
-        fun remove(station: Station): Single<Boolean> =
+        fun remove(station: Station): Single<Station> =
                 connection.insert("delete from $table where stationuuid = :stationuuid")
                         .parameter("stationuuid", station.stationuuid)
-                        .toSingle { it.getInt(1) > 0 }
+                        .toSingle { station }
 
     }
 }

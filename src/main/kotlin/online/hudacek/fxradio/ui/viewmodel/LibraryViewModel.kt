@@ -16,7 +16,10 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -77,6 +80,9 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
 
     //Currently selected library type
     val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
+    val selectedPropertyChanges: Observable<SelectedLibrary> = selectedProperty
+            .toObservableChanges()
+            .map { it.newVal }
 
     val showLibraryProperty = bind(LibraryModel::showLibrary) as BooleanProperty
     val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
@@ -85,15 +91,21 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     //Internal only, contains unedited search query
     val bindSearchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
 
-    val searchQueryProperty = bindSearchQueryProperty.stringBinding {
-        it?.trim()
-    }
+    val searchQueryProperty = bindSearchQueryProperty.stringBinding { it?.trim() }
+    val refreshLibrary = BehaviorSubject.create<LibraryType>()
 
     init {
         item = LibraryModel(
                 searchQuery = property(Properties.SEARCH_QUERY, ""),
                 showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
                 showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true))
+
+        refreshLibrary
+                .filter { selectedProperty.value.type == it }
+                .subscribe {
+                    selectedProperty.value = null
+                    selectedProperty.value = SelectedLibrary(it)
+                }
     }
 
     fun showCountries(): Disposable = StationsApi.service
@@ -124,13 +136,6 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
             selectedProperty.value = SelectedLibrary(LibraryType.SearchByTag)
         } else {
             selectedProperty.value = SelectedLibrary(LibraryType.Search)
-        }
-    }
-
-    fun refreshLibrary(libraryType: LibraryType) {
-        if (selectedProperty.value.type == libraryType) {
-            selectedProperty.value = null
-            selectedProperty.value = SelectedLibrary(libraryType)
         }
     }
 }

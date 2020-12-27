@@ -35,22 +35,22 @@ import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment(station: Station? = null) : Fragment() {
 
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val viewModel: StationInfoViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        stationInfoViewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
+        viewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
     }
 
     override val root = vbox {
         prefWidth = 300.0
-        titleProperty.bind(stationInfoViewModel.stationNameProperty)
+        titleProperty.bind(viewModel.stationNameProperty)
 
         vbox {
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10.0
                 imageview {
-                    stationInfoViewModel.stationProperty.stationImage(this)
+                    viewModel.stationProperty.stationImage(this)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 100.0
                     fitHeight = 100.0
@@ -65,7 +65,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             alignment = Pos.CENTER
             paddingAll = 5.0
 
-            stationInfoViewModel.infoItemsProperty.forEach {
+            viewModel.infoItemsProperty.forEach {
                 //Don't display not not relevant values
                 if (it.value != "0") {
                     val text =
@@ -89,7 +89,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             alignment = Pos.CENTER
             paddingAll = 5.0
 
-            stationInfoViewModel.tagsProperty.forEach {
+            viewModel.tagsProperty.forEach {
                 label(it) {
                     addClass(Styles.tag)
                     addClass(Styles.grayLabel)
@@ -104,13 +104,13 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             left {
                 hyperlink(messages["menu.station.vote"]) {
                     action {
-                        stationInfoViewModel.addVote()
+                        viewModel.addVote.onNext(viewModel.stationProperty.value)
                     }
                     addClass(Styles.primaryTextColor)
                 }
             }
             right {
-                hyperlink(stationInfoViewModel.homePageProperty) {
+                hyperlink(viewModel.homePageProperty) {
                     action {
                         app.openUrl(text)
                     }
@@ -122,7 +122,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             }
 
             showWhen {
-                stationInfoViewModel.homePageProperty.isNotEmpty
+                viewModel.homePageProperty.isNotEmpty
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

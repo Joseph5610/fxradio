@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
@@ -28,6 +28,7 @@ import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
+import java.text.MessageFormat
 
 private val logger = KotlinLogging.logger {}
 
@@ -44,34 +45,38 @@ class FavouritesModel(stations: ObservableList<Station> = observableListOf()) {
 class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
     val stationsProperty = bind(FavouritesModel::stations) as ListProperty
 
-    fun add(station: Station) {
-        if (!station.isValid()) return
-        if (!stationsProperty.contains(station)) {
-            Database.favourites
-                    .insert(station)
-                    .subscribe({
-                        stationsProperty.add(it)
-                        fire(NotificationEvent(messages["menu.station.favourite.added"], FontAwesome.Glyph.CHECK))
-                    }, {
-                        fire(NotificationEvent(messages["menu.station.favourite.added.error"]))
-                    })
-        }
+    val addFavourite = BehaviorSubject.create<Station>()
+    val removeFavourite = BehaviorSubject.create<Station>()
+    val cleanupFavourites = BehaviorSubject.create<Unit>()
+
+    init {
+        addFavourite
+                .filter { it.isValid() && !stationsProperty.contains(it) }
+                .flatMapSingle { Database.favourites.insert(it) }
+                .subscribe({
+                    val addStr = MessageFormat.format(messages["menu.station.favourite.added"], it.name)
+                    stationsProperty.add(it)
+                    fire(NotificationEvent(addStr, FontAwesome.Glyph.CHECK))
+                }, {
+                    fire(NotificationEvent(messages["menu.station.favourite.added.error"]))
+                })
+
+        cleanupFavourites
+                .flatMapSingle { Database.favourites.delete() }
+                .subscribe({
+                    item = FavouritesModel()
+                }, {
+                    logger.error(it) { "Cannot perform DB cleanup!" }
+                })
+
+        removeFavourite
+                .flatMapSingle { Database.favourites.remove(it) }
+                .subscribe({
+                    val removeStr = MessageFormat.format(messages["menu.station.favourite.removed"], it.name)
+                    stationsProperty.remove(it)
+                    fire(NotificationEvent(removeStr, FontAwesome.Glyph.CHECK))
+                }, {
+                    fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
+                })
     }
-
-    fun cleanup(): Disposable = Database.favourites
-            .delete()
-            .subscribe({
-                item = FavouritesModel()
-            }, {
-                logger.error(it) { "Cannot perform DB cleanup!" }
-            })
-
-    fun remove(station: Station): Disposable = Database.favourites
-            .remove(station)
-            .subscribe({
-                stationsProperty.remove(station)
-                fire(NotificationEvent(messages["menu.station.favourite.removed"], FontAwesome.Glyph.CHECK))
-            }, {
-                fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
-            })
 }

@@ -16,8 +16,14 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.ListProperty
 import javafx.beans.property.StringProperty
-import tornadofx.*
+import javafx.collections.ObservableList
+import tornadofx.ItemViewModel
+import tornadofx.observableListOf
+import tornadofx.property
+import tornadofx.stringBinding
 import java.util.*
 
 /**
@@ -32,7 +38,8 @@ class AddStationModel(name: String = "",
                       favicon: String = "",
                       country: String = "",
                       language: String = "",
-                      tags: String = "") {
+                      tags: String = "", saveToFavourites: Boolean = false,
+                      countriesList: ObservableList<String> = observableListOf()) {
     var name: String by property(name)
     var url: String by property(url)
     var homepage: String by property(homepage)
@@ -40,6 +47,8 @@ class AddStationModel(name: String = "",
     var country: String by property(country)
     var language: String by property(language)
     var tags: String by property(tags)
+    var saveToFavourites: Boolean by property(saveToFavourites)
+    var countriesList: ObservableList<String> by property(countriesList)
 }
 
 class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
@@ -51,11 +60,11 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
     val languageProperty = bind(AddStationModel::language) as StringProperty
     val tagsProperty = bind(AddStationModel::tags) as StringProperty
 
+    val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
+    val countriesListProperty = bind(AddStationModel::countriesList) as ListProperty
+
     //Retrieve countryCode value from entered country name
     val countryCodeProperty = countryProperty.stringBinding { countryName ->
         Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     }
-
-    val saveToFavouritesProperty = booleanProperty()
-    val autoCompleteCountriesProperty = listProperty(observableListOf<String>())
 }

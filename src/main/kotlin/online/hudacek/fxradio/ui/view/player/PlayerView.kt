@@ -18,7 +18,6 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
@@ -86,7 +85,7 @@ class PlayerView : View() {
     init {
         viewModel.item = PlayerModel(
                 animate = property(Properties.PLAYER_ANIMATE, true),
-                playerType = PlayerType.valueOf(property(Properties.PLAYER, "VLC")),
+                playerType = property(Properties.PLAYER, "VLC").asPlayerType(),
                 notifications = property(Properties.NOTIFICATIONS, true),
                 volume = property(Properties.VOLUME, 0.0))
     }

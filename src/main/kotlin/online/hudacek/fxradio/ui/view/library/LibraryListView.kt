@@ -31,19 +31,18 @@ class LibraryListView : View() {
 
     init {
         //React to changes of library not from by clicking on list item
-        viewModel.selectedProperty.onChange {
-            it?.let {
-                if (it.type == LibraryType.Country || it.type == LibraryType.Search
-                        || it.type == LibraryType.SearchByTag) {
-                    root.selectionModel.clearSelection()
-                } else {
-                    val selectedListItem = root.items.find { list -> list.type == it.type }
-                    selectedListItem?.let { item ->
-                        root.selectionModel.select(item)
+        viewModel.selectedPropertyChanges
+                .subscribe {
+                    if (it.type == LibraryType.Country || it.type == LibraryType.Search
+                            || it.type == LibraryType.SearchByTag) {
+                        root.selectionModel.clearSelection()
+                    } else {
+                        val selectedListItem = root.items.find { list -> list.type == it.type }
+                        selectedListItem?.let { item ->
+                            root.selectionModel.select(item)
+                        }
                     }
                 }
-            }
-        }
     }
 
     override fun onDock() {

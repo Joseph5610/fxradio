@@ -18,12 +18,9 @@ package online.hudacek.fxradio.api
 
 import io.reactivex.Single
 import mu.KotlinLogging
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.*
 import online.hudacek.fxradio.ui.viewmodel.ServersModel
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -70,33 +67,25 @@ interface StationsApi {
 
         private val viewModel: ServersViewModel by inject()
 
-        private val savedServerValue = Property(Properties.API_SERVER)
-
-        init {
+        val client: ApiClient by lazy {
             //The little logic here: Try to init model with the previously stored value
             //Only if the value is not stored try to get it by calling InetAddress.getAllByName
-            if (savedServerValue.isPresent) {
+            if (viewModel.savedServerValue.isPresent) {
                 logger.debug { "Setting model from saved state" }
-                viewModel.item = ServersModel(savedServerValue.get())
+                viewModel.item = ServersModel(viewModel.savedServerValue.get())
             } else {
-                viewModel.loadAvailableServers()
-
-                viewModel.serversProperty.let {
-                    if (it.isNotEmpty()) {
-                        logger.debug { "Setting model from available servers" }
-                        viewModel.item = ServersModel(savedServerValue.get(it[0]), it)
-                    } else {
-                        logger.debug { "Setting fallback default value of model" }
-                        viewModel.item = ServersModel(Config.API.fallbackApiServerURL)
-                    }
-                    //Save the value for later use
-                    savedServerValue.save(viewModel.selectedProperty.value)
-
+                logger.debug { "Setting model from new call" }
+                val servers = viewModel.performLookup() //blocking operation to get the servers
+                if (!servers.isNullOrEmpty()) {
+                    logger.debug { "Found servers: $servers" }
+                    viewModel.item = ServersModel(servers[0], servers)
+                    viewModel.commit()
                 }
             }
+
+            ApiClient("https://${viewModel.selectedProperty.value}")
         }
 
-        val client by lazy { ApiClient("https://${viewModel.selectedProperty.value}") }
         val service by lazy { client.create(StationsApi::class) }
     }
 }

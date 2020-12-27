@@ -30,13 +30,9 @@ class LibraryCountriesListView : View() {
     private val viewModel: LibraryViewModel by inject()
 
     init {
-        viewModel.selectedProperty.onChange {
-            it?.let {
-                if (it.type != LibraryType.Country) {
-                    root.selectionModel.clearSelection()
-                }
-            }
-        }
+        viewModel.selectedPropertyChanges
+                .filter { it.type != LibraryType.Country }
+                .subscribe { root.selectionModel.clearSelection() }
     }
 
     override val root = listview(viewModel.countriesProperty) {

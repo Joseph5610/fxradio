@@ -16,8 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
-import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
@@ -45,11 +44,11 @@ class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
 
     val stationsProperty = bind(HistoryModel::stations) as ListProperty
 
+    val cleanupHistory = BehaviorSubject.create<Unit>()
+
     init {
         //Add currently listened station to history
-        playerViewModel.stationProperty
-                .toObservableChanges()
-                .map { it.newVal }
+        playerViewModel.stationChanges
                 //Add only valid stations not already present in history
                 .filter { it.isValid() && !stationsProperty.contains(it) }
                 .flatMapSingle { Database.history.insert(it) }
@@ -58,13 +57,13 @@ class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
                 }, {
                     logger.error(it) { "Error adding station to history!" }
                 })
-    }
 
-    fun cleanup(): Disposable = Database.history
-            .delete()
-            .subscribe({
-                item = HistoryModel()
-            }, {
-                logger.error(it) { "Cannot perform DB cleanup!" }
-            })
+        cleanupHistory
+                .flatMapSingle { Database.history.delete() }
+                .subscribe({
+                    item = HistoryModel()
+                }, {
+                    logger.error(it) { "Cannot perform DB cleanup!" }
+                })
+    }
 }

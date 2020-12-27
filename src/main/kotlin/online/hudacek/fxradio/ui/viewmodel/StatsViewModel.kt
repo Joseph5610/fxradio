@@ -16,23 +16,21 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.disposables.Disposable
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import io.reactivex.Observable
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.utils.applySchedulers
-import tornadofx.ItemViewModel
-import tornadofx.get
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 
 enum class StatsViewState {
     Loading, Normal, Error
 }
 
 class StatsModel(stats: ObservableList<Pair<String, String>> = observableListOf(),
-                 viewState: StatsViewState = StatsViewState.Loading) {
+                 viewState: StatsViewState = StatsViewState.Normal) {
     var stats: ObservableList<Pair<String, String>> by property(stats)
     var viewState: StatsViewState by property(viewState)
 }
@@ -47,21 +45,30 @@ class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
     val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
     val viewStateProperty = bind(StatsModel::viewState) as ObjectProperty
 
-    fun getStats(): Disposable {
-        viewStateProperty.value = StatsViewState.Loading
-        return StationsApi.service.getStats()
-                .compose(applySchedulers())
-                .subscribe({
-                    val statsList = observableListOf(
-                            Pair(messages["stats.status"], it.status),
-                            Pair(messages["stats.apiVersion"], it.software_version),
-                            Pair(messages["stats.supportedVersion"], it.supported_version),
-                            Pair(messages["stats.stations"], it.stations),
-                            Pair(messages["stats.countries"], it.countries),
-                            Pair(messages["stats.brokenStations"], it.stations_broken),
-                            Pair(messages["stats.tags"], it.tags)
+    private val viewStateChanges: Observable<StatsViewState> = viewStateProperty
+            .toObservableChangesNonNull()
+            .map { it.newVal }
+
+    init {
+        viewStateChanges
+                .filter { it == StatsViewState.Loading }
+                .flatMapSingle {
+                    StationsApi.service
+                            .getStats()
+                            .compose(applySchedulers())
+                }.subscribe({
+                    val stringValueMap = observableMapOf(
+                            "stats.status" to it.status,
+                            "stats.apiVersion" to it.software_version,
+                            "stats.supportedVersion" to it.supported_version,
+                            "stats.stations" to it.stations,
+                            "stats.countries" to it.countries,
+                            "stats.brokenStations" to it.stations_broken,
+                            "stats.tags" to it.tags
                     )
-                    item = StatsModel(statsList, StatsViewState.Normal)
+                    item = StatsModel(stringValueMap
+                            .toList()
+                            .asObservable(), StatsViewState.Normal)
                 }, {
                     item = StatsModel(viewState = StatsViewState.Error)
                 })

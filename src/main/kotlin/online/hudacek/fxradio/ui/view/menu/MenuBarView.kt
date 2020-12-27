@@ -40,7 +40,7 @@ class MenuBarView : View() {
     private val playerMenu: PlayerMenu by inject()
 
     init {
-        menuViewModel.item = MenuModel(MacUtils.isMac && property(Properties.NATIVE_MENU_BAR, true))
+        menuViewModel.item = MenuModel(MacUtils.isMac && property(Properties.PLATFORM_MENU_BAR, true))
     }
 
     override val root = if (menuViewModel.usePlatformProperty.value) {

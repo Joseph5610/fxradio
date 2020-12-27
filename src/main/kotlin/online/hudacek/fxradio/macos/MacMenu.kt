@@ -35,7 +35,7 @@ object MacMenu {
 
     fun menuBar(op: MenuBar.() -> Menu) = MenuBar().apply {
         if (!isInTest) {
-            useSystemMenuBarProperty().set(true)
+            useSystemMenuBarProperty().value = true
             tk.setApplicationMenu(op(this))
             tk.setMenuBar(this)
         }

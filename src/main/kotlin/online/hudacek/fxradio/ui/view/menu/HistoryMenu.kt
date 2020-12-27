@@ -81,8 +81,8 @@ class HistoryMenu : FxMenu() {
                 }
                 action {
                     confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
-                        historyViewModel.cleanup()
-                        libraryViewModel.refreshLibrary(LibraryType.History)
+                        historyViewModel.cleanupHistory.onNext(Unit)
+                        libraryViewModel.refreshLibrary.onNext(LibraryType.History)
                     }
                 }
             }

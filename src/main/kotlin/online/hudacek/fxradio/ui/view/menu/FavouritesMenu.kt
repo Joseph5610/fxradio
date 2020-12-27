@@ -35,6 +35,15 @@ class FavouritesMenu : FxMenu() {
 
     private val keyFavourites = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
 
+    private val playedStationNotInFavouritesProperty = playerViewModel.stationProperty.booleanBinding {
+        //User should be able to add favourite station only when it is not already present
+        it != null && !favouritesViewModel.stationsProperty.contains(it)
+    }
+
+    private val favouriteMenuItemVisibleProperty = playerViewModel.stationProperty.booleanBinding {
+        it != null && it.isValid()
+    }
+
     init {
         Database.favourites
                 .select()
@@ -54,32 +63,25 @@ class FavouritesMenu : FxMenu() {
 
             //Add favourite
             item(messages["menu.station.favourite"], keyFavourites) {
-                enableWhen {
-                    favouritesViewModel.stationsProperty.booleanBinding {
-                        !it!!.contains(playerViewModel.stationProperty.value)
-                    }.and(playerViewModel.stationProperty.booleanBinding {
-                        it != null && it.isValid() && !favouritesViewModel.stationsProperty.contains(it)
-                    })
-                }
+                enableWhen(playedStationNotInFavouritesProperty)
+                visibleWhen(favouriteMenuItemVisibleProperty)
 
                 action {
-                    favouritesViewModel.add(playerViewModel.stationProperty.value)
-                    libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                    favouritesViewModel.addFavourite.onNext(playerViewModel.stationProperty.value)
+                    libraryViewModel.refreshLibrary.onNext(LibraryType.Favourites)
+                    playedStationNotInFavouritesProperty.invalidate()
                 }
             }
 
             //Remove favourite
             item(messages["menu.station.favourite.remove"]) {
-                disableWhen {
-                    favouritesViewModel.stationsProperty.booleanBinding {
-                        !it!!.contains(playerViewModel.stationProperty.value)
-                    }.and(playerViewModel.stationProperty.booleanBinding {
-                        it != null && it.isValid() && !favouritesViewModel.stationsProperty.contains(it)
-                    })
-                }
+                disableWhen(playedStationNotInFavouritesProperty)
+                visibleWhen(favouriteMenuItemVisibleProperty)
+
                 action {
-                    favouritesViewModel.remove(playerViewModel.stationProperty.value)
-                    libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                    favouritesViewModel.removeFavourite.onNext(playerViewModel.stationProperty.value)
+                    libraryViewModel.refreshLibrary.onNext(LibraryType.Favourites)
+                    playedStationNotInFavouritesProperty.invalidate()
                 }
             }
 
@@ -91,8 +93,8 @@ class FavouritesMenu : FxMenu() {
                 }
                 action {
                     confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                        favouritesViewModel.cleanup()
-                        libraryViewModel.refreshLibrary(LibraryType.Favourites)
+                        favouritesViewModel.cleanupFavourites.onNext(Unit)
+                        libraryViewModel.refreshLibrary.onNext(LibraryType.Favourites)
                     }
                 }
             }

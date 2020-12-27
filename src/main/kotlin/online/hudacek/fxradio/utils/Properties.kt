@@ -22,7 +22,7 @@ import tornadofx.Component
  * Keys for values stored in app.properties
  */
 enum class Properties(val key: String) {
-    NATIVE_MENU_BAR("menu.native"),
+    PLATFORM_MENU_BAR("menu.native"),
     VOLUME("player.volume"),
     PLAYER("player.type"),
     PLAYER_ANIMATE("player.animate"),

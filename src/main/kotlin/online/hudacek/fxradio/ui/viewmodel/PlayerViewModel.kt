@@ -16,6 +16,8 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
@@ -46,13 +48,13 @@ class PlayerModel(station: Station = Station.stub,
                   volume: Double,
                   playerState: PlayerState = PlayerState.Stopped, trackName: String = "") {
 
-    val animate: Boolean by property(animate)
-    val notifications: Boolean by property(notifications)
-    val station: Station by property(station)
-    val playerType: PlayerType by property(playerType)
-    val volume: Double by property(volume)
-    val playerState: PlayerState by property(playerState)
-    val trackName: String by property(trackName)
+    var animate: Boolean by property(animate)
+    var notifications: Boolean by property(notifications)
+    var station: Station by property(station)
+    var playerType: PlayerType by property(playerType)
+    var volume: Double by property(volume)
+    var playerState: PlayerState by property(playerState)
+    var trackName: String by property(trackName)
 }
 
 /**
@@ -64,18 +66,23 @@ class PlayerModel(station: Station = Station.stub,
  */
 class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
+    val stationProperty = bind(PlayerModel::station) as ObjectProperty
+
     val animateProperty = bind(PlayerModel::animate) as BooleanProperty
     val notificationsProperty = bind(PlayerModel::notifications) as BooleanProperty
-    val stationProperty = bind(PlayerModel::station) as ObjectProperty
     val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
     val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
     val playerStateProperty = bind(PlayerModel::playerState) as ObjectProperty
     val trackNameProperty = bind(PlayerModel::trackName) as StringProperty
 
+    val stationChanges: Observable<Station> = stationProperty
+            .toObservableChangesNonNull()
+            .map { it.newVal }
+
     init {
-        stationProperty.onChange {
-            it?.let {
-                if (it.isValid()) {
+        stationChanges
+                .filter { it.isValid() }
+                .subscribe {
                     //Restart playing status
                     playerStateProperty.value = PlayerState.Stopped
                     playerStateProperty.value = PlayerState.Playing
@@ -93,8 +100,6 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                                 logger.debug { "Click registering failed, ignoring the response" }
                             })
                 }
-            }
-        }
 
         playerTypeProperty.onChange {
             it?.let {

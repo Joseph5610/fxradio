@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.beans.property.MapProperty
 import javafx.beans.property.ObjectProperty
@@ -64,18 +64,23 @@ class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
     val stationProperty = bind(StationInfoModel::station) as ObjectProperty
     val stationNameProperty = bind(StationInfoModel::name) as StringProperty
 
-    //Increase vote count on the server
-    fun addVote(): Disposable = StationsApi.service
-            .vote(stationProperty.value.stationuuid)
-            .compose(applySchedulers())
-            .subscribe({
-                if (!it.ok) {
-                    //Why this API returns error 200 on error is beyond me..
-                    fire(NotificationEvent(messages["vote.error"]))
-                } else {
-                    fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
-                }
-            }, {
+    val addVote = BehaviorSubject.create<Station>()
+
+    init {
+        //Increase vote count on the server
+        addVote.flatMapSingle {
+            StationsApi.service
+                    .vote(stationProperty.value.stationuuid)
+                    .compose(applySchedulers())
+        }.subscribe({
+            if (!it.ok) {
+                //Why this API returns error 200 on error ... crazy
                 fire(NotificationEvent(messages["vote.error"]))
-            })
+            } else {
+                fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+            }
+        }, {
+            fire(NotificationEvent(messages["vote.error"]))
+        })
+    }
 }

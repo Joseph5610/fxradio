@@ -18,12 +18,11 @@ package online.hudacek.fxradio.ui.fragment
 
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
+import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
 import online.hudacek.fxradio.ui.viewmodel.ServersViewState
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.showWhen
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -38,8 +37,6 @@ import tornadofx.*
 class AvailableServersFragment : Fragment() {
 
     private val viewModel: ServersViewModel by inject()
-
-    private val serverSavedProperty = Property(Properties.API_SERVER)
 
     private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
@@ -56,19 +53,25 @@ class AvailableServersFragment : Fragment() {
     }
 
     override fun onDock() {
-        viewModel.loadAvailableServers()
+        viewModel.viewStateProperty.value = ServersViewState.Loading
     }
 
     override val root = vbox {
         title = messages["menu.app.server"]
         paddingAll = 10.0
-        setPrefSize(300.0, 230.0)
+        setPrefSize(300.0, 250.0)
 
         vbox {
             vbox(alignment = Pos.CENTER) {
                 label(messages["servers.title"]) {
                     paddingBottom = 15.0
                     addClass(Styles.header)
+                }
+
+                text(messages["servers.restartNeeded"]) {
+                    paddingAll = 5.0
+                    wrappingWidth = 270.0
+                    textAlignment = TextAlignment.CENTER
                 }
             }
 
@@ -78,13 +81,13 @@ class AvailableServersFragment : Fragment() {
                 label(labelTextProperty) {
                     paddingAll = 15.0
                 }
+
                 showWhen {
                     viewModel.viewStateProperty.isNotEqualTo(ServersViewState.Normal)
                 }
             }
 
             listview(viewModel.serversProperty) {
-                val savedServerValue: String? = serverSavedProperty.get()
                 cellFormat {
                     graphic = hbox(5) {
                         prefHeight = 19.0
@@ -96,7 +99,7 @@ class AvailableServersFragment : Fragment() {
 
                         label(it)
 
-                        if (savedServerValue == it) {
+                        if (viewModel.selectedProperty.value == it) {
                             label(messages["servers.selected"]) {
                                 addClass(Styles.libraryListItemTag)
                             }
@@ -122,7 +125,7 @@ class AvailableServersFragment : Fragment() {
 
             button(messages["servers.reload"]) {
                 action {
-                    viewModel.loadAvailableServers(forceReload = true)
+                    viewModel.viewStateProperty.value = ServersViewState.Loading
                 }
             }
             button(messages["close"]) {
@@ -138,10 +141,16 @@ class AvailableServersFragment : Fragment() {
     //Save the server in the app.config property file
     //Close the fragment after successful save
     private fun saveSelectedServer(server: String) = runAsync(daemon = true) {
-        serverSavedProperty.save(server)
+        viewModel.selectedProperty.value = server
+        viewModel.commit()
     } success {
-        fire(NotificationEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
-        close()
+        if (it) {
+            fire(NotificationEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
+            close()
+        } else {
+            //Unsuccessful commit
+            fire(NotificationEvent(messages["server.save.error"]))
+        }
     } fail {
         fire(NotificationEvent(messages["server.save.error"]))
     }

@@ -42,7 +42,6 @@ class HelpMenu : FxMenu() {
             checkLoggerOff.isSelected = it == Level.OFF
             checkLoggerInfo.isSelected = it == Level.INFO
             checkLoggerAll.isSelected = it == Level.ALL
-            logViewModel.levelProperty.value = it
             logViewModel.commit()
         }
     }

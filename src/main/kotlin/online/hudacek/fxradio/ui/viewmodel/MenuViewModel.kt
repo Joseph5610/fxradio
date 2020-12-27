@@ -29,8 +29,8 @@ import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
-class MenuModel(useNative: Boolean = false) {
-    var usePlatform: Boolean by property(useNative)
+class MenuModel(usePlatform: Boolean = true) {
+    var usePlatform: Boolean by property(usePlatform)
 }
 
 class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {

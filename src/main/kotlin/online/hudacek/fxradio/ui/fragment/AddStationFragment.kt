@@ -47,7 +47,7 @@ class AddStationFragment : Fragment() {
 
     init {
         //Bind autocomplete list of countries
-        viewModel.autoCompleteCountriesProperty.bind(libraryViewModel.countriesProperty) { it.name }
+        viewModel.countriesListProperty.bind(libraryViewModel.countriesProperty) { it.name }
     }
 
     override fun onDock() {
@@ -134,11 +134,11 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.country"]) {
                         textfield(viewModel.countryProperty) {
-                            bindAutoCompletion(viewModel.autoCompleteCountriesProperty)
+                            bindAutoCompletion(viewModel.countriesListProperty)
                             required()
 
                             validator {
-                                if (viewModel.autoCompleteCountriesProperty.contains(it))
+                                if (viewModel.countriesListProperty.contains(it))
                                     success()
                                 else
                                     error(messages["field.invalid.country"])
@@ -160,7 +160,6 @@ class AddStationFragment : Fragment() {
                     button(messages["save"]) {
                         enableWhen(viewModel.valid)
                         isDefaultButton = true
-                        addClass(Styles.primaryButton)
                         action {
                             viewModel.commit {
                                 println(viewModel.toString())
@@ -190,6 +189,7 @@ class AddStationFragment : Fragment() {
                                         })
                             }
                         }
+                        addClass(Styles.primaryButton)
                     }
 
                     button(messages["cancel"]) {
@@ -219,7 +219,7 @@ class AddStationFragment : Fragment() {
                     language = viewModel.languageProperty.value,
                     tags = viewModel.tagsProperty.value
             )
-            favouritesViewModel.add(station)
+            favouritesViewModel.addFavourite.onNext(station)
         }
     }
 }

@@ -19,9 +19,13 @@ package online.hudacek.fxradio.utils
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
+import javafx.application.Platform
 import mu.KotlinLogging
+import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.macos.MacUtils
+import online.hudacek.fxradio.media.PlayerType
 import org.apache.logging.log4j.Level
+import tornadofx.FX
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -36,8 +40,20 @@ internal fun <T> applySchedulers(): SingleTransformer<T, T>? =
                     .observeOnFx()
         }
 
-
 internal fun String.asLevel() = Level.valueOf(this)
+
+/**
+ * Helper for loading of playerType from app.properties file
+ */
+internal fun String.asPlayerType() = try {
+    PlayerType.valueOf(this)
+} catch (e: IllegalArgumentException) {
+    Platform.runLater {
+        FX.eventbus.fire(NotificationEvent("Invalid player type value detected. Using PlayerType.Custom"))
+    }
+    logger.error(e) { "This playerType is invalid. Using PlayerType.Custom" }
+    PlayerType.Custom
+}
 
 //Command line utilities
 internal fun command(command: String) = Runtime.getRuntime().exec(command)
