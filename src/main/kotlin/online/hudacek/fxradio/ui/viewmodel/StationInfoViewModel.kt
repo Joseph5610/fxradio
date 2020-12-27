@@ -64,7 +64,7 @@ class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
     val stationProperty = bind(StationInfoModel::station) as ObjectProperty
     val stationNameProperty = bind(StationInfoModel::name) as StringProperty
 
-    val addVote = BehaviorSubject.create<Station>()
+    val addVote = BehaviorSubject.create<Unit>()
 
     init {
         //Increase vote count on the server

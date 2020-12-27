@@ -79,6 +79,7 @@ class HistoryMenu : FxMenu() {
                 disableWhen {
                     historyViewModel.stationsProperty.emptyProperty()
                 }
+
                 action {
                     confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
                         historyViewModel.cleanupHistory.onNext(Unit)

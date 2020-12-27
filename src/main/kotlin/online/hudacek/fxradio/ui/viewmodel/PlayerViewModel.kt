@@ -82,7 +82,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     init {
         stationChanges
                 .filter { it.isValid() }
-                .subscribe {
+                .flatMapSingle {
                     //Restart playing status
                     playerStateProperty.value = PlayerState.Stopped
                     playerStateProperty.value = PlayerState.Playing
@@ -94,12 +94,12 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                     StationsApi.service
                             .click(it.stationuuid)
                             .compose(applySchedulers())
-                            .subscribe({
-                                logger.debug { "Click registered: $it" }
-                            }, {
-                                logger.debug { "Click registering failed, ignoring the response" }
-                            })
                 }
+                .subscribe({
+                    logger.debug { "Click registered: $it" }
+                }, {
+                    logger.error(it) { "Error when processing chain..." }
+                })
 
         playerTypeProperty.onChange {
             it?.let {

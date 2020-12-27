@@ -48,5 +48,6 @@ object Config {
      */
     object Flags {
         const val darkStylesEnabled = false
+        const val enableStationDebug = true
     }
 }

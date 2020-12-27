@@ -29,6 +29,22 @@ data class Station(val stationuuid: String,
 
     override fun hashCode() = super.hashCode()
 
+    override fun toString(): String {
+        return "Station(stationuuid='$stationuuid'\n, " +
+                "name='$name'\n," +
+                "url_resolved=$url_resolved\n, " +
+                "homepage='$homepage'\n, " +
+                "favicon=$favicon\n, " +
+                "tags='$tags'\n, " +
+                "country='$country'\n, " +
+                "countrycode='$countrycode'\n, " +
+                "state='$state'\n, " +
+                "language='$language'\n, " +
+                "codec='$codec'\n, " +
+                "bitrate=$bitrate,\n" +
+                " votes=$votes)"
+    }
+
     companion object {
         val stub by lazy {
             Station("0", "Not playing", null,

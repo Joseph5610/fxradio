@@ -16,9 +16,13 @@
 
 package online.hudacek.fxradio.ui.fragment
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
+import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import javafx.stage.StageStyle
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
@@ -55,6 +59,13 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                     fitHeight = 100.0
                     fitHeight = 100.0
                     isPreserveRatio = true
+
+                    if (Config.Flags.enableStationDebug) {
+                        addEventFilter(MouseEvent.MOUSE_CLICKED) { event ->
+                            if (event.clickCount > 3)
+                                find<StationDebugFragment>().openModal(stageStyle = StageStyle.UTILITY)
+                        }
+                    }
                 }
             }
         }
@@ -103,9 +114,11 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
         statusbar {
             left {
                 hyperlink(messages["menu.station.vote"]) {
-                    action {
-                        viewModel.addVote.onNext(viewModel.stationProperty.value)
-                    }
+
+                    actionEvents()
+                            .map { Unit }
+                            .subscribe(viewModel.addVote)
+
                     addClass(Styles.primaryTextColor)
                 }
             }

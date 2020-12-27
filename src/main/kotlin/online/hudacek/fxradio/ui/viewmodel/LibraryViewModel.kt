@@ -92,6 +92,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     val bindSearchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
 
     val searchQueryProperty = bindSearchQueryProperty.stringBinding { it?.trim() }
+
     val refreshLibrary = BehaviorSubject.create<LibraryType>()
 
     init {
