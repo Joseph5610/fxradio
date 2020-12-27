@@ -54,6 +54,7 @@ class LibraryCountriesListView : View() {
             }
             addClass(Styles.libraryListItem)
         }
+
         onUserSelect(1) {
             viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
         }

@@ -86,8 +86,7 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
                     favicon = faviconProperty.value,
                     country = countryProperty.value,
                     language = languageProperty.value,
-                    tags = tagsProperty.value
-            )
+                    tags = tagsProperty.value)
             favouritesViewModel.addFavourite.onNext(station)
         }
     }

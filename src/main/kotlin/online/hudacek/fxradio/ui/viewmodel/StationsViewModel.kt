@@ -38,9 +38,10 @@ enum class StationsViewState {
     Normal, Error, Loading, Empty, ShortQuery
 }
 
-class StationsModel {
-    var stations: ObservableList<Station> by property(observableListOf())
-    var viewState: StationsViewState by objectProperty(StationsViewState.Empty)
+class StationsModel(stations: ObservableList<Station> = observableListOf(),
+                    viewState: StationsViewState = StationsViewState.Empty) {
+    var stations: ObservableList<Station> by property(stations)
+    var viewState: StationsViewState by property(viewState)
 }
 
 /**

@@ -46,7 +46,8 @@ class PlayerModel(station: Station = Station.stub,
                   animate: Boolean = true,
                   playerType: PlayerType, notifications: Boolean = true,
                   volume: Double,
-                  playerState: PlayerState = PlayerState.Stopped, trackName: String = "") {
+                  playerState: PlayerState = PlayerState.Stopped,
+                  trackName: String = "") {
 
     var animate: Boolean by property(animate)
     var notifications: Boolean by property(notifications)
