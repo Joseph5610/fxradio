@@ -26,10 +26,8 @@ import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.viewmodel.LogModel
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
-import online.hudacek.fxradio.utils.property
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths

@@ -26,14 +26,14 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.isValidCountry
-import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.property
+import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
-import online.hudacek.fxradio.utils.property
-import online.hudacek.fxradio.utils.saveProperties
 import org.controlsfx.control.action.Action
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*

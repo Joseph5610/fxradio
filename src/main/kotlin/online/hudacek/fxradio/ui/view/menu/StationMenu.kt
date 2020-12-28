@@ -20,8 +20,8 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.disableWhenInvalidStation
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.shouldBeDisabled
 import online.hudacek.fxradio.utils.update
 import tornadofx.action
 import tornadofx.get
@@ -38,14 +38,14 @@ class StationMenu : FxMenu() {
     override val menu by lazy {
         menu(messages["menu.station"]) {
             item(messages["menu.station.info"], keyInfo) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     menuViewModel.openStationInfo()
                 }
             }
 
             item(messages["copy.stream.url"]) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
                 }

@@ -22,6 +22,8 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.viewmodel.Notification
+import online.hudacek.fxradio.ui.viewmodel.NotificationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.*
@@ -33,10 +35,9 @@ import tornadofx.*
 class PlayerStationBoxView : View() {
 
     private val viewModel: PlayerViewModel by inject()
+    private val notificationsViewModel: NotificationsViewModel by inject()
 
-    private val ticker by lazy {
-        tickerView(viewModel.trackNameProperty)
-    }
+    private val tickerView by lazy { tickerView() }
 
     private val playingStatusLabel = viewModel.playerStateProperty.stringBinding {
         when (it) {
@@ -82,7 +83,7 @@ class PlayerStationBoxView : View() {
                 vbox(alignment = Pos.CENTER) {
                     //Dynamic ticker for station name
                     vbox {
-                        add(ticker)
+                        add(tickerView)
                         showWhen {
                             viewModel.animateProperty
                         }
@@ -116,11 +117,10 @@ class PlayerStationBoxView : View() {
 
         //Do not update if song name is too short
         if (newSongName.length > 1) {
-            ticker.isScheduled.value = true
             if (newStreamTitle.isNotEmpty()) {
-                if (viewModel.notificationsProperty.value) {
-                    Notification.show(title = newSongName, subtitle = newStreamTitle)
-                }
+
+                notificationsViewModel.show
+                        .onNext(Notification(title = newSongName, value = newStreamTitle))
 
                 if (newStreamTitle != viewModel.stationProperty.value.name) {
                     viewModel.trackNameProperty.value = "$newStreamTitle - $newSongName"

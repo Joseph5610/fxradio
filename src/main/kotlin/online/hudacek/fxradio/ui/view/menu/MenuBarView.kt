@@ -19,13 +19,13 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.macos.MacUtils
+import online.hudacek.fxradio.property
 import online.hudacek.fxradio.ui.viewmodel.MenuModel
 import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.property
 import tornadofx.*
 
 class MenuBarView : View() {

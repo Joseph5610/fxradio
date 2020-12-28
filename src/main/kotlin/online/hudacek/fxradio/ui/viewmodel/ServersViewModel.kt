@@ -23,9 +23,9 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.HttpClientHolder
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import tornadofx.*
 
 enum class ServersViewState {

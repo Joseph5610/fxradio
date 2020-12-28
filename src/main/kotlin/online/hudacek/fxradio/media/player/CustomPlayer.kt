@@ -24,12 +24,12 @@ import javafx.concurrent.Task
 import javafx.util.Duration
 import kotlinx.coroutines.*
 import mu.KotlinLogging
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MetaData
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.media.StreamUnavailableException
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.property
 import tornadofx.Component
 import tornadofx.get
 import java.nio.ByteBuffer

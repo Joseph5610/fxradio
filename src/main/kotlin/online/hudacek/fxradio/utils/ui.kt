@@ -97,11 +97,8 @@ internal fun EventTarget.searchField(promptText: String, property: ObservableVal
 internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): CustomTextField =
         opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
 
-internal fun tickerView(property: StringProperty? = null, op: TickerView.() -> Unit = {}): TickerView {
+internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
     return TickerView().apply {
-        if (property != null) {
-            tickerTextProperty.bind(property)
-        }
         op(this)
     }
 }
@@ -169,7 +166,7 @@ internal fun menu(name: String, op: Menu.() -> Unit = {}) = Menu(name).apply {
     op(this)
 }
 
-internal fun MenuItem.shouldBeDisabled(station: Property<Station>) {
+internal fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
     disableWhen(station.booleanBinding {
         it == null || !it.isValid()
     })

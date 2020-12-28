@@ -20,16 +20,22 @@ import javafx.scene.control.CheckMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.property
+import online.hudacek.fxradio.ui.viewmodel.NotificationsModel
+import online.hudacek.fxradio.ui.viewmodel.NotificationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.disableWhenInvalidStation
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.shouldBeDisabled
 import tornadofx.*
 
 class PlayerMenu : FxMenu() {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val notificationsViewModel: NotificationsViewModel by inject()
 
     private var playerTypeItem: CheckMenuItem by singleAssign()
 
@@ -40,19 +46,24 @@ class PlayerMenu : FxMenu() {
         playerViewModel.playerTypeProperty.onChange {
             playerTypeItem.isSelected = it == PlayerType.Custom
         }
+
+        notificationsViewModel.item = NotificationsModel(
+                //Notifications are currently enabled only on macOS
+                show = property(Properties.NOTIFICATIONS, MacUtils.isMac)
+        )
     }
 
     override val menu by lazy {
         menu(messages["menu.player.controls"]) {
             item(messages["menu.player.start"], keyPlay) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.playerStateProperty.value = PlayerState.Playing
                 }
             }
 
             item(messages["menu.player.stop"], keyStop) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.playerStateProperty.value = PlayerState.Stopped
                 }
@@ -78,12 +89,17 @@ class PlayerMenu : FxMenu() {
                 action {
                     playerViewModel.commit()
                 }
+
+                visibleWhen {
+                    //Should be visible only on MacOS for now
+                    booleanProperty(MacUtils.isMac)
+                }
             }
 
             checkmenuitem(messages["menu.player.notifications"]) {
-                bind(playerViewModel.notificationsProperty)
+                bind(notificationsViewModel.showProperty)
                 action {
-                    playerViewModel.commit()
+                    notificationsViewModel.commit()
                 }
             }
         }

@@ -24,13 +24,13 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
-import online.hudacek.fxradio.utils.saveProperties
 import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.onChange
@@ -44,13 +44,12 @@ enum class PlayerState {
 
 class PlayerModel(station: Station = Station.stub,
                   animate: Boolean = true,
-                  playerType: PlayerType, notifications: Boolean = true,
+                  playerType: PlayerType,
                   volume: Double,
                   playerState: PlayerState = PlayerState.Stopped,
                   trackName: String = "") {
 
     var animate: Boolean by property(animate)
-    var notifications: Boolean by property(notifications)
     var station: Station by property(station)
     var playerType: PlayerType by property(playerType)
     var volume: Double by property(volume)
@@ -68,12 +67,11 @@ class PlayerModel(station: Station = Station.stub,
 class PlayerViewModel : ItemViewModel<PlayerModel>() {
 
     val stationProperty = bind(PlayerModel::station) as ObjectProperty
-
-    val animateProperty = bind(PlayerModel::animate) as BooleanProperty
-    val notificationsProperty = bind(PlayerModel::notifications) as BooleanProperty
-    val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
-    val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
     val playerStateProperty = bind(PlayerModel::playerState) as ObjectProperty
+
+    val playerTypeProperty = bind(PlayerModel::playerType) as ObjectProperty
+    val animateProperty = bind(PlayerModel::animate) as BooleanProperty
+    val volumeProperty = bind(PlayerModel::volume) as DoubleProperty
     val trackNameProperty = bind(PlayerModel::trackName) as StringProperty
 
     val stationChanges: Observable<Station> = stationProperty
@@ -155,7 +153,6 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                 listOf(
                         Pair(Properties.PLAYER_ANIMATE, animateProperty.value),
                         Pair(Properties.PLAYER, playerTypeProperty.value),
-                        Pair(Properties.NOTIFICATIONS, notificationsProperty.value),
                         Pair(Properties.VOLUME, volumeProperty.value)
                 )
         )

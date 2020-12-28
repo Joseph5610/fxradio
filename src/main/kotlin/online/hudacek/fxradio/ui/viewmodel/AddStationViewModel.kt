@@ -78,16 +78,18 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
 
     override fun onCommit() {
         if (saveToFavouritesProperty.value) {
-            val station = Station(
-                    stationuuid = uuidProperty.value,
-                    name = nameProperty.value,
-                    url_resolved = urlProperty.value,
-                    homepage = homePageProperty.value,
-                    favicon = faviconProperty.value,
-                    country = countryProperty.value,
-                    language = languageProperty.value,
-                    tags = tagsProperty.value)
-            favouritesViewModel.addFavourite.onNext(station)
+            favouritesViewModel.addFavourite.onNext(
+                    Station(
+                            stationuuid = uuidProperty.value,
+                            name = nameProperty.value,
+                            url_resolved = urlProperty.value,
+                            homepage = homePageProperty.value,
+                            favicon = faviconProperty.value,
+                            countrycode = countryCodeProperty.value,
+                            country = countryProperty.value,
+                            language = languageProperty.value,
+                            tags = tagsProperty.value)
+            )
         }
     }
 }

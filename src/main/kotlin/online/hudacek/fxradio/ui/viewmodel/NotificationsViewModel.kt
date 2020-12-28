@@ -16,35 +16,36 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import javafx.beans.property.ObjectProperty
+import io.reactivex.subjects.BehaviorSubject
+import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.Property
-import org.apache.logging.log4j.Level
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.core.config.Configurator
+import online.hudacek.fxradio.macos.MacUtils
 import tornadofx.ItemViewModel
 import tornadofx.property
 
-class LogModel(level: Level = Level.INFO) {
-    var level: Level by property(level)
+data class Notification(val title: String, val value: String)
+
+class NotificationsModel(show: Boolean = false) {
+    var show: Boolean by property(show)
 }
 
 /**
- * Log view model
- * -------------------
- * Keeps information about current logging level chosen in UI
- * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
+ * Show Native OS notification
  */
-class LogViewModel : ItemViewModel<LogModel>(LogModel()) {
-    val levelProperty = bind(LogModel::level) as ObjectProperty
+class NotificationsViewModel : ItemViewModel<NotificationsModel>(NotificationsModel()) {
+    var showProperty = bind(NotificationsModel::show) as BooleanProperty
+
+    val show = BehaviorSubject.create<Notification>()
+
+    init {
+        show.filter { showProperty.value && MacUtils.isMac }
+                .subscribe {
+                    MacUtils.notification(it.title, it.value)
+                }
+    }
 
     override fun onCommit() {
-        super.onCommit()
-
-        //Set Current Logger Level
-        Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
-
-        //Save it
-        Property(Properties.LOG_LEVEL).save(levelProperty.value)
+        Property(Properties.NOTIFICATIONS).save(showProperty.value)
     }
 }

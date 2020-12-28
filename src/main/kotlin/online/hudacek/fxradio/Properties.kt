@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils
+package online.hudacek.fxradio
 
 import tornadofx.Component
 
