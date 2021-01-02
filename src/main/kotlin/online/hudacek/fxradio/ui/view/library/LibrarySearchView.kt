@@ -16,11 +16,15 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import com.github.thomasnield.rxkotlinfx.textValues
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.utils.make
 import online.hudacek.fxradio.utils.searchField
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.View
+import tornadofx.get
+import tornadofx.label
+import tornadofx.validator
 
 /**
  * Search input field view
@@ -37,13 +41,12 @@ class LibrarySearchView : View() {
         }
 
         //Fire up search results after input is written to text field
-        textProperty().onChange {
-            if (text.length >= 50) {
-                text = text.substring(0, 49)
-            }
-            viewModel.showSearchResults()
-            viewModel.commit()
-        }
+        textValues
+                .filter { viewModel.isValid }
+                .subscribe {
+                    viewModel.showSearchResults()
+                    viewModel.commit()
+                }
 
         setOnMouseClicked {
             viewModel.showSearchResults()
@@ -51,8 +54,7 @@ class LibrarySearchView : View() {
 
         validator {
             when {
-                it!!.isNotEmpty() && it.length < 3 -> error(messages["searchingLibraryDesc"])
-                it.length >= 49 -> error(messages["field.max.length"])
+                it != null && it.length >= 49 -> error(messages["field.max.length"])
                 else -> null
             }
         }

@@ -74,7 +74,7 @@ class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
                     .compose(applySchedulers())
         }.subscribe({
             if (!it.ok) {
-                //Why this API returns error 200 on error ... crazy
+                //Why this API returns error 200 on error ...
                 fire(NotificationEvent(messages["vote.error"]))
             } else {
                 fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))

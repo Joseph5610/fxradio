@@ -79,8 +79,7 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
     override fun onCommit() {
         if (saveToFavouritesProperty.value) {
             favouritesViewModel.addFavourite.onNext(
-                    Station(
-                            stationuuid = uuidProperty.value,
+                    Station(stationuuid = uuidProperty.value,
                             name = nameProperty.value,
                             url_resolved = urlProperty.value,
                             homepage = homePageProperty.value,

@@ -127,7 +127,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                             play(url)
                         } else {
                             //Error while initializing player
-                            fire(NotificationEvent(messages["player.init.error"]))
+                            fire(NotificationEvent(messages["player.initError"]))
                         }
                     }
                 }
@@ -148,14 +148,11 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     }
 
     override fun onCommit() {
-        //Save API server
-        saveProperties(
-                listOf(
-                        Pair(Properties.PLAYER_ANIMATE, animateProperty.value),
-                        Pair(Properties.PLAYER, playerTypeProperty.value),
-                        Pair(Properties.VOLUME, volumeProperty.value)
-                )
-        )
+        saveProperties(mapOf(
+                Properties.PLAYER to playerTypeProperty.value,
+                Properties.PLAYER_ANIMATE to animateProperty.value,
+                Properties.VOLUME to volumeProperty.value
+        ))
     }
 }
 

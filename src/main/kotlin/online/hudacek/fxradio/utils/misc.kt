@@ -24,7 +24,6 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.media.PlayerType
-import org.apache.logging.log4j.Level
 import tornadofx.FX
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -39,8 +38,6 @@ internal fun <T> applySchedulers(): SingleTransformer<T, T>? =
             it.subscribeOn(Schedulers.io())
                     .observeOnFx()
         }
-
-internal fun String.asLevel() = Level.valueOf(this)
 
 /**
  * Helper for loading of playerType from app.properties file

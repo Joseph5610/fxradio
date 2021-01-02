@@ -59,6 +59,8 @@ class Styles : Stylesheet() {
         //For Text() elements
         val defaultTextColor by cssclass()
 
+        val grayTextColor by cssclass()
+
         val noBorder by cssclass()
     }
 
@@ -109,6 +111,10 @@ class Styles : Stylesheet() {
 
         defaultTextColor {
             fill = c(colors.label)
+        }
+
+        grayTextColor {
+            textFill = c(colors.grayLabel)
         }
 
         coloredButton {

@@ -56,6 +56,13 @@ class AvailableServersFragment : Fragment() {
         viewModel.viewStateProperty.value = ServersViewState.Loading
     }
 
+    override fun onUndock() {
+        if (viewModel.selectedProperty.isDirty) {
+            println("rolback")
+            viewModel.rollback(viewModel.selectedProperty)
+        }
+    }
+
     override val root = vbox {
         title = messages["menu.app.server"]
         paddingAll = 10.0
@@ -88,6 +95,7 @@ class AvailableServersFragment : Fragment() {
             }
 
             listview(viewModel.serversProperty) {
+                bindSelected(viewModel.selectedProperty)
                 cellFormat {
                     graphic = hbox(5) {
                         prefHeight = 19.0
@@ -97,18 +105,18 @@ class AvailableServersFragment : Fragment() {
                             image = FlagIcon(it.substring(0, 2))
                         }
 
-                        label(it)
-
-                        if (viewModel.selectedProperty.value == it) {
-                            label(messages["servers.selected"]) {
-                                addClass(Styles.libraryListItemTag)
+                        label(messages["servers.selected"]) {
+                            showWhen {
+                                //look for the value of backing field
+                                booleanBinding(viewModel.item.selected) {
+                                    this == it
+                                }
                             }
+                            addClass(Styles.libraryListItemTag)
                         }
                     }
+                    text = it
                     addClass(Styles.libraryListItem)
-                }
-                onUserSelect {
-                    saveSelectedServer(it)
                 }
 
                 showWhen {
@@ -128,30 +136,20 @@ class AvailableServersFragment : Fragment() {
                     viewModel.viewStateProperty.value = ServersViewState.Loading
                 }
             }
-            button(messages["close"]) {
-                isCancelButton = true
+            button(messages["save"]) {
+                enableWhen(viewModel.selectedProperty.isNotNull)
+                isDefaultButton = true
                 action {
-                    close()
+                    //Save the server in the app.config property file
+                    //Close the fragment after successful save
+                    viewModel.commit {
+                        fire(NotificationEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
+                        close()
+                    }
                 }
+                addClass(Styles.primaryButton)
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
-    }
-
-    //Save the server in the app.config property file
-    //Close the fragment after successful save
-    private fun saveSelectedServer(server: String) = runAsync(daemon = true) {
-        viewModel.selectedProperty.value = server
-        viewModel.commit()
-    } success {
-        if (it) {
-            fire(NotificationEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
-            close()
-        } else {
-            //Unsuccessful commit
-            fire(NotificationEvent(messages["server.save.error"]))
-        }
-    } fail {
-        fire(NotificationEvent(messages["server.save.error"]))
     }
 }

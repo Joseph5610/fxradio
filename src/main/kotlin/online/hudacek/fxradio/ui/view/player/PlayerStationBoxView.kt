@@ -21,12 +21,15 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.media.MetaDataChanged
+import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.Notification
 import online.hudacek.fxradio.ui.viewmodel.NotificationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.*
+import online.hudacek.fxradio.utils.autoUpdatingCopyMenu
+import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.utils.tickerView
 import tornadofx.*
 
 /**
@@ -47,15 +50,10 @@ class PlayerStationBoxView : View() {
         }
     }
 
-    private val stationLogo = imageview(defaultRadioLogo) {
+    private val stationLogo = imageview {
         effect = DropShadow(20.0, Color.WHITE)
         fitWidth = 30.0
         isPreserveRatio = true
-    }
-
-    private val nowStreamingLabel = label(playingStatusLabel) {
-        id = "nowStreaming"
-        addClass(Styles.grayLabel)
     }
 
     init {
@@ -100,7 +98,10 @@ class PlayerStationBoxView : View() {
             }
             bottom {
                 vbox(alignment = Pos.CENTER) {
-                    add(nowStreamingLabel)
+                    label(playingStatusLabel) {
+                        id = "nowStreaming"
+                        addClass(Styles.grayLabel)
+                    }
                 }
             }
         }

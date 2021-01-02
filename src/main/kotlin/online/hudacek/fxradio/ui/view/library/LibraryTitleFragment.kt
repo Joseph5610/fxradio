@@ -28,7 +28,14 @@ import tornadofx.*
 class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : Fragment() {
 
     private val chevronStyleProperty = showProperty.objectBinding {
-        showIcon(it!!)
+        if (it!!)
+            FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0,
+                    useStyle = false,
+                    color = c(Colors.values.grayLabel))
+        else
+            FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0,
+                    useStyle = false,
+                    color = c(Colors.values.grayLabel))
     }
 
     override val root = hbox {
@@ -50,9 +57,4 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
             }
         }
     }
-
-    private fun showIcon(show: Boolean) = if (show)
-        FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0, useStyle = false, color = c(Colors.values.grayLabel))
-    else
-        FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0, useStyle = false, color = c(Colors.values.grayLabel))
 }

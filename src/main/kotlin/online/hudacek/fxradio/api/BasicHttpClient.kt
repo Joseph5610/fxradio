@@ -30,7 +30,6 @@ import java.net.InetAddress
  */
 private val logger = KotlinLogging.logger {}
 
-
 object HttpClientHolder {
     val client by lazy { BasicHttpClient() }
 }

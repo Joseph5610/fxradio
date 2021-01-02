@@ -16,12 +16,17 @@
 
 package online.hudacek.fxradio.storage
 
+import javafx.beans.property.Property
 import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.utils.defaultRadioLogo
 import org.apache.commons.io.FileUtils
+import tornadofx.observableListOf
+import tornadofx.onChange
+import tornadofx.runLater
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -38,9 +43,18 @@ import kotlin.math.round
  */
 private val logger = KotlinLogging.logger {}
 
+private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
+
 object ImageCache {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
+
+    //If the downloading failed, store the station uuid here and
+    //don't download the file again until next run of the app
+    private val invalidStationUuids by lazy { observableListOf<String>() }
+
+    private val Station.isInvalidImage: Boolean
+        get() = invalidStationUuids.contains(stationuuid)
 
     init {
         //prepare cache directory
@@ -55,15 +69,17 @@ object ImageCache {
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
     //Check if Station is in cache
-    fun has(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
+    fun has(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid)) || station.isInvalidImage
 
     //Get image from cache
     fun get(station: Station): Image {
+        if (station.isInvalidImage) return defaultRadioLogo
         val imagePath = cacheBasePath.resolve(station.stationuuid)
         return try {
             val image = Image(FileInputStream(imagePath.toFile()))
             if (image.isError) {
                 logger.error { "Can't show image for ${station.name} (${image.exception.localizedMessage}) " }
+                addInvalid(station)
                 defaultRadioLogo
             } else {
                 image
@@ -81,5 +97,58 @@ object ImageCache {
                 inputStream,
                 imagePath,
                 StandardCopyOption.REPLACE_EXISTING)
+    }
+
+    fun addInvalid(station: Station) = invalidStationUuids.add(station.stationuuid)
+}
+
+/**
+ * This method is used for custom downloading of station's logo
+ * and storing it in cache directory
+ *
+ *
+ * In case of error defaultRadioLogo static png file is used as station logo
+ */
+internal fun Property<Station>.stationImage(view: ImageView) {
+    value.stationImage(view)
+
+    onChange {
+        it?.stationImage(view)
+    }
+}
+
+internal fun Station.stationImage(view: ImageView) {
+    view.image = defaultRadioLogo
+
+    if (ImageCache.has(this)) {
+        view.image = ImageCache.get(this)
+    } else {
+        if (favicon.isNullOrEmpty()) {
+            ImageCache.addInvalid(this)
+            logger.debug { "Image for $name is null or empty" }
+            return
+        }
+
+        //Download the image with OkHttp client
+        favicon?.let { url ->
+            HttpClientHolder.client.call(url,
+                    { response ->
+                        response.body()?.let { body ->
+                            try {
+                                ImageCache.save(this, body.byteStream())
+                            } catch (e: Exception) {
+                                logger.error(e) { "Error while saving downloaded station image" }
+                            }
+
+                            runLater {
+                                view.image = ImageCache.get(this)
+                            }
+                        }
+                    },
+                    { e ->
+                        logger.error { "Downloading failed for $name (${this::class}: ${e.localizedMessage}) " }
+                        ImageCache.addInvalid(this)
+                    })
+        }
     }
 }

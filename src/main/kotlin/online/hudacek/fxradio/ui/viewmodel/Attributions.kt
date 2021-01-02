@@ -38,7 +38,6 @@ object Attributions {
                 AttributionModel("rxkotlinfx", "2.2.2", license = Licenses.apache20),
                 AttributionModel("sqliteJdbc", "3.21.0.1", license = Licenses.apache20),
                 AttributionModel("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),
-                AttributionModel("Semver4j", "3.1.0", license = Licenses.semver),
                 AttributionModel("TickerView", license = Licenses.tickerView),
                 AttributionModel("macOS install disk background", license = Licenses.bg),
                 AttributionModel("Application logo, radio station icon", license = Licenses.iconArchive)
@@ -62,6 +61,8 @@ class AttributionModel(name: String, version: String = "", license: License) {
  * Used in [online.hudacek.fxradio.ui.fragment.AttributionsFragment]
  */
 class AttributionViewModel : ItemViewModel<AttributionModel>() {
+    val nameProperty = bind(AttributionModel::name) as StringProperty
+    val versionProperty = bind(AttributionModel::version) as StringProperty
     val licenseNameProperty = bind(AttributionModel::licenseName) as StringProperty
     val licenseContentProperty = bind(AttributionModel::licenseContent) as StringProperty
 }

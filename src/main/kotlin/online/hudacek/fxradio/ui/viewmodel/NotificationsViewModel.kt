@@ -34,7 +34,7 @@ class NotificationsModel(show: Boolean = false) {
  * Show Native OS notification
  */
 class NotificationsViewModel : ItemViewModel<NotificationsModel>(NotificationsModel()) {
-    var showProperty = bind(NotificationsModel::show) as BooleanProperty
+    val showProperty = bind(NotificationsModel::show) as BooleanProperty
 
     val show = BehaviorSubject.create<Notification>()
 
@@ -45,7 +45,5 @@ class NotificationsViewModel : ItemViewModel<NotificationsModel>(NotificationsMo
                 }
     }
 
-    override fun onCommit() {
-        Property(Properties.NOTIFICATIONS).save(showProperty.value)
-    }
+    override fun onCommit() = Property(Properties.NOTIFICATIONS).save(showProperty.value)
 }

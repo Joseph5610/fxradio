@@ -28,7 +28,7 @@ import tornadofx.controlsfx.statusbar
 /***
  * Simple Information about the app
  */
-class AboutFragment : Fragment(FxRadio.appName) {
+class AboutFragment : Fragment(FxRadio.appDesc) {
 
     override val root = vbox {
         prefWidth = 300.0
@@ -39,7 +39,7 @@ class AboutFragment : Fragment(FxRadio.appName) {
                 isPreserveRatio = true
                 paddingAll = 20.0
             }
-            label(FxRadio.appName + " " + FxRadio.version.version) {
+            label(FxRadio.appName + " " + FxRadio.version) {
                 style {
                     paddingTop = 5.0
                     paddingBottom = 8.0

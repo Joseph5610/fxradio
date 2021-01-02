@@ -96,10 +96,10 @@ class Property(property: Properties) : Component() {
     }
 }
 
-fun Component.saveProperties(pairs: List<Pair<Properties, Any>>) {
+fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
     with(app.config) {
-        pairs.forEach {
-            set(it.first.key to it.second)
+        keyValueMap.forEach {
+            set(it.key.key to it.value)
         }
         save()
     }

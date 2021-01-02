@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio
 
-import com.vdurmont.semver4j.Semver
 import javafx.stage.Stage
 import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.StationsApi
@@ -26,8 +25,8 @@ import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.viewmodel.LogModel
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
+import org.apache.logging.log4j.Level
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -59,7 +58,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
-
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0
@@ -67,7 +65,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
 
         //init logger level based on stored settings
-        val savedLevel = property(Properties.LOG_LEVEL, "INFO").asLevel()
+        val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
         logViewModel.item = LogModel(savedLevel)
         logViewModel.commit()
     }
@@ -83,15 +81,13 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         const val author = "hudacek.online"
         const val copyright = "Copyright (c) 2020"
 
-        val isAppInDarkMode by lazy {
-            (app as FxRadio).useDarkModeStyle
-        }
+        val isAppInDarkMode by lazy { (app as FxRadio).useDarkModeStyle }
 
         /**
          * Get version from jar MANIFEST.MF file
          */
-        val version: Version by lazy {
-            Version(FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT")
+        val version: String by lazy {
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT"
         }
 
         //Should be called when on every place that is closing the app
@@ -101,8 +97,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
     }
 }
-
-data class Version(val version: String) : Semver(version, SemverType.LOOSE)
 
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {

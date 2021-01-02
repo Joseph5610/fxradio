@@ -25,6 +25,7 @@ import online.hudacek.fxradio.ui.viewmodel.AttributionModel
 import online.hudacek.fxradio.ui.viewmodel.AttributionViewModel
 import online.hudacek.fxradio.ui.viewmodel.Attributions
 import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 
 class AttributionsFragment : Fragment() {
@@ -39,11 +40,11 @@ class AttributionsFragment : Fragment() {
             paddingAll = 10.0
             requestFocusOnSceneAvailable() //To get rid of the blue box around the table
             tableview(Attributions.list) {
+                bindSelected(viewModel)
+
                 columnResizePolicy = SmartResize.POLICY
                 readonlyColumn(messages["attributions.name"], AttributionModel::name).remainingWidth()
                 readonlyColumn(messages["attributions.version"], AttributionModel::version)
-
-                bindSelected(viewModel)
 
                 onUserSelect {
                     find<LicenseFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -73,7 +74,17 @@ class AttributionsFragment : Fragment() {
 
         override val root = vbox {
             setPrefSize(600.0, 400.0)
-            titleProperty.bind(viewModel.licenseNameProperty)
+            titleProperty.bind(viewModel.nameProperty)
+
+            vbox(alignment = Pos.CENTER) {
+                paddingAll = 10
+                label(viewModel.licenseNameProperty) {
+                    addClass(Styles.header)
+                }
+                showWhen {
+                    viewModel.licenseNameProperty.isNotEmpty
+                }
+            }
 
             textarea(viewModel.licenseContentProperty) {
                 vgrow = Priority.ALWAYS

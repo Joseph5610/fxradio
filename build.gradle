@@ -86,7 +86,6 @@ dependencies {
     compile "org.xerial:sqlite-jdbc:$versions.sqliteJdbc"
     compile "org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc"
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"
-    compile "com.vdurmont:semver4j:$versions.semver"
 
     compile "org.codehaus.griffon.plugins:griffon-flagicons-javafx:$versions.flagIcon"
 

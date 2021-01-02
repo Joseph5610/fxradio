@@ -39,7 +39,7 @@ class StationsHeaderView : View() {
         it?.let {
             when (it.type) {
                 LibraryType.Country -> it.params
-                LibraryType.Search, LibraryType.SearchByTag -> messages[LibraryType.Search.toString()] + " \"${libraryViewModel.searchQueryProperty.value}\""
+                LibraryType.Search, LibraryType.SearchByTag -> messages["Search"]
                 else -> messages[it.type.toString()]
             }
         }
@@ -50,10 +50,24 @@ class StationsHeaderView : View() {
         maxHeight = 10.0
 
         left {
-            label(libraryNameTextProperty) {
-                paddingTop = 8.0
-                paddingBottom = 8.0
-                addClass(Styles.subheader)
+            hbox(5) {
+                label(libraryNameTextProperty) {
+                    paddingTop = 8.0
+                    paddingBottom = 8.0
+                    addClass(Styles.subheader)
+                }
+
+                label(libraryViewModel.searchQueryProperty) {
+                    paddingTop = 8.0
+                    paddingBottom = 8.0
+                    showWhen {
+                        libraryViewModel.selectedProperty.booleanBinding {
+                            it?.type == LibraryType.Search || it?.type == LibraryType.SearchByTag
+                        }
+                    }
+                    addClass(Styles.grayTextColor)
+                    addClass(Styles.subheader)
+                }
             }
         }
 

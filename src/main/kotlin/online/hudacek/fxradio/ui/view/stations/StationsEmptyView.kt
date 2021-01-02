@@ -58,6 +58,7 @@ class StationsEmptyView : View() {
     private val subHeaderProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionErrorDesc"]
+            StationsViewState.ShortQuery -> messages["searchingLibraryDesc"]
             else -> ""
         }
     }

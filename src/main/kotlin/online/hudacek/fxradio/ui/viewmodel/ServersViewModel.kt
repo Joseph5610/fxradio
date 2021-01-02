@@ -72,7 +72,7 @@ class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
                         if (it.isNullOrEmpty()) {
                             viewStateProperty.value = ServersViewState.Error
                         } else {
-                            serversProperty.setAll(it)
+                            serversProperty.value = it
                             viewStateProperty.value = ServersViewState.Normal
                         }
                     } fail {

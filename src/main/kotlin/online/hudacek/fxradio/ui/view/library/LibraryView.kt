@@ -17,7 +17,10 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.property
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.viewmodel.LibraryModel
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
@@ -31,6 +34,10 @@ class LibraryView : View() {
     private val libraryListView: LibraryListView by inject()
 
     override fun onDock() {
+        viewModel.item = LibraryModel(
+                searchQuery = property(Properties.SEARCH_QUERY, ""),
+                showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
+                showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true))
         viewModel.showCountries()
     }
 
@@ -67,7 +74,10 @@ class LibraryView : View() {
                         action {
                             viewModel.showCountries()
                         }
-                        showWhen { viewModel.countriesProperty.emptyProperty() }
+                        showWhen {
+                            viewModel.countriesProperty.emptyProperty()
+                                    .and(viewModel.showCountriesProperty)
+                        }
                     }
                 }
                 libraryCountriesListView.root.prefHeightProperty().bind(heightProperty())

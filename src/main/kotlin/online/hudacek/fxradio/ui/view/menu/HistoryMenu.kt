@@ -21,9 +21,9 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import mu.KotlinLogging
 import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}

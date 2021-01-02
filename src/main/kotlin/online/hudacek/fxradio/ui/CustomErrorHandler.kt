@@ -104,7 +104,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             val result = showAndWait()
             //Report issue to github
             if (result.get().buttonData == ButtonBar.ButtonData.HELP) {
-                val titleQuery = URLEncoder.encode("[${FxRadio.version.version}] $error", "UTF-8")
+                val titleQuery = URLEncoder.encode("[${FxRadio.version}] $error", "UTF-8")
                 val bodyQuery = URLEncoder.encode(textarea.text, "UTF-8")
                 FX.application.hostServices.showDocument("$issueUrl$titleQuery&body=$bodyQuery")
             }

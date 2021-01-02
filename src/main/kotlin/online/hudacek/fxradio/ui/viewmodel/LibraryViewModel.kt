@@ -31,7 +31,6 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.isValidCountry
-import online.hudacek.fxradio.property
 import online.hudacek.fxradio.saveProperties
 import online.hudacek.fxradio.utils.applySchedulers
 import org.controlsfx.control.action.Action
@@ -48,7 +47,9 @@ data class SelectedLibrary(val type: LibraryType, val params: String = "")
 
 class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
                    selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations),
-                   searchQuery: String = "", showLibrary: Boolean, showCountries: Boolean) {
+                   searchQuery: String = "",
+                   showLibrary: Boolean = true,
+                   showCountries: Boolean = true) {
 
     //Countries shown in Countries ListView
     var countries: ObservableList<Countries> by property(countries)
@@ -73,7 +74,7 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : ItemViewModel<LibraryModel>() {
+class LibraryViewModel : ItemViewModel<LibraryModel>(LibraryModel()) {
 
     val countriesProperty = bind(LibraryModel::countries) as ListProperty
     val librariesProperty = bind(LibraryModel::libraries) as ListProperty
@@ -91,16 +92,16 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
     //Internal only, contains unedited search query
     val bindSearchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
 
-    val searchQueryProperty = bindSearchQueryProperty.stringBinding { it?.trim() }
+    //Search query is limited to 50 chars and trimmed to reduce requests to API
+    val searchQueryProperty = bindSearchQueryProperty.stringBinding {
+        if (it != null) {
+            if (it.length > 50) it.substring(0, 50).trim() else it.trim()
+        } else ""
+    }
 
     val refreshLibrary = BehaviorSubject.create<LibraryType>()
 
     init {
-        item = LibraryModel(
-                searchQuery = property(Properties.SEARCH_QUERY, ""),
-                showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
-                showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true))
-
         refreshLibrary
                 .filter { selectedProperty.value.type == it }
                 .subscribe {
@@ -124,19 +125,19 @@ class LibraryViewModel : ItemViewModel<LibraryModel>() {
                 }))
             })
 
-    override fun onCommit() {
-        saveProperties(listOf(
-                Pair(Properties.SEARCH_QUERY, bindSearchQueryProperty.value),
-                Pair(Properties.WINDOW_SHOW_COUNTRIES, showCountriesProperty.value),
-                Pair(Properties.WINDOW_SHOW_LIBRARY, showLibraryProperty.value)
-        ))
-    }
-
     fun showSearchResults() {
         if (useTagSearchProperty.value) {
             selectedProperty.value = SelectedLibrary(LibraryType.SearchByTag)
         } else {
             selectedProperty.value = SelectedLibrary(LibraryType.Search)
         }
+    }
+
+    override fun onCommit() {
+        saveProperties(mapOf(
+                Properties.SEARCH_QUERY to bindSearchQueryProperty.value,
+                Properties.WINDOW_SHOW_COUNTRIES to showCountriesProperty.value,
+                Properties.WINDOW_SHOW_LIBRARY to showLibraryProperty.value
+        ))
     }
 }

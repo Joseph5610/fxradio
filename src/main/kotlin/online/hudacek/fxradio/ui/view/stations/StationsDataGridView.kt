@@ -21,13 +21,13 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.fragment.StationInfoFragment
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewState
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
-import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
 import tornadofx.controlsfx.popover
 import tornadofx.controlsfx.showPopover

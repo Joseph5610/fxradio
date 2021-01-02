@@ -79,8 +79,8 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
                             LibraryType.Favourites -> show(favouritesViewModel.stationsProperty)
                             LibraryType.History -> show(historyViewModel.stationsProperty)
                             LibraryType.TopStations -> topStations.subscribe(::show, ::handleError)
-                            LibraryType.Search -> search(libraryViewModel.searchQueryProperty.value)
-                            LibraryType.SearchByTag -> search(libraryViewModel.searchQueryProperty.value, true)
+                            LibraryType.Search -> search()
+                            LibraryType.SearchByTag -> search(useTag = true)
                         }
                     }
                 }
@@ -89,9 +89,9 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
         libraryViewModel.searchQueryProperty.onChange {
             with(libraryViewModel.selectedProperty.value) {
                 if (type == LibraryType.Search)
-                    search(libraryViewModel.searchQueryProperty.value)
+                    search()
                 else if (type == LibraryType.SearchByTag)
-                    search(libraryViewModel.searchQueryProperty.value, true)
+                    search(useTag = true)
             }
         }
     }
@@ -107,9 +107,11 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
             .compose(applySchedulers())
             .subscribe(::show, ::handleError)
 
-    //search for station name on endpoint
-    private fun search(query: String, useTag: Boolean = false) {
-        if (query.length > 2) {
+    private fun search(useTag: Boolean = false) {
+        val query = libraryViewModel.searchQueryProperty.value
+        if (query.length <= 2) {
+            viewStateProperty.value = StationsViewState.ShortQuery
+        } else {
             if (useTag) {
                 StationsApi.service
                         .searchStationByTag(SearchByTagBody(query))
@@ -121,17 +123,15 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
                         .compose(applySchedulers())
                         .subscribe(::show, ::handleError)
             }
-        } else {
-            viewStateProperty.value = StationsViewState.ShortQuery
         }
     }
 
     private fun show(stations: List<Station>) {
-        stationsProperty.set(stations.asObservable())
-        if (stations.isEmpty()) {
-            viewStateProperty.value = StationsViewState.Empty
+        stationsProperty.value = stations.asObservable()
+        viewStateProperty.value = if (stations.isEmpty()) {
+            StationsViewState.Empty
         } else {
-            viewStateProperty.value = StationsViewState.Normal
+            StationsViewState.Normal
         }
     }
 

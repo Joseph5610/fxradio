@@ -45,15 +45,11 @@ class LibraryListView : View() {
                 }
     }
 
-    override fun onDock() {
-        with(root) {
-            //Set correct max height of listview
-            prefHeight = viewModel.librariesProperty.size * 30.0 + 10
-            selectionModel.select(viewModel.librariesProperty[0])
-        }
-    }
-
     override val root = listview(viewModel.librariesProperty) {
+        prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
+            if (it != null) it.size * 30.0 + 10 else 30.0
+        })
+
         id = "libraryListView"
         cellFormat {
             graphic = item.graphic.make(14.0, false, c(Colors.values.libraryIcon))

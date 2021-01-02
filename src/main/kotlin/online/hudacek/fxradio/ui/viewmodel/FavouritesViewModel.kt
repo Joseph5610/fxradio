@@ -54,11 +54,11 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
                 .filter { it.isValid() && !stationsProperty.contains(it) }
                 .flatMapSingle { Database.favourites.insert(it) }
                 .subscribe({
-                    val addStr = MessageFormat.format(messages["menu.station.favourite.added"], it.name)
+                    val addStr = MessageFormat.format(messages["menu.station.favouriteAdded"], it.name)
                     stationsProperty.add(it)
                     fire(NotificationEvent(addStr, FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationEvent(messages["menu.station.favourite.added.error"]))
+                    fire(NotificationEvent(messages["menu.station.favouriteAdded.error"]))
                 })
 
         cleanupFavourites
@@ -72,11 +72,11 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
         removeFavourite
                 .flatMapSingle { Database.favourites.remove(it) }
                 .subscribe({
-                    val removeStr = MessageFormat.format(messages["menu.station.favourite.removed"], it.name)
+                    val removeStr = MessageFormat.format(messages["menu.station.favouriteRemoved"], it.name)
                     stationsProperty.remove(it)
                     fire(NotificationEvent(removeStr, FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationEvent(messages["menu.station.favourite.remove.error"]))
+                    fire(NotificationEvent(messages["menu.station.favouriteRemove.error"]))
                 })
     }
 }

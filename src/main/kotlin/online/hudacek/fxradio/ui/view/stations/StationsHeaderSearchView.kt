@@ -38,6 +38,9 @@ class StationsHeaderSearchView : View() {
     override val root = vbox(alignment = Pos.CENTER) {
         hbox {
             segmentedbutton {
+                style {
+                    fontSize = 12.px
+                }
                 button(messages["search.byName"]) {
                     isSelected = true
                     //Little hack that allows use to use togglegroup.bind() method

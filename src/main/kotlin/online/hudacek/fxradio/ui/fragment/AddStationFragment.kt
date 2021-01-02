@@ -71,10 +71,8 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.nameProperty) {
                             required()
                             validator {
-                                if (validate(it, maxValue = 400))
-                                    success()
-                                else
-                                    error(messages["field.invalid.length"])
+                                if (!validate(it, 400)) error(messages["field.invalid.length"])
+                                else null
                             }
                             promptText = "My Radio Station"
                         }
@@ -82,7 +80,6 @@ class AddStationFragment : Fragment() {
 
                     field(messages["add.site"]) {
                         textfield(viewModel.homePageProperty) {
-                            required()
                             validator {
                                 if (it != null && HttpUrl.parse(it) != null)
                                     success()
@@ -95,7 +92,6 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.url"]) {
                         textfield(viewModel.urlProperty) {
-                            required()
                             validator {
                                 if (it != null && HttpUrl.parse(it) != null)
                                     success()
@@ -107,7 +103,6 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.icon"]) {
                         textfield(viewModel.faviconProperty) {
-                            required()
                             validator {
                                 if (it != null && HttpUrl.parse(it) != null)
                                     success()
@@ -121,10 +116,8 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.languageProperty) {
                             required()
                             validator {
-                                if (validate(it))
-                                    success()
-                                else
-                                    error(messages["field.invalid.length"])
+                                if (!validate(it, 150)) error(messages["field.invalid.length"])
+                                else null
                             }
                             promptText = messages["add.language.prompt"]
                         }
@@ -194,6 +187,12 @@ class AddStationFragment : Fragment() {
                         addClass(Styles.primaryButton)
                     }
 
+                    button(messages["add.cleanupForm"]) {
+                        action {
+                            viewModel.item = AddStationModel()
+                        }
+                    }
+
                     button(messages["cancel"]) {
                         isCancelButton = true
                         action {
@@ -206,6 +205,5 @@ class AddStationFragment : Fragment() {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
-    private fun validate(property: String?, minValue: Int = 3, maxValue: Int = 150) =
-            property?.length in (minValue + 1) until maxValue
+    private fun validate(property: String?, maxValue: Int) = property?.length in 0 until maxValue
 }

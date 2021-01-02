@@ -24,6 +24,7 @@ import javafx.scene.paint.Color
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationInfoModel
@@ -31,7 +32,6 @@ import online.hudacek.fxradio.ui.viewmodel.StationInfoViewModel
 import online.hudacek.fxradio.utils.copyMenu
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
 import tornadofx.controlsfx.left
 import tornadofx.controlsfx.right

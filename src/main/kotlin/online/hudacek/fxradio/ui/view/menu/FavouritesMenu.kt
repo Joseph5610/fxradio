@@ -74,7 +74,7 @@ class FavouritesMenu : FxMenu() {
             }
 
             //Remove favourite
-            item(messages["menu.station.favourite.remove"]) {
+            item(messages["menu.station.favouriteRemove"]) {
                 disableWhen(playedStationNotInFavouritesProperty)
                 visibleWhen(favouriteMenuItemVisibleProperty)
 
