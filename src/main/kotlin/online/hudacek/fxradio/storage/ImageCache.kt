@@ -111,6 +111,7 @@ object ImageCache {
  * In case of error defaultRadioLogo static png file is used as station logo
  */
 internal fun Property<Station>.stationImage(view: ImageView) {
+    println("property image for: " + this.name)
     value.stationImage(view)
 
     onChange {

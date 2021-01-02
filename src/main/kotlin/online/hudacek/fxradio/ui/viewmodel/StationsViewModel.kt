@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservable
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -103,16 +102,11 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
         if (searchViewModel.searchQueryProperty.length() <= 2) {
             viewStateProperty.value = StationsViewState.ShortQuery
         } else {
-            searchViewModel.searchQueryProperty
-                    .toObservable()
-                    .filter { it.length > 2 }
-                    .flatMapSingle {
-                        if (searchViewModel.searchByTagProperty.value) {
-                            searchViewModel.searchByTagSingle
-                        } else {
-                            searchViewModel.searchByNameSingle
-                        }
-                    }.subscribe(::show, ::handleError)
+            if (searchViewModel.searchByTagProperty.value) {
+                searchViewModel.searchByTagSingle.subscribe(::show, ::handleError)
+            } else {
+                searchViewModel.searchByNameSingle.subscribe(::show, ::handleError)
+            }
         }
     }
 
