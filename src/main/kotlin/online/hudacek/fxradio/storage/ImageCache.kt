@@ -26,7 +26,8 @@ import online.hudacek.fxradio.api.model.Station
 import org.apache.commons.io.FileUtils
 import tornadofx.observableListOf
 import tornadofx.onChange
-import tornadofx.runLater
+import tornadofx.runAsync
+import tornadofx.ui
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -121,7 +122,7 @@ internal fun Station.stationImage(view: ImageView) {
     view.image = defaultRadioLogo
 
     if (ImageCache.has(this)) {
-        view.image = ImageCache.get(this)
+        loadImage(this, view)
     } else {
         if (favicon.isNullOrEmpty()) {
             ImageCache.addInvalid(this)
@@ -139,10 +140,7 @@ internal fun Station.stationImage(view: ImageView) {
                             } catch (e: Exception) {
                                 logger.error(e) { "Error while saving downloaded station image" }
                             }
-
-                            runLater {
-                                view.image = ImageCache.get(this)
-                            }
+                            loadImage(this, view)
                         }
                     },
                     { e ->
@@ -150,5 +148,12 @@ internal fun Station.stationImage(view: ImageView) {
                         ImageCache.addInvalid(this)
                     })
         }
+    }
+}
+
+//Load image into view asynchronously
+private fun loadImage(station: Station, view: ImageView) {
+    runAsync(daemon = true) { ImageCache.get(station) } ui {
+        view.image = it
     }
 }
