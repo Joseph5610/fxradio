@@ -18,7 +18,6 @@ package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.property
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.LibraryModel
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
@@ -35,9 +34,9 @@ class LibraryView : View() {
 
     override fun onDock() {
         viewModel.item = LibraryModel(
-                searchQuery = property(Properties.SEARCH_QUERY, ""),
-                showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
-                showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true))
+                showLibrary = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_LIBRARY, true),
+                showCountries = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_COUNTRIES, true))
+
         viewModel.showCountries()
     }
 

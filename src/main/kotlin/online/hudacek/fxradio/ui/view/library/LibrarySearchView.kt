@@ -16,8 +16,9 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import com.github.thomasnield.rxkotlinfx.textValues
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.property
+import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.make
 import online.hudacek.fxradio.utils.searchField
 import org.controlsfx.glyphfont.FontAwesome
@@ -31,7 +32,12 @@ import tornadofx.validator
  */
 class LibrarySearchView : View() {
 
-    private val viewModel: LibraryViewModel by inject()
+    private val viewModel: SearchViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
+
+    init {
+        viewModel.item = SearchModel(searchQuery = property(Properties.SEARCH_QUERY, ""))
+    }
 
     override val root = searchField(messages["search"], viewModel.bindSearchQueryProperty) {
         id = "search"
@@ -40,16 +46,8 @@ class LibrarySearchView : View() {
             graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0)
         }
 
-        //Fire up search results after input is written to text field
-        textValues
-                .filter { viewModel.isValid }
-                .subscribe {
-                    viewModel.showSearchResults()
-                    viewModel.commit()
-                }
-
         setOnMouseClicked {
-            viewModel.showSearchResults()
+            libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Search)
         }
 
         validator {

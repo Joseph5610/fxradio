@@ -100,7 +100,7 @@ class StationsDataGridView : View() {
         }
 
         showWhen {
-            stationsViewModel.viewStateProperty.isEqualTo(StationsViewState.Normal)
+            stationsViewModel.viewStateProperty.isEqualTo(StationsViewState.Loaded)
         }
     }
 

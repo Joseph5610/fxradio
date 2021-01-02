@@ -67,7 +67,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         //init logger level based on stored settings
         val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
         logViewModel.item = LogModel(savedLevel)
-        logViewModel.commit()
     }
 
     /**

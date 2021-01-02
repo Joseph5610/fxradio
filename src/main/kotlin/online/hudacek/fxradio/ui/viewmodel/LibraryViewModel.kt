@@ -18,12 +18,12 @@ package online.hudacek.fxradio.ui.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
-import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.NotificationEvent
 import online.hudacek.fxradio.Properties
@@ -38,7 +38,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 enum class LibraryType {
-    Favourites, Search, SearchByTag, History, Country, TopStations
+    Favourites, Search, History, Country, TopStations
 }
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
@@ -47,7 +47,6 @@ data class SelectedLibrary(val type: LibraryType, val params: String = "")
 
 class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
                    selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations),
-                   searchQuery: String = "",
                    showLibrary: Boolean = true,
                    showCountries: Boolean = true) {
 
@@ -62,10 +61,8 @@ class LibraryModel(countries: ObservableList<Countries> = observableListOf(),
     ))
 
     var selected: SelectedLibrary by property(selected)
-    var searchQuery: String by property(searchQuery)
     var showLibrary: Boolean by property(showLibrary)
     var showCountries: Boolean by property(showCountries)
-    var useTagSearch: Boolean by property(false)
 }
 
 /**
@@ -87,19 +84,12 @@ class LibraryViewModel : ItemViewModel<LibraryModel>(LibraryModel()) {
 
     val showLibraryProperty = bind(LibraryModel::showLibrary) as BooleanProperty
     val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
-    val useTagSearchProperty = bind(LibraryModel::useTagSearch) as BooleanProperty
-
-    //Internal only, contains unedited search query
-    val bindSearchQueryProperty = bind(LibraryModel::searchQuery) as StringProperty
-
-    //Search query is limited to 50 chars and trimmed to reduce requests to API
-    val searchQueryProperty = bindSearchQueryProperty.stringBinding {
-        if (it != null) {
-            if (it.length > 50) it.substring(0, 50).trim() else it.trim()
-        } else ""
-    }
 
     val refreshLibrary = BehaviorSubject.create<LibraryType>()
+
+    private val showCountriesSingle: Single<List<Countries>> = StationsApi.service
+            .getCountries(CountriesBody())
+            .compose(applySchedulers())
 
     init {
         refreshLibrary
@@ -110,13 +100,11 @@ class LibraryViewModel : ItemViewModel<LibraryModel>(LibraryModel()) {
                 }
     }
 
-    fun showCountries(): Disposable = StationsApi.service
-            .getCountries(CountriesBody())
-            .compose(applySchedulers())
-            .subscribe({ response ->
-                //Ignore invalid states
-                val result = response.filter { it.isValidCountry }.asObservable()
-                countriesProperty.setAll(result)
+    fun showCountries(): Disposable = showCountriesSingle
+            //Ignore invalid states
+            .map { list -> list.filter { it.isValidCountry }.asObservable() }
+            .subscribe({
+                countriesProperty.setAll(it)
             }, {
                 fire(NotificationEvent(messages["downloadError"], op = {
                     actions.setAll(Action(messages["retry"]) {
@@ -125,17 +113,8 @@ class LibraryViewModel : ItemViewModel<LibraryModel>(LibraryModel()) {
                 }))
             })
 
-    fun showSearchResults() {
-        if (useTagSearchProperty.value) {
-            selectedProperty.value = SelectedLibrary(LibraryType.SearchByTag)
-        } else {
-            selectedProperty.value = SelectedLibrary(LibraryType.Search)
-        }
-    }
-
     override fun onCommit() {
         saveProperties(mapOf(
-                Properties.SEARCH_QUERY to bindSearchQueryProperty.value,
                 Properties.WINDOW_SHOW_COUNTRIES to showCountriesProperty.value,
                 Properties.WINDOW_SHOW_LIBRARY to showLibraryProperty.value
         ))

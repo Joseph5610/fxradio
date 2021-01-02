@@ -26,11 +26,11 @@ import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.*
 
 enum class StatsViewState {
-    Loading, Normal, Error
+    Loading, Loaded, Error
 }
 
 class StatsModel(stats: ObservableList<Pair<String, String>> = observableListOf(),
-                 viewState: StatsViewState = StatsViewState.Normal) {
+                 viewState: StatsViewState = StatsViewState.Loaded) {
     var stats: ObservableList<Pair<String, String>> by property(stats)
     var viewState: StatsViewState by property(viewState)
 }
@@ -68,7 +68,7 @@ class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
                     )
                     item = StatsModel(stringValueMap
                             .toList()
-                            .asObservable(), StatsViewState.Normal)
+                            .asObservable(), StatsViewState.Loaded)
                 }, {
                     item = StatsModel(viewState = StatsViewState.Error)
                 })

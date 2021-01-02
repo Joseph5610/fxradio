@@ -73,7 +73,7 @@ class StatsFragment : Fragment() {
                     paddingAll = 20.0
                 }
                 showWhen {
-                    viewModel.viewStateProperty.isNotEqualTo(StatsViewState.Normal)
+                    viewModel.viewStateProperty.isNotEqualTo(StatsViewState.Loaded)
                 }
             }
         }
@@ -90,7 +90,7 @@ class StatsFragment : Fragment() {
             }
 
             showWhen {
-                viewModel.viewStateProperty.isEqualTo(StatsViewState.Normal)
+                viewModel.viewStateProperty.isEqualTo(StatsViewState.Loaded)
             }
             addClass(Styles.libraryListView)
         }

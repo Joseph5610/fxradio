@@ -20,6 +20,7 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.LibraryType
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.ui.viewmodel.SearchViewModel
 import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 import tornadofx.controlsfx.button
@@ -27,11 +28,12 @@ import tornadofx.controlsfx.segmentedbutton
 
 class StationsHeaderSearchView : View() {
 
+    private val viewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
     init {
-        libraryViewModel.useTagSearchProperty.onChange {
-            libraryViewModel.showSearchResults()
+        viewModel.searchByTagProperty.onChange {
+            libraryViewModel.refreshLibrary.onNext(LibraryType.Search)
         }
     }
 
@@ -52,13 +54,13 @@ class StationsHeaderSearchView : View() {
                     properties["tornadofx.toggleGroupValue"] = true
                     addClass(Styles.coloredButton)
                 }
-                toggleGroup.bind(libraryViewModel.useTagSearchProperty)
+                toggleGroup.bind(viewModel.searchByTagProperty)
             }
 
             showWhen {
                 //Show only while Search results are shown
                 libraryViewModel.selectedProperty.booleanBinding {
-                    it?.type == LibraryType.Search || it?.type == LibraryType.SearchByTag
+                    it?.type == LibraryType.Search
                 }
             }
         }

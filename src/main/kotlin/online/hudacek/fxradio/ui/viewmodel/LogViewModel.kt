@@ -39,8 +39,6 @@ class LogViewModel : ItemViewModel<LogModel>(LogModel()) {
     val levelProperty = bind(LogModel::level) as ObjectProperty
 
     override fun onCommit() {
-        super.onCommit()
-
         //Set Current Logger Level
         Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
 

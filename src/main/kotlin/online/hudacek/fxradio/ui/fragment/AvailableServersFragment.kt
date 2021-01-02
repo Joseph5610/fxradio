@@ -90,7 +90,7 @@ class AvailableServersFragment : Fragment() {
                 }
 
                 showWhen {
-                    viewModel.viewStateProperty.isNotEqualTo(ServersViewState.Normal)
+                    viewModel.viewStateProperty.isNotEqualTo(ServersViewState.Loaded)
                 }
             }
 
@@ -120,7 +120,7 @@ class AvailableServersFragment : Fragment() {
                 }
 
                 showWhen {
-                    viewModel.viewStateProperty.isEqualTo(ServersViewState.Normal)
+                    viewModel.viewStateProperty.isEqualTo(ServersViewState.Loaded)
                 }
 
                 addClass(Styles.libraryListView)

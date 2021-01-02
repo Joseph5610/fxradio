@@ -92,7 +92,7 @@ class StationsEmptyView : View() {
         add(subHeader)
 
         showWhen {
-            viewModel.viewStateProperty.isNotEqualTo(StationsViewState.Normal)
+            viewModel.viewStateProperty.isNotEqualTo(StationsViewState.Loaded)
         }
     }
 }

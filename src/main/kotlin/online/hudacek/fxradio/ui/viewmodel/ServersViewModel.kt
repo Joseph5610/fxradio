@@ -29,12 +29,12 @@ import online.hudacek.fxradio.api.HttpClientHolder
 import tornadofx.*
 
 enum class ServersViewState {
-    Loading, Normal, Error
+    Loading, Loaded, Error
 }
 
 class ServersModel(selectedServer: String = Config.API.fallbackApiServerURL,
                    availableServers: ObservableList<String> = observableListOf(),
-                   viewState: ServersViewState = ServersViewState.Normal) {
+                   viewState: ServersViewState = ServersViewState.Loaded) {
     var selected: String by property(selectedServer)
     var servers: ObservableList<String> by property(availableServers)
     var viewState: ServersViewState by property(viewState)
@@ -73,7 +73,7 @@ class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
                             viewStateProperty.value = ServersViewState.Error
                         } else {
                             serversProperty.value = it
-                            viewStateProperty.value = ServersViewState.Normal
+                            viewStateProperty.value = ServersViewState.Loaded
                         }
                     } fail {
                         viewStateProperty.value = ServersViewState.Error

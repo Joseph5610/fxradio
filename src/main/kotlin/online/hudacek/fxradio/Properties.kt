@@ -16,7 +16,11 @@
 
 package online.hudacek.fxradio
 
+import mu.KotlinLogging
 import tornadofx.Component
+
+private val logger = KotlinLogging.logger {}
+
 
 /**
  * Keys for values stored in app.properties
@@ -43,6 +47,10 @@ class Property(property: Properties) : Component() {
 
     //Extract value
     val key = property.key
+
+    init {
+        logger.debug { "Creating property object for $key " }
+    }
 
     val isPresent: Boolean
         get() {
@@ -82,6 +90,7 @@ class Property(property: Properties) : Component() {
     }
 
     fun <T> save(newValue: T) {
+        logger.debug { "Saving $key: $newValue " }
         with(app.config) {
             set(key to newValue)
             save()
@@ -97,6 +106,7 @@ class Property(property: Properties) : Component() {
 }
 
 fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
+    logger.debug { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
     with(app.config) {
         keyValueMap.forEach {
             set(it.key.key to it.value)

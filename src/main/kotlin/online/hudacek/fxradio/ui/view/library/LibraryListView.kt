@@ -33,8 +33,7 @@ class LibraryListView : View() {
         //React to changes of library not from by clicking on list item
         viewModel.selectedPropertyChanges
                 .subscribe {
-                    if (it.type == LibraryType.Country || it.type == LibraryType.Search
-                            || it.type == LibraryType.SearchByTag) {
+                    if (it.type == LibraryType.Country || it.type == LibraryType.Search) {
                         root.selectionModel.clearSelection()
                     } else {
                         val selectedListItem = root.items.find { list -> list.type == it.type }
