@@ -73,16 +73,19 @@ class HelpMenu : FxMenu() {
 
             menu(messages["menu.help.loglevel"]) {
                 checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
+                    isSelected = logViewModel.levelProperty.value == Level.OFF
                     action {
                         logViewModel.levelProperty.value = Level.OFF
                     }
                 }
                 checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
+                    isSelected = logViewModel.levelProperty.value == Level.INFO
                     action {
                         logViewModel.levelProperty.value = Level.INFO
                     }
                 }
                 checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
+                    isSelected = logViewModel.levelProperty.value == Level.ALL
                     action {
                         logViewModel.levelProperty.value = Level.ALL
                     }
