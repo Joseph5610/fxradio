@@ -53,17 +53,19 @@ class BasicFunctionalityTests {
 
     private lateinit var app: FxRadio
 
-    //IDs
-    private val nowPlayingLabel = "#nowStreaming"
-    private val stationsDataGrid = "#stations"
-    private val libraryListView = "#libraryListView"
-    private val volumeMinIcon = "#volumeMinIcon"
-    private val volumeMaxIcon = "#volumeMaxIcon"
-    private val volumeSlider = "#volumeSlider"
-    private val playerControls = "#playerControls"
-    private val search = "#search"
-    private val stationMessageHeader = "#stationMessageHeader"
-    private val stationMessageSubHeader = "#stationMessageSubHeader"
+    companion object {
+        //IDs
+        private const val nowPlayingLabel = "#nowStreaming"
+        private const val stationsDataGrid = "#stations"
+        private const val libraryListView = "#libraryListView"
+        private const val volumeMinIcon = "#volumeMinIcon"
+        private const val volumeMaxIcon = "#volumeMaxIcon"
+        private const val volumeSlider = "#volumeSlider"
+        private const val playerControls = "#playerControls"
+        private const val search = "#search"
+        private const val stationMessageHeader = "#stationMessageHeader"
+        private const val stationMessageSubHeader = "#stationMessageSubHeader"
+    }
 
     //Http Client, init only once needed
     private val service by lazy { StationsApi.service }
@@ -83,16 +85,18 @@ class BasicFunctionalityTests {
     fun stop() = app.stop()
 
     @Test
-    fun apiTest() {
-        service.getTopStations()
-                .subscribe { stations ->
-                    Assertions.assertEquals(50, stations.size)
-                    stations.forEach {
-                        //top 50 stations should not have empty URL and have name
-                        Assertions.assertTrue(it.name.isNotEmpty())
-                        Assertions.assertTrue(it.url_resolved != null)
-                    }
-                }.dispose()
+    fun apiTest(robot: FxRobot) {
+        val stations = service.getTopStations().blockingGet()
+        Assertions.assertEquals(50, stations.size)
+        stations.forEach {
+            //top 50 stations should not have empty URL and have name
+            Assertions.assertTrue(it.name.isNotEmpty())
+            Assertions.assertTrue(it.url_resolved != null)
+        }
+
+        //Wait for stations to load
+        val appStations = robot.find(stationsDataGrid) as DataGrid<Station>
+        Assertions.assertEquals(appStations.items.toList(), stations)
     }
 
     @Test
