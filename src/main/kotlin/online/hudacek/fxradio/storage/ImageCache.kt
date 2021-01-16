@@ -35,7 +35,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-import kotlin.math.round
 
 /**
  * Simple image cache
@@ -65,7 +64,7 @@ object ImageCache {
     }
 
     val totalSize
-        get() = round((cacheBasePath.toFile().walkTopDown().filter { it.isFile }.map { it.length() }.sum() / 1024).toDouble())
+        get() = (cacheBasePath.toFile().walkTopDown().filter { it.isFile }.map { it.length() }.sum() / 1024).toInt()
 
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 

@@ -58,7 +58,6 @@ class AvailableServersFragment : Fragment() {
 
     override fun onUndock() {
         if (viewModel.selectedProperty.isDirty) {
-            println("rolback")
             viewModel.rollback(viewModel.selectedProperty)
         }
     }

@@ -21,7 +21,6 @@ import tornadofx.Component
 
 private val logger = KotlinLogging.logger {}
 
-
 /**
  * Keys for values stored in app.properties
  */

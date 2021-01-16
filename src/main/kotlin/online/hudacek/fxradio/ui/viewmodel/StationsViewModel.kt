@@ -78,7 +78,6 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
                 .filter { it == StationsViewState.Loading }
                 .map { libraryViewModel.selectedProperty.value }
                 .subscribe {
-                    println("selected " + it)
                     when (it.type) {
                         LibraryType.Country -> stationsByCountry(it.params)
                         LibraryType.Favourites -> show(favouritesViewModel.stationsProperty)
