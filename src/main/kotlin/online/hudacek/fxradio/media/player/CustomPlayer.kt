@@ -40,7 +40,7 @@ import kotlin.reflect.jvm.isAccessible
 
 private val logger = KotlinLogging.logger {}
 
-data class StreamInfo(val streamId: Int, val stream: DemuxerStream, val decoder: Decoder)
+private data class StreamInfo(val streamId: Int, val decoder: Decoder)
 
 //Custom Audio player using ffmpeg lib
 class CustomPlayer : Component(), MediaPlayer {
@@ -70,7 +70,7 @@ class CustomPlayer : Component(), MediaPlayer {
         mediaPlayerCoroutine = GlobalScope.launch(coroutineExceptionHandler) {
 
             val deMuxer = Demuxer.make()
-            val streamInfo = deMuxer.getStream(streamUrl)
+            val streamInfo = deMuxer.getStreamInfo(streamUrl)
             val audioStreamId = streamInfo?.streamId
             val audioDecoder = streamInfo?.decoder
 
@@ -87,8 +87,7 @@ class CustomPlayer : Component(), MediaPlayer {
                     logger.debug { it }
 
                     val converter = MediaAudioConverterFactory.createConverter(
-                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
-                            samples)
+                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO, samples)
                     audioFrame = AudioFrame.make(converter.javaFormat)
                             ?: throw StreamUnavailableException("No output device available!")
 
@@ -167,15 +166,16 @@ class CustomPlayer : Component(), MediaPlayer {
     /**
      * Returns opened decoder or null when error happened
      */
-    private fun Demuxer.getStream(streamUrl: String): StreamInfo? {
+    private fun Demuxer.getStreamInfo(streamUrl: String): StreamInfo? {
         try {
-            this.open(streamUrl, null, false, true, null, null)
+            open(streamUrl, null, false, true,
+                    null, null)
             for (i in 0 until numStreams) {
                 val stream = getStream(i)
                 val decoder = stream.decoder
                 if (decoder != null && decoder.codecType == MediaDescriptor.Type.MEDIA_AUDIO) {
                     decoder.open(null, null)
-                    return StreamInfo(i, stream, decoder)
+                    return StreamInfo(i, decoder)
                 }
             }
         } catch (e: Exception) {
@@ -186,14 +186,12 @@ class CustomPlayer : Component(), MediaPlayer {
 
     /**
      * Fetch new meta data from playing stream
-     * In Testing - may cause issues, enabled under flag
      */
     private val metaDataService = object : ScheduledService<KeyValueBag>() {
         init {
-            period = Duration.seconds(50.0)
-            delay = Duration.seconds(5.0)
+            period = Duration.seconds(50.0) //period between fetching data
+            delay = Duration.seconds(5.0) //initial delay
         }
-
         override fun createTask(): Task<KeyValueBag> = FetchDataTask()
     }
 
@@ -208,6 +206,7 @@ class CustomPlayer : Component(), MediaPlayer {
         }
 
         override fun succeeded() {
+            //Get values from demuxer metadata and fire event with the new data
             if (value.getValue("StreamTitle") != null
                     && value.getValue("icy-name") != null) {
                 val mediaMeta = MetaData(value.getValue("icy-name"), value.getValue("StreamTitle"))
@@ -215,6 +214,6 @@ class CustomPlayer : Component(), MediaPlayer {
             }
         }
 
-        override fun failed() = exception.printStackTrace()
+        override fun failed() = logger.error(exception) { "FetchDataTask failed." }
     }
 }
