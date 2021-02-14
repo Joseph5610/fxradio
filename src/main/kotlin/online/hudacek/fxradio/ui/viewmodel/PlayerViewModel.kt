@@ -18,6 +18,7 @@ package online.hudacek.fxradio.ui.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
+import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
@@ -26,6 +27,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.model.ClickResponse
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.media.MediaPlayerWrapper
 import online.hudacek.fxradio.media.PlayerType
@@ -93,11 +95,16 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                     StationsApi.service
                             .click(it.stationuuid)
                             .compose(applySchedulers())
+                            .onErrorResumeNext {
+                                //We do not care if this response fails
+                                Single.just(ClickResponse(false,
+                                        "Error in ClickResponse"))
+                            }
                 }
                 .subscribe({
-                    logger.debug { "Click registered: $it" }
+                    logger.debug { "Click: $it" }
                 }, {
-                    logger.error(it) { "Error when processing chain..." }
+                    logger.error(it) { "Error with changing station..." }
                 })
 
         playerTypeProperty.onChange {
