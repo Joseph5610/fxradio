@@ -16,50 +16,79 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import io.reactivex.Observable
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.HttpClientHolder
 import tornadofx.*
 
 enum class ServersViewState {
-    Loading, Normal, Error
+    Loading, Loaded, Error
 }
 
-class ServersModel(selectedServer: String, availableServers: ObservableList<String> = observableListOf(), viewState: ServersViewState = ServersViewState.Loading) {
-    val selected: String by property(selectedServer)
-    val servers: ObservableList<String> by property(availableServers)
-    val viewState: ServersViewState by property(viewState)
+class ServersModel(selectedServer: String = Config.API.fallbackApiServerURL,
+                   availableServers: ObservableList<String> = observableListOf(),
+                   viewState: ServersViewState = ServersViewState.Loaded) {
+    var selected: String by property(selectedServer)
+    var servers: ObservableList<String> by property(availableServers)
+    var viewState: ServersViewState by property(viewState)
 }
 
-class ServersViewModel : ItemViewModel<ServersModel>() {
+/**
+ * Holds available and selected API servers
+ * Item is set in [online.hudacek.fxradio.api.StationsApi.Companion]
+ *
+ * Search for available servers is performed only on first start of the app or when opening
+ * [online.hudacek.fxradio.ui.fragment.AvailableServersFragment]
+ */
+class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
+
+    val savedServerValue = Property(Properties.API_SERVER)
+
     val serversProperty = bind(ServersModel::servers) as ListProperty<String>
     val selectedProperty = bind(ServersModel::selected) as StringProperty
     val viewStateProperty = bind(ServersModel::viewState) as ObjectProperty
 
+    private val viewStateObservable: Observable<ServersViewState> = viewStateProperty
+            .toObservableChangesNonNull()
+            .map { it.newVal }
+
     /**
      * Perform async DNS lookup to find working API servers
      */
-    fun loadAvailableServers(forceReload: Boolean = false) {
-        if (serversProperty.isEmpty() || forceReload) {
-            viewStateProperty.value = ServersViewState.Loading //set loading state of the fragment
-            runAsync(daemon = true) {
-                HttpClientHolder.client.lookup(Config.API.dnsLookupURL)
-                        .map { it.canonicalHostName }
-                        .distinct()
-                        .asObservable()
-            } success {
-                if (it.isNullOrEmpty()) {
-                    viewStateProperty.value = ServersViewState.Error
-                } else {
-                    viewStateProperty.value = ServersViewState.Normal
-                    serversProperty.value = it
+    init {
+        viewStateObservable
+                .filter { it == ServersViewState.Loading }
+                .subscribe {
+                    runAsync(daemon = true) {
+                        performLookup()
+                    } success {
+                        if (it.isNullOrEmpty()) {
+                            viewStateProperty.value = ServersViewState.Error
+                        } else {
+                            serversProperty.value = it
+                            viewStateProperty.value = ServersViewState.Loaded
+                        }
+                    } fail {
+                        viewStateProperty.value = ServersViewState.Error
+                    }
                 }
-            } fail {
-                viewStateProperty.value = ServersViewState.Error
-            }
-        }
     }
+
+    /**
+     * Blocking operation is needed for the first start of the app
+     */
+    fun performLookup() = HttpClientHolder.client.lookup(Config.API.dnsLookupURL)
+            .map { it.canonicalHostName }
+            .distinct()
+            .asObservable()
+
+    //Save selected server to app.properties on commit
+    override fun onCommit() = savedServerValue.save(selectedProperty.value)
 }

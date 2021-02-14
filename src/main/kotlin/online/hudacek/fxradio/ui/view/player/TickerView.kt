@@ -27,6 +27,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -44,8 +45,7 @@ open class TickerEntry<T : Node>(
 
 class TickerView : View() {
 
-    val tickerTextProperty = stringProperty()
-    val isScheduled = booleanProperty(true)
+    private val playerVewModel: PlayerViewModel by inject()
 
     private var entry = TickerEntry<Node>(content = createText())
 
@@ -59,10 +59,10 @@ class TickerView : View() {
 
     init {
         //Update text property
-        tickerTextProperty.onChange {
+        playerVewModel.trackNameProperty.onChange {
             if (it != null) {
                 marqueeView.clear(entry)
-                entry = TickerEntry(content = createText(it), reschedule = isScheduled.value)
+                entry = TickerEntry(content = createText(it), reschedule = true)
                 marqueeView.enqueueTickEntry(entry)
             }
         }
@@ -75,7 +75,7 @@ class TickerView : View() {
     }
 
     //Actual implementation of Ticker
-    internal class MarqueeView : View() {
+    class MarqueeView : View() {
 
         private val offset = 10.0 //Amount of space between entries!
 

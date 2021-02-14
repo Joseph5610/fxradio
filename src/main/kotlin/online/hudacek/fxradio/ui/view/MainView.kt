@@ -19,17 +19,13 @@ package online.hudacek.fxradio.ui.view
 import javafx.geometry.Orientation
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.*
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.menu.MenuBarView
 import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.show
 import online.hudacek.fxradio.utils.stylableNotificationPane
 import tornadofx.*
@@ -58,7 +54,7 @@ class MainView : View(FxRadio.appName) {
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             playerViewModel.releasePlayer()
-            FxRadio.shutDown()
+            FxRadio.shutdownApp()
         }
     }
 
@@ -76,19 +72,20 @@ class MainView : View(FxRadio.appName) {
         add(menuBarView)
 
         stylableNotificationPane {
-            subscribe<NotificationEvent> {
+            subscribe<NotificationPaneEvent> {
                 show(it.glyph, it.text, it.op)
             }
 
             content {
                 splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
-                    setDividerPositions(Property(Properties.WINDOW_DIVIDER).get(0.30))
+                    val windowDividerProperty = Property(Properties.WINDOW_DIVIDER)
+                    setDividerPositions(windowDividerProperty.get(0.30))
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
 
                     //Save position of divider to config file
                     dividers[0].positionProperty().onChange {
-                        Property(Properties.WINDOW_DIVIDER).save(it)
+                        windowDividerProperty.save(it)
                     }
 
                     //Constrains width of left pane

@@ -19,38 +19,33 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.disableWhenInvalidStation
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.shouldBeDisabled
 import online.hudacek.fxradio.utils.update
-import tornadofx.*
+import tornadofx.action
+import tornadofx.get
+import tornadofx.item
+import tornadofx.separator
 
-class StationMenu : Controller() {
+class StationMenu : FxMenu() {
 
-    private val viewModel: MenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
     private val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.station"]) {
             item(messages["menu.station.info"], keyInfo) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    viewModel.openStationInfo()
+                    menuViewModel.openStationInfo()
                 }
             }
-            separator()
-            item(messages["menu.station.vote"]) {
-                shouldBeDisabled(playerViewModel.stationProperty)
-                action {
-                    playerViewModel.addVote()
-                }
-            }
+
             item(messages["copy.stream.url"]) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
                 }
@@ -59,7 +54,7 @@ class StationMenu : Controller() {
             separator()
             item(messages["menu.station.add"], keyAdd) {
                 action {
-                    viewModel.openAddNewStation()
+                    menuViewModel.openAddNewStation()
                 }
             }
         }

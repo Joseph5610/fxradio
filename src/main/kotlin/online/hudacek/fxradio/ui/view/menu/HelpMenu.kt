@@ -18,16 +18,17 @@ package online.hudacek.fxradio.ui.view.menu
 
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.NotificationPaneEvent
+import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
 import online.hudacek.fxradio.utils.menu
 import online.hudacek.fxradio.utils.openUrl
 import org.apache.logging.log4j.Level
 import tornadofx.*
+import java.text.MessageFormat
 
-class HelpMenu : Controller() {
+class HelpMenu : FxMenu() {
 
-    private val menuViewModel: MenuViewModel by inject()
     private val logViewModel: LogViewModel by inject()
 
     private var checkLoggerOff: CheckMenuItem by singleAssign()
@@ -41,12 +42,11 @@ class HelpMenu : Controller() {
             checkLoggerOff.isSelected = it == Level.OFF
             checkLoggerInfo.isSelected = it == Level.INFO
             checkLoggerAll.isSelected = it == Level.ALL
-            logViewModel.levelProperty.value = it
             logViewModel.commit()
         }
     }
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.help"]) {
 
             item(messages["menu.help.openhomepage"]).action {
@@ -59,8 +59,13 @@ class HelpMenu : Controller() {
             }
 
             item(messages["menu.help.clearCache"]).action {
-                confirm(messages["cache.clear.confirm"], messages["cache.clear.text"], owner = primaryStage) {
-                    menuViewModel.clearCache()
+                if (ImageCache.totalSize < 1) {
+                    fire(NotificationPaneEvent(messages["cache.clear.empty"]))
+                } else {
+                    confirm(messages["cache.clear.confirm"],
+                            MessageFormat.format(messages["cache.clear.text"], ImageCache.totalSize), owner = primaryStage) {
+                        menuViewModel.clearCache()
+                    }
                 }
             }
 
@@ -68,16 +73,19 @@ class HelpMenu : Controller() {
 
             menu(messages["menu.help.loglevel"]) {
                 checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
+                    isSelected = logViewModel.levelProperty.value == Level.OFF
                     action {
                         logViewModel.levelProperty.value = Level.OFF
                     }
                 }
                 checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
+                    isSelected = logViewModel.levelProperty.value == Level.INFO
                     action {
                         logViewModel.levelProperty.value = Level.INFO
                     }
                 }
                 checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
+                    isSelected = logViewModel.levelProperty.value == Level.ALL
                     action {
                         logViewModel.levelProperty.value = Level.ALL
                     }

@@ -16,6 +16,14 @@
 
 package online.hudacek.fxradio.ui.style
 
+import online.hudacek.fxradio.FxRadio
+
+object Colors {
+    val values: ColorValues by lazy {
+        if (FxRadio.isAppInDarkMode) DarkColorValues() else ColorValues()
+    }
+}
+
 open class ColorValues {
     open val primary = "#0097CE"
     open val primaryHover = "#0097EA"
@@ -28,6 +36,8 @@ open class ColorValues {
     open val grayLabel = "#8B8B8B"
 
     open val transparent = "transparent"
+
+    open val libraryIcon = "#d65458"
 }
 
 class DarkColorValues : ColorValues() {

@@ -18,12 +18,16 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.property
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerModel
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
-import online.hudacek.fxradio.utils.*
+import online.hudacek.fxradio.utils.asPlayerType
+import online.hudacek.fxradio.utils.make
+import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.utils.setOnSpacePressed
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -42,8 +46,8 @@ class PlayerView : View() {
     private val volumeDown = FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false)
     private val volumeUp = FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false)
 
-    private val playerControlsBinding = viewModel.playingStatusProperty.objectBinding {
-        if (it == PlayingStatus.Playing) {
+    private val playerControlsBinding = viewModel.playerStateProperty.objectBinding {
+        if (it == PlayerState.Playing) {
             stopGlyph
         } else {
             playGlyph
@@ -85,10 +89,9 @@ class PlayerView : View() {
 
     init {
         viewModel.item = PlayerModel(
-                animate = Property(Properties.PLAYER_ANIMATE).get(true),
-                playerType = PlayerType.valueOf(Property(Properties.PLAYER).get("VLC")),
-                notifications = Property(Properties.NOTIFICATIONS).get(true),
-                volume = Property(Properties.VOLUME).get(0.0))
+                animate = property(Properties.PLAYER_ANIMATE, true),
+                playerType = property(Properties.PLAYER, "VLC").asPlayerType(),
+                volume = property(Properties.VOLUME, 0.0))
     }
 
     override val root = vbox {

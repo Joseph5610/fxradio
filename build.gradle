@@ -15,7 +15,7 @@ plugins {
 
 apply plugin: 'javafx-gradle-plugin'
 
-version "0.5.0"
+version "0.6.0"
 
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
@@ -86,7 +86,6 @@ dependencies {
     compile "org.xerial:sqlite-jdbc:$versions.sqliteJdbc"
     compile "org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc"
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"
-    compile "com.vdurmont:semver4j:$versions.semver"
 
     compile "org.codehaus.griffon.plugins:griffon-flagicons-javafx:$versions.flagIcon"
 

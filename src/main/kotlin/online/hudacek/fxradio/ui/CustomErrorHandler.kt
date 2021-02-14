@@ -35,8 +35,9 @@ import java.net.URLEncoder
 
 private const val issueUrl = "https://github.com/Joseph5610/fxradio-main/issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
+private val log = KotlinLogging.logger("ErrorHandler")
+
 class CustomErrorHandler : Thread.UncaughtExceptionHandler {
-    private val log = KotlinLogging.logger("ErrorHandler")
 
     class ErrorEvent(val thread: Thread, val error: Throwable) {
         internal var consumed = false
@@ -101,8 +102,9 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             buttonTypes.addAll(reportButton, copyButton)
 
             val result = showAndWait()
+            //Report issue to github
             if (result.get().buttonData == ButtonBar.ButtonData.HELP) {
-                val titleQuery = URLEncoder.encode("[${FxRadio.version.version}] $error", "UTF-8")
+                val titleQuery = URLEncoder.encode("[${FxRadio.version}] $error", "UTF-8")
                 val bodyQuery = URLEncoder.encode(textarea.text, "UTF-8")
                 FX.application.hostServices.showDocument("$issueUrl$titleQuery&body=$bodyQuery")
             }

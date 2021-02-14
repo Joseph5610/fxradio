@@ -21,7 +21,7 @@ import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.SeparatorMenuItem
 import online.hudacek.fxradio.FxRadio
-import java.util.*
+import tornadofx.FX
 
 /**
  * NSMenu helpers
@@ -31,11 +31,11 @@ object MacMenu {
     var isInTest = false
 
     //NSMenu toolkit
-    private val tk by lazy { MenuToolkit.toolkit(Locale.getDefault()) }
+    private val tk by lazy { MenuToolkit.toolkit(FX.locale) }
 
     fun menuBar(op: MenuBar.() -> Menu) = MenuBar().apply {
         if (!isInTest) {
-            useSystemMenuBarProperty().set(true)
+            useSystemMenuBarProperty().value = true
             tk.setApplicationMenu(op(this))
             tk.setMenuBar(this)
         }

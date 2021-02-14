@@ -14,12 +14,15 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.ui.view.menu
 
-import org.controlsfx.control.NotificationPane
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.FXEvent
+import javafx.scene.control.Menu
+import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
+import tornadofx.Controller
 
-class NotificationPaneEvent(val text: String,
-                            val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,
-                            val op: NotificationPane.() -> Unit = {}) : FXEvent()
+abstract class FxMenu : Controller() {
+
+    val menuViewModel: MenuViewModel by inject()
+
+    abstract val menu: Menu
+}

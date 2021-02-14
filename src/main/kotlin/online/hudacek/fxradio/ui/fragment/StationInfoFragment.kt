@@ -16,10 +16,15 @@
 
 package online.hudacek.fxradio.ui.fragment
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
+import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import javafx.stage.StageStyle
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationInfoModel
@@ -27,34 +32,40 @@ import online.hudacek.fxradio.ui.viewmodel.StationInfoViewModel
 import online.hudacek.fxradio.utils.copyMenu
 import online.hudacek.fxradio.utils.openUrl
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
+import tornadofx.controlsfx.left
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment(station: Station? = null) : Fragment() {
 
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val viewModel: StationInfoViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        stationInfoViewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
+        viewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
     }
-
 
     override val root = vbox {
         prefWidth = 300.0
-        titleProperty.bind(stationInfoViewModel.stationNameProperty)
+        titleProperty.bind(viewModel.stationNameProperty)
 
         vbox {
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10.0
                 imageview {
-                    stationInfoViewModel.stationProperty.stationImage(this)
+                    viewModel.stationProperty.stationImage(this)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 100.0
                     fitHeight = 100.0
                     isPreserveRatio = true
+
+                    if (Config.Flags.enableStationDebug) {
+                        addEventFilter(MouseEvent.MOUSE_CLICKED) { event ->
+                            if (event.clickCount > 3)
+                                find<StationDebugFragment>().openModal(stageStyle = StageStyle.UTILITY)
+                        }
+                    }
                 }
             }
         }
@@ -65,7 +76,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             alignment = Pos.CENTER
             paddingAll = 5.0
 
-            stationInfoViewModel.infoItemsProperty.forEach {
+            viewModel.infoItemsProperty.forEach {
                 //Don't display not not relevant values
                 if (it.value != "0") {
                     val text =
@@ -89,7 +100,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             alignment = Pos.CENTER
             paddingAll = 5.0
 
-            stationInfoViewModel.tagsProperty.forEach {
+            viewModel.tagsProperty.forEach {
                 label(it) {
                     addClass(Styles.tag)
                     addClass(Styles.grayLabel)
@@ -101,20 +112,30 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
         }
 
         statusbar {
-            right {
-                hyperlink(stationInfoViewModel.homePageProperty) {
+            left {
+                hyperlink(messages["menu.station.vote"]) {
+
+                    actionEvents()
+                            .map { Unit }
+                            .subscribe(viewModel.addVote)
+
                     addClass(Styles.primaryTextColor)
+                }
+            }
+            right {
+                hyperlink(viewModel.homePageProperty) {
                     action {
                         app.openUrl(text)
                     }
                     copyMenu(clipboard,
                             name = messages["copy"],
                             value = text)
+                    addClass(Styles.primaryTextColor)
                 }
             }
 
             showWhen {
-                stationInfoViewModel.homePageProperty.isNotEmpty
+                viewModel.homePageProperty.isNotEmpty
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

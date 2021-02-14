@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio
 
-import com.vdurmont.semver4j.Semver
 import javafx.stage.Stage
 import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.StationsApi
@@ -26,14 +25,9 @@ import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.viewmodel.LogModel
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
-import online.hudacek.fxradio.utils.asLevel
 import online.hudacek.fxradio.utils.isSystemDarkMode
-import tornadofx.App
-import tornadofx.Stylesheet
-import tornadofx.launch
-import tornadofx.singleAssign
+import org.apache.logging.log4j.Level
+import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.reflect.KClass
@@ -44,10 +38,14 @@ import kotlin.reflect.KClass
  */
 
 //Dark mode
-class FxRadioDark : FxRadio(StylesDark::class)
+class FxRadioDark : FxRadio(StylesDark::class) {
+    override var useDarkModeStyle = true
+}
 
 //Light mode
-class FxRadioLight : FxRadio(Styles::class)
+class FxRadioLight : FxRadio(Styles::class) {
+    override var useDarkModeStyle = false
+}
 
 open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
 
@@ -56,9 +54,10 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
     private val logViewModel: LogViewModel by inject()
 
+    open var useDarkModeStyle: Boolean by singleAssign()
+
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
-
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0
@@ -66,15 +65,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
 
         //init logger level based on stored settings
-        val savedLevel = Property(Properties.LOG_LEVEL).get("INFO").asLevel()
+        val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
         logViewModel.item = LogModel(savedLevel)
-        logViewModel.commit()
     }
 
     /**
      * Basic info about the app
      */
-    companion object {
+    companion object : Component() {
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
@@ -82,30 +80,27 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         const val author = "hudacek.online"
         const val copyright = "Copyright (c) 2020"
 
-        var useDarkModeStyle: Boolean by singleAssign()
+        val isAppInDarkMode by lazy { (app as FxRadio).useDarkModeStyle }
 
         /**
          * Get version from jar MANIFEST.MF file
          */
-        val version: Version by lazy {
-            Version(FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT")
+        val version: String by lazy {
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT"
         }
 
-        fun shutDown() {
+        //Should be called when on every place that is closing the app
+        fun shutdownApp() {
             StationsApi.client.shutdown()
             HttpClientHolder.client.shutdown()
         }
     }
 }
 
-data class Version(val version: String) : Semver(version, SemverType.LOOSE)
-
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
-        FxRadio.useDarkModeStyle = true
         launch<FxRadioDark>(args)
     } else {
-        FxRadio.useDarkModeStyle = false
         launch<FxRadioLight>(args)
     }
 }

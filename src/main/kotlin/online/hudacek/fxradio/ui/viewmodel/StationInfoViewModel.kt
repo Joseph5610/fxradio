@@ -16,43 +16,45 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.beans.property.MapProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import javafx.collections.ObservableMap
+import online.hudacek.fxradio.NotificationPaneEvent
+import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
-import tornadofx.ItemViewModel
-import tornadofx.observableListOf
-import tornadofx.observableMapOf
-import tornadofx.property
+import online.hudacek.fxradio.utils.applySchedulers
+import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.*
 
 class StationInfoModel(station: Station = Station.stub) {
-    val codec = if (station.bitrate != 0) {
+    var codec = if (station.bitrate != 0) {
         station.codec + " (${station.bitrate} kbps)"
     } else {
         station.codec
     }
 
-    val station: Station by property(station)
-    val name: String by property(station.name)
+    var station: Station by property(station)
+    var name: String by property(station.name)
 
-    val infoItems: ObservableMap<String, String> by property(observableMapOf(
+    var infoItems: ObservableMap<String, String> by property(observableMapOf(
             "info.votes" to station.votes.toString(),
             "" to codec,
             "info.country" to station.country,
             "info.language" to station.language
     ))
 
-    val tags: ObservableList<String> by property(observableListOf(
+    var tags: ObservableList<String> by property(observableListOf(
             station.tags
                     .split(",")
                     .map { tag -> tag.trim() }
                     .filter { tag -> tag.isNotEmpty() }
     ))
 
-    val homePage: String by property(station.homepage)
+    var homePage: String by property(station.homepage)
 }
 
 class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
@@ -61,4 +63,24 @@ class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
     val homePageProperty = bind(StationInfoModel::homePage) as StringProperty
     val stationProperty = bind(StationInfoModel::station) as ObjectProperty
     val stationNameProperty = bind(StationInfoModel::name) as StringProperty
+
+    val addVote = BehaviorSubject.create<Unit>()
+
+    init {
+        //Increase vote count on the server
+        addVote.flatMapSingle {
+            StationsApi.service
+                    .vote(stationProperty.value.stationuuid)
+                    .compose(applySchedulers())
+        }.subscribe({
+            if (!it.ok) {
+                //Why this API returns error 200 on error ...
+                fire(NotificationPaneEvent(messages["vote.error"]))
+            } else {
+                fire(NotificationPaneEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+            }
+        }, {
+            fire(NotificationPaneEvent(messages["vote.error"]))
+        })
+    }
 }

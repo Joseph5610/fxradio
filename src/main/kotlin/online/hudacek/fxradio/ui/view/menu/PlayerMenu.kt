@@ -20,16 +20,22 @@ import javafx.scene.control.CheckMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.property
+import online.hudacek.fxradio.ui.viewmodel.NotificationsModel
+import online.hudacek.fxradio.ui.viewmodel.NotificationsViewModel
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
+import online.hudacek.fxradio.utils.disableWhenInvalidStation
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.shouldBeDisabled
 import tornadofx.*
 
-class PlayerMenu : Controller() {
+class PlayerMenu : FxMenu() {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val notificationsViewModel: NotificationsViewModel by inject()
 
     private var playerTypeItem: CheckMenuItem by singleAssign()
 
@@ -40,21 +46,24 @@ class PlayerMenu : Controller() {
         playerViewModel.playerTypeProperty.onChange {
             playerTypeItem.isSelected = it == PlayerType.Custom
         }
+
+        //Notifications are currently enabled only on macOS
+        notificationsViewModel.item = NotificationsModel(property(Properties.NOTIFICATIONS, MacUtils.isMac))
     }
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.player.controls"]) {
             item(messages["menu.player.start"], keyPlay) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    playerViewModel.playingStatusProperty.value = PlayingStatus.Playing
+                    playerViewModel.playerStateProperty.value = PlayerState.Playing
                 }
             }
 
             item(messages["menu.player.stop"], keyStop) {
-                shouldBeDisabled(playerViewModel.stationProperty)
+                disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    playerViewModel.playingStatusProperty.value = PlayingStatus.Stopped
+                    playerViewModel.playerStateProperty.value = PlayerState.Stopped
                 }
             }
 
@@ -78,12 +87,17 @@ class PlayerMenu : Controller() {
                 action {
                     playerViewModel.commit()
                 }
+
+                visibleWhen {
+                    //Should be visible only on MacOS for now
+                    booleanProperty(MacUtils.isMac)
+                }
             }
 
             checkmenuitem(messages["menu.player.notifications"]) {
-                bind(playerViewModel.notificationsProperty)
+                bind(notificationsViewModel.showProperty)
                 action {
-                    playerViewModel.commit()
+                    notificationsViewModel.commit()
                 }
             }
         }

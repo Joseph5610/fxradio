@@ -17,18 +17,11 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
-import javafx.scene.layout.Priority
-import online.hudacek.fxradio.api.model.flagIcon
-import online.hudacek.fxradio.ui.style.ColorValues
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
+import online.hudacek.fxradio.ui.viewmodel.LibraryModel
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibrary
-import online.hudacek.fxradio.utils.make
-import online.hudacek.fxradio.utils.searchField
 import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.smallLabel
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class LibraryView : View() {
@@ -36,54 +29,15 @@ class LibraryView : View() {
     private val viewModel: LibraryViewModel by inject()
 
     private val librarySearchView: LibrarySearchView by inject()
-    private val libraryCountriesView: LibraryCountriesView by inject()
-
-    private val showLibraryListLabel = viewModel.showLibraryProperty.objectBinding {
-        showIcon(it!!)
-    }
-
-    private val showCountriesListLabel = viewModel.showCountriesProperty.objectBinding {
-        showIcon(it!!)
-    }
-
-    private val retryLink by lazy {
-        hyperlink(messages["downloadRetry"]) {
-            action {
-                viewModel.showCountries()
-            }
-            showWhen { viewModel.countriesProperty.emptyProperty() }
-        }
-    }
-
-    private val libraryListView by lazy {
-        listview(viewModel.librariesProperty) {
-            id = "libraryListView"
-            cellFormat {
-                graphic = item.graphic.make(14.0, false, c("#d65458"))
-                text = messages[item.type.toString()]
-                addClass(Styles.libraryListItem)
-            }
-            showWhen { viewModel.showLibraryProperty }
-            onUserSelect(1) {
-                viewModel.selectedProperty.value = SelectedLibrary(it.type)
-            }
-            addClass(Styles.libraryListView)
-        }
-    }
-
-    init {
-        viewModel.selectedProperty.onChange {
-            handleSelectionChange(it)
-        }
-    }
+    private val libraryCountriesListView: LibraryCountriesListView by inject()
+    private val libraryListView: LibraryListView by inject()
 
     override fun onDock() {
-        viewModel.showCountries()
+        viewModel.item = LibraryModel(
+                showLibrary = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_LIBRARY, true),
+                showCountries = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_COUNTRIES, true))
 
-        with(libraryListView) {
-            prefHeight = viewModel.librariesProperty.size * 30.0 + 10
-            selectionModel.select(viewModel.librariesProperty[0])
-        }
+        viewModel.showCountries()
     }
 
     override val root = borderpane {
@@ -96,152 +50,38 @@ class LibraryView : View() {
                     }
                 }
 
-                hbox {
-                    smallLabel(messages["library"]) {
-                        paddingLeft = 10.0
-                    }
-                    region { hgrow = Priority.ALWAYS }
-                    smallLabel {
-                        graphicProperty().bind(showLibraryListLabel)
-                        paddingLeft = 10.0
-                        paddingRight = 10.0
-
-                        setOnMouseClicked {
-                            viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
-                            viewModel.commit()
-                        }
-
-                        showWhen {
-                            this@hbox.hoverProperty()
-                        }
-                    }
-                }
+                add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
+                    viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
+                    viewModel.commit()
+                })
                 add(libraryListView)
             }
         }
 
         center {
             vbox {
-                hbox {
-                    smallLabel(messages["countries"]) {
-                        paddingLeft = 10.0
-                    }
-                    region { hgrow = Priority.ALWAYS }
-                    smallLabel {
-                        graphicProperty().bind(showCountriesListLabel)
-                        paddingLeft = 10.0
-                        paddingRight = 10.0
+                add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
+                    viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
+                    viewModel.commit()
+                })
 
-                        setOnMouseClicked {
-                            viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
-                            viewModel.commit()
-                        }
+                add(libraryCountriesListView)
 
-                        showWhen {
-                            this@hbox.hoverProperty()
-                        }
-                    }
-                }
-
-                add(libraryCountriesView)
-
+                //Retry link
                 vbox(alignment = Pos.CENTER) {
-                    add(retryLink)
+                    hyperlink(messages["downloadRetry"]) {
+                        action {
+                            viewModel.showCountries()
+                        }
+                        showWhen {
+                            viewModel.countriesProperty.emptyProperty()
+                                    .and(viewModel.showCountriesProperty)
+                        }
+                    }
                 }
-
-                libraryCountriesView.root.prefHeightProperty().bind(heightProperty())
+                libraryCountriesListView.root.prefHeightProperty().bind(heightProperty())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
-    }
-
-    private fun handleSelectionChange(it: SelectedLibrary?) {
-        when (it?.type) {
-            LibraryType.Country -> {
-                libraryListView.selectionModel.clearSelection()
-            }
-            LibraryType.Favourites, LibraryType.History, LibraryType.TopStations -> {
-                libraryCountriesView.root.selectionModel.clearSelection()
-            }
-            LibraryType.Search, LibraryType.SearchByTag -> {
-                libraryCountriesView.root.selectionModel.clearSelection()
-                libraryListView.selectionModel.clearSelection()
-            }
-        }
-    }
-
-    private fun showIcon(show: Boolean) = if (show)
-        FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
-    else
-        FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0, useStyle = false, color = c(ColorValues().grayLabel))
-}
-
-/**
- * Search input field view
- */
-class LibrarySearchView : View() {
-
-    private val viewModel: LibraryViewModel by inject()
-
-    override val root = searchField(messages["search"], viewModel.bindSearchQueryProperty) {
-        id = "search"
-
-        left = label {
-            graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0)
-        }
-
-        //Fire up search results after input is written to text field
-        textProperty().onChange {
-            if (text.length >= 50) {
-                text = text.substring(0, 49)
-            }
-            viewModel.showSearchResults()
-            viewModel.commit()
-        }
-
-        setOnMouseClicked {
-            viewModel.showSearchResults()
-        }
-
-        validator {
-            when {
-                it!!.isNotEmpty() && it.length < 3 -> error(messages["searchingLibraryDesc"])
-                it.length >= 49 -> error(messages["field.max.length"])
-                else -> null
-            }
-        }
-    }
-}
-
-class LibraryCountriesView : View() {
-
-    private val viewModel: LibraryViewModel by inject()
-
-    override val root = listview(viewModel.countriesProperty) {
-        cellFormat {
-            graphic = hbox(5) {
-                imageview {
-                    image = item.flagIcon
-                }
-
-                val stationWord = if (item.stationcount > 1)
-                    messages["stations"] else messages["station"]
-
-                alignment = Pos.CENTER_LEFT
-                label(item.name.split("(")[0])
-                label("${item.stationcount}") {
-                    tooltip("${item.stationcount} $stationWord")
-                    addClass(Styles.libraryListItemTag)
-                }
-            }
-            addClass(Styles.libraryListItem)
-        }
-        onUserSelect(1) {
-            viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
-        }
-        showWhen {
-            viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
-        }
-        addClass(Styles.libraryListView)
     }
 }

@@ -16,13 +16,17 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.Database
 import tornadofx.ItemViewModel
 import tornadofx.observableListOf
 import tornadofx.property
+
+private val logger = KotlinLogging.logger {}
 
 class HistoryModel(stations: ObservableList<Station> = observableListOf()) {
     var stations: ObservableList<Station> by property(stations)
@@ -31,28 +35,35 @@ class HistoryModel(stations: ObservableList<Station> = observableListOf()) {
 /**
  * Stations History view model
  * -------------------
- * Holds information about last 10 played stations
- * shows in [online.hudacek.fxradio.views.stations.StationsDataGridView] and in MenuBar
+ * Holds information about last played stations
+ * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
 class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
+
+    private val playerViewModel: PlayerViewModel by inject()
+
     val stationsProperty = bind(HistoryModel::stations) as ListProperty
 
-    fun add(station: Station) {
-        if (!station.isValid()) return
-        with(stationsProperty) {
-            if (!contains(station)) {
-                add(station)
-                Database.history
-                        .insert(station)
-                        .subscribe()
-            }
-        }
-    }
+    val cleanupHistory = BehaviorSubject.create<Unit>()
 
-    fun cleanup() {
-        item = HistoryModel()
-        Database.history
-                .delete()
-                .subscribe()
+    init {
+        //Add currently listened station to history
+        playerViewModel.stationChanges
+                //Add only valid stations not already present in history
+                .filter { it.isValid() && !stationsProperty.contains(it) }
+                .flatMapSingle { Database.history.insert(it) }
+                .subscribe({
+                    stationsProperty.add(it)
+                }, {
+                    logger.error(it) { "Error adding station to history!" }
+                })
+
+        cleanupHistory
+                .flatMapSingle { Database.history.delete() }
+                .subscribe({
+                    item = HistoryModel()
+                }, {
+                    logger.error(it) { "Cannot perform DB cleanup!" }
+                })
     }
 }

@@ -20,22 +20,22 @@ import javafx.beans.property.BooleanProperty
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.fragment.*
 import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class MenuModel(useNative: Boolean = false) {
-    var useNative: Boolean by property(useNative)
+private val logger = KotlinLogging.logger {}
+
+class MenuModel(usePlatform: Boolean = true) {
+    var usePlatform: Boolean by property(usePlatform)
 }
 
 class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
 
-    private val logger = KotlinLogging.logger {}
-
-    val useNativeProperty = bind(MenuModel::useNative) as BooleanProperty
+    val usePlatformProperty = bind(MenuModel::usePlatform) as BooleanProperty
 
     //Station menu links
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -53,9 +53,9 @@ class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
     fun clearCache() = runAsync(daemon = true) {
         ImageCache.clear()
     } success {
-        fire(NotificationEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+        fire(NotificationPaneEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
     } fail {
-        fire(NotificationEvent(messages["cache.clear.error"]))
+        fire(NotificationPaneEvent(messages["cache.clear.error"]))
         logger.error(it) { "Exception when clearing cache" }
     }
 

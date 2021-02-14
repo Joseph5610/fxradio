@@ -19,11 +19,13 @@ package online.hudacek.fxradio.integration
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioDark
+import online.hudacek.fxradio.macos.MacMenu
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
+import org.testfx.framework.junit5.Init
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 
@@ -34,6 +36,11 @@ class DarkModeTests {
 
     private val nowPlayingLabel = "#nowStreaming"
     private val stationsDataGrid = "#stations"
+
+    @Init
+    fun init() {
+        MacMenu.isInTest = true
+    }
 
     @Start
     fun start(stage: Stage) {

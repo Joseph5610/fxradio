@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.api
 
+import mu.KotlinLogging
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
@@ -27,6 +28,8 @@ import java.net.InetAddress
  * Creates and holds single instance of OkHttpClient
  * Plain OkHttpClient is used mostly for downloading images of stations
  */
+private val logger = KotlinLogging.logger {}
+
 object HttpClientHolder {
     val client by lazy { BasicHttpClient() }
 }
@@ -34,7 +37,10 @@ object HttpClientHolder {
 class BasicHttpClient : OkHttpHelper() {
 
     //Perform DNS lookup
-    fun lookup(address: String): MutableList<InetAddress> = httpClient.dns().lookup(address)
+    fun lookup(address: String): MutableList<InetAddress> {
+        logger.debug { "Performing DNS lookup for $address" }
+        return httpClient.dns().lookup(address)
+    }
 
     fun call(url: String,
              success: (Response) -> Unit,

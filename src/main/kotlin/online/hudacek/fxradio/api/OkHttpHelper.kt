@@ -23,15 +23,15 @@ import okhttp3.logging.HttpLoggingInterceptor
 import online.hudacek.fxradio.FxRadio
 import java.util.concurrent.TimeUnit
 
-open class OkHttpHelper {
+private val logger = KotlinLogging.logger {}
 
-    private val logger = KotlinLogging.logger {}
+open class OkHttpHelper {
 
     //To Limit the active connections
     private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
 
     //What is app sending as a User Agent string
-    private val userAgent = "${FxRadio.appName}/${FxRadio.version.version}"
+    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
 
     //Logging of http requests
     private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }

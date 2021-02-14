@@ -24,12 +24,12 @@ import javafx.concurrent.Task
 import javafx.util.Duration
 import kotlinx.coroutines.*
 import mu.KotlinLogging
+import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MetaData
 import online.hudacek.fxradio.media.MetaDataChanged
 import online.hudacek.fxradio.media.StreamUnavailableException
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.property
 import tornadofx.Component
 import tornadofx.get
 import java.nio.ByteBuffer
@@ -38,12 +38,12 @@ import javax.sound.sampled.SourceDataLine
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-data class StreamInfo(val streamId: Int, val stream: DemuxerStream, val decoder: Decoder)
+private val logger = KotlinLogging.logger {}
+
+private data class StreamInfo(val streamId: Int, val decoder: Decoder)
 
 //Custom Audio player using ffmpeg lib
-internal class CustomPlayer : Component(), MediaPlayer {
-
-    private val logger = KotlinLogging.logger {}
+class CustomPlayer : Component(), MediaPlayer {
 
     private var mediaPlayerCoroutine: Job? = null
     private var audioFrame: AudioFrame? = null
@@ -52,7 +52,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     private var streamUrl = ""
 
-    private val playerRefreshMetaProperty = Property(Properties.PLAYER_CUSTOM_REFRESH_META).get(true)
+    private val playerRefreshMetaProperty = property(Properties.PLAYER_CUSTOM_REFRESH_META, true)
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         logger.error(throwable) { "Stream unavailable..." }
@@ -70,7 +70,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
         mediaPlayerCoroutine = GlobalScope.launch(coroutineExceptionHandler) {
 
             val deMuxer = Demuxer.make()
-            val streamInfo = deMuxer.getStream(streamUrl)
+            val streamInfo = deMuxer.getStreamInfo(streamUrl)
             val audioStreamId = streamInfo?.streamId
             val audioDecoder = streamInfo?.decoder
 
@@ -87,8 +87,7 @@ internal class CustomPlayer : Component(), MediaPlayer {
                     logger.debug { it }
 
                     val converter = MediaAudioConverterFactory.createConverter(
-                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO,
-                            samples)
+                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO, samples)
                     audioFrame = AudioFrame.make(converter.javaFormat)
                             ?: throw StreamUnavailableException("No output device available!")
 
@@ -167,15 +166,16 @@ internal class CustomPlayer : Component(), MediaPlayer {
     /**
      * Returns opened decoder or null when error happened
      */
-    private fun Demuxer.getStream(streamUrl: String): StreamInfo? {
+    private fun Demuxer.getStreamInfo(streamUrl: String): StreamInfo? {
         try {
-            this.open(streamUrl, null, false, true, null, null)
+            open(streamUrl, null, false, true,
+                    null, null)
             for (i in 0 until numStreams) {
                 val stream = getStream(i)
                 val decoder = stream.decoder
                 if (decoder != null && decoder.codecType == MediaDescriptor.Type.MEDIA_AUDIO) {
                     decoder.open(null, null)
-                    return StreamInfo(i, stream, decoder)
+                    return StreamInfo(i, decoder)
                 }
             }
         } catch (e: Exception) {
@@ -186,14 +186,12 @@ internal class CustomPlayer : Component(), MediaPlayer {
 
     /**
      * Fetch new meta data from playing stream
-     * In Testing - may cause issues, enabled under flag
      */
     private val metaDataService = object : ScheduledService<KeyValueBag>() {
         init {
-            period = Duration.seconds(50.0)
-            delay = Duration.seconds(5.0)
+            period = Duration.seconds(50.0) //period between fetching data
+            delay = Duration.seconds(5.0) //initial delay
         }
-
         override fun createTask(): Task<KeyValueBag> = FetchDataTask()
     }
 
@@ -203,10 +201,12 @@ internal class CustomPlayer : Component(), MediaPlayer {
             deMuxer.open(streamUrl, null, false, true, null, null)
             val data = deMuxer.metaData
             deMuxer.close()
+            logger.debug { "FetchDataTask: $data" }
             return data
         }
 
         override fun succeeded() {
+            //Get values from demuxer metadata and fire event with the new data
             if (value.getValue("StreamTitle") != null
                     && value.getValue("icy-name") != null) {
                 val mediaMeta = MetaData(value.getValue("icy-name"), value.getValue("StreamTitle"))
@@ -214,6 +214,6 @@ internal class CustomPlayer : Component(), MediaPlayer {
             }
         }
 
-        override fun failed() = exception.printStackTrace()
+        override fun failed() = logger.error(exception) { "FetchDataTask failed." }
     }
 }

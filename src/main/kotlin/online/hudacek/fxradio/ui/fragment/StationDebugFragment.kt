@@ -14,12 +14,25 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.ui.fragment
 
-import org.controlsfx.control.NotificationPane
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.FXEvent
+import javafx.scene.layout.Priority
+import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import tornadofx.*
 
-class NotificationPaneEvent(val text: String,
-                            val glyph: FontAwesome.Glyph = FontAwesome.Glyph.WARNING,
-                            val op: NotificationPane.() -> Unit = {}) : FXEvent()
+class StationDebugFragment : Fragment() {
+
+    private val viewModel: PlayerViewModel by inject()
+
+    override val root = vbox {
+        setPrefSize(600.0, 400.0)
+        titleProperty.bind(viewModel.stationProperty.asString())
+
+        textarea(viewModel.stationProperty.asString()) {
+            vgrow = Priority.ALWAYS
+            isWrapText = true
+        }
+        addClass(Styles.backgroundWhiteSmoke)
+    }
+}

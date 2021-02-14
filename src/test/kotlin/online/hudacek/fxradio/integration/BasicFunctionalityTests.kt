@@ -28,13 +28,14 @@ import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.storage.Database
 import online.hudacek.fxradio.ui.viewmodel.LibraryItem
+import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayingStatus
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
+import org.testfx.framework.junit5.Init
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
@@ -52,22 +53,25 @@ class BasicFunctionalityTests {
 
     private lateinit var app: FxRadio
 
-    //IDs
-    private val nowPlayingLabel = "#nowStreaming"
-    private val stationsDataGrid = "#stations"
-    private val libraryListView = "#libraryListView"
-    private val volumeMinIcon = "#volumeMinIcon"
-    private val volumeMaxIcon = "#volumeMaxIcon"
-    private val volumeSlider = "#volumeSlider"
-    private val playerControls = "#playerControls"
-    private val search = "#search"
-    private val stationMessageHeader = "#stationMessageHeader"
-    private val stationMessageSubHeader = "#stationMessageSubHeader"
+    companion object {
+        //IDs
+        private const val nowPlayingLabel = "#nowStreaming"
+        private const val stationsDataGrid = "#stations"
+        private const val libraryListView = "#libraryListView"
+        private const val volumeMinIcon = "#volumeMinIcon"
+        private const val volumeMaxIcon = "#volumeMaxIcon"
+        private const val volumeSlider = "#volumeSlider"
+        private const val playerControls = "#playerControls"
+        private const val search = "#search"
+        private const val stationMessageHeader = "#stationMessageHeader"
+        private const val stationMessageSubHeader = "#stationMessageSubHeader"
+    }
 
     //Http Client, init only once needed
     private val service by lazy { StationsApi.service }
 
-    init {
+    @Init
+    fun init() {
         MacMenu.isInTest = true
     }
 
@@ -81,16 +85,18 @@ class BasicFunctionalityTests {
     fun stop() = app.stop()
 
     @Test
-    fun apiTest() {
-        service.getTopStations()
-                .subscribe { stations ->
-                    Assertions.assertEquals(50, stations.size)
-                    stations.forEach {
-                        //top 50 stations should not have empty URL and have name
-                        Assertions.assertTrue(it.name.isNotEmpty())
-                        Assertions.assertTrue(it.url_resolved != null)
-                    }
-                }.dispose()
+    fun apiTest(robot: FxRobot) {
+        val stations = service.getTopStations().blockingGet()
+        Assertions.assertEquals(50, stations.size)
+        stations.forEach {
+            //top 50 stations should not have empty URL and have name
+            Assertions.assertTrue(it.name.isNotEmpty())
+            Assertions.assertTrue(it.url_resolved != null)
+        }
+
+        //Wait for stations to load
+        val appStations = robot.find(stationsDataGrid) as DataGrid<Station>
+        Assertions.assertEquals(appStations.items.toList(), stations)
     }
 
     @Test
@@ -114,7 +120,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream start
         waitFor(5) {
-            player.playingStatusProperty.value == PlayingStatus.Playing
+            player.playerStateProperty.value == PlayerState.Playing
         }
 
         val stopButton = robot.find(playerControls) as Button
@@ -124,7 +130,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream stop
         waitFor(2) {
-            player.playingStatusProperty.value == PlayingStatus.Stopped
+            player.playerStateProperty.value == PlayerState.Stopped
         }
 
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))

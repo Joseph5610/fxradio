@@ -17,10 +17,7 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewState
+import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 
@@ -31,6 +28,7 @@ class StationsHeaderView : View() {
 
     private val viewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+    private val searchViewModel: SearchViewModel by inject()
 
     private val stationsHeaderSearchView: StationsHeaderSearchView by inject()
 
@@ -39,7 +37,7 @@ class StationsHeaderView : View() {
         it?.let {
             when (it.type) {
                 LibraryType.Country -> it.params
-                LibraryType.Search, LibraryType.SearchByTag -> messages[LibraryType.Search.toString()] + " \"${libraryViewModel.searchQueryProperty.value}\""
+                LibraryType.Search -> messages["Search"]
                 else -> messages[it.type.toString()]
             }
         }
@@ -50,10 +48,24 @@ class StationsHeaderView : View() {
         maxHeight = 10.0
 
         left {
-            label(libraryNameTextProperty) {
-                paddingTop = 8.0
-                paddingBottom = 8.0
-                addClass(Styles.subheader)
+            hbox(5) {
+                label(libraryNameTextProperty) {
+                    paddingTop = 8.0
+                    paddingBottom = 8.0
+                    addClass(Styles.subheader)
+                }
+
+                label(searchViewModel.searchQueryProperty) {
+                    paddingTop = 8.0
+                    paddingBottom = 8.0
+                    showWhen {
+                        libraryViewModel.selectedProperty.booleanBinding {
+                            it?.type == LibraryType.Search
+                        }
+                    }
+                    addClass(Styles.grayTextColor)
+                    addClass(Styles.subheader)
+                }
             }
         }
 

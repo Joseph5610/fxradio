@@ -16,17 +16,16 @@
 
 package online.hudacek.fxradio.ui.fragment
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.layout.Priority
 import mu.KotlinLogging
 import okhttp3.HttpUrl
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
-import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.AddStationModel
 import online.hudacek.fxradio.ui.viewmodel.AddStationViewModel
-import online.hudacek.fxradio.ui.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.set
@@ -36,16 +35,16 @@ import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
 
-class AddStationFragment : Fragment() {
+private val logger = KotlinLogging.logger {}
 
-    private val logger = KotlinLogging.logger {}
+class AddStationFragment : Fragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val favouritesViewModel: FavouritesViewModel by inject()
 
     init {
-        viewModel.autoCompleteCountriesProperty.bind(libraryViewModel.countriesProperty) { it.name }
+        //Bind autocomplete list of countries
+        viewModel.countriesListProperty.bind(libraryViewModel.countriesProperty) { it.name }
     }
 
     override fun onDock() {
@@ -72,10 +71,8 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.nameProperty) {
                             required()
                             validator {
-                                if (validate(it, maxValue = 400))
-                                    success()
-                                else
-                                    error(messages["field.invalid.length"])
+                                if (!validate(it, 400)) error(messages["field.invalid.length"])
+                                else null
                             }
                             promptText = "My Radio Station"
                         }
@@ -83,7 +80,6 @@ class AddStationFragment : Fragment() {
 
                     field(messages["add.site"]) {
                         textfield(viewModel.homePageProperty) {
-                            required()
                             validator {
                                 if (it != null && HttpUrl.parse(it) != null)
                                     success()
@@ -96,7 +92,6 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.url"]) {
                         textfield(viewModel.urlProperty) {
-                            required()
                             validator {
                                 if (it != null && HttpUrl.parse(it) != null)
                                     success()
@@ -108,7 +103,6 @@ class AddStationFragment : Fragment() {
                     }
                     field(messages["add.icon"]) {
                         textfield(viewModel.faviconProperty) {
-                            required()
                             validator {
                                 if (it != null && HttpUrl.parse(it) != null)
                                     success()
@@ -122,21 +116,19 @@ class AddStationFragment : Fragment() {
                         textfield(viewModel.languageProperty) {
                             required()
                             validator {
-                                if (validate(it))
-                                    success()
-                                else
-                                    error(messages["field.invalid.length"])
+                                if (!validate(it, 150)) error(messages["field.invalid.length"])
+                                else null
                             }
                             promptText = messages["add.language.prompt"]
                         }
                     }
                     field(messages["add.country"]) {
                         textfield(viewModel.countryProperty) {
-                            bindAutoCompletion(viewModel.autoCompleteCountriesProperty)
+                            bindAutoCompletion(viewModel.countriesListProperty)
                             required()
 
                             validator {
-                                if (viewModel.autoCompleteCountriesProperty.contains(it))
+                                if (viewModel.countriesListProperty.contains(it))
                                     success()
                                 else
                                     error(messages["field.invalid.country"])
@@ -158,35 +150,46 @@ class AddStationFragment : Fragment() {
                     button(messages["save"]) {
                         enableWhen(viewModel.valid)
                         isDefaultButton = true
+
+                        actionEvents()
+                                .flatMapSingle {
+                                    StationsApi.service
+                                            .add(AddStationBody(
+                                                    viewModel.nameProperty.value, viewModel.urlProperty.value,
+                                                    viewModel.homePageProperty.value,
+                                                    viewModel.faviconProperty.value, viewModel.countryCodeProperty.value,
+                                                    viewModel.countryProperty.value, viewModel.languageProperty.value,
+                                                    viewModel.tagsProperty.value
+                                            ))
+                                            .compose(applySchedulers())
+                                }.subscribe({
+                                    if (it.ok) {
+
+                                        //Save UUID of new station
+                                        viewModel.uuidProperty.value = it.uuid
+
+                                        viewModel.commit {
+                                            fire(NotificationPaneEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
+                                            close()
+
+                                            //Cleanup view model
+                                            viewModel.item = AddStationModel()
+                                        }
+
+                                    } else {
+                                        logger.error { "Error while adding station: ${it.message} " }
+                                        this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = it.message
+                                    }
+                                }, {
+                                    logger.error(it) { "Error while adding station " }
+                                    this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = messages["add.error"]
+                                })
                         addClass(Styles.primaryButton)
+                    }
+
+                    button(messages["add.cleanupForm"]) {
                         action {
-                            viewModel.commit {
-                                println(viewModel.toString())
-                                StationsApi.service
-                                        .add(AddStationBody(
-                                                viewModel.nameProperty.value, viewModel.urlProperty.value,
-                                                viewModel.homePageProperty.value,
-                                                viewModel.faviconProperty.value, viewModel.countryCodeProperty.value,
-                                                viewModel.countryProperty.value, viewModel.languageProperty.value,
-                                                viewModel.tagsProperty.value
-                                        ))
-                                        .compose(applySchedulers())
-                                        .subscribe({
-                                            if (it.ok) {
-                                                saveToFavourites(it.uuid)
-                                                fire(NotificationEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
-                                                close()
-                                                //Cleanup view model
-                                                viewModel.item = AddStationModel()
-                                            } else {
-                                                logger.error { "Error while adding station: ${it.message} " }
-                                                this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = it.message
-                                            }
-                                        }, {
-                                            logger.error(it) { "Error while adding station " }
-                                            this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = messages["add.error"]
-                                        })
-                            }
+                            viewModel.item = AddStationModel()
                         }
                     }
 
@@ -202,22 +205,5 @@ class AddStationFragment : Fragment() {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
-    private fun validate(property: String?, minValue: Int = 3, maxValue: Int = 150) =
-            property?.length in (minValue + 1) until maxValue
-
-    private fun saveToFavourites(uuid: String) {
-        if (viewModel.saveToFavouritesProperty.value) {
-            val station = Station(
-                    stationuuid = uuid,
-                    name = viewModel.nameProperty.value,
-                    url_resolved = viewModel.urlProperty.value,
-                    homepage = viewModel.homePageProperty.value,
-                    favicon = viewModel.faviconProperty.value,
-                    country = viewModel.countryProperty.value,
-                    language = viewModel.languageProperty.value,
-                    tags = viewModel.tagsProperty.value
-            )
-            favouritesViewModel.add(station)
-        }
-    }
+    private fun validate(property: String?, maxValue: Int) = property?.length in 0 until maxValue
 }

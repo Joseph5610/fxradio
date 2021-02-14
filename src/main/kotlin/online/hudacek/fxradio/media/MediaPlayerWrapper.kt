@@ -20,13 +20,13 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.media.player.CustomPlayer
 import online.hudacek.fxradio.media.player.VLCPlayer
 
+private val logger = KotlinLogging.logger {}
+
 enum class PlayerType {
     Custom, VLC
 }
 
 object MediaPlayerWrapper {
-
-    private val logger = KotlinLogging.logger {}
 
     private var internalMediaPlayer: MediaPlayer? = null
 

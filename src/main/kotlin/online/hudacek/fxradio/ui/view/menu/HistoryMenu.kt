@@ -21,16 +21,15 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import mu.KotlinLogging
 import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.stationImage
 import tornadofx.*
 
-//History Menu
-class HistoryMenu : Controller() {
-    private val logger = KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
 
-    private val menuViewModel: MenuViewModel by inject()
+class HistoryMenu : FxMenu() {
+
     private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
@@ -38,14 +37,16 @@ class HistoryMenu : Controller() {
     private val keyHistory = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
 
     init {
-        Database.history.select().subscribe({
-            historyViewModel.item = HistoryModel(it.asObservable())
-        }, {
-            logger.error(it) { "Error while getting history from DB!" }
-        })
+        Database.history
+                .select()
+                .subscribe({
+                    historyViewModel.item = HistoryModel(it.asObservable())
+                }, {
+                    logger.error(it) { "Error while getting history from DB!" }
+                })
     }
 
-    val menu by lazy {
+    override val menu by lazy {
         menu(messages["menu.history"]) {
             item(messages["menu.history.show"], keyHistory).action {
                 libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
@@ -59,7 +60,7 @@ class HistoryMenu : Controller() {
                     item("${it.name} (${it.countrycode})") {
                         //for some reason macos native menu does not respect
                         //width/height setting so it is disabled for now
-                        if (!menuViewModel.useNativeProperty.value) {
+                        if (!menuViewModel.usePlatformProperty.value) {
                             graphic = imageview {
                                 it.stationImage(this)
                                 fitHeight = 15.0
@@ -78,10 +79,11 @@ class HistoryMenu : Controller() {
                 disableWhen {
                     historyViewModel.stationsProperty.emptyProperty()
                 }
+
                 action {
                     confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
-                        historyViewModel.cleanup()
-                        libraryViewModel.refreshLibrary(LibraryType.History)
+                        historyViewModel.cleanupHistory.onNext(Unit)
+                        libraryViewModel.refreshLibrary.onNext(LibraryType.History)
                     }
                 }
             }

@@ -27,10 +27,12 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 /**
- * Database helper
+ * Database helper class contains useful methods to write/read from local sqlite.db which stores
+ * Favourite stations and listening history
  */
+private val logger = KotlinLogging.logger {}
+
 object Database {
-    private val logger = KotlinLogging.logger {}
 
     private val connection: Connection = DriverManager.getConnection("jdbc:sqlite:${Config.Paths.dbPath}").apply {
 
@@ -84,7 +86,7 @@ object Database {
 
         fun delete(): Single<Int> = connection.execute("delete from $table").toSingle()
 
-        fun insert(station: Station): Single<Boolean> = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
+        fun insert(station: Station): Single<Station> = connection.insert("INSERT INTO $table (name, stationuuid, url_resolved, " +
                 "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
                 "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
                 .parameter("name", station.name)
@@ -99,12 +101,12 @@ object Database {
                 .parameter("tags", station.tags)
                 .parameter("codec", station.codec)
                 .parameter("bitrate", station.bitrate)
-                .toSingle { it.getInt(1) > 0 }
+                .toSingle { station }
 
-        fun remove(station: Station): Single<Boolean> =
+        fun remove(station: Station): Single<Station> =
                 connection.insert("delete from $table where stationuuid = :stationuuid")
                         .parameter("stationuuid", station.stationuuid)
-                        .toSingle { it.getInt(1) > 0 }
+                        .toSingle { station }
 
     }
 }

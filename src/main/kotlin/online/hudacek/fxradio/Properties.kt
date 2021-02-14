@@ -14,15 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils
+package online.hudacek.fxradio
 
+import mu.KotlinLogging
 import tornadofx.Component
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Keys for values stored in app.properties
  */
 enum class Properties(val key: String) {
-    NATIVE_MENU_BAR("menu.native"),
+    PLATFORM_MENU_BAR("menu.native"),
     VOLUME("player.volume"),
     PLAYER("player.type"),
     PLAYER_ANIMATE("player.animate"),
@@ -43,6 +46,10 @@ class Property(property: Properties) : Component() {
 
     //Extract value
     val key = property.key
+
+    init {
+        logger.debug { "Creating property object for $key " }
+    }
 
     val isPresent: Boolean
         get() {
@@ -82,6 +89,7 @@ class Property(property: Properties) : Component() {
     }
 
     fun <T> save(newValue: T) {
+        logger.debug { "Saving $key: $newValue " }
         with(app.config) {
             set(key to newValue)
             save()
@@ -96,11 +104,14 @@ class Property(property: Properties) : Component() {
     }
 }
 
-internal fun Component.saveProperties(pairs: List<Pair<Properties, Any>>) {
+fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
+    logger.debug { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
     with(app.config) {
-        pairs.forEach {
-            set(it.first.key to it.second)
+        keyValueMap.forEach {
+            set(it.key.key to it.value)
         }
         save()
     }
 }
+
+inline fun <reified T> property(key: Properties, defaultValue: T) = Property(key).get(defaultValue)

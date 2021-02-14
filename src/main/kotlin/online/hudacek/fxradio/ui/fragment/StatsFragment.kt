@@ -50,7 +50,7 @@ class StatsFragment : Fragment() {
 
     override fun onDock() {
         //Refresh stats on every open of fragment
-        viewModel.getStats()
+        viewModel.viewStateProperty.value = StatsViewState.Loading
     }
 
     override val root = vbox {
@@ -73,7 +73,7 @@ class StatsFragment : Fragment() {
                     paddingAll = 20.0
                 }
                 showWhen {
-                    viewModel.viewStateProperty.isNotEqualTo(StatsViewState.Normal)
+                    viewModel.viewStateProperty.isNotEqualTo(StatsViewState.Loaded)
                 }
             }
         }
@@ -83,14 +83,14 @@ class StatsFragment : Fragment() {
             cellFormat {
                 paddingAll = 0.0
                 graphic = hbox(5) {
-                    label(item.first + ":")
+                    label(messages[item.first] + ":")
                     label(item.second)
                     addClass(Styles.libraryListItem)
                 }
             }
 
             showWhen {
-                viewModel.viewStateProperty.isEqualTo(StatsViewState.Normal)
+                viewModel.viewStateProperty.isEqualTo(StatsViewState.Loaded)
             }
             addClass(Styles.libraryListView)
         }
