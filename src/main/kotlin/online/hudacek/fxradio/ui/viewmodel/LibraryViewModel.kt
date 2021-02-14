@@ -25,7 +25,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Countries
@@ -106,7 +106,7 @@ class LibraryViewModel : ItemViewModel<LibraryModel>(LibraryModel()) {
             .subscribe({
                 countriesProperty.setAll(it)
             }, {
-                fire(NotificationEvent(messages["downloadError"], op = {
+                fire(NotificationPaneEvent(messages["downloadError"], op = {
                     actions.setAll(Action(messages["retry"]) {
                         showCountries()
                     })

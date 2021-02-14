@@ -20,7 +20,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.fragment.*
 import online.hudacek.fxradio.utils.openUrl
@@ -53,9 +53,9 @@ class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
     fun clearCache() = runAsync(daemon = true) {
         ImageCache.clear()
     } success {
-        fire(NotificationEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+        fire(NotificationPaneEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
     } fail {
-        fire(NotificationEvent(messages["cache.clear.error"]))
+        fire(NotificationPaneEvent(messages["cache.clear.error"]))
         logger.error(it) { "Exception when clearing cache" }
     }
 

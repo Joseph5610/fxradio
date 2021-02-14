@@ -21,7 +21,7 @@ import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.macos.MacUtils
 import online.hudacek.fxradio.media.PlayerType
 import tornadofx.FX
@@ -46,7 +46,7 @@ internal fun String.asPlayerType() = try {
     PlayerType.valueOf(this)
 } catch (e: IllegalArgumentException) {
     Platform.runLater {
-        FX.eventbus.fire(NotificationEvent("Invalid player type value detected. Using PlayerType.Custom"))
+        FX.eventbus.fire(NotificationPaneEvent("Invalid player type value detected. Using PlayerType.Custom"))
     }
     logger.error(e) { "This playerType is invalid. Using PlayerType.Custom" }
     PlayerType.Custom

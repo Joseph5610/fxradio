@@ -20,7 +20,7 @@ import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.Database
 import org.controlsfx.glyphfont.FontAwesome
@@ -56,9 +56,9 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
                 .subscribe({
                     val addStr = MessageFormat.format(messages["menu.station.favouriteAdded"], it.name)
                     stationsProperty.add(it)
-                    fire(NotificationEvent(addStr, FontAwesome.Glyph.CHECK))
+                    fire(NotificationPaneEvent(addStr, FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationEvent(messages["menu.station.favouriteAdded.error"]))
+                    fire(NotificationPaneEvent(messages["menu.station.favouriteAdded.error"]))
                 })
 
         cleanupFavourites
@@ -74,9 +74,9 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
                 .subscribe({
                     val removeStr = MessageFormat.format(messages["menu.station.favouriteRemoved"], it.name)
                     stationsProperty.remove(it)
-                    fire(NotificationEvent(removeStr, FontAwesome.Glyph.CHECK))
+                    fire(NotificationPaneEvent(removeStr, FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationEvent(messages["menu.station.favouriteRemove.error"]))
+                    fire(NotificationPaneEvent(messages["menu.station.favouriteRemove.error"]))
                 })
     }
 }

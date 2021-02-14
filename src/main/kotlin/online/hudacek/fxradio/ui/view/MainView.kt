@@ -72,7 +72,7 @@ class MainView : View(FxRadio.appName) {
         add(menuBarView)
 
         stylableNotificationPane {
-            subscribe<NotificationEvent> {
+            subscribe<NotificationPaneEvent> {
                 show(it.glyph, it.text, it.op)
             }
 

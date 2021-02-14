@@ -18,7 +18,7 @@ package online.hudacek.fxradio.ui.view.menu
 
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
 import online.hudacek.fxradio.utils.menu
@@ -60,7 +60,7 @@ class HelpMenu : FxMenu() {
 
             item(messages["menu.help.clearCache"]).action {
                 if (ImageCache.totalSize < 1) {
-                    fire(NotificationEvent(messages["cache.clear.empty"]))
+                    fire(NotificationPaneEvent(messages["cache.clear.empty"]))
                 } else {
                     confirm(messages["cache.clear.confirm"],
                             MessageFormat.format(messages["cache.clear.text"], ImageCache.totalSize), owner = primaryStage) {

@@ -23,7 +23,7 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import javafx.collections.ObservableMap
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.utils.applySchedulers
@@ -75,12 +75,12 @@ class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
         }.subscribe({
             if (!it.ok) {
                 //Why this API returns error 200 on error ...
-                fire(NotificationEvent(messages["vote.error"]))
+                fire(NotificationPaneEvent(messages["vote.error"]))
             } else {
-                fire(NotificationEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+                fire(NotificationPaneEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
             }
         }, {
-            fire(NotificationEvent(messages["vote.error"]))
+            fire(NotificationPaneEvent(messages["vote.error"]))
         })
     }
 }

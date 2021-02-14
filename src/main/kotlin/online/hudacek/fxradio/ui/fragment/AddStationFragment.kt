@@ -20,7 +20,7 @@ import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.layout.Priority
 import mu.KotlinLogging
 import okhttp3.HttpUrl
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.AddStationBody
 import online.hudacek.fxradio.ui.style.Styles
@@ -169,7 +169,7 @@ class AddStationFragment : Fragment() {
                                         viewModel.uuidProperty.value = it.uuid
 
                                         viewModel.commit {
-                                            fire(NotificationEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
+                                            fire(NotificationPaneEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
                                             close()
 
                                             //Cleanup view model

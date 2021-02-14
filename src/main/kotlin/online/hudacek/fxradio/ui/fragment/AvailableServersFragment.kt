@@ -19,7 +19,7 @@ package online.hudacek.fxradio.ui.fragment
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
 import online.hudacek.fxradio.ui.viewmodel.ServersViewState
@@ -142,7 +142,7 @@ class AvailableServersFragment : Fragment() {
                     //Save the server in the app.config property file
                     //Close the fragment after successful save
                     viewModel.commit {
-                        fire(NotificationEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
+                        fire(NotificationPaneEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
                         close()
                     }
                 }

@@ -47,10 +47,8 @@ class PlayerMenu : FxMenu() {
             playerTypeItem.isSelected = it == PlayerType.Custom
         }
 
-        notificationsViewModel.item = NotificationsModel(
-                //Notifications are currently enabled only on macOS
-                show = property(Properties.NOTIFICATIONS, MacUtils.isMac)
-        )
+        //Notifications are currently enabled only on macOS
+        notificationsViewModel.item = NotificationsModel(property(Properties.NOTIFICATIONS, MacUtils.isMac))
     }
 
     override val menu by lazy {

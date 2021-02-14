@@ -23,7 +23,7 @@ import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import mu.KotlinLogging
-import online.hudacek.fxradio.NotificationEvent
+import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
@@ -106,7 +106,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                 MediaPlayerWrapper.init(it)
 
                 if (it == PlayerType.Custom) {
-                    fire(NotificationEvent(messages["player.ffmpeg.info"]))
+                    fire(NotificationPaneEvent(messages["player.ffmpeg.info"]))
                 }
             }
         }
@@ -127,7 +127,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                             play(url)
                         } else {
                             //Error while initializing player
-                            fire(NotificationEvent(messages["player.initError"]))
+                            fire(NotificationPaneEvent(messages["player.initError"]))
                         }
                     }
                 }

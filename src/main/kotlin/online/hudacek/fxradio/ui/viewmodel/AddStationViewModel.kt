@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.StringProperty
@@ -77,8 +78,10 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
     }
 
     override fun onCommit() {
-        if (saveToFavouritesProperty.value) {
-            favouritesViewModel.addFavourite.onNext(
+        saveToFavouritesProperty
+                .toObservable()
+                .filter { it }
+                .map {
                     Station(stationuuid = uuidProperty.value,
                             name = nameProperty.value,
                             url_resolved = urlProperty.value,
@@ -88,7 +91,6 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
                             country = countryProperty.value,
                             language = languageProperty.value,
                             tags = tagsProperty.value)
-            )
-        }
+                }.subscribe(favouritesViewModel.addFavourite)
     }
 }
