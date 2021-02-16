@@ -28,32 +28,32 @@ enum class PlayerType {
 
 object MediaPlayerWrapper {
 
-    private var internalMediaPlayer: MediaPlayer? = null
+    private var currentPlayer: MediaPlayer? = null
 
     val isInitialized: Boolean
-        get() = internalMediaPlayer != null
+        get() = currentPlayer != null
 
     fun init(playerType: PlayerType) {
         logger.info { "MediaPlayer $playerType initialized" }
 
-        if (internalMediaPlayer != null) release()
+        if (currentPlayer != null) release()
 
         if (playerType == PlayerType.Custom) {
-            internalMediaPlayer = CustomPlayer()
+            currentPlayer = CustomPlayer()
         } else {
             try {
-                internalMediaPlayer = VLCPlayer()
+                currentPlayer = VLCPlayer()
             } catch (e: Exception) {
                 logger.error(e) { "VLC player failed to initialize!" }
             }
         }
     }
 
-    fun play(streamUrl: String) = internalMediaPlayer?.play(streamUrl)
+    fun play(streamUrl: String) = currentPlayer?.play(streamUrl)
 
-    fun stop() = internalMediaPlayer?.stop()
+    fun stop() = currentPlayer?.stop()
 
-    fun release() = internalMediaPlayer?.release()
+    fun release() = currentPlayer?.release()
 
-    fun changeVolume(newVolume: Double) = internalMediaPlayer?.changeVolume(newVolume)
+    fun changeVolume(newVolume: Double) = currentPlayer?.changeVolume(newVolume)
 }

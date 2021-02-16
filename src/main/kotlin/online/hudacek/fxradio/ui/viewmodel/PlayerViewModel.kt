@@ -97,12 +97,11 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                             .compose(applySchedulers())
                             .onErrorResumeNext {
                                 //We do not care if this response fails
-                                Single.just(ClickResponse(false,
-                                        "Error in ClickResponse"))
+                                Single.just(ClickResponse(false, "Error in ClickResponse"))
                             }
                 }
                 .subscribe({
-                    logger.debug { "Click: $it" }
+                    logger.debug { "Station changed, ClickResponse: $it" }
                 }, {
                     logger.error(it) { "Error with changing station..." }
                 })
@@ -119,10 +118,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
         }
 
         //Set volume for current player
-        //Save the ViewModel after setting new value
-        volumeProperty.onChange {
-            MediaPlayerWrapper.changeVolume(it)
-        }
+        volumeProperty.onChange { MediaPlayerWrapper.changeVolume(it) }
 
         playerStateProperty.onChange {
             if (it == PlayerState.Playing) {
