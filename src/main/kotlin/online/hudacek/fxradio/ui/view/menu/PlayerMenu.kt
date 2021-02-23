@@ -87,17 +87,17 @@ class PlayerMenu : FxMenu() {
                 action {
                     playerViewModel.commit()
                 }
-
-                visibleWhen {
-                    //Should be visible only on MacOS for now
-                    booleanProperty(MacUtils.isMac)
-                }
             }
 
             checkmenuitem(messages["menu.player.notifications"]) {
                 bind(notificationsViewModel.showProperty)
                 action {
                     notificationsViewModel.commit()
+                }
+
+                visibleWhen {
+                    //Notifications available only on Mac
+                    booleanProperty(!MacUtils.isMac)
                 }
             }
         }
