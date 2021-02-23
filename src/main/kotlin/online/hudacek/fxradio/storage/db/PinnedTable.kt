@@ -40,7 +40,7 @@ class PinnedTable : TableOperations<Country> {
             .parameter("name", element.name)
             .toSingle { element }
 
-    override fun remove(element: Country): Single<Country> = Database.remove("delete from $tableName where name = :name")
+    override fun remove(element: Country): Single<Country> = Database.remove("DELETE FROM $tableName WHERE name = :name")
             .parameter("name", element.name)
             .toSingle { element }
 }

@@ -68,7 +68,7 @@ class StationTable(override val tableName: String) : TableOperations<Station> {
             .toSingle { element }
 
     override fun remove(element: Station): Single<Station> =
-            Database.remove("delete from $tableName where stationuuid = :stationuuid")
+            Database.remove("DELETE FROM $tableName WHERE stationuuid = :stationuuid")
                     .parameter("stationuuid", element.stationuuid)
                     .toSingle { element }
 
