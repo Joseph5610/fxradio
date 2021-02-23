@@ -51,7 +51,7 @@ class HistoryMenu : FxMenu() {
             item(messages["menu.history.show"], keyHistory).action {
                 libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
             }
-            separator()
+
             menu(messages["menu.history.recent"]) {
                 disableWhen {
                     historyViewModel.stationsProperty.emptyProperty()

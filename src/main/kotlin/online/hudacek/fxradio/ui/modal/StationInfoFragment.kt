@@ -121,7 +121,6 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                             name = messages["copy"],
                             value = text)
 
-
                     showWhen {
                         viewModel.homePageProperty.isNotEmpty
                     }

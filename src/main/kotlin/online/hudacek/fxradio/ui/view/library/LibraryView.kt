@@ -102,8 +102,7 @@ class LibraryView : View() {
                                 .subscribe(viewModel.refreshCountries)
 
                         showWhen {
-                            viewModel.countriesProperty.emptyProperty()
-                                    .and(viewModel.showCountriesProperty)
+                            viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
                         }
                     }
                 }

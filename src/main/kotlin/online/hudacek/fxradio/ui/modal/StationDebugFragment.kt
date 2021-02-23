@@ -21,14 +21,12 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class StationDebugFragment : Fragment() {
+class StationDebugFragment : Fragment("Station Debug Window") {
 
     private val viewModel: PlayerViewModel by inject()
 
     override val root = vbox {
         setPrefSize(600.0, 400.0)
-        titleProperty.bind(viewModel.stationProperty.asString())
-
         textarea(viewModel.stationProperty.asString()) {
             vgrow = Priority.ALWAYS
             isWrapText = true

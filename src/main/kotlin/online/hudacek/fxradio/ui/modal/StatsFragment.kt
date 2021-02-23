@@ -79,7 +79,7 @@ class StatsFragment : Fragment() {
         }
 
         listview(viewModel.statsProperty) {
-            isMouseTransparent = true
+            isMouseTransparent = true //Disable clicking into listview, as it is not needed for this listview
             cellFormat {
                 paddingAll = 0.0
                 graphic = hbox(5) {

@@ -59,7 +59,6 @@ class FavouritesMenu : FxMenu() {
             item(messages["menu.favourites.show"]).action {
                 libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Favourites)
             }
-            separator()
 
             //Add favourite
             item(messages["menu.station.favourite"], keyFavourites) {
