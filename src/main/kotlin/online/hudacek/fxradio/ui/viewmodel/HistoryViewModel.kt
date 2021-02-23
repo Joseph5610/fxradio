@@ -21,7 +21,7 @@ import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.db.Tables
 import tornadofx.ItemViewModel
 import tornadofx.observableListOf
 import tornadofx.property
@@ -51,19 +51,17 @@ class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
         playerViewModel.stationChanges
                 //Add only valid stations not already present in history
                 .filter { it.isValid() && !stationsProperty.contains(it) }
-                .flatMapSingle { Database.history.insert(it) }
-                .subscribe({
+                .doOnError { logger.error(it) { "Error adding station to history!" } }
+                .flatMapSingle { Tables.history.insert(it) }
+                .subscribe {
                     stationsProperty.add(it)
-                }, {
-                    logger.error(it) { "Error adding station to history!" }
-                })
+                }
 
         cleanupHistory
-                .flatMapSingle { Database.history.delete() }
-                .subscribe({
+                .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
+                .flatMapSingle { Tables.history.delete() }
+                .subscribe {
                     item = HistoryModel()
-                }, {
-                    logger.error(it) { "Cannot perform DB cleanup!" }
-                })
+                }
     }
 }

@@ -58,7 +58,7 @@ class AttributionModel(name: String, version: String = "", license: License) {
  * Attribution view model
  * -------------------
  * Handles information about Licensing
- * Used in [online.hudacek.fxradio.ui.fragment.AttributionsFragment]
+ * Used in [online.hudacek.fxradio.ui.modal.AttributionsFragment]
  */
 class AttributionViewModel : ItemViewModel<AttributionModel>() {
     val nameProperty = bind(AttributionModel::name) as StringProperty

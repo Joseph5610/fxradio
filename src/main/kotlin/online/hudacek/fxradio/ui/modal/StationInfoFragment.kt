@@ -14,15 +14,12 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.fragment
+package online.hudacek.fxradio.ui.modal
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
-import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
-import javafx.stage.StageStyle
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.style.Styles
@@ -59,13 +56,6 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                     fitHeight = 100.0
                     fitHeight = 100.0
                     isPreserveRatio = true
-
-                    if (Config.Flags.enableStationDebug) {
-                        addEventFilter(MouseEvent.MOUSE_CLICKED) { event ->
-                            if (event.clickCount > 3)
-                                find<StationDebugFragment>().openModal(stageStyle = StageStyle.UTILITY)
-                        }
-                    }
                 }
             }
         }
@@ -78,7 +68,7 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
 
             viewModel.infoItemsProperty.forEach {
                 //Don't display not not relevant values
-                if (it.value != "0") {
+                if (it.value != "0" && it.value.isNotEmpty()) {
                     val text =
                             if (it.key.isNotEmpty()) messages[it.key] + ": " + it.value
                             else it.value
@@ -130,12 +120,14 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                     copyMenu(clipboard,
                             name = messages["copy"],
                             value = text)
+
+
+                    showWhen {
+                        viewModel.homePageProperty.isNotEmpty
+                    }
+
                     addClass(Styles.primaryTextColor)
                 }
-            }
-
-            showWhen {
-                viewModel.homePageProperty.isNotEmpty
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

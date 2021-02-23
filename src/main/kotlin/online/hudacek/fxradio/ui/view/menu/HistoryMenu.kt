@@ -20,7 +20,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import mu.KotlinLogging
-import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
@@ -37,7 +37,7 @@ class HistoryMenu : FxMenu() {
     private val keyHistory = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
 
     init {
-        Database.history
+        Tables.history
                 .select()
                 .subscribe({
                     historyViewModel.item = HistoryModel(it.asObservable())

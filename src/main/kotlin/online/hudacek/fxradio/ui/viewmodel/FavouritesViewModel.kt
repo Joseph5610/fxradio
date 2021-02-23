@@ -22,7 +22,7 @@ import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.db.Tables
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.ItemViewModel
 import tornadofx.get
@@ -52,7 +52,7 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
     init {
         addFavourite
                 .filter { it.isValid() && !stationsProperty.contains(it) }
-                .flatMapSingle { Database.favourites.insert(it) }
+                .flatMapSingle { Tables.favourites.insert(it) }
                 .subscribe({
                     val addStr = MessageFormat.format(messages["menu.station.favouriteAdded"], it.name)
                     stationsProperty.add(it)
@@ -62,15 +62,14 @@ class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
                 })
 
         cleanupFavourites
-                .flatMapSingle { Database.favourites.delete() }
-                .subscribe({
+                .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
+                .flatMapSingle { Tables.favourites.delete() }
+                .subscribe {
                     item = FavouritesModel()
-                }, {
-                    logger.error(it) { "Cannot perform DB cleanup!" }
-                })
+                }
 
         removeFavourite
-                .flatMapSingle { Database.favourites.remove(it) }
+                .flatMapSingle { Tables.favourites.remove(it) }
                 .subscribe({
                     val removeStr = MessageFormat.format(messages["menu.station.favouriteRemoved"], it.name)
                     stationsProperty.remove(it)

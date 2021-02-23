@@ -83,6 +83,7 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
     init {
         stationChanges
                 .filter { it.isValid() }
+                .doOnError { logger.error(it) { "Error with changing station..." } }
                 .flatMapSingle {
                     //Restart playing status
                     playerStateProperty.value = PlayerState.Stopped
@@ -100,11 +101,9 @@ class PlayerViewModel : ItemViewModel<PlayerModel>() {
                                 Single.just(ClickResponse(false, "Error in ClickResponse"))
                             }
                 }
-                .subscribe({
+                .subscribe {
                     logger.debug { "Station changed, ClickResponse: $it" }
-                }, {
-                    logger.error(it) { "Error with changing station..." }
-                })
+                }
 
         playerTypeProperty.onChange {
             it?.let {

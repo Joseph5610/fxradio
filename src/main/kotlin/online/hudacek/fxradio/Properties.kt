@@ -36,6 +36,7 @@ enum class Properties(val key: String) {
     WINDOW_DIVIDER("windowDivider"),
     WINDOW_SHOW_LIBRARY("window.showLibrary"),
     WINDOW_SHOW_COUNTRIES("window.showCountries"),
+    WINDOW_SHOW_PINNED("window.showPinned"),
     LOG_LEVEL("log.level");
 }
 
@@ -46,10 +47,6 @@ class Property(property: Properties) : Component() {
 
     //Extract value
     val key = property.key
-
-    init {
-        logger.debug { "Creating property object for $key " }
-    }
 
     val isPresent: Boolean
         get() {

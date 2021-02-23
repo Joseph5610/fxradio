@@ -22,7 +22,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.ui.fragment.*
+import online.hudacek.fxradio.ui.modal.*
 import online.hudacek.fxradio.utils.openUrl
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*

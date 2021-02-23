@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.beans.property.MapProperty
@@ -26,6 +27,7 @@ import javafx.collections.ObservableMap
 import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.model.VoteResponse
 import online.hudacek.fxradio.utils.applySchedulers
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -68,19 +70,20 @@ class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
 
     init {
         //Increase vote count on the server
-        addVote.flatMapSingle {
-            StationsApi.service
-                    .vote(stationProperty.value.stationuuid)
-                    .compose(applySchedulers())
-        }.subscribe({
-            if (!it.ok) {
-                //Why this API returns error 200 on error ...
-                fire(NotificationPaneEvent(messages["vote.error"]))
-            } else {
-                fire(NotificationPaneEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
-            }
-        }, {
-            fire(NotificationPaneEvent(messages["vote.error"]))
-        })
+        addVote
+                .flatMapSingle {
+                    StationsApi.service
+                            .vote(stationProperty.value.stationuuid)
+                            .compose(applySchedulers())
+                            .onErrorResumeNext { Single.just(VoteResponse(false, "Voting returned error response")) }
+                }
+                .subscribe {
+                    if (!it.ok) {
+                        //Why this API returns error 200 on error ...
+                        fire(NotificationPaneEvent(messages["vote.error"]))
+                    } else {
+                        fire(NotificationPaneEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+                    }
+                }
     }
 }

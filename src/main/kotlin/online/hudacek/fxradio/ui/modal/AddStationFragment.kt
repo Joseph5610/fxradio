@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.fragment
+package online.hudacek.fxradio.ui.modal
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.layout.Priority
@@ -162,6 +162,7 @@ class AddStationFragment : Fragment() {
                                                     viewModel.tagsProperty.value
                                             ))
                                             .compose(applySchedulers())
+
                                 }.subscribe({
                                     if (it.ok) {
 

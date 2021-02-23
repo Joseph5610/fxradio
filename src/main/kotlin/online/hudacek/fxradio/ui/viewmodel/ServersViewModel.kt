@@ -45,7 +45,7 @@ class ServersModel(selectedServer: String = Config.API.fallbackApiServerURL,
  * Item is set in [online.hudacek.fxradio.api.StationsApi.Companion]
  *
  * Search for available servers is performed only on first start of the app or when opening
- * [online.hudacek.fxradio.ui.fragment.AvailableServersFragment]
+ * [online.hudacek.fxradio.ui.modal.AvailableServersFragment]
  */
 class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
 

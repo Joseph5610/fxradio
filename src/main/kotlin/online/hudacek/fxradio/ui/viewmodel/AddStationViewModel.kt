@@ -31,7 +31,7 @@ import java.util.*
 /**
  * Add Station view model
  * -------------------
- * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
+ * Stores entered information into the form in [online.hudacek.fxradio.ui.modal.AddStationFragment]
  * Handles logic for adding new station into the API
  */
 class AddStationModel(name: String = "",

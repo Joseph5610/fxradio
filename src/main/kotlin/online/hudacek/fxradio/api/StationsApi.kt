@@ -52,7 +52,7 @@ interface StationsApi {
     fun add(@Body addBody: AddStationBody): Single<AddStationResponse>
 
     @POST("json/countries")
-    fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
+    fun getCountries(@Body countriesBody: CountriesBody): Single<List<Country>>
 
     @GET("json/stats")
     fun getStats(): Single<Stats>

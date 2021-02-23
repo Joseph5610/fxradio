@@ -21,16 +21,17 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import javafx.stage.StageStyle
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.storage.stationImage
-import online.hudacek.fxradio.ui.fragment.StationInfoFragment
+import online.hudacek.fxradio.ui.modal.StationDebugFragment
+import online.hudacek.fxradio.ui.modal.StationInfoFragment
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewState
 import online.hudacek.fxradio.utils.showWhen
 import online.hudacek.fxradio.utils.smallLabel
 import tornadofx.*
-import tornadofx.controlsfx.popover
-import tornadofx.controlsfx.showPopover
 
 /**
  * Main view of stations
@@ -62,19 +63,18 @@ class StationsDataGridView : View() {
 
         cellCache {
             vbox {
-                onRightClick {
-                    popover {
-                        title = it.name
-                        isCloseButtonEnabled = true
-                        isHeaderAlwaysVisible = true
-                        vbox {
-                            add(StationInfoFragment(it))
+                contextmenu {
+                    item(messages["menu.station.info"]).action {
+                        StationInfoFragment(it).openModal(stageStyle = StageStyle.UTILITY)
+                    }
+
+                    if (Config.Flags.enableStationDebug) {
+                        separator()
+                        item("Debug station").action {
+                            find<StationDebugFragment>().openModal(stageStyle = StageStyle.UTILITY)
                         }
                     }
-                    showPopover()
                 }
-
-                onHover { _ -> tooltip(it.name) }
 
                 paddingAll = 5
                 vbox(alignment = Pos.CENTER) {
@@ -91,6 +91,7 @@ class StationsDataGridView : View() {
                     }
                 }
                 label(it.name) {
+                    onHover { _ -> tooltip(it.name) }
                     style {
                         fontSize = 13.px
                     }

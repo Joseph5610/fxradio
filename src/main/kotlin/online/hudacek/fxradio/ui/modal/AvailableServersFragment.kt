@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.fragment
+package online.hudacek.fxradio.ui.modal
 
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos

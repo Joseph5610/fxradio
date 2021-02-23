@@ -26,7 +26,7 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.macos.MacMenu
-import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.viewmodel.LibraryItem
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
@@ -114,7 +114,9 @@ class BasicFunctionalityTests {
 
         //wait until loaded
         sleep(2)
-        robot.doubleClickOn(stations.items[0].name)
+        //Avoid station names that start with # as it is query locator for ID
+        val stationToClick = stations.items.first { !it.name.startsWith("#") }
+        robot.doubleClickOn(stationToClick.name)
 
         WaitForAsyncUtils.waitForFxEvents()
 
@@ -155,7 +157,7 @@ class BasicFunctionalityTests {
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        val historydbCount = Database.history.select().blockingGet().size
+        val historydbCount = Tables.history.select().blockingGet().size
 
         if (historydbCount == 0) {
             //Stations library is containing all stations
@@ -204,7 +206,7 @@ class BasicFunctionalityTests {
         verifyThat(stationMessageSubHeader, visible())
         verifyThat(search, hasValue("st"))
 
-        verifyThat(stationMessageHeader, hasText("Searching Your Library"))
+        verifyThat(stationMessageHeader, hasText("Searching Radio Directory"))
 
         robot.enterText(search, "station")
 

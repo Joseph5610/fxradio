@@ -20,7 +20,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import mu.KotlinLogging
-import online.hudacek.fxradio.storage.Database
+import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.viewmodel.*
 import online.hudacek.fxradio.utils.menu
 import tornadofx.*
@@ -45,7 +45,7 @@ class FavouritesMenu : FxMenu() {
     }
 
     init {
-        Database.favourites
+        Tables.favourites
                 .select()
                 .subscribe({
                     favouritesViewModel.item = FavouritesModel(it.asObservable())

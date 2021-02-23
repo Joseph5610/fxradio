@@ -16,28 +16,43 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
+import mu.KotlinLogging
 import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.property
+import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.LibraryModel
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 
+private val logger = KotlinLogging.logger {}
+
 class LibraryView : View() {
 
     private val viewModel: LibraryViewModel by inject()
 
     private val librarySearchView: LibrarySearchView by inject()
-    private val libraryCountriesListView: LibraryCountriesListView by inject()
+    private val libraryCountriesView: LibraryCountriesView by inject()
     private val libraryListView: LibraryListView by inject()
+    private val libraryPinnedView: LibraryPinnedView by inject()
 
     override fun onDock() {
         viewModel.item = LibraryModel(
-                showLibrary = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_LIBRARY, true),
-                showCountries = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_COUNTRIES, true))
-
-        viewModel.showCountries()
+                showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
+                showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true),
+                showPinned = property(Properties.WINDOW_SHOW_PINNED, true)
+        )
+        Tables.pinned
+                .select()
+                .subscribe({
+                    viewModel.pinnedProperty.value = it.asObservable()
+                }, {
+                    logger.error(it) { "Error while getting pinned stations" }
+                })
+        viewModel.refreshCountries.onNext(Unit)
     }
 
     override val root = borderpane {
@@ -55,6 +70,17 @@ class LibraryView : View() {
                     viewModel.commit()
                 })
                 add(libraryListView)
+
+                vbox {
+                    add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
+                        viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
+                        viewModel.commit()
+                    })
+                    add(libraryPinnedView)
+                    showWhen {
+                        viewModel.pinnedProperty.emptyProperty().not()
+                    }
+                }
             }
         }
 
@@ -65,21 +91,23 @@ class LibraryView : View() {
                     viewModel.commit()
                 })
 
-                add(libraryCountriesListView)
+                add(libraryCountriesView)
 
                 //Retry link
                 vbox(alignment = Pos.CENTER) {
                     hyperlink(messages["downloadRetry"]) {
-                        action {
-                            viewModel.showCountries()
-                        }
+
+                        actionEvents()
+                                .map { Unit }
+                                .subscribe(viewModel.refreshCountries)
+
                         showWhen {
                             viewModel.countriesProperty.emptyProperty()
                                     .and(viewModel.showCountriesProperty)
                         }
                     }
                 }
-                libraryCountriesListView.root.prefHeightProperty().bind(heightProperty())
+                libraryCountriesView.root.prefHeightProperty().bind(heightProperty())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

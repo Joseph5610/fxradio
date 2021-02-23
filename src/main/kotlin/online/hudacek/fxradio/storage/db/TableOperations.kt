@@ -14,25 +14,22 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.fragment
+package online.hudacek.fxradio.storage.db
 
-import javafx.scene.layout.Priority
-import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import tornadofx.*
+import io.reactivex.Single
 
-class StationDebugFragment : Fragment() {
+//Basic interface for common table operations
+interface TableOperations<in T> {
 
-    private val viewModel: PlayerViewModel by inject()
+    val tableName: String
 
-    override val root = vbox {
-        setPrefSize(600.0, 400.0)
-        titleProperty.bind(viewModel.stationProperty.asString())
+    val createTableSql: String
 
-        textarea(viewModel.stationProperty.asString()) {
-            vgrow = Priority.ALWAYS
-            isWrapText = true
-        }
-        addClass(Styles.backgroundWhiteSmoke)
-    }
+    fun select(): Single<*>
+    fun delete(): Single<*>
+    fun insert(element: T): Single<*>
+    fun remove(element: T): Single<*>
 }
+
+
+
