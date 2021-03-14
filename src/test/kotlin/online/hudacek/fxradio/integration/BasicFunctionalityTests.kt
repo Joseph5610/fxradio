@@ -25,11 +25,11 @@ import online.hudacek.fxradio.FxRadioLight
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.macos.MacMenu
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.viewmodel.LibraryItem
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.macos.MacMenu
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
@@ -157,9 +157,9 @@ class BasicFunctionalityTests {
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        val historydbCount = Tables.history.select().blockingGet().size
+        val historydbCount = Tables.history.selectAll().count().blockingGet()
 
-        if (historydbCount == 0) {
+        if (historydbCount == 0L) {
             //Stations library is containing all stations
             waitFor(2) {
                 !stations.isVisible

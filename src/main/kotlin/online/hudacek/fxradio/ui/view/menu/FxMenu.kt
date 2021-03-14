@@ -17,12 +17,12 @@
 package online.hudacek.fxradio.ui.view.menu
 
 import javafx.scene.control.Menu
-import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
+import online.hudacek.fxradio.ui.viewmodel.AppMenuViewModel
 import tornadofx.Controller
 
 abstract class FxMenu : Controller() {
 
-    val menuViewModel: MenuViewModel by inject()
+    val appMenuViewModel: AppMenuViewModel by inject()
 
     abstract val menu: Menu
 }

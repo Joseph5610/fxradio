@@ -16,11 +16,12 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.subjects.BehaviorSubject
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
 import tornadofx.ItemViewModel
 import tornadofx.observableListOf
@@ -28,7 +29,7 @@ import tornadofx.property
 
 private val logger = KotlinLogging.logger {}
 
-class HistoryModel(stations: ObservableList<Station> = observableListOf()) {
+class History(stations: ObservableList<Station> = observableListOf()) {
     var stations: ObservableList<Station> by property(stations)
 }
 
@@ -38,17 +39,17 @@ class HistoryModel(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about last played stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
-class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
-
+class HistoryViewModel : ItemViewModel<History>(History()) {
+    private val appEvent: AppEvent by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
-    val stationsProperty = bind(HistoryModel::stations) as ListProperty
-
-    val cleanupHistory = BehaviorSubject.create<Unit>()
+    val stationsProperty = bind(History::stations) as ListProperty
 
     init {
         //Add currently listened station to history
-        playerViewModel.stationChanges
+        playerViewModel.stationProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 //Add only valid stations not already present in history
                 .filter { it.isValid() && !stationsProperty.contains(it) }
                 .doOnError { logger.error(it) { "Error adding station to history!" } }
@@ -57,11 +58,11 @@ class HistoryViewModel : ItemViewModel<HistoryModel>(HistoryModel()) {
                     stationsProperty.add(it)
                 }
 
-        cleanupHistory
+        appEvent.cleanupHistory
                 .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
-                .flatMapSingle { Tables.history.delete() }
+                .flatMapSingle { Tables.history.removeAll() }
                 .subscribe {
-                    item = HistoryModel()
+                    item = History()
                 }
     }
 }

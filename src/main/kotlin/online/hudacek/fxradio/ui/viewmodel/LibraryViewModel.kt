@@ -16,27 +16,23 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
-import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.NotificationPaneEvent
-import online.hudacek.fxradio.Properties
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.isValid
-import online.hudacek.fxradio.saveProperties
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
 import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.applySchedulers
-import org.controlsfx.control.action.Action
+import online.hudacek.fxradio.utils.saveProperties
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-import java.text.MessageFormat
 
 enum class LibraryType {
     Favourites, Search, History, Country, TopStations
@@ -44,14 +40,11 @@ enum class LibraryType {
 
 data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
 
-data class SelectedLibrary(val type: LibraryType, val params: String = "")
-
-class LibraryModel(countries: ObservableList<Country> = observableListOf(),
-                   pinned: ObservableList<Country> = observableListOf(),
-                   selected: SelectedLibrary = SelectedLibrary(LibraryType.TopStations),
-                   showLibrary: Boolean = true,
-                   showCountries: Boolean = true,
-                   showPinned: Boolean = true) {
+class Library(countries: ObservableList<Country> = observableListOf(),
+              pinned: ObservableList<Country> = observableListOf(),
+              showLibrary: Boolean = true,
+              showCountries: Boolean = true,
+              showPinned: Boolean = true) {
 
     //Countries shown in Countries ListView
     var countries: ObservableList<Country> by property(countries)
@@ -66,7 +59,6 @@ class LibraryModel(countries: ObservableList<Country> = observableListOf(),
             LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
     ))
 
-    var selected: SelectedLibrary by property(selected)
     var showLibrary: Boolean by property(showLibrary)
     var showCountries: Boolean by property(showCountries)
     var showPinned: Boolean by property(showPinned)
@@ -78,74 +70,60 @@ class LibraryModel(countries: ObservableList<Country> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : ItemViewModel<LibraryModel>(LibraryModel()) {
+class LibraryViewModel : ItemViewModel<Library>(Library()) {
+    private val appEvent: AppEvent by inject()
 
-    val countriesProperty = bind(LibraryModel::countries) as ListProperty
-    val librariesProperty = bind(LibraryModel::libraries) as ListProperty
-    val pinnedProperty = bind(LibraryModel::pinned) as ListProperty
+    val countriesProperty = bind(Library::countries) as ListProperty
+    val librariesProperty = bind(Library::libraries) as ListProperty
+    val pinnedProperty = bind(Library::pinned) as ListProperty
 
-    //Currently selected library type
-    val selectedProperty = bind(LibraryModel::selected) as ObjectProperty
-    val selectedPropertyChanges: Observable<SelectedLibrary> = selectedProperty
-            .toObservableChanges()
-            .map { it.newVal }
-
-    val showLibraryProperty = bind(LibraryModel::showLibrary) as BooleanProperty
-    val showCountriesProperty = bind(LibraryModel::showCountries) as BooleanProperty
-    val showPinnedProperty = bind(LibraryModel::showPinned) as BooleanProperty
-
-    val refreshLibrary = BehaviorSubject.create<LibraryType>()
-
-    val pinCountry = BehaviorSubject.create<Country>()
-    val unpinCountry = BehaviorSubject.create<Country>()
-    val refreshCountries = BehaviorSubject.create<Unit>()
+    val showLibraryProperty = bind(Library::showLibrary) as BooleanProperty
+    val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
+    val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
     private val showCountriesSingle: Single<List<Country>> = StationsApi.service
             .getCountries(CountriesBody())
             .compose(applySchedulers())
 
     init {
-        refreshLibrary
-                .filter { selectedProperty.value.type == it }
-                .subscribe {
-                    selectedProperty.value = null
-                    selectedProperty.value = SelectedLibrary(it)
-                }
-
-        pinCountry
+        appEvent.pinCountry
                 .filter { !pinnedProperty.contains(it) }
-                .flatMapSingle { Tables.pinned.insert(it) }
+                .flatMapSingle { Tables.pinnedCountries.insert(it) }
                 .subscribe({
-                    val pinStr = MessageFormat.format(messages["pinned.message"], it.name)
                     pinnedProperty.add(it)
-                    fire(NotificationPaneEvent(pinStr, FontAwesome.Glyph.CHECK))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["pinned.message"].formatted(it.name),
+                                    FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationPaneEvent(messages["pinning.error"]))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["pinning.error"],
+                                    FontAwesome.Glyph.WARNING))
                 })
 
-        unpinCountry
+        appEvent.unpinCountry
                 .filter { pinnedProperty.contains(it) }
-                .flatMapSingle { Tables.pinned.remove(it) }
+                .flatMapSingle { Tables.pinnedCountries.remove(it) }
                 .subscribe({
-                    val pinStr = MessageFormat.format(messages["unpinned.message"], it.name)
                     pinnedProperty.remove(it)
-                    fire(NotificationPaneEvent(pinStr, FontAwesome.Glyph.CHECK))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["unpinned.message"].formatted(it.name),
+                                    FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationPaneEvent(messages["pinning.error"]))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["pinning.error"],
+                                    FontAwesome.Glyph.WARNING))
                 })
 
-        refreshCountries
+        appEvent.refreshCountries
                 .flatMapSingle { showCountriesSingle }
                 //Ignore invalid states
                 .map { list -> list.filter { it.isValid }.asObservable() }
                 .subscribe({
                     countriesProperty.setAll(it)
                 }, {
-                    fire(NotificationPaneEvent(messages["downloadError"], op = {
-                        actions.setAll(Action(messages["retry"]) {
-                            refreshCountries.onNext(Unit)
-                        })
-                    }))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["downloadError"],
+                                    FontAwesome.Glyph.WARNING))
                 })
     }
 

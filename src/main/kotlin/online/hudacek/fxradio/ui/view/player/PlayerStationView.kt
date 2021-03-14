@@ -20,26 +20,21 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.media.MetaDataChanged
-import online.hudacek.fxradio.storage.stationImage
+import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
+import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.Notification
-import online.hudacek.fxradio.ui.viewmodel.NotificationsViewModel
+import online.hudacek.fxradio.ui.tickerView
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.autoUpdatingCopyMenu
-import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.tickerView
 import tornadofx.*
 
 /**
  * Player info box - now playing song, radio logo, radio name
  */
-class PlayerStationBoxView : View() {
+class PlayerStationView : View() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val notificationsViewModel: NotificationsViewModel by inject()
-
     private val tickerView by lazy { tickerView() }
 
     private val playingStatusLabel = viewModel.playerStateProperty.stringBinding {
@@ -59,7 +54,6 @@ class PlayerStationBoxView : View() {
     init {
         //Subscribe to property changes
         viewModel.stationProperty.stationImage(stationLogo)
-        subscribe<MetaDataChanged> { it.let(::onMetaDataChanged) }
     }
 
     override val root = hbox(5) {
@@ -106,31 +100,5 @@ class PlayerStationBoxView : View() {
             }
         }
         addClass(Styles.playerStationBox)
-    }
-
-    /**
-     * Called when new song starts playing or other metadata of stream changes
-     * @param event new stream Meta Data
-     */
-    private fun onMetaDataChanged(event: MetaDataChanged) {
-        val newSongName = event.newMetaData.nowPlaying.trim()
-        val newStreamTitle = event.newMetaData.stationName.trim()
-
-        //Do not update if song name is too short
-        if (newSongName.length > 1) {
-            if (newStreamTitle.isNotEmpty()) {
-
-                notificationsViewModel.show
-                        .onNext(Notification(title = newSongName, value = newStreamTitle))
-
-                if (newStreamTitle != viewModel.stationProperty.value.name) {
-                    viewModel.trackNameProperty.value = "$newStreamTitle - $newSongName"
-                } else {
-                    viewModel.trackNameProperty.value = newSongName
-                }
-            } else {
-                viewModel.trackNameProperty.value = newSongName
-            }
-        }
     }
 }

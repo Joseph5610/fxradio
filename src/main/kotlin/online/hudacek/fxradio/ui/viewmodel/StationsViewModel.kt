@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.ui.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
@@ -36,8 +35,8 @@ enum class StationsViewState {
     Loaded, Error, Loading, Empty, ShortQuery
 }
 
-class StationsModel(stations: ObservableList<Station> = observableListOf(),
-                    viewState: StationsViewState = StationsViewState.Empty) {
+class Stations(stations: ObservableList<Station> = observableListOf(),
+               viewState: StationsViewState = StationsViewState.Empty) {
     var stations: ObservableList<Station> by property(stations)
     var viewState: StationsViewState by property(viewState)
 }
@@ -48,20 +47,15 @@ class StationsModel(stations: ObservableList<Station> = observableListOf(),
  * Holds information about currently shown
  * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
-class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
+class StationsViewModel : ItemViewModel<Stations>(Stations()) {
 
     private val historyViewModel: HistoryViewModel by inject()
-    private val libraryViewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
-    val stationsProperty = bind(StationsModel::stations) as ListProperty
-    val viewStateProperty = bind(StationsModel::viewState) as ObjectProperty
-
-    private val viewStateChanges: Observable<StationsViewState> = viewStateProperty
-            .toObservableChangesNonNull()
-            .map { it.newVal }
-
+    val stationsProperty = bind(Stations::stations) as ListProperty
+    val viewStateProperty = bind(Stations::viewState) as ObjectProperty
 
     //Retrieves top voted stations list from endpoint
     private val topStations: Single<List<Station>> = StationsApi.service
@@ -69,17 +63,21 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
             .compose(applySchedulers())
 
     init {
-        libraryViewModel.selectedPropertyChanges
+        selectedLibraryViewModel.itemProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 .subscribe {
                     viewStateProperty.value = StationsViewState.Loading
                 }
 
-        viewStateChanges
+        viewStateProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 .filter { it == StationsViewState.Loading }
-                .map { libraryViewModel.selectedProperty.value }
+                .map { selectedLibraryViewModel.itemProperty.value }
                 .subscribe {
                     when (it.type) {
-                        LibraryType.Country -> stationsByCountry(it.params)
+                        LibraryType.Country -> stationsByCountry(it.libraryOption)
                         LibraryType.Favourites -> show(favouritesViewModel.stationsProperty)
                         LibraryType.History -> show(historyViewModel.stationsProperty)
                         LibraryType.TopStations -> topStations.subscribe(::show, ::handleError)
@@ -88,17 +86,17 @@ class StationsViewModel : ItemViewModel<StationsModel>(StationsModel()) {
                 }
 
         //Refresh search on query change
-        searchViewModel.searchQueryChanges
+        searchViewModel.queryChanges
                 .subscribe {
                     //It can happen that the current library is not search when the query changes
-                    libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Search)
+                    selectedLibraryViewModel.item = SelectedLibrary(LibraryType.Search)
                     searchViewModel.commit()
                     search() //Perform the search call again
                 }
     }
 
     private fun search() {
-        if (searchViewModel.searchQueryProperty.length() <= 2) {
+        if (searchViewModel.queryProperty.length() <= 2) {
             viewStateProperty.value = StationsViewState.ShortQuery
         } else {
             if (searchViewModel.searchByTagProperty.value) {

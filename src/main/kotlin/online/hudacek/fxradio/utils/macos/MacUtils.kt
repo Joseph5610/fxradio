@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.macos
+package online.hudacek.fxradio.utils.macos
 
 import airsquared.JMacNotification.NSUserNotification
 import online.hudacek.fxradio.utils.command
@@ -25,7 +25,9 @@ object MacUtils {
 
     val isMac = Platform.getCurrent() == Platform.OSX
 
-    //MacOS native notification
+    /**
+     * Shows MacOS native system notification
+     */
     fun notification(title: String, subtitle: String) =
             NSUserNotification().apply {
                 this.title = title
@@ -33,7 +35,6 @@ object MacUtils {
                 show()
             }
 
-
     val isSystemDarkMode: Boolean
-        get() = command("defaults read -g AppleInterfaceStyle").result == "Dark"
+        get() = Runtime.getRuntime().command("defaults read -g AppleInterfaceStyle").result == "Dark"
 }

@@ -17,24 +17,23 @@
 package online.hudacek.fxradio.ui.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
-import io.reactivex.Observable
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.HttpClientHolder
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import tornadofx.*
 
 enum class ServersViewState {
     Loading, Loaded, Error
 }
 
-class ServersModel(selectedServer: String = Config.API.fallbackApiServerURL,
-                   availableServers: ObservableList<String> = observableListOf(),
-                   viewState: ServersViewState = ServersViewState.Loaded) {
+class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
+              availableServers: ObservableList<String> = observableListOf(),
+              viewState: ServersViewState = ServersViewState.Loaded) {
     var selected: String by property(selectedServer)
     var servers: ObservableList<String> by property(availableServers)
     var viewState: ServersViewState by property(viewState)
@@ -47,23 +46,21 @@ class ServersModel(selectedServer: String = Config.API.fallbackApiServerURL,
  * Search for available servers is performed only on first start of the app or when opening
  * [online.hudacek.fxradio.ui.modal.AvailableServersFragment]
  */
-class ServersViewModel : ItemViewModel<ServersModel>(ServersModel()) {
+class ServersViewModel : ItemViewModel<Servers>(Servers()) {
 
     val savedServerValue = Property(Properties.API_SERVER)
 
-    val serversProperty = bind(ServersModel::servers) as ListProperty<String>
-    val selectedProperty = bind(ServersModel::selected) as StringProperty
-    val viewStateProperty = bind(ServersModel::viewState) as ObjectProperty
-
-    private val viewStateObservable: Observable<ServersViewState> = viewStateProperty
-            .toObservableChangesNonNull()
-            .map { it.newVal }
+    val serversProperty = bind(Servers::servers) as ListProperty<String>
+    val selectedProperty = bind(Servers::selected) as StringProperty
+    val viewStateProperty = bind(Servers::viewState) as ObjectProperty
 
     /**
      * Perform async DNS lookup to find working API servers
      */
     init {
-        viewStateObservable
+        viewStateProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 .filter { it == ServersViewState.Loading }
                 .subscribe {
                     runAsync(daemon = true) {

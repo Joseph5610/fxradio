@@ -23,9 +23,11 @@ import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
-import online.hudacek.fxradio.ui.viewmodel.LogModel
+import online.hudacek.fxradio.ui.viewmodel.Log
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.utils.isSystemDarkMode
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.utils.property
 import org.apache.logging.log4j.Level
 import tornadofx.*
 import java.nio.file.Path
@@ -33,23 +35,27 @@ import java.nio.file.Paths
 import kotlin.reflect.KClass
 
 /**
- * Main class of the app
- * main() method should be run to start the app
+ * Load app in Dark Mode
  */
-
-//Dark mode
 class FxRadioDark : FxRadio(StylesDark::class) {
     override var useDarkModeStyle = true
 }
 
-//Light mode
+/**
+ * Load app in Light Mode
+ */
 class FxRadioLight : FxRadio(Styles::class) {
     override var useDarkModeStyle = false
 }
 
+/**
+ * Load the app with provided [stylesheet] class
+ */
 open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
 
-    //override app.config path to user.home/fxradio
+    /**
+     * override app.config path to $user.home/fxradio
+     */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
     private val logViewModel: LogViewModel by inject()
@@ -66,7 +72,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
         //init logger level based on stored settings
         val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
-        logViewModel.item = LogModel(savedLevel)
+        logViewModel.item = Log(savedLevel)
     }
 
     /**
@@ -83,10 +89,11 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         val isAppInDarkMode by lazy { (app as FxRadio).useDarkModeStyle }
 
         /**
-         * Get version from jar MANIFEST.MF file
+         * Gets version from jar MANIFEST.MF file
+         * On failure (e.g if app is not run from the jar file), returns the "0.0-DEVELOPMENT" value
          */
         val version: String by lazy {
-            FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
         }
 
         //Should be called when on every place that is closing the app
@@ -97,6 +104,15 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     }
 }
 
+private val isSystemDarkMode: Boolean = if (MacUtils.isMac) {
+    MacUtils.isSystemDarkMode
+} else {
+    false
+}
+
+/**
+ * This method should be run to start the app
+ */
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
         launch<FxRadioDark>(args)

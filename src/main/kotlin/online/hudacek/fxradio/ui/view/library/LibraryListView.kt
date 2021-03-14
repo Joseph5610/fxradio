@@ -16,22 +16,27 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Colors
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.LibraryType
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.ui.viewmodel.SelectedLibrary
-import online.hudacek.fxradio.utils.make
-import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
 import tornadofx.*
 
 class LibraryListView : View() {
 
     private val viewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
     init {
         //React to changes of library not from by clicking on list item
-        viewModel.selectedPropertyChanges
+        selectedLibraryViewModel.itemProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 .subscribe {
                     if (it.type == LibraryType.Country || it.type == LibraryType.Search) {
                         root.selectionModel.clearSelection()
@@ -57,7 +62,7 @@ class LibraryListView : View() {
         }
         showWhen { viewModel.showLibraryProperty }
         onUserSelect(1) {
-            viewModel.selectedProperty.value = SelectedLibrary(it.type)
+            selectedLibraryViewModel.item = SelectedLibrary(it.type)
         }
         addClass(Styles.libraryListView)
     }

@@ -18,16 +18,20 @@ package online.hudacek.fxradio.ui.view.menu
 
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.NotificationPaneEvent
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
+import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.ui.menu
+import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.viewmodel.Log
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.openUrl
 import org.apache.logging.log4j.Level
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-import java.text.MessageFormat
 
 class HelpMenu : FxMenu() {
+    private val appEvent: AppEvent by inject()
 
     private val logViewModel: LogViewModel by inject()
 
@@ -50,21 +54,21 @@ class HelpMenu : FxMenu() {
         menu(messages["menu.help"]) {
 
             item(messages["menu.help.openhomepage"]).action {
-                menuViewModel.openWebsite()
+                appMenuViewModel.openWebsite()
             }
             separator()
 
             item(messages["menu.help.stats"]).action {
-                menuViewModel.openStats()
+                appMenuViewModel.openStats()
             }
 
             item(messages["menu.help.clearCache"]).action {
                 if (ImageCache.totalSize < 1) {
-                    fire(NotificationPaneEvent(messages["cache.clear.empty"]))
+                    appEvent.appNotification.onNext(AppNotification(messages["cache.clear.empty"], FontAwesome.Glyph.CHECK))
                 } else {
                     confirm(messages["cache.clear.confirm"],
-                            MessageFormat.format(messages["cache.clear.text"], ImageCache.totalSize), owner = primaryStage) {
-                        menuViewModel.clearCache()
+                            messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
+                        appMenuViewModel.clearCache()
                     }
                 }
             }
@@ -75,19 +79,19 @@ class HelpMenu : FxMenu() {
                 checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
                     isSelected = logViewModel.levelProperty.value == Level.OFF
                     action {
-                        logViewModel.levelProperty.value = Level.OFF
+                        logViewModel.item = Log(Level.OFF)
                     }
                 }
                 checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
                     isSelected = logViewModel.levelProperty.value == Level.INFO
                     action {
-                        logViewModel.levelProperty.value = Level.INFO
+                        logViewModel.item = Log(Level.INFO)
                     }
                 }
                 checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
                     isSelected = logViewModel.levelProperty.value == Level.ALL
                     action {
-                        logViewModel.levelProperty.value = Level.ALL
+                        logViewModel.item = Log(Level.ALL)
                     }
                 }
             }

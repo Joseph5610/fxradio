@@ -17,11 +17,11 @@ package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
+import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewState
-import online.hudacek.fxradio.utils.make
-import online.hudacek.fxradio.utils.showWhen
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph

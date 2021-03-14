@@ -43,7 +43,7 @@ open class OkHttpHelper {
         loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         OkHttpClient.Builder()
-                //The whole call should not take longer than 10 secs
+                //The whole call should not take longer than 20 secs
                 .callTimeout(20, TimeUnit.SECONDS)
                 .addNetworkInterceptor { chain ->
                     chain.proceed(
@@ -58,6 +58,9 @@ open class OkHttpHelper {
                 .build()
     }
 
+    /**
+     * Correctly kill all OkHttpClient threads
+     */
     fun shutdown() {
         logger.info { "Shutting down OkHttpClient $httpClient" }
         logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }

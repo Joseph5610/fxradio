@@ -20,22 +20,24 @@ import javafx.beans.property.BooleanProperty
 import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.NotificationPaneEvent
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.modal.*
-import online.hudacek.fxradio.utils.openUrl
+import online.hudacek.fxradio.ui.openUrl
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
-class MenuModel(usePlatform: Boolean = true) {
+class AppMenu(usePlatform: Boolean = true) {
     var usePlatform: Boolean by property(usePlatform)
 }
 
-class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
+class AppMenuViewModel : ItemViewModel<AppMenu>(AppMenu()) {
+    private val appEvent: AppEvent by inject()
 
-    val usePlatformProperty = bind(MenuModel::usePlatform) as BooleanProperty
+    val usePlatformProperty = bind(AppMenu::usePlatform) as BooleanProperty
 
     //Station menu links
     fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
@@ -53,9 +55,13 @@ class MenuViewModel : ItemViewModel<MenuModel>(MenuModel()) {
     fun clearCache() = runAsync(daemon = true) {
         ImageCache.clear()
     } success {
-        fire(NotificationPaneEvent(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+        appEvent.appNotification.onNext(
+                AppNotification(messages["cache.clear.ok"],
+                        FontAwesome.Glyph.CHECK))
     } fail {
-        fire(NotificationPaneEvent(messages["cache.clear.error"]))
+        appEvent.appNotification.onNext(
+                AppNotification(messages["cache.clear.error"],
+                        FontAwesome.Glyph.WARNING))
         logger.error(it) { "Exception when clearing cache" }
     }
 

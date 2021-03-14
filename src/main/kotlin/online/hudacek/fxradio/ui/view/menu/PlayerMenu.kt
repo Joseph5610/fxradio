@@ -20,22 +20,23 @@ import javafx.scene.control.CheckMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.macos.MacUtils
+import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.PlayerType
-import online.hudacek.fxradio.property
-import online.hudacek.fxradio.ui.viewmodel.NotificationsModel
-import online.hudacek.fxradio.ui.viewmodel.NotificationsViewModel
+import online.hudacek.fxradio.ui.disableWhenInvalidStation
+import online.hudacek.fxradio.ui.menu
+import online.hudacek.fxradio.ui.viewmodel.OsNotification
+import online.hudacek.fxradio.ui.viewmodel.OsNotificationViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.disableWhenInvalidStation
-import online.hudacek.fxradio.utils.menu
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.utils.property
 import tornadofx.*
 
 class PlayerMenu : FxMenu() {
 
     private val playerViewModel: PlayerViewModel by inject()
-    private val notificationsViewModel: NotificationsViewModel by inject()
+    private val osNotificationViewModel: OsNotificationViewModel by inject()
 
     private var playerTypeItem: CheckMenuItem by singleAssign()
 
@@ -43,12 +44,12 @@ class PlayerMenu : FxMenu() {
     private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
 
     init {
-        playerViewModel.playerTypeProperty.onChange {
-            playerTypeItem.isSelected = it == PlayerType.Custom
+        playerViewModel.mediaPlayerProperty.onChange {
+            playerTypeItem.isSelected = it?.playerType == PlayerType.Humble
         }
 
         //Notifications are currently enabled only on macOS
-        notificationsViewModel.item = NotificationsModel(property(Properties.NOTIFICATIONS, MacUtils.isMac))
+        osNotificationViewModel.item = OsNotification(property(Properties.NOTIFICATIONS, MacUtils.isMac))
     }
 
     override val menu by lazy {
@@ -70,14 +71,12 @@ class PlayerMenu : FxMenu() {
             separator()
 
             playerTypeItem = checkmenuitem(messages["menu.player.switch"]) {
-                isSelected = playerViewModel.playerTypeProperty.value == PlayerType.Custom
+                isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == PlayerType.Humble
                 action {
-                    playerViewModel.playerTypeProperty.value =
-                            if (playerViewModel.playerTypeProperty.value == PlayerType.Custom) {
-                                PlayerType.VLC
-                            } else {
-                                PlayerType.Custom
-                            }
+                    playerViewModel.playerStateProperty.value = PlayerState.Stopped
+                    playerViewModel.mediaPlayerProperty.value?.release()
+                    playerViewModel.mediaPlayerProperty.value =
+                            MediaPlayer.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
                     playerViewModel.commit()
                 }
             }
@@ -90,14 +89,14 @@ class PlayerMenu : FxMenu() {
             }
 
             checkmenuitem(messages["menu.player.notifications"]) {
-                bind(notificationsViewModel.showProperty)
+                bind(osNotificationViewModel.showProperty)
                 action {
-                    notificationsViewModel.commit()
+                    osNotificationViewModel.commit()
                 }
 
                 visibleWhen {
                     //Notifications available only on Mac
-                    booleanProperty(!MacUtils.isMac)
+                    booleanProperty(MacUtils.isMac)
                 }
             }
         }

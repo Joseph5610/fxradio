@@ -19,10 +19,10 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import online.hudacek.fxradio.ui.disableWhenInvalidStation
+import online.hudacek.fxradio.ui.menu
+import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.disableWhenInvalidStation
-import online.hudacek.fxradio.utils.menu
-import online.hudacek.fxradio.utils.update
 import tornadofx.action
 import tornadofx.get
 import tornadofx.item
@@ -40,7 +40,7 @@ class StationMenu : FxMenu() {
             item(messages["menu.station.info"], keyInfo) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    menuViewModel.openStationInfo()
+                    appMenuViewModel.openStationInfo()
                 }
             }
 
@@ -54,7 +54,7 @@ class StationMenu : FxMenu() {
             separator()
             item(messages["menu.station.add"], keyAdd) {
                 action {
-                    menuViewModel.openAddNewStation()
+                    appMenuViewModel.openAddNewStation()
                 }
             }
         }

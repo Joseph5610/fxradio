@@ -22,10 +22,10 @@ import javafx.beans.property.ListProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.model.Station
-import tornadofx.ItemViewModel
-import tornadofx.observableListOf
-import tornadofx.property
-import tornadofx.stringBinding
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
+import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.*
 import java.util.*
 
 /**
@@ -34,16 +34,16 @@ import java.util.*
  * Stores entered information into the form in [online.hudacek.fxradio.ui.modal.AddStationFragment]
  * Handles logic for adding new station into the API
  */
-class AddStationModel(name: String = "",
-                      url: String = "",
-                      homepage: String = "",
-                      favicon: String = "",
-                      country: String = "",
-                      language: String = "",
-                      tags: String = "",
-                      uuid: String = "",
-                      saveToFavourites: Boolean = false,
-                      countriesList: ObservableList<String> = observableListOf()) {
+class AddStation(name: String = "",
+                 url: String = "",
+                 homepage: String = "",
+                 favicon: String = "",
+                 country: String = "",
+                 language: String = "",
+                 tags: String = "",
+                 uuid: String = "",
+                 saveToFavourites: Boolean = false,
+                 countriesList: ObservableList<String> = observableListOf()) {
     var name: String by property(name)
     var url: String by property(url)
     var homepage: String by property(homepage)
@@ -56,21 +56,21 @@ class AddStationModel(name: String = "",
     var uuid: String by property(uuid)
 }
 
-class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
+class AddStationViewModel : ItemViewModel<AddStation>(AddStation()) {
 
-    private val favouritesViewModel: FavouritesViewModel by inject()
+    private val appEvent: AppEvent by inject()
 
-    val nameProperty = bind(AddStationModel::name) as StringProperty
-    val urlProperty = bind(AddStationModel::url) as StringProperty
-    val homePageProperty = bind(AddStationModel::homepage) as StringProperty
-    val faviconProperty = bind(AddStationModel::favicon) as StringProperty
-    val countryProperty = bind(AddStationModel::country) as StringProperty
-    val languageProperty = bind(AddStationModel::language) as StringProperty
-    val tagsProperty = bind(AddStationModel::tags) as StringProperty
-    val uuidProperty = bind(AddStationModel::uuid) as StringProperty
+    val nameProperty = bind(AddStation::name) as StringProperty
+    val urlProperty = bind(AddStation::url) as StringProperty
+    val homePageProperty = bind(AddStation::homepage) as StringProperty
+    val faviconProperty = bind(AddStation::favicon) as StringProperty
+    val countryProperty = bind(AddStation::country) as StringProperty
+    val languageProperty = bind(AddStation::language) as StringProperty
+    val tagsProperty = bind(AddStation::tags) as StringProperty
+    val uuidProperty = bind(AddStation::uuid) as StringProperty
 
-    val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
-    val countriesListProperty = bind(AddStationModel::countriesList) as ListProperty
+    val saveToFavouritesProperty = bind(AddStation::saveToFavourites) as BooleanProperty
+    val countriesListProperty = bind(AddStation::countriesList) as ListProperty
 
     //Retrieve countryCode value from entered country name
     val countryCodeProperty = countryProperty.stringBinding { countryName ->
@@ -78,6 +78,8 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
     }
 
     override fun onCommit() {
+        appEvent.appNotification
+                .onNext(AppNotification(messages["add.success"], FontAwesome.Glyph.CHECK))
         saveToFavouritesProperty
                 .toObservable()
                 .filter { it }
@@ -91,6 +93,7 @@ class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
                             country = countryProperty.value,
                             language = languageProperty.value,
                             tags = tagsProperty.value)
-                }.subscribe(favouritesViewModel.addFavourite)
+                }
+                .subscribe(appEvent.addFavourite)
     }
 }

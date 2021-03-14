@@ -16,23 +16,23 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
 import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.formatted
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
-import java.text.MessageFormat
 
 private val logger = KotlinLogging.logger {}
 
-class FavouritesModel(stations: ObservableList<Station> = observableListOf()) {
+class Favourites(stations: ObservableList<Station> = observableListOf()) {
     var stations: ObservableList<Station> by property(stations)
 }
 
@@ -42,40 +42,44 @@ class FavouritesModel(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about last favourites stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
-class FavouritesViewModel : ItemViewModel<FavouritesModel>(FavouritesModel()) {
-    val stationsProperty = bind(FavouritesModel::stations) as ListProperty
+class FavouritesViewModel : ItemViewModel<Favourites>(Favourites()) {
+    private val appEvent: AppEvent by inject()
 
-    val addFavourite = BehaviorSubject.create<Station>()
-    val removeFavourite = BehaviorSubject.create<Station>()
-    val cleanupFavourites = BehaviorSubject.create<Unit>()
+    val stationsProperty = bind(Favourites::stations) as ListProperty
 
     init {
-        addFavourite
+        appEvent.addFavourite
                 .filter { it.isValid() && !stationsProperty.contains(it) }
                 .flatMapSingle { Tables.favourites.insert(it) }
                 .subscribe({
-                    val addStr = MessageFormat.format(messages["menu.station.favouriteAdded"], it.name)
                     stationsProperty.add(it)
-                    fire(NotificationPaneEvent(addStr, FontAwesome.Glyph.CHECK))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["menu.station.favouriteAdded"].formatted(it.name),
+                                    FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationPaneEvent(messages["menu.station.favouriteAdded.error"]))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["menu.station.favouriteAdded.error"],
+                                    FontAwesome.Glyph.WARNING))
                 })
 
-        cleanupFavourites
+        appEvent.cleanupFavourites
                 .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
-                .flatMapSingle { Tables.favourites.delete() }
+                .flatMapSingle { Tables.favourites.removeAll() }
                 .subscribe {
-                    item = FavouritesModel()
+                    item = Favourites()
                 }
 
-        removeFavourite
+        appEvent.removeFavourite
                 .flatMapSingle { Tables.favourites.remove(it) }
                 .subscribe({
-                    val removeStr = MessageFormat.format(messages["menu.station.favouriteRemoved"], it.name)
                     stationsProperty.remove(it)
-                    fire(NotificationPaneEvent(removeStr, FontAwesome.Glyph.CHECK))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["menu.station.favouriteRemoved"].formatted(it.name),
+                                    FontAwesome.Glyph.CHECK))
                 }, {
-                    fire(NotificationPaneEvent(messages["menu.station.favouriteRemove.error"]))
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["menu.station.favouriteRemove.error"],
+                                    FontAwesome.Glyph.WARNING))
                 })
     }
 }

@@ -24,30 +24,30 @@ import tornadofx.property
 object Attributions {
     val list by lazy {
         observableListOf(
-                AttributionModel("tornadofx", "1.7.20", Licenses.apache20),
-                AttributionModel("controlsfx", "8.40.17", Licenses.controlsfx),
-                AttributionModel("vlcj", "4.0", Licenses.gpl3),
-                AttributionModel("humble video", "0.3.0", Licenses.gpl3),
-                AttributionModel("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
-                AttributionModel("slf4j-api", "1.7.5", Licenses.sl4fj),
-                AttributionModel("log4j", "2.9.1", Licenses.apache20),
-                AttributionModel("kotlin-logging", "1.7.9", Licenses.apache20),
-                AttributionModel("FlagIcon", "1.1.0", Licenses.apache20),
-                AttributionModel("nsmenufx", "2.1.7", license = Licenses.nsMenuFx),
-                AttributionModel("commons-io", "2.6", license = Licenses.apache20),
-                AttributionModel("rxkotlinfx", "2.2.2", license = Licenses.apache20),
-                AttributionModel("sqliteJdbc", "3.21.0.1", license = Licenses.apache20),
-                AttributionModel("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),
-                AttributionModel("TickerView", license = Licenses.tickerView),
-                AttributionModel("macOS install disk background", license = Licenses.bg),
-                AttributionModel("Application logo, radio station icon", license = Licenses.iconArchive)
+                Attribution("tornadofx", "1.7.20", Licenses.apache20),
+                Attribution("controlsfx", "8.40.17", Licenses.controlsfx),
+                Attribution("vlcj", "4.0", Licenses.gpl3),
+                Attribution("humble video", "0.3.0", Licenses.gpl3),
+                Attribution("Retrofit HTTP client", "2.8.1", Licenses.retrofit),
+                Attribution("slf4j-api", "1.7.5", Licenses.sl4fj),
+                Attribution("log4j", "2.9.1", Licenses.apache20),
+                Attribution("kotlin-logging", "1.7.9", Licenses.apache20),
+                Attribution("FlagIcon", "1.1.0", Licenses.apache20),
+                Attribution("nsmenufx", "2.1.7", license = Licenses.nsMenuFx),
+                Attribution("commons-io", "2.6", license = Licenses.apache20),
+                Attribution("rxkotlinfx", "2.2.2", license = Licenses.apache20),
+                Attribution("sqliteJdbc", "3.21.0.1", license = Licenses.apache20),
+                Attribution("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),
+                Attribution("TickerView", license = Licenses.tickerView),
+                Attribution("macOS install disk background", license = Licenses.bg),
+                Attribution("Application logo, radio station icon", license = Licenses.iconArchive)
         )
     }
 }
 
 data class License(val name: String = "", val content: String)
 
-class AttributionModel(name: String, version: String = "", license: License) {
+class Attribution(name: String, version: String = "", license: License) {
     var name: String by property(name)
     var version: String by property(version)
     var licenseContent: String by property(license.content)
@@ -60,11 +60,11 @@ class AttributionModel(name: String, version: String = "", license: License) {
  * Handles information about Licensing
  * Used in [online.hudacek.fxradio.ui.modal.AttributionsFragment]
  */
-class AttributionViewModel : ItemViewModel<AttributionModel>() {
-    val nameProperty = bind(AttributionModel::name) as StringProperty
-    val versionProperty = bind(AttributionModel::version) as StringProperty
-    val licenseNameProperty = bind(AttributionModel::licenseName) as StringProperty
-    val licenseContentProperty = bind(AttributionModel::licenseContent) as StringProperty
+class AttributionViewModel : ItemViewModel<Attribution>() {
+    val nameProperty = bind(Attribution::name) as StringProperty
+    val versionProperty = bind(Attribution::version) as StringProperty
+    val licenseNameProperty = bind(Attribution::licenseName) as StringProperty
+    val licenseContentProperty = bind(Attribution::licenseContent) as StringProperty
 }
 
 private object Licenses {

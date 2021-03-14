@@ -19,15 +19,19 @@ package online.hudacek.fxradio.ui.view
 import javafx.geometry.Orientation
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.*
+import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.set
+import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.menu.MenuBarView
 import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.show
-import online.hudacek.fxradio.utils.stylableNotificationPane
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import tornadofx.*
 import tornadofx.controlsfx.content
 
@@ -39,6 +43,7 @@ import tornadofx.controlsfx.content
 class MainView : View(FxRadio.appName) {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val appEvent: AppEvent by inject()
 
     //Main views of the app
     private val menuBarView: MenuBarView by inject()
@@ -72,9 +77,8 @@ class MainView : View(FxRadio.appName) {
         add(menuBarView)
 
         stylableNotificationPane {
-            subscribe<NotificationPaneEvent> {
-                show(it.glyph, it.text, it.op)
-            }
+            appEvent.appNotification
+                    .subscribe { this[it.glyph] = it.title }
 
             content {
                 splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {

@@ -16,9 +16,9 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.*
-import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 
 /**
@@ -27,16 +27,16 @@ import tornadofx.*
 class StationsHeaderView : View() {
 
     private val viewModel: StationsViewModel by inject()
-    private val libraryViewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
 
     private val stationsHeaderSearchView: StationsHeaderSearchView by inject()
 
     //Bindings for library name based on selected library
-    private val libraryNameTextProperty = libraryViewModel.selectedProperty.stringBinding {
+    private val libraryNameTextProperty = selectedLibraryViewModel.itemProperty.stringBinding {
         it?.let {
             when (it.type) {
-                LibraryType.Country -> it.params
+                LibraryType.Country -> it.libraryOption
                 LibraryType.Search -> messages["Search"]
                 else -> messages[it.type.toString()]
             }
@@ -55,11 +55,11 @@ class StationsHeaderView : View() {
                     addClass(Styles.subheader)
                 }
 
-                label(searchViewModel.searchQueryProperty) {
+                label(searchViewModel.queryProperty) {
                     paddingTop = 8.0
                     paddingBottom = 8.0
                     showWhen {
-                        libraryViewModel.selectedProperty.booleanBinding {
+                        selectedLibraryViewModel.itemProperty.booleanBinding {
                             it?.type == LibraryType.Search
                         }
                     }

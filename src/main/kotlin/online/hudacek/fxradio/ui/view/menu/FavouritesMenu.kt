@@ -20,16 +20,19 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import mu.KotlinLogging
+import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.viewmodel.*
-import online.hudacek.fxradio.utils.menu
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
 class FavouritesMenu : FxMenu() {
+    private val appEvent: AppEvent by inject()
 
-    private val libraryViewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+
     private val playerViewModel: PlayerViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
@@ -46,9 +49,9 @@ class FavouritesMenu : FxMenu() {
 
     init {
         Tables.favourites
-                .select()
+                .selectAll()
                 .subscribe({
-                    favouritesViewModel.item = FavouritesModel(it.asObservable())
+                    favouritesViewModel.stationsProperty.add(it)
                 }, {
                     logger.error(it) { "Error while getting favourite stations" }
                 })
@@ -57,7 +60,7 @@ class FavouritesMenu : FxMenu() {
     override val menu by lazy {
         menu(messages["menu.favourites"]) {
             item(messages["menu.favourites.show"]).action {
-                libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Favourites)
+                selectedLibraryViewModel.item = SelectedLibrary(LibraryType.Favourites)
             }
 
             //Add favourite
@@ -66,8 +69,8 @@ class FavouritesMenu : FxMenu() {
                 visibleWhen(favouriteMenuItemVisibleProperty)
 
                 action {
-                    favouritesViewModel.addFavourite.onNext(playerViewModel.stationProperty.value)
-                    libraryViewModel.refreshLibrary.onNext(LibraryType.Favourites)
+                    appEvent.addFavourite.onNext(playerViewModel.stationProperty.value)
+                    appEvent.refreshLibrary.onNext(LibraryType.Favourites)
                     playedStationNotInFavouritesProperty.invalidate()
                 }
             }
@@ -78,8 +81,8 @@ class FavouritesMenu : FxMenu() {
                 visibleWhen(favouriteMenuItemVisibleProperty)
 
                 action {
-                    favouritesViewModel.removeFavourite.onNext(playerViewModel.stationProperty.value)
-                    libraryViewModel.refreshLibrary.onNext(LibraryType.Favourites)
+                    appEvent.removeFavourite.onNext(playerViewModel.stationProperty.value)
+                    appEvent.refreshLibrary.onNext(LibraryType.Favourites)
                     playedStationNotInFavouritesProperty.invalidate()
                 }
             }
@@ -92,8 +95,8 @@ class FavouritesMenu : FxMenu() {
                 }
                 action {
                     confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                        favouritesViewModel.cleanupFavourites.onNext(Unit)
-                        libraryViewModel.refreshLibrary.onNext(LibraryType.Favourites)
+                        appEvent.cleanupFavourites.onNext(Unit)
+                        appEvent.refreshLibrary.onNext(LibraryType.Favourites)
                     }
                 }
             }

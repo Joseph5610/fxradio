@@ -18,16 +18,17 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.property
+import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.PlayerModel
+import online.hudacek.fxradio.ui.viewmodel.Player
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.asPlayerType
-import online.hudacek.fxradio.utils.make
-import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.utils.setOnSpacePressed
+import online.hudacek.fxradio.utils.property
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -39,12 +40,12 @@ class PlayerView : View() {
 
     private val viewModel: PlayerViewModel by inject()
 
-    private val playerStationBoxView: PlayerStationBoxView by inject()
+    private val playerStationView: PlayerStationView by inject()
 
-    private val playGlyph = FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false)
-    private val stopGlyph = FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false)
-    private val volumeDown = FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false)
-    private val volumeUp = FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false)
+    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false) }
+    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false) }
+    private val volumeDown by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false) }
+    private val volumeUp by lazy { FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false) }
 
     private val playerControlsBinding = viewModel.playerStateProperty.objectBinding {
         if (it == PlayerState.Playing) {
@@ -54,19 +55,21 @@ class PlayerView : View() {
         }
     }
 
-    private val playerControls = button {
-        id = "playerControls"
-        graphicProperty().bind(playerControlsBinding)
-        requestFocusOnSceneAvailable()
-        disableWhen {
-            viewModel.stationProperty.booleanBinding {
-                it == null || !it.isValid()
+    private val playerControls by lazy {
+        button {
+            id = "playerControls"
+            graphicProperty().bind(playerControlsBinding)
+            requestFocusOnSceneAvailable()
+            disableWhen {
+                viewModel.stationProperty.booleanBinding {
+                    it == null || !it.isValid()
+                }
             }
+            action {
+                viewModel.togglePlayer()
+            }
+            addClass(Styles.playerControls)
         }
-        action {
-            viewModel.togglePlayer()
-        }
-        addClass(Styles.playerControls)
     }
 
     private val volumeSlider by lazy {
@@ -88,9 +91,9 @@ class PlayerView : View() {
     }
 
     init {
-        viewModel.item = PlayerModel(
+        viewModel.item = Player(
                 animate = property(Properties.PLAYER_ANIMATE, true),
-                playerType = property(Properties.PLAYER, "VLC").asPlayerType(),
+                mediaPlayer = MediaPlayer.create(property(Properties.PLAYER, "VLC")),
                 volume = property(Properties.VOLUME, 0.0))
     }
 
@@ -108,7 +111,7 @@ class PlayerView : View() {
             }
 
             //Station info box
-            add(playerStationBoxView)
+            add(playerStationView)
 
             region {
                 hgrow = Priority.ALWAYS

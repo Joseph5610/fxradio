@@ -42,13 +42,12 @@ data class Station(val stationuuid: String,
                 "language='$language'\n, " +
                 "codec='$codec'\n, " +
                 "bitrate=$bitrate,\n" +
-                " votes=$votes)"
+                "votes=$votes)"
     }
 
     companion object {
-        val stub by lazy {
-            Station("0", "Not playing", null,
-                    FxRadio.appUrl, null)
+        val dummy by lazy {
+            Station("0", "Not playing", null, FxRadio.appUrl, null)
         }
     }
 }

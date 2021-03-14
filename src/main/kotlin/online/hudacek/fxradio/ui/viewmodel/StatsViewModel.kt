@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.ui.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
-import io.reactivex.Observable
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
@@ -29,8 +28,8 @@ enum class StatsViewState {
     Loading, Loaded, Error
 }
 
-class StatsModel(stats: ObservableList<Pair<String, String>> = observableListOf(),
-                 viewState: StatsViewState = StatsViewState.Loaded) {
+class Stats(stats: ObservableList<Pair<String, String>> = observableListOf(),
+            viewState: StatsViewState = StatsViewState.Loaded) {
     var stats: ObservableList<Pair<String, String>> by property(stats)
     var viewState: StatsViewState by property(viewState)
 }
@@ -41,16 +40,14 @@ class StatsModel(stats: ObservableList<Pair<String, String>> = observableListOf(
  * Holds information about radio-browser API stats and health
  * Shown inside [online.hudacek.fxradio.ui.modal.StatsFragment]
  */
-class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
-    val statsProperty = bind(StatsModel::stats) as ListProperty<Pair<String, String>>
-    val viewStateProperty = bind(StatsModel::viewState) as ObjectProperty
-
-    private val viewStateChanges: Observable<StatsViewState> = viewStateProperty
-            .toObservableChangesNonNull()
-            .map { it.newVal }
+class StatsViewModel : ItemViewModel<Stats>(Stats()) {
+    val statsProperty = bind(Stats::stats) as ListProperty<Pair<String, String>>
+    val viewStateProperty = bind(Stats::viewState) as ObjectProperty
 
     init {
-        viewStateChanges
+        viewStateProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 .filter { it == StatsViewState.Loading }
                 .flatMapSingle {
                     StationsApi.service
@@ -66,11 +63,11 @@ class StatsViewModel : ItemViewModel<StatsModel>(StatsModel()) {
                             "stats.brokenStations" to it.stations_broken,
                             "stats.tags" to it.tags
                     )
-                    item = StatsModel(stringValueMap
+                    item = Stats(stringValueMap
                             .toList()
                             .asObservable(), StatsViewState.Loaded)
                 }, {
-                    item = StatsModel(viewState = StatsViewState.Error)
+                    item = Stats(viewState = StatsViewState.Error)
                 })
     }
 }

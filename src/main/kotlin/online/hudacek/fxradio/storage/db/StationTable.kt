@@ -16,13 +16,14 @@
 
 package online.hudacek.fxradio.storage.db
 
+import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.api.model.Station
 
 /**
- * Common operations on database of stations with different tables
+ * Common operations on database of stations with different tables (e.g History, Favourites ..)
  */
-class StationTable(override val tableName: String) : TableOperations<Station> {
+class StationTable(override val tableName: String) : TableOperations<Station>, Database(tableName) {
 
     override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
             " stationuuid VARCHAR, name VARCHAR, " +
@@ -31,7 +32,7 @@ class StationTable(override val tableName: String) : TableOperations<Station> {
             " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
             " )"
 
-    override fun select(): Single<MutableList<Station>> = Database.selectAll(tableName)
+    override fun selectAll(): Observable<Station> = selectAllQuery()
             .toObservable {
                 Station(it.getString("stationuuid"),
                         it.getString("name"),
@@ -46,11 +47,10 @@ class StationTable(override val tableName: String) : TableOperations<Station> {
                         it.getString("codec"),
                         it.getInt("bitrate"))
             }
-            .toList()
 
-    override fun delete(): Single<Int> = Database.deleteAll(tableName).toSingle()
+    override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 
-    override fun insert(element: Station): Single<Station> = Database.insert("INSERT INTO $tableName (name, stationuuid, url_resolved, " +
+    override fun insert(element: Station): Single<Station> = insertQuery("INSERT INTO $tableName (name, stationuuid, url_resolved, " +
             "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
             "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )")
             .parameter("name", element.name)
@@ -68,8 +68,8 @@ class StationTable(override val tableName: String) : TableOperations<Station> {
             .toSingle { element }
 
     override fun remove(element: Station): Single<Station> =
-            Database.remove("DELETE FROM $tableName WHERE stationuuid = :stationuuid")
-                    .parameter("stationuuid", element.stationuuid)
-                    .toSingle { element }
-
+            removeQuery("DELETE FROM $tableName WHERE stationuuid = ?")
+                    .parameter(element.stationuuid)
+                    .toSingle()
+                    .map { element }
 }

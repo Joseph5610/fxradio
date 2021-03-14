@@ -16,30 +16,29 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.BooleanProperty
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.Property
-import online.hudacek.fxradio.macos.MacUtils
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.utils.macos.MacUtils
 import tornadofx.ItemViewModel
 import tornadofx.property
 
-data class Notification(val title: String, val value: String)
-
-class NotificationsModel(show: Boolean = false) {
+class OsNotification(show: Boolean = false) {
     var show: Boolean by property(show)
 }
 
 /**
  * Show Native OS notification
  */
-class NotificationsViewModel : ItemViewModel<NotificationsModel>(NotificationsModel()) {
-    val showProperty = bind(NotificationsModel::show) as BooleanProperty
+class OsNotificationViewModel : ItemViewModel<OsNotification>(OsNotification()) {
+    private val appEvent: AppEvent by inject()
 
-    val show = BehaviorSubject.create<Notification>()
+    val showProperty = bind(OsNotification::show) as BooleanProperty
 
     init {
-        show.filter { showProperty.value && MacUtils.isMac }
+        appEvent.osNotification
+                .filter { showProperty.value && MacUtils.isMac }
                 .subscribe {
                     MacUtils.notification(it.title, it.value)
                 }

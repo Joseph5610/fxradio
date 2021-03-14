@@ -16,19 +16,27 @@
 
 package online.hudacek.fxradio.storage.db
 
+import io.reactivex.Observable
 import io.reactivex.Single
 
-//Basic interface for common table operations
-interface TableOperations<in T> {
-
+/**
+ * Basic interface for common table operations
+ */
+interface TableOperations<T> {
+    /**
+     *  Name of the table in SQLite DB
+     */
     val tableName: String
 
+    /**
+     * SQL query that will create the table with the name [tableName]
+     */
     val createTableSql: String
 
-    fun select(): Single<*>
-    fun delete(): Single<*>
-    fun insert(element: T): Single<*>
-    fun remove(element: T): Single<*>
+    fun selectAll(): Observable<T>
+    fun removeAll(): Single<Int>
+    fun insert(element: T): Single<T>
+    fun remove(element: T): Single<T>
 }
 
 

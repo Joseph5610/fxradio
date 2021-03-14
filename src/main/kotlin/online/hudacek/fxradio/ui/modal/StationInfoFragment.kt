@@ -17,35 +17,39 @@
 package online.hudacek.fxradio.ui.modal
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
+import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
+import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.storage.stationImage
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.copyMenu
+import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationInfoModel
+import online.hudacek.fxradio.ui.viewmodel.StationInfo
 import online.hudacek.fxradio.ui.viewmodel.StationInfoViewModel
-import online.hudacek.fxradio.utils.copyMenu
-import online.hudacek.fxradio.utils.openUrl
-import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 import tornadofx.controlsfx.left
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment(station: Station? = null) : Fragment() {
+    private val appEvent: AppEvent by inject()
 
     private val viewModel: StationInfoViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        viewModel.item = StationInfoModel(station ?: playerViewModel.stationProperty.value)
+        viewModel.item = StationInfo(station ?: playerViewModel.stationProperty.value)
     }
 
     override val root = vbox {
         prefWidth = 300.0
-        titleProperty.bind(viewModel.stationNameProperty)
+        titleProperty.bind(viewModel.nameProperty)
 
         vbox {
             vbox(alignment = Pos.CENTER) {
@@ -66,22 +70,11 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             alignment = Pos.CENTER
             paddingAll = 5.0
 
-            viewModel.infoItemsProperty.forEach {
-                //Don't display not not relevant values
-                if (it.value != "0" && it.value.isNotEmpty()) {
-                    val text =
-                            if (it.key.isNotEmpty()) messages[it.key] + ": " + it.value
-                            else it.value
-
-                    label(text) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                        copyMenu(clipboard,
-                                name = messages["copy"],
-                                value = it.value)
-                    }
-                }
-            }
+            add(createInfoLabel("info.codec", viewModel.codecProperty))
+            add(createInfoLabel("info.bitrate", stringProperty(viewModel.bitrateProperty.value.toString())))
+            add(createInfoLabel("info.language", viewModel.languageProperty))
+            add(createInfoLabel("info.country", viewModel.countryProperty))
+            add(createInfoLabel("info.votes", stringProperty(viewModel.votesProperty.value.toString())))
         }
 
         flowpane {
@@ -106,8 +99,8 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
                 hyperlink(messages["menu.station.vote"]) {
 
                     actionEvents()
-                            .map { Unit }
-                            .subscribe(viewModel.addVote)
+                            .map { viewModel.stationProperty.value }
+                            .subscribe(appEvent.vote)
 
                     addClass(Styles.primaryTextColor)
                 }
@@ -130,5 +123,19 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
+    }
+
+    private fun createInfoLabel(key: String, textProperty: StringProperty): Label {
+        val actualTextProperty = textProperty.stringBinding {
+            messages[key] + ": " + if (it.isNullOrEmpty()) messages["unknown"] else it
+        }
+
+        return label(actualTextProperty) {
+            addClass(Styles.grayLabel)
+            addClass(Styles.tag)
+            copyMenu(clipboard,
+                    name = messages["copy"],
+                    value = textProperty.value)
+        }
     }
 }

@@ -16,21 +16,26 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
 import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.flagIcon
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.LibraryType
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.ui.viewmodel.SelectedLibrary
-import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
 import tornadofx.*
 
 class LibraryListFragment(property: ListProperty<Country>, showProperty: BooleanProperty) : Fragment() {
+    private val appEvent: AppEvent by inject()
 
     private val viewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
     override val root = listview(property) {
         prefHeightProperty().bind(property.doubleBinding {
@@ -65,9 +70,9 @@ class LibraryListFragment(property: ListProperty<Country>, showProperty: Boolean
                                 !property?.contains(it)!!
                             }
                         }
-                        action {
-                            viewModel.pinCountry.onNext(it)
-                        }
+                        actionEvents()
+                                .map { _ -> it }
+                                .subscribe(appEvent.pinCountry)
                     }
                     item(messages["unpin"]) {
                         visibleWhen {
@@ -76,9 +81,9 @@ class LibraryListFragment(property: ListProperty<Country>, showProperty: Boolean
                             }
                         }
 
-                        action {
-                            viewModel.unpinCountry.onNext(it)
-                        }
+                        actionEvents()
+                                .map { _ -> it }
+                                .subscribe(appEvent.unpinCountry)
                     }
                 }
             }
@@ -86,7 +91,7 @@ class LibraryListFragment(property: ListProperty<Country>, showProperty: Boolean
         }
 
         onUserSelect(1) {
-            viewModel.selectedProperty.value = SelectedLibrary(LibraryType.Country, it.name)
+            selectedLibraryViewModel.item = SelectedLibrary(LibraryType.Country, it.name)
         }
         showWhen {
             property.emptyProperty().not().and(showProperty)

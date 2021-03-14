@@ -20,12 +20,12 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.AttributionModel
+import online.hudacek.fxradio.ui.viewmodel.Attribution
 import online.hudacek.fxradio.ui.viewmodel.AttributionViewModel
 import online.hudacek.fxradio.ui.viewmodel.Attributions
-import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 
 class AttributionsFragment : Fragment() {
@@ -43,8 +43,8 @@ class AttributionsFragment : Fragment() {
                 bindSelected(viewModel)
 
                 columnResizePolicy = SmartResize.POLICY
-                readonlyColumn(messages["attributions.name"], AttributionModel::name).remainingWidth()
-                readonlyColumn(messages["attributions.version"], AttributionModel::version)
+                readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
+                readonlyColumn(messages["attributions.version"], Attribution::version)
 
                 onUserSelect {
                     find<LicenseFragment>().openModal(stageStyle = StageStyle.UTILITY)

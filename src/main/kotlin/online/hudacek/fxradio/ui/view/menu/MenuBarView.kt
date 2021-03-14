@@ -19,18 +19,18 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.macos.MacMenu
-import online.hudacek.fxradio.macos.MacUtils
-import online.hudacek.fxradio.property
-import online.hudacek.fxradio.ui.viewmodel.MenuModel
-import online.hudacek.fxradio.ui.viewmodel.MenuViewModel
+import online.hudacek.fxradio.ui.viewmodel.AppMenu
+import online.hudacek.fxradio.ui.viewmodel.AppMenuViewModel
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.macos.MacMenu
+import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.utils.property
 import tornadofx.*
 
 class MenuBarView : View() {
 
-    private val menuViewModel: MenuViewModel by inject()
+    private val appMenuViewModel: AppMenuViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     private val historyMenu: HistoryMenu by inject()
@@ -40,10 +40,10 @@ class MenuBarView : View() {
     private val playerMenu: PlayerMenu by inject()
 
     init {
-        menuViewModel.item = MenuModel(MacUtils.isMac && property(Properties.PLATFORM_MENU_BAR, true))
+        appMenuViewModel.item = AppMenu(MacUtils.isMac && property(Properties.PLATFORM_MENU_BAR, true))
     }
 
-    override val root = if (menuViewModel.usePlatformProperty.value) {
+    override val root = if (appMenuViewModel.usePlatformProperty.value) {
         platformMenuBar()
     } else {
         defaultMenuBar()
@@ -86,11 +86,11 @@ class MenuBarView : View() {
 
     private fun Menu.addAppMenuContent() {
         item(messages["menu.app.about"] + " " + FxRadio.appName).action {
-            menuViewModel.openAbout()
+            appMenuViewModel.openAbout()
         }
         separator()
         item(messages["menu.app.server"]).action {
-            menuViewModel.openAvailableServer()
+            appMenuViewModel.openAvailableServer()
         }
         separator()
     }

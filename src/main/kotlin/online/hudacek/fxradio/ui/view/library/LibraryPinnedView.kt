@@ -16,19 +16,24 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import online.hudacek.fxradio.ui.viewmodel.LibraryType
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
 import tornadofx.View
 import tornadofx.vbox
 
 class LibraryPinnedView : View() {
 
     private val viewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
     private val listViewFragment = LibraryListFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty)
 
     init {
-        viewModel.selectedPropertyChanges
+        selectedLibraryViewModel.itemProperty
+                .toObservableChangesNonNull()
+                .map { it.newVal }
                 .filter { it.type != LibraryType.Country }
                 .subscribe { listViewFragment.root.selectionModel.clearSelection() }
     }

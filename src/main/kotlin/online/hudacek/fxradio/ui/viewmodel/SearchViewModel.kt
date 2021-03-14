@@ -21,51 +21,50 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.Property
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.SearchByTagBody
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.ItemViewModel
 import tornadofx.property
 import tornadofx.stringBinding
 
-class SearchModel(
-        searchQuery: String = "",
-        useTagSearch: Boolean = false) {
-    var searchQuery: String by property(searchQuery)
+class Search(query: String = "",
+             useTagSearch: Boolean = false) {
+    var query: String by property(query)
     var searchByTag: Boolean by property(useTagSearch)
 }
 
-class SearchViewModel : ItemViewModel<SearchModel>(SearchModel()) {
+class SearchViewModel : ItemViewModel<Search>(Search()) {
 
-    val searchByTagProperty = bind(SearchModel::searchByTag) as BooleanProperty
+    val searchByTagProperty = bind(Search::searchByTag) as BooleanProperty
 
     //Internal only, contains unedited search query
-    val bindSearchQueryProperty = bind(SearchModel::searchQuery) as StringProperty
+    val bindQueryProperty = bind(Search::query) as StringProperty
 
     //Search query is limited to 50 chars and trimmed to reduce requests to API
-    val searchQueryProperty = bindSearchQueryProperty.stringBinding {
+    val queryProperty = bindQueryProperty.stringBinding {
         if (it != null) {
             if (it.length > 50) it.substring(0, 50).trim() else it.trim()
         } else ""
     }
 
-    val searchQueryChanges: Observable<String> = searchQueryProperty
+    val queryChanges: Observable<String> = queryProperty
             .toObservableChanges()
             .map { it.newVal }
 
     val searchByTagSingle: Single<List<Station>>
         get() = StationsApi.service
-                .searchStationByTag(SearchByTagBody(searchQueryProperty.value))
+                .searchStationByTag(SearchByTagBody(queryProperty.value))
                 .compose(applySchedulers())
 
     val searchByNameSingle: Single<List<Station>>
         get() = StationsApi.service
-                .searchStationByName(SearchBody(searchQueryProperty.value))
+                .searchStationByName(SearchBody(queryProperty.value))
                 .compose(applySchedulers())
 
-    override fun onCommit() = Property(Properties.SEARCH_QUERY).save(bindSearchQueryProperty.value)
+    override fun onCommit() = Property(Properties.SEARCH_QUERY).save(bindQueryProperty.value)
 }

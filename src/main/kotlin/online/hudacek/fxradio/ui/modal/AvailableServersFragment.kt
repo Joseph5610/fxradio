@@ -19,11 +19,12 @@ package online.hudacek.fxradio.ui.modal
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
-import online.hudacek.fxradio.NotificationPaneEvent
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
 import online.hudacek.fxradio.ui.viewmodel.ServersViewState
-import online.hudacek.fxradio.utils.showWhen
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -35,7 +36,7 @@ import tornadofx.*
  * and used on the next start of the app
  */
 class AvailableServersFragment : Fragment() {
-
+    private val appEvent: AppEvent by inject()
     private val viewModel: ServersViewModel by inject()
 
     private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
@@ -142,7 +143,7 @@ class AvailableServersFragment : Fragment() {
                     //Save the server in the app.config property file
                     //Close the fragment after successful save
                     viewModel.commit {
-                        fire(NotificationPaneEvent(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
+                        appEvent.appNotification.onNext(AppNotification(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
                         close()
                     }
                 }

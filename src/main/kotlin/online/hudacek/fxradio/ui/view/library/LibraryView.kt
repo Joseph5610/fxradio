@@ -19,18 +19,20 @@ package online.hudacek.fxradio.ui.view.library
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
 import mu.KotlinLogging
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.property
+import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryModel
+import online.hudacek.fxradio.ui.viewmodel.Library
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.property
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
 class LibraryView : View() {
+    private val appEvent: AppEvent by inject()
 
     private val viewModel: LibraryViewModel by inject()
 
@@ -40,19 +42,19 @@ class LibraryView : View() {
     private val libraryPinnedView: LibraryPinnedView by inject()
 
     override fun onDock() {
-        viewModel.item = LibraryModel(
+        viewModel.item = Library(
                 showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
                 showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true),
                 showPinned = property(Properties.WINDOW_SHOW_PINNED, true)
         )
-        Tables.pinned
-                .select()
+        Tables.pinnedCountries
+                .selectAll()
                 .subscribe({
-                    viewModel.pinnedProperty.value = it.asObservable()
+                    viewModel.pinnedProperty.add(it)
                 }, {
                     logger.error(it) { "Error while getting pinned stations" }
                 })
-        viewModel.refreshCountries.onNext(Unit)
+        appEvent.refreshCountries.onNext(Unit)
     }
 
     override val root = borderpane {
@@ -99,7 +101,7 @@ class LibraryView : View() {
 
                         actionEvents()
                                 .map { Unit }
-                                .subscribe(viewModel.refreshCountries)
+                                .subscribe(appEvent.refreshCountries)
 
                         showWhen {
                             viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)

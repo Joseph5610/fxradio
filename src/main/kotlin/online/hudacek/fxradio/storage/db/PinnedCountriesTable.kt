@@ -16,31 +16,32 @@
 
 package online.hudacek.fxradio.storage.db
 
+import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.api.model.Country
 
-class PinnedTable : TableOperations<Country> {
-
-    override val tableName = "PINNED"
+class PinnedCountriesTable(override val tableName: String = "PINNED") : TableOperations<Country>, Database(tableName) {
 
     override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
             " name VARCHAR " +
             " )"
 
-    override fun select(): Single<MutableList<Country>> = Database.selectAll(tableName)
+    override fun selectAll(): Observable<Country> = selectAllQuery()
             .toObservable {
+                //We do not store the count of stations for given pinned country
+                //so the returned object will have count set to 0 and the number is not displayed in UI
                 Country(it.getString("name"), 0)
             }
-            .toList()
 
-    override fun delete(): Single<Int> = Database.deleteAll(tableName).toSingle()
+    override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 
-    override fun insert(element: Country): Single<Country> = Database.insert("INSERT INTO $tableName (name)  " +
+    override fun insert(element: Country): Single<Country> = insertQuery("INSERT INTO $tableName (name)  " +
             "VALUES (:name)")
             .parameter("name", element.name)
             .toSingle { element }
 
-    override fun remove(element: Country): Single<Country> = Database.remove("DELETE FROM $tableName WHERE name = :name")
-            .parameter("name", element.name)
-            .toSingle { element }
+    override fun remove(element: Country): Single<Country> = removeQuery("DELETE FROM $tableName WHERE name = ?")
+            .parameter(element.name)
+            .toSingle()
+            .map { element }
 }

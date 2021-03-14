@@ -25,40 +25,43 @@ import java.sql.Connection
 import java.sql.DriverManager
 import kotlin.reflect.full.declaredMemberProperties
 
-/**
- * Database helper class contains useful methods to write/read from local sqlite.db which stores
- * Favourite stations and listening history
- */
 private val logger = KotlinLogging.logger {}
 
-object Database {
+/**
+ * Database helper class contains useful methods to write/read from local sqlite.db
+ */
+abstract class Database(open val tableName: String) {
 
-    private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
+    fun selectAllQuery() = connection.select("SELECT * FROM $tableName")
 
-    private val connection: Connection = DriverManager.getConnection(dbUrl).apply {
+    fun removeAllQuery() = connection.execute("DELETE FROM $tableName")
 
-        //Get trough all tables declared in Tables object and
-        //execute create table statements accordingly
-        Tables::class.declaredMemberProperties.forEach {
-            val member = it.get(Tables) as TableOperations<*> //Get instance of member
+    fun insertQuery(query: String) = connection.insert(query)
 
-            execute(member.createTableSql)
-                    .toSingle()
-                    .subscribe({
-                        logger.info { "Create table for ${member.tableName} returned result $it" }
-                    }, { e ->
-                        logger.error(e) { "There was an error creating ${member.tableName} table!" }
-                    })
+    fun removeQuery(query: String) = connection.execute(query)
+
+    private companion object DatabaseConnection {
+        private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
+
+        /**
+         * Establishes connection to SQLite db with [dbUrl]
+         * Performs create table operation for all tables in [Tables] object
+         */
+        private val connection: Connection = DriverManager.getConnection(dbUrl).apply {
+            //Get trough all tables declared in Tables object and
+            //execute create table statements accordingly
+            Tables::class.declaredMemberProperties.forEach {
+                val member = it.get(Tables) as TableOperations<*> //Get instance of member
+
+                execute(member.createTableSql)
+                        .toSingle()
+                        .subscribe({
+                            logger.info { "Create table for ${member.tableName} returned result $it" }
+                        }, { e ->
+                            logger.error(e) { "There was an error creating ${member.tableName} table!" }
+                        })
+            }
         }
     }
-
-    fun selectAll(tableName: String) = connection.select("SELECT * FROM $tableName")
-
-    fun deleteAll(tableName: String) = connection.execute("delete from $tableName")
-
-    fun insert(query: String) = connection.insert(query)
-
-    fun remove(query: String) = connection.insert(query)
-
 }
 

@@ -16,45 +16,35 @@
 
 package online.hudacek.fxradio.storage
 
-import javafx.beans.property.Property
+import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.HttpClientHolder
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.ui.defaultRadioLogo
 import org.apache.commons.io.FileUtils
 import tornadofx.observableListOf
-import tornadofx.onChange
-import tornadofx.runAsync
-import tornadofx.ui
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * Simple image cache
  * Images are saved according to their station id
  * and loaded using fileInputStream
  */
-private val logger = KotlinLogging.logger {}
-
-private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
-
 object ImageCache {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
 
     //If the downloading failed, store the station uuid here and
     //don't download the file again until next run of the app
-    private val invalidStationUuids by lazy { observableListOf<String>() }
-
-    private val Station.isInvalidImage: Boolean
-        get() = invalidStationUuids.contains(stationuuid)
+    private val invalidStationUuids = observableListOf<String>()
 
     init {
         //prepare cache directory
@@ -63,96 +53,50 @@ object ImageCache {
         }
     }
 
+    /**
+     * Counts total size of cache directory in MB
+     */
     val totalSize
-        get() = (cacheBasePath.toFile().walkTopDown().filter { it.isFile }.map { it.length() }.sum() / 1024).toInt()
+        get() = (cacheBasePath.toFile()
+                .walkTopDown().filter { it.isFile }
+                .map { it.length() }
+                .sum() / 1024).toInt()
 
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
-    //Check if Station is in cache
-    fun has(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid)) || station.isInvalidImage
+    /**
+     * Check if [station] image is in cache
+     */
+    fun has(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
+            || invalidStationUuids.contains(station.stationuuid)
 
-    //Get image from cache
-    fun get(station: Station): Image {
-        if (station.isInvalidImage) return defaultRadioLogo
-        val imagePath = cacheBasePath.resolve(station.stationuuid)
-        return try {
-            val image = Image(FileInputStream(imagePath.toFile()))
-            if (image.isError) {
-                logger.error { "Can't show image for ${station.name} (${image.exception.localizedMessage}) " }
-                addInvalid(station)
-                defaultRadioLogo
-            } else {
-                image
+    /**
+     * Gets image for [station] from local cache
+     */
+    fun get(station: Station): Single<Image> = Single
+            .just(cacheBasePath.resolve(station.stationuuid))
+            .flatMap {
+                Single.just(Image("file:" + it.toFile().absolutePath, true))
             }
-        } catch (e: FileNotFoundException) {
-            defaultRadioLogo
-        }
-    }
+            .doOnError { logger.error(it) { "Failed to get Image from cached file" } }
+            .onErrorReturnItem(defaultRadioLogo)
 
-    @Throws(java.nio.file.FileAlreadyExistsException::class)
-    fun save(station: Station, inputStream: InputStream) {
-        if (has(station)) return
-        val imagePath = cacheBasePath.resolve(station.stationuuid)
-        Files.copy(
-                inputStream,
-                imagePath,
-                StandardCopyOption.REPLACE_EXISTING)
-    }
+    /**
+     * Saves [inputStream] containing logo of [station] into local cache dir
+     */
+    fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
+            .filter { !has(it) }
+            .map { cacheBasePath.resolve(it.stationuuid) }
+            .subscribe {
+                Files.copy(
+                        inputStream,
+                        it,
+                        StandardCopyOption.REPLACE_EXISTING)
+            }
 
+    /**
+     * Adds [station] into list of invalid stations
+     * Means that image for given station is invalid / not supported by renderer or URL is invalid
+     */
     fun addInvalid(station: Station) = invalidStationUuids.add(station.stationuuid)
-}
-
-/**
- * This method is used for custom downloading of station's logo
- * and storing it in cache directory
- *
- *
- * In case of error defaultRadioLogo static png file is used as station logo
- */
-internal fun Property<Station>.stationImage(view: ImageView) {
-    value.stationImage(view)
-
-    onChange {
-        it?.stationImage(view)
-    }
-}
-
-internal fun Station.stationImage(view: ImageView) {
-    view.image = defaultRadioLogo
-
-    if (ImageCache.has(this)) {
-        loadImage(this, view)
-    } else {
-        if (favicon.isNullOrEmpty()) {
-            ImageCache.addInvalid(this)
-            logger.debug { "Image for $name is null or empty" }
-            return
-        }
-
-        //Download the image with OkHttp client
-        favicon?.let { url ->
-            HttpClientHolder.client.call(url,
-                    { response ->
-                        response.body()?.let { body ->
-                            try {
-                                ImageCache.save(this, body.byteStream())
-                            } catch (e: Exception) {
-                                logger.error(e) { "Error while saving downloaded station image" }
-                            }
-                            loadImage(this, view)
-                        }
-                    },
-                    { e ->
-                        logger.error { "Downloading failed for $name (${this::class}: ${e.localizedMessage}) " }
-                        ImageCache.addInvalid(this)
-                    })
-        }
-    }
-}
-
-//Load image into view asynchronously
-private fun loadImage(station: Station, view: ImageView) {
-    runAsync(daemon = true) { ImageCache.get(station) } ui {
-        view.image = it
-    }
 }

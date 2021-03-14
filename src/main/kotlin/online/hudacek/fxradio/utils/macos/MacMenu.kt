@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.macos
+package online.hudacek.fxradio.utils.macos
 
 import de.codecentric.centerdevice.MenuToolkit
 import javafx.scene.control.Menu
@@ -31,13 +31,13 @@ object MacMenu {
     var isInTest = false
 
     //NSMenu toolkit
-    private val tk by lazy { MenuToolkit.toolkit(FX.locale) }
+    private val menuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
 
     fun menuBar(op: MenuBar.() -> Menu) = MenuBar().apply {
         if (!isInTest) {
             useSystemMenuBarProperty().value = true
-            tk.setApplicationMenu(op(this))
-            tk.setMenuBar(this)
+            menuToolkit.setApplicationMenu(op(this))
+            menuToolkit.setMenuBar(this)
         }
     }
 
@@ -45,23 +45,23 @@ object MacMenu {
         if (!isInTest) {
             op(this)
             items.addAll(
-                    tk.createHideMenuItem(FxRadio.appName),
-                    tk.createHideOthersMenuItem(),
-                    tk.createUnhideAllMenuItem(),
+                    menuToolkit.createHideMenuItem(FxRadio.appName),
+                    menuToolkit.createHideOthersMenuItem(),
+                    menuToolkit.createUnhideAllMenuItem(),
                     SeparatorMenuItem(),
-                    tk.createQuitMenuItem(FxRadio.appName))
+                    menuToolkit.createQuitMenuItem(FxRadio.appName))
         }
     }
 
     fun windowMenu(name: String) = Menu(name).apply {
         if (!isInTest) {
-            tk.autoAddWindowMenuItems(this)
+            menuToolkit.autoAddWindowMenuItems(this)
             items.addAll(
-                    tk.createMinimizeMenuItem(),
-                    tk.createZoomMenuItem(),
-                    tk.createCycleWindowsItem(),
+                    menuToolkit.createMinimizeMenuItem(),
+                    menuToolkit.createZoomMenuItem(),
+                    menuToolkit.createCycleWindowsItem(),
                     SeparatorMenuItem(),
-                    tk.createBringAllToFrontItem())
+                    menuToolkit.createBringAllToFrontItem())
         }
     }
 }

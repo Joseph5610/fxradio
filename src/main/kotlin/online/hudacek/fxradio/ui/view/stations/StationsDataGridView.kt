@@ -23,14 +23,14 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.storage.stationImage
 import online.hudacek.fxradio.ui.modal.StationDebugFragment
 import online.hudacek.fxradio.ui.modal.StationInfoFragment
+import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.smallLabel
+import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
 import online.hudacek.fxradio.ui.viewmodel.StationsViewState
-import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.smallLabel
 import tornadofx.*
 
 /**

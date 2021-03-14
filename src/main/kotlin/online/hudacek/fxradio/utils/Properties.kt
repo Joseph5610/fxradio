@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio
+package online.hudacek.fxradio.utils
 
 import mu.KotlinLogging
 import tornadofx.Component
@@ -29,7 +29,7 @@ enum class Properties(val key: String) {
     VOLUME("player.volume"),
     PLAYER("player.type"),
     PLAYER_ANIMATE("player.animate"),
-    PLAYER_CUSTOM_REFRESH_META("player.refreshMeta"),
+    PLAYER_HUMBLE_METADATA_REFRESH("player.refreshMeta"),
     API_SERVER("app.server"),
     SEARCH_QUERY("search.query"),
     NOTIFICATIONS("notifications"),

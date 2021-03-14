@@ -20,17 +20,20 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import mu.KotlinLogging
+import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.storage.stationImage
+import online.hudacek.fxradio.ui.menu
+import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.viewmodel.*
-import online.hudacek.fxradio.utils.menu
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 
 class HistoryMenu : FxMenu() {
+    private val appEvent: AppEvent by inject()
 
-    private val libraryViewModel: LibraryViewModel by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -38,9 +41,9 @@ class HistoryMenu : FxMenu() {
 
     init {
         Tables.history
-                .select()
+                .selectAll()
                 .subscribe({
-                    historyViewModel.item = HistoryModel(it.asObservable())
+                    historyViewModel.stationsProperty.add(it)
                 }, {
                     logger.error(it) { "Error while getting history from DB!" }
                 })
@@ -49,7 +52,7 @@ class HistoryMenu : FxMenu() {
     override val menu by lazy {
         menu(messages["menu.history"]) {
             item(messages["menu.history.show"], keyHistory).action {
-                libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.History)
+                selectedLibraryViewModel.item = SelectedLibrary(LibraryType.History)
             }
 
             menu(messages["menu.history.recent"]) {
@@ -60,7 +63,7 @@ class HistoryMenu : FxMenu() {
                     item("${it.name} (${it.countrycode})") {
                         //for some reason macos native menu does not respect
                         //width/height setting so it is disabled for now
-                        if (!menuViewModel.usePlatformProperty.value) {
+                        if (!appMenuViewModel.usePlatformProperty.value) {
                             graphic = imageview {
                                 it.stationImage(this)
                                 fitHeight = 15.0
@@ -82,8 +85,8 @@ class HistoryMenu : FxMenu() {
 
                 action {
                     confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
-                        historyViewModel.cleanupHistory.onNext(Unit)
-                        libraryViewModel.refreshLibrary.onNext(LibraryType.History)
+                        appEvent.cleanupHistory.onNext(Unit)
+                        appEvent.refreshLibrary.onNext(LibraryType.History)
                     }
                 }
             }

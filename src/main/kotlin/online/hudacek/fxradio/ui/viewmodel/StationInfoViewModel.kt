@@ -17,72 +17,72 @@
 package online.hudacek.fxradio.ui.viewmodel
 
 import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
+import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
-import javafx.beans.property.MapProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import javafx.collections.ObservableMap
-import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.api.model.VoteResponse
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.AppNotification
 import online.hudacek.fxradio.utils.applySchedulers
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.get
+import tornadofx.observableListOf
+import tornadofx.property
 
-class StationInfoModel(station: Station = Station.stub) {
-    var codec = if (station.bitrate != 0) {
-        station.codec + " (${station.bitrate} kbps)"
-    } else {
-        station.codec
-    }
-
+class StationInfo(station: Station = Station.dummy) {
     var station: Station by property(station)
     var name: String by property(station.name)
-
-    var infoItems: ObservableMap<String, String> by property(observableMapOf(
-            "info.votes" to station.votes.toString(),
-            "" to codec,
-            "info.country" to station.country,
-            "info.language" to station.language
-    ))
-
+    var country: String by property(station.country)
+    var language: String by property(station.language)
+    var codec: String by property(station.codec)
+    var bitrate: Int by property(station.bitrate)
+    var votes: Int by property(station.votes)
     var tags: ObservableList<String> by property(observableListOf(
             station.tags
                     .split(",")
                     .map { tag -> tag.trim() }
                     .filter { tag -> tag.isNotEmpty() }
     ))
-
     var homePage: String by property(station.homepage)
 }
 
-class StationInfoViewModel : ItemViewModel<StationInfoModel>() {
-    val infoItemsProperty = bind(StationInfoModel::infoItems) as MapProperty<String, String>
-    val tagsProperty = bind(StationInfoModel::tags) as ListProperty<String>
-    val homePageProperty = bind(StationInfoModel::homePage) as StringProperty
-    val stationProperty = bind(StationInfoModel::station) as ObjectProperty
-    val stationNameProperty = bind(StationInfoModel::name) as StringProperty
+class StationInfoViewModel : ItemViewModel<StationInfo>() {
+    private val appEvent: AppEvent by inject()
 
-    val addVote = BehaviorSubject.create<Unit>()
+    val stationProperty = bind(StationInfo::station) as ObjectProperty
+    val tagsProperty = bind(StationInfo::tags) as ListProperty<String>
+    val homePageProperty = bind(StationInfo::homePage) as StringProperty
+    val nameProperty = bind(StationInfo::name) as StringProperty
+    val codecProperty = bind(StationInfo::codec) as StringProperty
+    val bitrateProperty = bind(StationInfo::bitrate) as IntegerProperty
+    val languageProperty = bind(StationInfo::language) as StringProperty
+    val countryProperty = bind(StationInfo::country) as StringProperty
+    val votesProperty = bind(StationInfo::votes) as IntegerProperty
 
     init {
         //Increase vote count on the server
-        addVote
+        appEvent.vote
                 .flatMapSingle {
                     StationsApi.service
-                            .vote(stationProperty.value.stationuuid)
+                            .vote(it.stationuuid)
                             .compose(applySchedulers())
                             .onErrorResumeNext { Single.just(VoteResponse(false, "Voting returned error response")) }
                 }
                 .subscribe {
                     if (!it.ok) {
                         //Why this API returns error 200 on error ...
-                        fire(NotificationPaneEvent(messages["vote.error"]))
+                        appEvent.appNotification.onNext(
+                                AppNotification(messages["vote.error"],
+                                        FontAwesome.Glyph.WARNING))
                     } else {
-                        fire(NotificationPaneEvent(messages["vote.ok"], FontAwesome.Glyph.CHECK))
+                        appEvent.appNotification.onNext(
+                                AppNotification(messages["vote.ok"],
+                                        FontAwesome.Glyph.CHECK))
                     }
                 }
     }

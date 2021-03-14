@@ -14,9 +14,10 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils
+package online.hudacek.fxradio.ui
 
 import javafx.animation.PauseTransition
+import javafx.beans.property.ListProperty
 import javafx.beans.property.Property
 import javafx.beans.property.StringProperty
 import javafx.beans.value.ChangeListener
@@ -28,6 +29,7 @@ import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
+import javafx.scene.control.TextField
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -43,9 +45,11 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.notificationPane
 import tornadofx.controlsfx.toGlyph
 import java.net.URLEncoder
+import java.text.MessageFormat
 
 /**
  * This is to overcome a bug that sometimes
@@ -197,9 +201,18 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
     delay.play()
 }
 
-internal fun NotificationPane.show(glyph: FontAwesome.Glyph,
-                                   message: String,
-                                   op: NotificationPane.() -> Unit = {}) {
-    op(this)
-    this[glyph] = message
-}
+internal fun String.formatted(replaceWith: Any) = MessageFormat.format(this, replaceWith)
+
+internal fun EventTarget.field(message: String, prompt: String,
+                               property: Property<String>,
+                               isRequired: Boolean = false,
+                               autoCompleteProperty: ListProperty<String>? = null,
+                               op: (TextField) -> Unit = {}) =
+        add(field(message) {
+            textfield(property) {
+                if (autoCompleteProperty != null) bindAutoCompletion(autoCompleteProperty)
+                if (isRequired) required()
+                promptText = prompt
+                op(this)
+            }
+        })

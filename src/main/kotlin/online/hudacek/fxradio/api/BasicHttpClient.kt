@@ -36,12 +36,17 @@ object HttpClientHolder {
 
 class BasicHttpClient : OkHttpHelper() {
 
-    //Perform DNS lookup
+    /**
+     * Performs DNS lookup for [address]
+     */
     fun lookup(address: String): MutableList<InetAddress> {
         logger.debug { "Performing DNS lookup for $address" }
         return httpClient.dns().lookup(address)
     }
 
+    /**
+     * Performs HTTP call for [url]
+     */
     fun call(url: String,
              success: (Response) -> Unit,
              fail: (IOException) -> Unit) = httpClient.newCall(request(url)).enqueue(

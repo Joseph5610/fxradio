@@ -14,24 +14,8 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.storage.db
+package online.hudacek.fxradio.media.player.humble
 
-/**
- * Object that contains map of SQLite tables to Kotlin objects
- */
-object Tables {
-    /**
-     * Table for stations saved as favourites
-     */
-    val favourites by lazy { StationTable("FAVOURITES") }
+import io.humble.video.Decoder
 
-    /**
-     * Table for history of played stations
-     */
-    val history by lazy { StationTable("HISTORY") }
-
-    /**
-     * Table for pinned Countries
-     */
-    val pinnedCountries by lazy { PinnedCountriesTable() }
-}
+data class HumbleStreamInfo(val streamId: Int, val decoder: Decoder)

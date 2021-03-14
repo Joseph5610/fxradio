@@ -14,24 +14,8 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.storage.db
+package online.hudacek.fxradio.events
 
-/**
- * Object that contains map of SQLite tables to Kotlin objects
- */
-object Tables {
-    /**
-     * Table for stations saved as favourites
-     */
-    val favourites by lazy { StationTable("FAVOURITES") }
+import org.controlsfx.glyphfont.FontAwesome
 
-    /**
-     * Table for history of played stations
-     */
-    val history by lazy { StationTable("HISTORY") }
-
-    /**
-     * Table for pinned Countries
-     */
-    val pinnedCountries by lazy { PinnedCountriesTable() }
-}
+data class AppNotification(val title: String, val glyph: FontAwesome.Glyph)

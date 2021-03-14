@@ -17,13 +17,13 @@
 package online.hudacek.fxradio.ui.modal
 
 import javafx.geometry.Pos
+import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
 import online.hudacek.fxradio.ui.viewmodel.StatsViewModel
 import online.hudacek.fxradio.ui.viewmodel.StatsViewState
-import online.hudacek.fxradio.utils.openUrl
-import online.hudacek.fxradio.utils.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.utils.showWhen
 import tornadofx.*
 
 /**
