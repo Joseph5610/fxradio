@@ -14,6 +14,6 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events
+package online.hudacek.fxradio.events.data
 
 data class OsNotification(val title: String, val value: String)

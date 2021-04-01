@@ -16,6 +16,9 @@
 
 package online.hudacek.fxradio
 
+/**
+ * App configuration values/flags
+ */
 object Config {
 
     object Resources {

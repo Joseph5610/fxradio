@@ -17,7 +17,6 @@ package online.hudacek.fxradio.media.player.humble
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
-import online.hudacek.fxradio.media.PlayerType
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.property
 
@@ -26,7 +25,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * Custom Audio player using Humble library
  */
-class HumblePlayerImpl(override val playerType: PlayerType = PlayerType.Humble) : MediaPlayer {
+class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.Humble) : MediaPlayer {
 
     private val audioComponent = HumbleAudioComponent()
     private val metaDataService = HumbleMetaDataService()

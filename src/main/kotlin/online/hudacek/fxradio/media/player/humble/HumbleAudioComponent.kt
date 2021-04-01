@@ -19,7 +19,6 @@ package online.hudacek.fxradio.media.player.humble
 import io.humble.video.Demuxer
 import io.humble.video.MediaPacket
 import io.humble.video.javaxsound.AudioFrame
-import io.humble.video.javaxsound.MediaAudioConverterFactory
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.StreamUnavailableException
@@ -48,9 +47,7 @@ class HumbleAudioComponent {
                 val streamInfo = deMuxer.getStreamInfo(streamUrl)
                 streamInfo?.decoder?.let {
                     val samples = it.getSamples()
-                    val converter = MediaAudioConverterFactory.createConverter(
-                            MediaAudioConverterFactory.DEFAULT_JAVA_AUDIO, samples)
-
+                    val converter = HumbleAudioConverter(samples.sampleRate, samples.channelLayout, samples.format)
                     audioFrame = AudioFrame.make(converter.javaFormat)
                             ?: throw StreamUnavailableException("No output device available!")
 

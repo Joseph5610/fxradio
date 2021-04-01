@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events
+package online.hudacek.fxradio.events.data
 
-data class MetaData(val stationName: String, val nowPlaying: String)
+import org.controlsfx.glyphfont.FontAwesome
+
+data class AppNotification(val title: String, val glyph: FontAwesome.Glyph)

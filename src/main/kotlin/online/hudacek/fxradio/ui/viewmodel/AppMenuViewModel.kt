@@ -21,7 +21,7 @@ import javafx.stage.StageStyle
 import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.modal.*
 import online.hudacek.fxradio.ui.openUrl

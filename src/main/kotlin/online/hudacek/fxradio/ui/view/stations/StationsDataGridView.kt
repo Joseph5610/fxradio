@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.github.thomasnield.rxkotlinfx.onChangedObservable
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
@@ -23,14 +24,14 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.ui.modal.StationDebugFragment
 import online.hudacek.fxradio.ui.modal.StationInfoFragment
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewState
+import online.hudacek.fxradio.ui.view.menu.FavouritesMenu
+import online.hudacek.fxradio.ui.viewmodel.*
 import tornadofx.*
 
 /**
@@ -38,9 +39,12 @@ import tornadofx.*
  * DataGrid shows radio station logo and name
  */
 class StationsDataGridView : View() {
+    private val events: AppEvent by inject()
 
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
+    private val favouritesMenu: FavouritesMenu by inject()
+    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
     override fun onDock() {
         //Load the stations grid
@@ -61,16 +65,28 @@ class StationsDataGridView : View() {
             playerViewModel.stationProperty.value = it
         }
 
-        cellCache {
+        cellCache { station ->
             vbox {
                 contextmenu {
                     item(messages["menu.station.info"]).action {
-                        StationInfoFragment(it).openModal(stageStyle = StageStyle.UTILITY)
+                        StationInfoFragment(station).openModal(stageStyle = StageStyle.UTILITY)
+                    }
+
+                    separator()
+
+                    //Add Add/Remove from favourites menu items
+                    items.addAll(favouritesMenu.addRemoveItems)
+
+                    separator()
+                    item(messages["menu.station.vote"]) {
+                        actionEvents()
+                                .map { station }
+                                .subscribe(events.vote)
                     }
 
                     if (Config.Flags.enableStationDebug) {
                         separator()
-                        item("Debug station").action {
+                        item("Station Debug Info").action {
                             find<StationDebugFragment>().openModal(stageStyle = StageStyle.UTILITY)
                         }
                     }
@@ -81,7 +97,7 @@ class StationsDataGridView : View() {
                     prefHeight = 120.0
                     paddingAll = 5
                     imageview {
-                        it.stationImage(this)
+                        station.stationImage(this)
                         effect = DropShadow(15.0, Color.LIGHTGRAY)
                         isCache = true
                         cacheHint = CacheHint.SPEED
@@ -90,18 +106,21 @@ class StationsDataGridView : View() {
                         isPreserveRatio = true
                     }
                 }
-                label(it.name) {
-                    onHover { _ -> tooltip(it.name) }
+                label(station.name) {
+                    onHover { _ -> tooltip(station.name) }
                     style {
                         fontSize = 13.px
                     }
                 }
-                smallLabel(createStationTags(it.tags, it.country))
+                smallLabel(createStationTags(station.tags, station.country))
             }
         }
 
         showWhen {
             stationsViewModel.viewStateProperty.isEqualTo(StationsViewState.Loaded)
+                    .and(selectedLibraryViewModel.itemProperty.booleanBinding {
+                        it?.type != LibraryType.History
+                    })
         }
     }
 

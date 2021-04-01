@@ -18,7 +18,10 @@ package online.hudacek.fxradio.storage.db
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Common operations on database of stations with different tables (e.g History, Favourites ..)
@@ -47,6 +50,7 @@ class StationTable(override val tableName: String) : TableOperations<Station>, D
                         it.getString("codec"),
                         it.getInt("bitrate"))
             }
+            .doOnError { logger.error(it) { "Error when getting $tableName" } }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 

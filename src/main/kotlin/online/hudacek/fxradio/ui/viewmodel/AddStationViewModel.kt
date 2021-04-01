@@ -23,9 +23,10 @@ import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.ItemViewModel
+import tornadofx.observableListOf
+import tornadofx.property
+import tornadofx.stringBinding
 import java.util.*
 
 /**
@@ -78,8 +79,6 @@ class AddStationViewModel : ItemViewModel<AddStation>(AddStation()) {
     }
 
     override fun onCommit() {
-        appEvent.appNotification
-                .onNext(AppNotification(messages["add.success"], FontAwesome.Glyph.CHECK))
         saveToFavouritesProperty
                 .toObservable()
                 .filter { it }

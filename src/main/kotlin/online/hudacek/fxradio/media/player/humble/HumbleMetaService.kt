@@ -23,7 +23,7 @@ import javafx.concurrent.Task
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.MetaData
+import online.hudacek.fxradio.events.data.MetaData
 import tornadofx.find
 
 private val logger = KotlinLogging.logger {}

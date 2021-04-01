@@ -17,7 +17,7 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.api.HttpClientHolder
+import online.hudacek.fxradio.api.HttpClient
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
@@ -25,9 +25,11 @@ import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.viewmodel.Log
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
+import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacUtils
 import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.utils.saveProperties
 import org.apache.logging.log4j.Level
 import tornadofx.*
 import java.nio.file.Path
@@ -67,18 +69,46 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0
+
+            //Setup window location on screen
+            config.double(Properties.WINDOW_WIDTH.key)?.let {
+                width = it
+            }
+            config.double(Properties.WINDOW_HEIGHT.key)?.let {
+                height = it
+            }
+            config.double(Properties.WINDOW_X.key)?.let {
+                x = it
+            }
+            config.double(Properties.WINDOW_Y.key)?.let {
+                y = it
+            }
             super.start(this)
         }
 
         //init logger level based on stored settings
         val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
         logViewModel.item = Log(savedLevel)
+        logViewModel.commit()
+    }
+
+    override fun stop() {
+        //Save last used window width/height on close of the app to use it on next start
+        saveProperties(mapOf(
+                Properties.WINDOW_WIDTH to primaryStage.width,
+                Properties.WINDOW_HEIGHT to primaryStage.height,
+                Properties.WINDOW_X to primaryStage.x,
+                Properties.WINDOW_Y to primaryStage.y
+        ))
+        super.stop()
     }
 
     /**
      * Basic info about the app
      */
     companion object : Component() {
+
+        private val playerViewModel: PlayerViewModel by inject()
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
@@ -98,8 +128,9 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
         //Should be called when on every place that is closing the app
         fun shutdownApp() {
+            playerViewModel.releasePlayer()
             StationsApi.client.shutdown()
-            HttpClientHolder.client.shutdown()
+            HttpClient.shutdown()
         }
     }
 }
@@ -111,7 +142,7 @@ private val isSystemDarkMode: Boolean = if (MacUtils.isMac) {
 }
 
 /**
- * This method should be run to start the app
+ * Main starting method for the App
  */
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {

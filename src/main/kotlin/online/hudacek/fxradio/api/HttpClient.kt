@@ -24,17 +24,13 @@ import okhttp3.Response
 import java.io.IOException
 import java.net.InetAddress
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * Creates and holds single instance of OkHttpClient
  * Plain OkHttpClient is used mostly for downloading images of stations
  */
-private val logger = KotlinLogging.logger {}
-
-object HttpClientHolder {
-    val client by lazy { BasicHttpClient() }
-}
-
-class BasicHttpClient : OkHttpHelper() {
+object HttpClient : OkHttpHelper() {
 
     /**
      * Performs DNS lookup for [address]
@@ -45,11 +41,11 @@ class BasicHttpClient : OkHttpHelper() {
     }
 
     /**
-     * Performs HTTP call for [url]
+     * Performs HTTP request for [url]
      */
-    fun call(url: String,
-             success: (Response) -> Unit,
-             fail: (IOException) -> Unit) = httpClient.newCall(request(url)).enqueue(
+    fun request(url: String,
+                success: (Response) -> Unit,
+                fail: (IOException) -> Unit) = httpClient.newCall(request(url)).enqueue(
             object : Callback {
                 override fun onResponse(call: Call, response: Response) {
                     success(response)
@@ -57,6 +53,7 @@ class BasicHttpClient : OkHttpHelper() {
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
+                    logger.error(e) { "Request to $url failed." }
                     fail(e)
                 }
             }

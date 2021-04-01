@@ -21,8 +21,8 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
 import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.api.model.flagIcon
 import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.flagIcon
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.LibraryType

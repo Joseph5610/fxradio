@@ -21,7 +21,7 @@ import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
 import org.controlsfx.glyphfont.FontAwesome

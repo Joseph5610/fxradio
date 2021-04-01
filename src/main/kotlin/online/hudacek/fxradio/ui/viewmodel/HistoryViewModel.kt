@@ -51,7 +51,7 @@ class HistoryViewModel : ItemViewModel<History>(History()) {
                 .toObservableChangesNonNull()
                 .map { it.newVal }
                 //Add only valid stations not already present in history
-                .filter { it.isValid() && !stationsProperty.contains(it) }
+                .filter { it.isValid() }
                 .doOnError { logger.error(it) { "Error adding station to history!" } }
                 .flatMapSingle { Tables.history.insert(it) }
                 .subscribe {

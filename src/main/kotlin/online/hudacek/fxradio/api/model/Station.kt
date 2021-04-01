@@ -21,29 +21,13 @@ data class Station(val stationuuid: String,
 
     fun isValid() = stationuuid != "0"
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is Station) {
-            this.stationuuid == other.stationuuid
-        } else super.equals(other)
+    override fun equals(other: Any?) = if (other is Station) {
+        this.stationuuid == other.stationuuid
+    } else {
+        super.equals(other)
     }
 
     override fun hashCode() = super.hashCode()
-
-    override fun toString(): String {
-        return "Station(stationuuid='$stationuuid'\n, " +
-                "name='$name'\n," +
-                "url_resolved=$url_resolved\n, " +
-                "homepage='$homepage'\n, " +
-                "favicon=$favicon\n, " +
-                "tags='$tags'\n, " +
-                "country='$country'\n, " +
-                "countrycode='$countrycode'\n, " +
-                "state='$state'\n, " +
-                "language='$language'\n, " +
-                "codec='$codec'\n, " +
-                "bitrate=$bitrate,\n" +
-                "votes=$votes)"
-    }
 
     companion object {
         val dummy by lazy {

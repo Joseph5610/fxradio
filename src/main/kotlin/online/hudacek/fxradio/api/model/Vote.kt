@@ -14,24 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.storage.db
+package online.hudacek.fxradio.api.model
 
-/**
- * Object that holds kotlin classes representing SQLite tables
- */
-object Tables {
-    /**
-     * Table for stations saved as favourites
-     */
-    val favourites by lazy { StationTable("FAVOURITES") }
-
-    /**
-     * Table for history of played stations
-     */
-    val history by lazy { StationTable("HISTORY") }
-
-    /**
-     * Table for pinned Countries
-     */
-    val pinnedCountries by lazy { PinnedCountriesTable() }
-}
+data class Vote(val ok: Boolean,
+                val message: String)

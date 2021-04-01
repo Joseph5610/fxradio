@@ -18,7 +18,10 @@ package online.hudacek.fxradio.storage.db
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Country
+
+private val logger = KotlinLogging.logger {}
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : TableOperations<Country>, Database(tableName) {
 
@@ -32,6 +35,7 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : TableOpe
                 //so the returned object will have count set to 0 and the number is not displayed in UI
                 Country(it.getString("name"), 0)
             }
+            .doOnError { logger.error(it) { "Error when getting $tableName" } }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 

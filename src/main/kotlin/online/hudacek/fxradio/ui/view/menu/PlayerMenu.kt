@@ -21,7 +21,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.media.MediaPlayer
-import online.hudacek.fxradio.media.PlayerType
+import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.ui.disableWhenInvalidStation
 import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.viewmodel.OsNotification
@@ -45,7 +45,7 @@ class PlayerMenu : FxMenu() {
 
     init {
         playerViewModel.mediaPlayerProperty.onChange {
-            playerTypeItem.isSelected = it?.playerType == PlayerType.Humble
+            playerTypeItem.isSelected = it?.playerType == MediaPlayer.Type.Humble
         }
 
         //Notifications are currently enabled only on macOS
@@ -71,12 +71,12 @@ class PlayerMenu : FxMenu() {
             separator()
 
             playerTypeItem = checkmenuitem(messages["menu.player.switch"]) {
-                isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == PlayerType.Humble
+                isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == MediaPlayer.Type.Humble
                 action {
                     playerViewModel.playerStateProperty.value = PlayerState.Stopped
                     playerViewModel.mediaPlayerProperty.value?.release()
                     playerViewModel.mediaPlayerProperty.value =
-                            MediaPlayer.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
+                            MediaPlayerFactory.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
                     playerViewModel.commit()
                 }
             }

@@ -20,7 +20,7 @@ import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.viewmodel.ServersViewModel

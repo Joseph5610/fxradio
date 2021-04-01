@@ -1,12 +1,10 @@
 package online.hudacek.fxradio.api.model
 
-import griffon.javafx.support.flagicons.FlagIcon
 import java.util.*
 
-//Response
-data class Country(val name: String, val stationcount: Int)
+data class Country(val name: String,
+                   val stationcount: Int)
 
-//GET params
 data class CountriesBody(val hidebroken: Boolean = true)
 
 val Country.isValid: Boolean
@@ -14,12 +12,3 @@ val Country.isValid: Boolean
 
 val Country.countryCode: String?
     get() = Locale.getISOCountries().find { Locale("", it).displayCountry == name }
-
-val Country.flagIcon: FlagIcon?
-    get() {
-        return try {
-            countryCode?.let { FlagIcon(it) }
-        } catch (e: IllegalArgumentException) {
-            null
-        }
-    }

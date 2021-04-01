@@ -17,13 +17,12 @@
 package online.hudacek.fxradio.media.player.vlc
 
 import online.hudacek.fxradio.media.MediaPlayer
-import online.hudacek.fxradio.media.PlayerType
 
 /**
  * Custom Audio player using VLClib
  * Requires VLC player installed on client system
  */
-class VLCPlayerImpl(override val playerType: PlayerType = PlayerType.VLC) : MediaPlayer {
+class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.VLC) : MediaPlayer {
 
     private val vlcAudioComponent = VLCAudioComponent()
 

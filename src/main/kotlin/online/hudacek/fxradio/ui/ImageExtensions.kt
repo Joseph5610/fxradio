@@ -21,10 +21,9 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.HttpClientHolder
+import online.hudacek.fxradio.api.HttpClient
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.utils.applySchedulers
 import tornadofx.onChange
 
 val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
@@ -56,25 +55,19 @@ internal fun Station.stationImage(view: ImageView) {
         if (favicon.isNullOrEmpty()) {
             //Ignore invalid image and add it to list of invalid stations to not load it again
             ImageCache.addInvalid(this)
-            logger.debug { "Image for $name is null or empty" }
             return
         }
 
         //Download the image with OkHttp client
         favicon?.let { url ->
-            HttpClientHolder.client.call(url,
+            HttpClient.request(url,
                     { response ->
                         response.body()?.let { body ->
-                            try {
-                                ImageCache.save(this, body.byteStream())
-                            } catch (e: Exception) {
-                                logger.error(e) { "Error while saving downloaded station image" }
-                            }
+                            ImageCache.save(this, body.byteStream())
                             loadImage(view)
                         }
                     },
-                    { e ->
-                        logger.error { "Downloading failed for $name (${this::class}: ${e.localizedMessage}) " }
+                    {
                         ImageCache.addInvalid(this)
                     })
         }
@@ -85,7 +78,6 @@ internal fun Station.stationImage(view: ImageView) {
 private fun Station.loadImage(view: ImageView) {
     ImageCache
             .get(this)
-            .compose(applySchedulers())
             .subscribe({
                 view.image = it
                 it.errorProperty().onChange { isError ->

@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.api.model
 
-data class ClickResponse(val ok: Boolean,
-                         val message: String)
-
-data class VoteResponse(val ok: Boolean, val message: String)
+data class AddedStation(val ok: Boolean,
+                        val message: String,
+                        val uuid: String)

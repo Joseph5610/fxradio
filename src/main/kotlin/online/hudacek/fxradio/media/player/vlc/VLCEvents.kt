@@ -19,7 +19,7 @@ package online.hudacek.fxradio.media.player.vlc
 import io.reactivex.subjects.BehaviorSubject
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.MetaData
+import online.hudacek.fxradio.events.data.MetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.Controller
 import tornadofx.get
@@ -38,7 +38,9 @@ class VLCEvents : Controller() {
 
     val endPlayingEvent = BehaviorSubject.create<Unit>()
 
-    //Get VLC player native logs
+    /**
+     * Listen for VLC native logs and print them to our logger
+     */
     val nativeLogListener = LogEventListener { level, module, _, _, name, _, _, message ->
         lastLogMessage = message
         logger.debug { "[$module] ($name) $level: $message" }

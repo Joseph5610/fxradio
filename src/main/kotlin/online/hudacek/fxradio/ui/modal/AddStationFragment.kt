@@ -17,28 +17,27 @@
 package online.hudacek.fxradio.ui.modal
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
+import io.reactivex.Single
 import javafx.scene.layout.Priority
 import mu.KotlinLogging
 import okhttp3.HttpUrl
-import online.hudacek.fxradio.NotificationPaneEvent
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.AddStationBody
+import online.hudacek.fxradio.api.model.AddedStation
+import online.hudacek.fxradio.ui.field
+import online.hudacek.fxradio.ui.set
+import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.AddStationModel
+import online.hudacek.fxradio.ui.viewmodel.AddStation
 import online.hudacek.fxradio.ui.viewmodel.AddStationViewModel
 import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.utils.applySchedulers
-import online.hudacek.fxradio.utils.set
-import online.hudacek.fxradio.utils.stylableNotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.content
 
 private val logger = KotlinLogging.logger {}
 
 class AddStationFragment : Fragment() {
-
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
@@ -67,80 +66,62 @@ class AddStationFragment : Fragment() {
                         }
                     }
 
-                    field(messages["add.name"]) {
-                        textfield(viewModel.nameProperty) {
-                            required()
-                            validator {
-                                if (!validate(it, 400)) error(messages["field.invalid.length"])
-                                else null
-                            }
-                            promptText = "My Radio Station"
+                    field(messages["add.name"], "My Radio Station",
+                            viewModel.nameProperty, true) { field ->
+                        field.validator {
+                            if (!validate(it, 400)) error(messages["field.invalid.length"])
+                            else null
                         }
                     }
 
-                    field(messages["add.site"]) {
-                        textfield(viewModel.homePageProperty) {
-                            validator {
-                                if (it != null && HttpUrl.parse(it) != null)
-                                    success()
-                                else
-                                    error(messages["field.invalid.url"])
+                    field(messages["add.site"], "https://example.com/",
+                            viewModel.homePageProperty) { field ->
+                        field.validator {
+                            if (it != null && HttpUrl.parse(it) != null)
+                                success()
+                            else
+                                error(messages["field.invalid.url"])
+                        }
+                    }
 
-                            }
-                            promptText = "https://example.com/"
+                    field(messages["add.url"], "https://example.com/stream.m3u",
+                            viewModel.urlProperty) { field ->
+                        field.validator {
+                            if (it != null && HttpUrl.parse(it) != null)
+                                success()
+                            else
+                                error(messages["field.invalid.url"])
                         }
                     }
-                    field(messages["add.url"]) {
-                        textfield(viewModel.urlProperty) {
-                            validator {
-                                if (it != null && HttpUrl.parse(it) != null)
-                                    success()
-                                else
-                                    error(messages["field.invalid.url"])
-                            }
-                            promptText = "https://example.com/stream.m3u"
-                        }
-                    }
-                    field(messages["add.icon"]) {
-                        textfield(viewModel.faviconProperty) {
-                            validator {
-                                if (it != null && HttpUrl.parse(it) != null)
-                                    success()
-                                else
-                                    error(messages["field.invalid.url"])
-                            }
-                            promptText = "https://example.com/favicon.ico"
-                        }
-                    }
-                    field(messages["add.language"]) {
-                        textfield(viewModel.languageProperty) {
-                            required()
-                            validator {
-                                if (!validate(it, 150)) error(messages["field.invalid.length"])
-                                else null
-                            }
-                            promptText = messages["add.language.prompt"]
-                        }
-                    }
-                    field(messages["add.country"]) {
-                        textfield(viewModel.countryProperty) {
-                            bindAutoCompletion(viewModel.countriesListProperty)
-                            required()
 
-                            validator {
-                                if (viewModel.countriesListProperty.contains(it))
-                                    success()
-                                else
-                                    error(messages["field.invalid.country"])
-                            }
-                            promptText = messages["add.country.prompt"]
+                    field(messages["add.icon"], "https://example.com/favicon.ico",
+                            viewModel.faviconProperty) { field ->
+                        field.validator {
+                            if (it != null && HttpUrl.parse(it) != null)
+                                success()
+                            else
+                                error(messages["field.invalid.url"])
                         }
                     }
-                    field(messages["add.tags"]) {
-                        textfield(viewModel.tagsProperty) {
-                            promptText = messages["add.tags.prompt"]
+
+                    field(messages["add.language"], messages["add.language.prompt"],
+                            viewModel.languageProperty, true) { field ->
+                        field.validator {
+                            if (!validate(it, 150)) error(messages["field.invalid.length"])
+                            else null
                         }
                     }
+
+                    field(messages["add.country"], messages["add.country.prompt"],
+                            viewModel.countryProperty, true, viewModel.countriesListProperty) { field ->
+                        field.validator {
+                            if (viewModel.countriesListProperty.contains(it))
+                                success()
+                            else
+                                error(messages["field.invalid.country"])
+                        }
+                    }
+                    field(messages["add.tags"], messages["add.tags.prompt"], viewModel.tagsProperty)
                     field {
                         checkbox(messages["add.favourites"], viewModel.saveToFavouritesProperty)
                     }
@@ -154,7 +135,7 @@ class AddStationFragment : Fragment() {
                         actionEvents()
                                 .flatMapSingle {
                                     StationsApi.service
-                                            .add(AddStationBody(
+                                            .add(online.hudacek.fxradio.api.model.AddStation(
                                                     viewModel.nameProperty.value, viewModel.urlProperty.value,
                                                     viewModel.homePageProperty.value,
                                                     viewModel.faviconProperty.value, viewModel.countryCodeProperty.value,
@@ -162,35 +143,29 @@ class AddStationFragment : Fragment() {
                                                     viewModel.tagsProperty.value
                                             ))
                                             .compose(applySchedulers())
-
-                                }.subscribe({
+                                            .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, "invalid")) }
+                                }.subscribe {
                                     if (it.ok) {
-
                                         //Save UUID of new station
                                         viewModel.uuidProperty.value = it.uuid
 
                                         viewModel.commit {
-                                            fire(NotificationPaneEvent(messages["add.success"], FontAwesome.Glyph.CHECK))
                                             close()
 
                                             //Cleanup view model
-                                            viewModel.item = AddStationModel()
+                                            viewModel.item = AddStation()
                                         }
-
                                     } else {
                                         logger.error { "Error while adding station: ${it.message} " }
                                         this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = it.message
                                     }
-                                }, {
-                                    logger.error(it) { "Error while adding station " }
-                                    this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = messages["add.error"]
-                                })
+                                }
                         addClass(Styles.primaryButton)
                     }
 
                     button(messages["add.cleanupForm"]) {
                         action {
-                            viewModel.item = AddStationModel()
+                            viewModel.item = AddStation()
                         }
                     }
 

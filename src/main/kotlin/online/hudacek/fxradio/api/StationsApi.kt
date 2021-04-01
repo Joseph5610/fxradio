@@ -47,7 +47,7 @@ interface StationsApi {
     fun getTopStations(): Single<List<Station>>
 
     @POST("json/add")
-    fun add(@Body addBody: AddStationBody): Single<AddStationResponse>
+    fun add(@Body addStation: AddStation): Single<AddedStation>
 
     @POST("json/countries")
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Country>>
@@ -56,10 +56,10 @@ interface StationsApi {
     fun getStats(): Single<Stats>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Single<VoteResponse>
+    fun vote(@Path("uuid") uuid: String): Single<Vote>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<ClickResponse>
+    fun click(@Path("uuid") uuid: String): Single<Click>
 
     companion object : Component() {
 

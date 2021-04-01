@@ -86,6 +86,7 @@ object ImageCache {
      */
     fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
             .filter { !has(it) }
+            .doOnError { logger.error(it) { "Cannot save downloaded image" } }
             .map { cacheBasePath.resolve(it.stationuuid) }
             .subscribe {
                 Files.copy(
@@ -98,5 +99,10 @@ object ImageCache {
      * Adds [station] into list of invalid stations
      * Means that image for given station is invalid / not supported by renderer or URL is invalid
      */
-    fun addInvalid(station: Station) = invalidStationUuids.add(station.stationuuid)
+    fun addInvalid(station: Station) {
+        if (!invalidStationUuids.contains(station.stationuuid)) {
+            logger.debug { "Image for ${station.name} is added as invalid" }
+            invalidStationUuids.add(station.stationuuid)
+        }
+    }
 }

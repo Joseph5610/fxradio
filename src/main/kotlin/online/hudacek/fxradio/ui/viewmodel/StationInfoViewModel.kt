@@ -16,21 +16,13 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import io.reactivex.Single
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.api.model.VoteResponse
-import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
-import online.hudacek.fxradio.utils.applySchedulers
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.ItemViewModel
-import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -52,8 +44,6 @@ class StationInfo(station: Station = Station.dummy) {
 }
 
 class StationInfoViewModel : ItemViewModel<StationInfo>() {
-    private val appEvent: AppEvent by inject()
-
     val stationProperty = bind(StationInfo::station) as ObjectProperty
     val tagsProperty = bind(StationInfo::tags) as ListProperty<String>
     val homePageProperty = bind(StationInfo::homePage) as StringProperty
@@ -63,27 +53,4 @@ class StationInfoViewModel : ItemViewModel<StationInfo>() {
     val languageProperty = bind(StationInfo::language) as StringProperty
     val countryProperty = bind(StationInfo::country) as StringProperty
     val votesProperty = bind(StationInfo::votes) as IntegerProperty
-
-    init {
-        //Increase vote count on the server
-        appEvent.vote
-                .flatMapSingle {
-                    StationsApi.service
-                            .vote(it.stationuuid)
-                            .compose(applySchedulers())
-                            .onErrorResumeNext { Single.just(VoteResponse(false, "Voting returned error response")) }
-                }
-                .subscribe {
-                    if (!it.ok) {
-                        //Why this API returns error 200 on error ...
-                        appEvent.appNotification.onNext(
-                                AppNotification(messages["vote.error"],
-                                        FontAwesome.Glyph.WARNING))
-                    } else {
-                        appEvent.appNotification.onNext(
-                                AppNotification(messages["vote.ok"],
-                                        FontAwesome.Glyph.CHECK))
-                    }
-                }
-    }
 }

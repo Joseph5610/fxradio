@@ -25,11 +25,11 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.ClickResponse
+import online.hudacek.fxradio.api.model.Click
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.MetaData
-import online.hudacek.fxradio.events.OsNotification
+import online.hudacek.fxradio.events.data.MetaData
+import online.hudacek.fxradio.events.data.OsNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.applySchedulers
@@ -63,15 +63,12 @@ class Player(station: Station = Station.dummy,
  * Player view model
  * -------------------
  * Stores player settings, toggles playing
- * Increment station history list
- * Used all around the app
  */
 class PlayerViewModel : ItemViewModel<Player>() {
     private val appEvent: AppEvent by inject()
 
     val stationProperty = bind(Player::station) as ObjectProperty
     val playerStateProperty = bind(Player::playerState) as ObjectProperty
-
     val animateProperty = bind(Player::animate) as BooleanProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
     val trackNameProperty = bind(Player::trackName) as StringProperty
@@ -98,7 +95,7 @@ class PlayerViewModel : ItemViewModel<Player>() {
                             .compose(applySchedulers())
                             .onErrorResumeNext {
                                 //We do not care if this response fails
-                                Single.just(ClickResponse(false, "Error in ClickResponse"))
+                                Single.just(Click(false, "Error in ClickResponse"))
                             }
                 }
                 .subscribe {
@@ -136,7 +133,7 @@ class PlayerViewModel : ItemViewModel<Player>() {
 
     fun releasePlayer() = mediaPlayerProperty.value.release()
 
-    fun togglePlayer() {
+    fun togglePlayerState() {
         if (playerStateProperty.value == PlayerState.Playing) {
             playerStateProperty.value = PlayerState.Stopped
         } else {
@@ -144,6 +141,9 @@ class PlayerViewModel : ItemViewModel<Player>() {
         }
     }
 
+    /**
+     * Save player related key/values to app.properties file
+     */
     override fun onCommit() {
         saveProperties(mapOf(
                 Properties.PLAYER to mediaPlayerProperty.value.playerType,

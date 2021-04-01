@@ -29,7 +29,6 @@ import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.menu.MenuBarView
 import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import tornadofx.*
@@ -42,7 +41,6 @@ import tornadofx.controlsfx.content
  */
 class MainView : View(FxRadio.appName) {
 
-    private val playerViewModel: PlayerViewModel by inject()
     private val appEvent: AppEvent by inject()
 
     //Main views of the app
@@ -58,7 +56,6 @@ class MainView : View(FxRadio.appName) {
     override fun onDock() {
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
-            playerViewModel.releasePlayer()
             FxRadio.shutdownApp()
         }
     }

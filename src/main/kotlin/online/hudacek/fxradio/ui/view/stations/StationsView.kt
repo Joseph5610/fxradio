@@ -28,13 +28,16 @@ class StationsView : View() {
     private val messageView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
+    private val historyView: StationsHistoryView by inject()
 
     override val root = vbox {
         vgrow = Priority.ALWAYS
         add(headerView)
         add(messageView)
         add(dataGridView)
+        add(historyView)
         dataGridView.root.fitToParentHeight()
+        historyView.root.fitToParentHeight()
         addClass(Styles.backgroundWhite)
     }
 }

@@ -25,7 +25,7 @@ private val logger = KotlinLogging.logger {}
 
 /**
  * VLC Player Audio Component
- * Implements playing logic using VLC
+ * Implements playing logic using VLC player
  */
 class VLCAudioComponent {
 

@@ -18,7 +18,6 @@ package online.hudacek.fxradio.ui.view.library
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
-import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.showWhen
@@ -28,8 +27,6 @@ import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.property
 import tornadofx.*
-
-private val logger = KotlinLogging.logger {}
 
 class LibraryView : View() {
     private val appEvent: AppEvent by inject()
@@ -49,11 +46,9 @@ class LibraryView : View() {
         )
         Tables.pinnedCountries
                 .selectAll()
-                .subscribe({
+                .subscribe {
                     viewModel.pinnedProperty.add(it)
-                }, {
-                    logger.error(it) { "Error while getting pinned stations" }
-                })
+                }
         appEvent.refreshCountries.onNext(Unit)
     }
 

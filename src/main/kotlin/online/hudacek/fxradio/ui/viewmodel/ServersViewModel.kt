@@ -22,7 +22,7 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.HttpClientHolder
+import online.hudacek.fxradio.api.HttpClient
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import tornadofx.*
@@ -81,7 +81,7 @@ class ServersViewModel : ItemViewModel<Servers>(Servers()) {
     /**
      * Blocking operation is needed for the first start of the app
      */
-    fun performLookup() = HttpClientHolder.client.lookup(Config.API.dnsLookupURL)
+    fun performLookup() = HttpClient.lookup(Config.API.dnsLookupURL)
             .map { it.canonicalHostName }
             .distinct()
             .asObservable()

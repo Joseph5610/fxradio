@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui
 
+import griffon.javafx.support.flagicons.FlagIcon
 import javafx.animation.PauseTransition
 import javafx.beans.property.ListProperty
 import javafx.beans.property.Property
@@ -37,7 +38,9 @@ import javafx.scene.paint.Color
 import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.model.countryCode
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.player.TickerView
 import org.controlsfx.control.NotificationPane
@@ -216,3 +219,12 @@ internal fun EventTarget.field(message: String, prompt: String,
                 op(this)
             }
         })
+
+val Country.flagIcon: FlagIcon?
+    get() {
+        return try {
+            countryCode?.let { FlagIcon(it) }
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }

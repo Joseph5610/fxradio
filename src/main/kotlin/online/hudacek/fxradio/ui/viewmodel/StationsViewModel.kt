@@ -26,7 +26,11 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.model.Vote
+import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.utils.applySchedulers
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
@@ -48,8 +52,8 @@ class Stations(stations: ObservableList<Station> = observableListOf(),
  * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
 class StationsViewModel : ItemViewModel<Stations>(Stations()) {
+    private val appEvent: AppEvent by inject()
 
-    private val historyViewModel: HistoryViewModel by inject()
     private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
@@ -79,9 +83,11 @@ class StationsViewModel : ItemViewModel<Stations>(Stations()) {
                     when (it.type) {
                         LibraryType.Country -> stationsByCountry(it.libraryOption)
                         LibraryType.Favourites -> show(favouritesViewModel.stationsProperty)
-                        LibraryType.History -> show(historyViewModel.stationsProperty)
                         LibraryType.TopStations -> topStations.subscribe(::show, ::handleError)
                         LibraryType.Search -> search()
+                        else -> {
+                            show(observableListOf(Station.dummy))
+                        }
                     }
                 }
 
@@ -92,6 +98,27 @@ class StationsViewModel : ItemViewModel<Stations>(Stations()) {
                     selectedLibraryViewModel.item = SelectedLibrary(LibraryType.Search)
                     searchViewModel.commit()
                     search() //Perform the search call again
+                }
+
+        //Increase vote count on the server
+        appEvent.vote
+                .flatMapSingle {
+                    StationsApi.service
+                            .vote(it.stationuuid)
+                            .compose(applySchedulers())
+                            .onErrorResumeNext { Single.just(Vote(false, "Voting returned error response")) }
+                }
+                .subscribe {
+                    if (!it.ok) {
+                        //Why this API returns error 200 on error ...
+                        appEvent.appNotification.onNext(
+                                AppNotification(messages["vote.error"],
+                                        FontAwesome.Glyph.WARNING))
+                    } else {
+                        appEvent.appNotification.onNext(
+                                AppNotification(messages["vote.ok"],
+                                        FontAwesome.Glyph.CHECK))
+                    }
                 }
     }
 

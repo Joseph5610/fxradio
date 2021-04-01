@@ -19,7 +19,7 @@ package online.hudacek.fxradio.media
 import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome

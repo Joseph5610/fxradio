@@ -19,15 +19,12 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.viewmodel.*
 import tornadofx.*
-
-private val logger = KotlinLogging.logger {}
 
 class HistoryMenu : FxMenu() {
     private val appEvent: AppEvent by inject()
@@ -42,11 +39,9 @@ class HistoryMenu : FxMenu() {
     init {
         Tables.history
                 .selectAll()
-                .subscribe({
+                .subscribe {
                     historyViewModel.stationsProperty.add(it)
-                }, {
-                    logger.error(it) { "Error while getting history from DB!" }
-                })
+                }
     }
 
     override val menu by lazy {

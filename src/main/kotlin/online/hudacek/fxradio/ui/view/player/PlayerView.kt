@@ -18,7 +18,7 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
@@ -27,7 +27,6 @@ import online.hudacek.fxradio.ui.viewmodel.Player
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.asPlayerType
 import online.hudacek.fxradio.utils.property
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
@@ -66,7 +65,7 @@ class PlayerView : View() {
                 }
             }
             action {
-                viewModel.togglePlayer()
+                viewModel.togglePlayerState()
             }
             addClass(Styles.playerControls)
         }
@@ -93,7 +92,7 @@ class PlayerView : View() {
     init {
         viewModel.item = Player(
                 animate = property(Properties.PLAYER_ANIMATE, true),
-                mediaPlayer = MediaPlayer.create(property(Properties.PLAYER, "VLC")),
+                mediaPlayer = MediaPlayerFactory.create(property(Properties.PLAYER, "VLC")),
                 volume = property(Properties.VOLUME, 0.0))
     }
 
@@ -147,7 +146,7 @@ class PlayerView : View() {
 
     override fun onDock() {
         currentWindow?.setOnSpacePressed {
-            viewModel.togglePlayer()
+            viewModel.togglePlayerState()
         }
     }
 }

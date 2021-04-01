@@ -37,11 +37,15 @@ enum class Properties(val key: String) {
     WINDOW_SHOW_LIBRARY("window.showLibrary"),
     WINDOW_SHOW_COUNTRIES("window.showCountries"),
     WINDOW_SHOW_PINNED("window.showPinned"),
+    WINDOW_WIDTH("window.width"),
+    WINDOW_HEIGHT("window.height"),
+    WINDOW_X("window.x"),
+    WINDOW_Y("window.y"),
     LOG_LEVEL("log.level");
 }
 
 /**
- * Basic app configuration
+ * Creates app configuration for [property] key
  */
 class Property(property: Properties) : Component() {
 
@@ -74,8 +78,10 @@ class Property(property: Properties) : Component() {
      * or default value if the value does not exist there
      */
     inline fun <reified T> get(defaultValue: T): T {
+        val inlineLogger = KotlinLogging.logger {}
+        inlineLogger.debug { "Getting value of $key with default value $defaultValue" }
         return when (T::class) {
-            Boolean::class -> app.config.boolean(key, defaultValue as Boolean) as T
+            Boolean::class -> (app.config.boolean(key, defaultValue as Boolean)) as T
             Double::class -> app.config.double(key, defaultValue as Double) as T
             Int::class -> app.config.int(key, defaultValue as Int) as T
             String::class -> app.config.string(key, defaultValue as String) as T
@@ -94,6 +100,7 @@ class Property(property: Properties) : Component() {
     }
 
     fun remove() {
+        logger.debug { "Remove value for key: $key " }
         with(app.config) {
             remove(key)
             save()

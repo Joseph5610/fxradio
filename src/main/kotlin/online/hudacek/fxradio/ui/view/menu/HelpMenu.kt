@@ -19,7 +19,7 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.AppNotification
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.menu

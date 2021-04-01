@@ -21,7 +21,6 @@ import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.viewmodel.AppMenu
 import online.hudacek.fxradio.ui.viewmodel.AppMenuViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacMenu
 import online.hudacek.fxradio.utils.macos.MacUtils
@@ -31,7 +30,6 @@ import tornadofx.*
 class MenuBarView : View() {
 
     private val appMenuViewModel: AppMenuViewModel by inject()
-    private val playerViewModel: PlayerViewModel by inject()
 
     private val historyMenu: HistoryMenu by inject()
     private val favouritesMenu: FavouritesMenu by inject()
@@ -54,7 +52,6 @@ class MenuBarView : View() {
             addAppMenuContent()
             item(messages["menu.app.quit"]).action {
                 currentStage?.close()
-                playerViewModel.releasePlayer()
                 FxRadio.shutdownApp()
             }
         }
