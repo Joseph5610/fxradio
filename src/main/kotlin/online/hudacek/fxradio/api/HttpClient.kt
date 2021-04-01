@@ -45,7 +45,7 @@ object HttpClient : OkHttpHelper() {
      */
     fun request(url: String,
                 success: (Response) -> Unit,
-                fail: (IOException) -> Unit) = httpClient.newCall(request(url)).enqueue(
+                fail: (IOException) -> Unit) = httpClient.newCall(buildRequest(url)).enqueue(
             object : Callback {
                 override fun onResponse(call: Call, response: Response) {
                     success(response)
@@ -59,7 +59,10 @@ object HttpClient : OkHttpHelper() {
             }
     )
 
-    private fun request(url: String) = Request.Builder()
+    /**
+     * Constructs [Request] object for given [url] address
+     */
+    private fun buildRequest(url: String) = Request.Builder()
             .url(url)
             .build()
 }

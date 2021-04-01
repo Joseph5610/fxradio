@@ -19,7 +19,7 @@ package online.hudacek.fxradio.media.player.vlc
 import io.reactivex.subjects.BehaviorSubject
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.data.MetaData
+import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.Controller
 import tornadofx.get
@@ -84,11 +84,11 @@ class VLCEvents : Controller() {
             media?.meta()?.let {
                 if (it[Meta.NOW_PLAYING] != null
                         && it[Meta.TITLE] != null) {
-                    val metaData = MetaData(it[Meta.TITLE],
+                    val metaData = StreamMetaData(it[Meta.TITLE],
                             it[Meta.NOW_PLAYING]
                                     .replace("\r", "")
                                     .replace("\n", ""))
-                    appEvent.playerMetaData.onNext(metaData)
+                    appEvent.streamMetaData.onNext(metaData)
                 }
             }
         }

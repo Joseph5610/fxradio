@@ -16,9 +16,7 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
@@ -29,8 +27,6 @@ import online.hudacek.fxradio.utils.property
 import tornadofx.*
 
 class LibraryView : View() {
-    private val appEvent: AppEvent by inject()
-
     private val viewModel: LibraryViewModel by inject()
 
     private val librarySearchView: LibrarySearchView by inject()
@@ -49,7 +45,8 @@ class LibraryView : View() {
                 .subscribe {
                     viewModel.pinnedProperty.add(it)
                 }
-        appEvent.refreshCountries.onNext(Unit)
+
+        viewModel.getCountries.subscribe()
     }
 
     override val root = borderpane {
@@ -94,9 +91,7 @@ class LibraryView : View() {
                 vbox(alignment = Pos.CENTER) {
                     hyperlink(messages["downloadRetry"]) {
 
-                        actionEvents()
-                                .map { Unit }
-                                .subscribe(appEvent.refreshCountries)
+                        action { viewModel.getCountries.subscribe() }
 
                         showWhen {
                             viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)

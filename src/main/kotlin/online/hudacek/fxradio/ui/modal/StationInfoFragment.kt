@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.ui.modal
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
+import javafx.beans.property.IntegerProperty
 import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Label
@@ -70,11 +71,11 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             alignment = Pos.CENTER
             paddingAll = 5.0
 
-            add(createInfoLabel("info.codec", viewModel.codecProperty))
-            add(createInfoLabel("info.bitrate", stringProperty(viewModel.bitrateProperty.value.toString())))
-            add(createInfoLabel("info.language", viewModel.languageProperty))
-            add(createInfoLabel("info.country", viewModel.countryProperty))
-            add(createInfoLabel("info.votes", stringProperty(viewModel.votesProperty.value.toString())))
+            createInfoLabel("info.codec", viewModel.codecProperty)?.let { add(it) }
+            createInfoLabel("info.bitrate", viewModel.bitrateProperty)?.let { add(it) }
+            createInfoLabel("info.language", viewModel.languageProperty)?.let { add(it) }
+            createInfoLabel("info.country", viewModel.countryProperty)?.let { add(it) }
+            createInfoLabel("info.votes", viewModel.votesProperty)?.let { add(it) }
         }
 
         flowpane {
@@ -125,9 +126,11 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
-    private fun createInfoLabel(key: String, textProperty: StringProperty): Label {
-        val actualTextProperty = textProperty.stringBinding {
-            messages[key] + ": " + if (it.isNullOrEmpty()) messages["unknown"] else it
+    private fun createInfoLabel(key: String, valueProperty: StringProperty): Label? {
+        if (valueProperty.value.isNullOrEmpty()) return null
+
+        val actualTextProperty = valueProperty.stringBinding {
+            messages[key] + ": " + it
         }
 
         return label(actualTextProperty) {
@@ -135,7 +138,20 @@ class StationInfoFragment(station: Station? = null) : Fragment() {
             addClass(Styles.tag)
             copyMenu(clipboard,
                     name = messages["copy"],
-                    value = textProperty.value)
+                    value = valueProperty.value)
+        }
+    }
+
+    private fun createInfoLabel(key: String, valueProperty: IntegerProperty): Label? {
+        if (valueProperty.value == 0) return null
+
+        val actualTextProperty = valueProperty.stringBinding {
+            messages[key] + ": " + it
+        }
+
+        return label(actualTextProperty) {
+            addClass(Styles.grayLabel)
+            addClass(Styles.tag)
         }
     }
 }

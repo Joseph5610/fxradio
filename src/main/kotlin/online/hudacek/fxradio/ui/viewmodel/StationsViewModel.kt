@@ -16,7 +16,9 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toObservable
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
@@ -36,11 +38,11 @@ import tornadofx.*
 private val logger = KotlinLogging.logger {}
 
 enum class StationsViewState {
-    Loaded, Error, Loading, Empty, ShortQuery
+    Loaded, Error, Loading, ShortQuery
 }
 
 class Stations(stations: ObservableList<Station> = observableListOf(),
-               viewState: StationsViewState = StationsViewState.Empty) {
+               viewState: StationsViewState = StationsViewState.Loading) {
     var stations: ObservableList<Station> by property(stations)
     var viewState: StationsViewState by property(viewState)
 }
@@ -61,6 +63,9 @@ class StationsViewModel : ItemViewModel<Stations>(Stations()) {
     val stationsProperty = bind(Stations::stations) as ListProperty
     val viewStateProperty = bind(Stations::viewState) as ObjectProperty
 
+    private val viewStatePropertyChanges: Observable<StationsViewState> = viewStateProperty
+            .toObservable()
+
     //Retrieves top voted stations list from endpoint
     private val topStations: Single<List<Station>> = StationsApi.service
             .getTopStations()
@@ -74,9 +79,7 @@ class StationsViewModel : ItemViewModel<Stations>(Stations()) {
                     viewStateProperty.value = StationsViewState.Loading
                 }
 
-        viewStateProperty
-                .toObservableChangesNonNull()
-                .map { it.newVal }
+        viewStatePropertyChanges
                 .filter { it == StationsViewState.Loading }
                 .map { selectedLibraryViewModel.itemProperty.value }
                 .subscribe {
@@ -86,7 +89,7 @@ class StationsViewModel : ItemViewModel<Stations>(Stations()) {
                         LibraryType.TopStations -> topStations.subscribe(::show, ::handleError)
                         LibraryType.Search -> search()
                         else -> {
-                            show(observableListOf(Station.dummy))
+                            viewStateProperty.value = StationsViewState.Loaded
                         }
                     }
                 }
@@ -142,11 +145,7 @@ class StationsViewModel : ItemViewModel<Stations>(Stations()) {
 
     fun show(stations: List<Station>) {
         stationsProperty.value = stations.asObservable()
-        viewStateProperty.value = if (stations.isEmpty()) {
-            StationsViewState.Empty
-        } else {
-            StationsViewState.Loaded
-        }
+        viewStateProperty.value = StationsViewState.Loaded
     }
 
     private fun handleError(throwable: Throwable) {

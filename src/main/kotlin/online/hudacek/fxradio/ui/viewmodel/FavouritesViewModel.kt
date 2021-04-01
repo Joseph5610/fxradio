@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import io.reactivex.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
@@ -51,16 +52,12 @@ class FavouritesViewModel : ItemViewModel<Favourites>(Favourites()) {
         appEvent.addFavourite
                 .filter { it.isValid() && !stationsProperty.contains(it) }
                 .flatMapSingle { Tables.favourites.insert(it) }
-                .subscribe({
+                .flatMapSingle {
                     stationsProperty.add(it)
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["menu.station.favouriteAdded"].formatted(it.name),
-                                    FontAwesome.Glyph.CHECK))
-                }, {
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["menu.station.favouriteAdded.error"],
-                                    FontAwesome.Glyph.WARNING))
-                })
+                    Single.just(AppNotification(messages["menu.station.favouriteAdded"].formatted(it.name),
+                            FontAwesome.Glyph.CHECK))
+                }.subscribe(appEvent.appNotification)
+
 
         appEvent.cleanupFavourites
                 .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
@@ -71,15 +68,10 @@ class FavouritesViewModel : ItemViewModel<Favourites>(Favourites()) {
 
         appEvent.removeFavourite
                 .flatMapSingle { Tables.favourites.remove(it) }
-                .subscribe({
+                .flatMapSingle {
                     stationsProperty.remove(it)
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["menu.station.favouriteRemoved"].formatted(it.name),
-                                    FontAwesome.Glyph.CHECK))
-                }, {
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["menu.station.favouriteRemove.error"],
-                                    FontAwesome.Glyph.WARNING))
-                })
+                    Single.just(AppNotification(messages["menu.station.favouriteRemoved"].formatted(it.name),
+                            FontAwesome.Glyph.CHECK))
+                }.subscribe(appEvent.appNotification)
     }
 }

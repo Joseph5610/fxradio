@@ -18,6 +18,7 @@ package online.hudacek.fxradio.ui.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import io.reactivex.Observable
 import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
@@ -28,9 +29,8 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.Click
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.data.MetaData
-import online.hudacek.fxradio.events.data.OsNotification
 import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.applySchedulers
 import online.hudacek.fxradio.utils.saveProperties
@@ -45,7 +45,7 @@ enum class PlayerState {
     Playing, Stopped, Error
 }
 
-class Player(station: Station = Station.dummy,
+class Player(station: Station,
              animate: Boolean = true,
              volume: Double,
              playerState: PlayerState = PlayerState.Stopped,
@@ -75,31 +75,32 @@ class PlayerViewModel : ItemViewModel<Player>() {
 
     val mediaPlayerProperty = bind(Player::mediaPlayer) as ObjectProperty
 
+    val stationPropertyChanges: Observable<Station> = stationProperty
+            .toObservableChangesNonNull()
+            .map { it.newVal }
+
     init {
-        stationProperty
-                .toObservableChangesNonNull()
-                .map { it.newVal }
+        stationPropertyChanges
                 .filter { it.isValid() }
+                .doOnEach(appEvent.addToHistory) //Send the new history item event
                 .doOnError { logger.error(it) { "Error with changing station..." } }
                 .flatMapSingle {
-                    //Restart playing status
-                    playerStateProperty.value = PlayerState.Stopped
-                    playerStateProperty.value = PlayerState.Playing
-
-                    //Update the name of the station
-                    trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
-
                     //Increase count of the station
                     StationsApi.service
                             .click(it.stationuuid)
                             .compose(applySchedulers())
-                            .onErrorResumeNext {
+                            .onErrorResumeNext { _ ->
                                 //We do not care if this response fails
-                                Single.just(Click(false, "Error in ClickResponse"))
+                                Single.just(Click(false, "Error in ClickResponse", it.name))
                             }
                 }
                 .subscribe {
-                    logger.debug { "Station changed, ClickResponse: $it" }
+                    //Update the name of the station
+                    trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
+
+                    //Restart playing status
+                    playerStateProperty.value = PlayerState.Stopped
+                    playerStateProperty.value = PlayerState.Playing
                 }
 
         //Set volume for current player
@@ -120,13 +121,12 @@ class PlayerViewModel : ItemViewModel<Player>() {
         /**
          * Called when new song starts playing or other metadata of stream changes
          */
-        appEvent.playerMetaData
-                .map { m -> MetaData(m.stationName.trim(), m.nowPlaying.trim()) }
+        appEvent.streamMetaData
+                .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
                 .filter { it.nowPlaying.length > 1 }
                 .observeOnFx()
+                .doOnEach(appEvent.osNotification)
                 .subscribe {
-                    appEvent.osNotification
-                            .onNext(OsNotification(title = it.nowPlaying, value = it.stationName))
                     trackNameProperty.value = it.nowPlaying
                 }
     }

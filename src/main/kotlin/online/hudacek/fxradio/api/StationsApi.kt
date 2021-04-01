@@ -27,11 +27,11 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import tornadofx.Component
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * Provides HTTP endpoints for radio-browser.info API
  */
-private val logger = KotlinLogging.logger {}
-
 interface StationsApi {
 
     @POST("json/stations/bycountryexact/{countryName}")

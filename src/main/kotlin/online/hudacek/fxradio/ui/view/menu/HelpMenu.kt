@@ -18,21 +18,14 @@ package online.hudacek.fxradio.ui.view.menu
 
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.data.AppNotification
-import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.viewmodel.Log
 import online.hudacek.fxradio.ui.viewmodel.LogViewModel
 import org.apache.logging.log4j.Level
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
 class HelpMenu : FxMenu() {
-    private val appEvent: AppEvent by inject()
-
     private val logViewModel: LogViewModel by inject()
 
     private var checkLoggerOff: CheckMenuItem by singleAssign()
@@ -63,14 +56,7 @@ class HelpMenu : FxMenu() {
             }
 
             item(messages["menu.help.clearCache"]).action {
-                if (ImageCache.totalSize < 1) {
-                    appEvent.appNotification.onNext(AppNotification(messages["cache.clear.empty"], FontAwesome.Glyph.CHECK))
-                } else {
-                    confirm(messages["cache.clear.confirm"],
-                            messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
-                        appMenuViewModel.clearCache()
-                    }
-                }
+                appMenuViewModel.clearCache()
             }
 
             separator()

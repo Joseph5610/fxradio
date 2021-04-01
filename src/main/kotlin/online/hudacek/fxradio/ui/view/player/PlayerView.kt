@@ -18,11 +18,13 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.ui.viewmodel.Player
 import online.hudacek.fxradio.ui.viewmodel.PlayerState
 import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
@@ -38,6 +40,7 @@ import tornadofx.*
 class PlayerView : View() {
 
     private val viewModel: PlayerViewModel by inject()
+    private val historyViewModel: HistoryViewModel by inject()
 
     private val playerStationView: PlayerStationView by inject()
 
@@ -91,6 +94,7 @@ class PlayerView : View() {
 
     init {
         viewModel.item = Player(
+                station = historyViewModel.stationsProperty.lastOrNull() ?: Station.dummy,
                 animate = property(Properties.PLAYER_ANIMATE, true),
                 mediaPlayer = MediaPlayerFactory.create(property(Properties.PLAYER, "VLC")),
                 volume = property(Properties.VOLUME, 0.0))

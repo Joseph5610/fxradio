@@ -14,6 +14,9 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events.data
+package online.hudacek.fxradio.media
 
-data class MetaData(val stationName: String, val nowPlaying: String)
+/**
+ * Data class for meta data change event holding current station name / stream title
+ */
+data class StreamMetaData(val stationName: String, val nowPlaying: String)

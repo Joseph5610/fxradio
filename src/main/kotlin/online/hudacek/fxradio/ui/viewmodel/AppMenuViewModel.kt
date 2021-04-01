@@ -23,6 +23,7 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
+import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.modal.*
 import online.hudacek.fxradio.ui.openUrl
 import org.controlsfx.glyphfont.FontAwesome
@@ -52,17 +53,26 @@ class AppMenuViewModel : ItemViewModel<AppMenu>(AppMenu()) {
     //Help menu links
     fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
 
-    fun clearCache() = runAsync(daemon = true) {
-        ImageCache.clear()
-    } success {
-        appEvent.appNotification.onNext(
-                AppNotification(messages["cache.clear.ok"],
-                        FontAwesome.Glyph.CHECK))
-    } fail {
-        appEvent.appNotification.onNext(
-                AppNotification(messages["cache.clear.error"],
-                        FontAwesome.Glyph.WARNING))
-        logger.error(it) { "Exception when clearing cache" }
+    fun clearCache() {
+        if (ImageCache.totalSize < 1) {
+            appEvent.appNotification.onNext(AppNotification(messages["cache.clear.empty"], FontAwesome.Glyph.CHECK))
+        } else {
+            confirm(messages["cache.clear.confirm"],
+                    messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
+                runAsync(daemon = true) {
+                    ImageCache.clear()
+                } success {
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["cache.clear.ok"],
+                                    FontAwesome.Glyph.CHECK))
+                } fail {
+                    appEvent.appNotification.onNext(
+                            AppNotification(messages["cache.clear.error"],
+                                    FontAwesome.Glyph.WARNING))
+                    logger.error(it) { "Exception when clearing cache" }
+                }
+            }
+        }
     }
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)

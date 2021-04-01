@@ -46,11 +46,6 @@ class StationsDataGridView : View() {
     private val favouritesMenu: FavouritesMenu by inject()
     private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
-    override fun onDock() {
-        //Load the stations grid
-        stationsViewModel.viewStateProperty.value = StationsViewState.Loading
-    }
-
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
 

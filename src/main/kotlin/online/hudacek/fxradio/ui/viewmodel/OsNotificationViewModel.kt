@@ -40,7 +40,7 @@ class OsNotificationViewModel : ItemViewModel<OsNotification>(OsNotification()) 
         appEvent.osNotification
                 .filter { showProperty.value && MacUtils.isMac }
                 .subscribe {
-                    MacUtils.notification(it.title, it.value)
+                    MacUtils.notification(it.nowPlaying, it.stationName)
                 }
     }
 

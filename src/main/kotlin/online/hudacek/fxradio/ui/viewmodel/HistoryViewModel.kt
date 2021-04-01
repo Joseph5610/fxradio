@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
@@ -41,15 +40,12 @@ class History(stations: ObservableList<Station> = observableListOf()) {
  */
 class HistoryViewModel : ItemViewModel<History>(History()) {
     private val appEvent: AppEvent by inject()
-    private val playerViewModel: PlayerViewModel by inject()
 
     val stationsProperty = bind(History::stations) as ListProperty
 
     init {
         //Add currently listened station to history
-        playerViewModel.stationProperty
-                .toObservableChangesNonNull()
-                .map { it.newVal }
+        appEvent.addToHistory
                 //Add only valid stations not already present in history
                 .filter { it.isValid() }
                 .doOnError { logger.error(it) { "Error adding station to history!" } }

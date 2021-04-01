@@ -17,4 +17,5 @@
 package online.hudacek.fxradio.api.model
 
 data class Click(val ok: Boolean,
-                 val message: String)
+                 val message: String,
+                 val name: String)

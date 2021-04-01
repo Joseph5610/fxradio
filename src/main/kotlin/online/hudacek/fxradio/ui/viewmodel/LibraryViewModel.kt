@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.viewmodel
 
+import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
@@ -80,6 +81,15 @@ class LibraryViewModel : ItemViewModel<Library>(Library()) {
     val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
+    val getCountries: Single<List<Country>> = StationsApi.service
+            .getCountries(CountriesBody())
+            .compose(applySchedulers())
+            .doOnSuccess {
+                //Ignore invalid states
+                val validCountries = it.filter { station -> station.isValid }.asObservable()
+                countriesProperty.setAll(validCountries)
+            }
+
     init {
         appEvent.pinCountry
                 .filter { !pinnedProperty.contains(it) }
@@ -106,22 +116,6 @@ class LibraryViewModel : ItemViewModel<Library>(Library()) {
                 }, {
                     appEvent.appNotification.onNext(
                             AppNotification(messages["pinning.error"],
-                                    FontAwesome.Glyph.WARNING))
-                })
-
-        appEvent.refreshCountries
-                .flatMapSingle {
-                    StationsApi.service
-                            .getCountries(CountriesBody())
-                            .compose(applySchedulers())
-                }
-                //Ignore invalid states
-                .map { list -> list.filter { it.isValid }.asObservable() }
-                .subscribe({
-                    countriesProperty.setAll(it)
-                }, {
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["downloadError"],
                                     FontAwesome.Glyph.WARNING))
                 })
     }

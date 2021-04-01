@@ -20,8 +20,7 @@ import io.reactivex.subjects.BehaviorSubject
 import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.data.AppNotification
-import online.hudacek.fxradio.events.data.MetaData
-import online.hudacek.fxradio.events.data.OsNotification
+import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.ui.viewmodel.LibraryType
 import tornadofx.Controller
 
@@ -30,21 +29,21 @@ import tornadofx.Controller
  */
 class AppEvent : Controller() {
     val appNotification = BehaviorSubject.create<AppNotification>()
-    val osNotification = BehaviorSubject.create<OsNotification>()
+    val osNotification = BehaviorSubject.create<StreamMetaData>()
 
     val addFavourite = BehaviorSubject.create<Station>()
     val removeFavourite = BehaviorSubject.create<Station>()
     val cleanupFavourites = BehaviorSubject.create<Unit>()
 
+    val addToHistory = BehaviorSubject.create<Station>()
     val cleanupHistory = BehaviorSubject.create<Unit>()
 
     val pinCountry = BehaviorSubject.create<Country>()
     val unpinCountry = BehaviorSubject.create<Country>()
-    val refreshCountries = BehaviorSubject.create<Unit>()
 
     val vote = BehaviorSubject.create<Station>()
 
     val refreshLibrary = BehaviorSubject.create<LibraryType>()
 
-    val playerMetaData = BehaviorSubject.create<MetaData>()
+    val streamMetaData = BehaviorSubject.create<StreamMetaData>()
 }

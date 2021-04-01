@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
+import online.hudacek.fxradio.media.StreamUnavailableException
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
@@ -43,7 +44,7 @@ class VLCAudioComponent {
 
     init {
         if (player == null) {
-            throw RuntimeException("VLCLib cannot be found on the system.")
+            throw StreamUnavailableException("VLC player cannot be found on the system.")
         }
 
         player?.let {

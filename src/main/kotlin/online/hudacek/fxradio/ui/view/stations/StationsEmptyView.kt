@@ -35,14 +35,13 @@ class StationsEmptyView : View() {
 
     private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
     private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
-    private val noResults by lazy { FontAwesome.Glyph.FROWN_ALT.make() }
+    private val noResultsGlyph by lazy { FontAwesome.Glyph.FROWN_ALT.make() }
 
     private val headerProperty = viewModel.viewStateProperty.stringBinding {
         when (it) {
             StationsViewState.Error -> messages["connectionError"]
             StationsViewState.ShortQuery -> messages["searchingLibrary"]
-            StationsViewState.Empty -> messages["noResults"]
-            else -> ""
+            else -> messages["noResults"]
         }
     }
 
@@ -50,8 +49,7 @@ class StationsEmptyView : View() {
         when (it) {
             StationsViewState.Error -> errorGlyph
             StationsViewState.ShortQuery -> searchGlyph
-            StationsViewState.Empty -> noResults
-            else -> null
+            else -> noResultsGlyph
         }
     }
 

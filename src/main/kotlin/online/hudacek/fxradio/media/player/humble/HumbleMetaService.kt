@@ -23,7 +23,7 @@ import javafx.concurrent.Task
 import javafx.util.Duration
 import mu.KotlinLogging
 import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.data.MetaData
+import online.hudacek.fxradio.media.StreamMetaData
 import tornadofx.find
 
 private val logger = KotlinLogging.logger {}
@@ -71,9 +71,9 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
         override fun succeeded() {
             if (value.getValue(streamStationName) != null
                     && value.getValue(streamNowPlayingKey) != null) {
-
-                val mediaMeta = MetaData(value.getValue(streamStationName), value.getValue(streamNowPlayingKey))
-                find<AppEvent>().playerMetaData.onNext(mediaMeta)
+                //Send new MetaData event if stream metadata values are present
+                val mediaMeta = StreamMetaData(value.getValue(streamStationName), value.getValue(streamNowPlayingKey))
+                find<AppEvent>().streamMetaData.onNext(mediaMeta)
             }
         }
 

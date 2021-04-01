@@ -38,15 +38,15 @@ class StationsHistoryView : View() {
 
         cellFormat {
             graphic = hbox(10) {
+                alignment = Pos.CENTER_LEFT
                 imageview {
                     it.stationImage(this)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
-                    fitHeight = 25.0
-                    fitHeight = 25.0
+                    fitHeight = 30.0
+                    fitWidth = 30.0
                     isPreserveRatio = true
                 }
                 label(it.name) {
-                    alignment = Pos.BASELINE_CENTER
                 }
             }
             onUserSelect(1) {

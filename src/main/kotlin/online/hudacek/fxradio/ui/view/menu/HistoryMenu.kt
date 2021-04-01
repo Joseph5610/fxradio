@@ -21,6 +21,7 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.viewmodel.*
@@ -79,7 +80,8 @@ class HistoryMenu : FxMenu() {
                 }
 
                 action {
-                    confirm(messages["history.clear.confirm"], messages["history.clear.text"], owner = primaryStage) {
+                    confirm(messages["history.clear.confirm"],
+                            messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size), owner = primaryStage) {
                         appEvent.cleanupHistory.onNext(Unit)
                         appEvent.refreshLibrary.onNext(LibraryType.History)
                     }

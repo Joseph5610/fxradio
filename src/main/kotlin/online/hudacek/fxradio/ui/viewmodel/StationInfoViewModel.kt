@@ -26,7 +26,7 @@ import tornadofx.ItemViewModel
 import tornadofx.observableListOf
 import tornadofx.property
 
-class StationInfo(station: Station = Station.dummy) {
+class StationInfo(station: Station) {
     var station: Station by property(station)
     var name: String by property(station.name)
     var country: String by property(station.country)

@@ -3,7 +3,7 @@ package online.hudacek.fxradio.api.model
 import online.hudacek.fxradio.FxRadio
 
 /**
- * Stations json structure
+ * Station data class
  */
 data class Station(val stationuuid: String,
                    val name: String,
@@ -27,7 +27,7 @@ data class Station(val stationuuid: String,
         super.equals(other)
     }
 
-    override fun hashCode() = super.hashCode()
+    override fun hashCode() = stationuuid.hashCode()
 
     companion object {
         val dummy by lazy {
