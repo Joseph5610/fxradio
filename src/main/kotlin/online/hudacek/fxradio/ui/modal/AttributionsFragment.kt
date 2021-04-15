@@ -20,15 +20,16 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.Attribution
-import online.hudacek.fxradio.ui.viewmodel.AttributionViewModel
-import online.hudacek.fxradio.ui.viewmodel.Attributions
+import online.hudacek.fxradio.viewmodel.Attribution
+import online.hudacek.fxradio.viewmodel.AttributionViewModel
+import online.hudacek.fxradio.viewmodel.Attributions
 import tornadofx.*
 
-class AttributionsFragment : Fragment() {
+class AttributionsFragment : BaseFragment() {
 
     private val viewModel: AttributionViewModel by inject()
 

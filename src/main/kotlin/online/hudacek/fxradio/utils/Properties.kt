@@ -78,8 +78,6 @@ class Property(property: Properties) : Component() {
      * or default value if the value does not exist there
      */
     inline fun <reified T> get(defaultValue: T): T {
-        val inlineLogger = KotlinLogging.logger {}
-        inlineLogger.debug { "Getting value of $key with default value $defaultValue" }
         return when (T::class) {
             Boolean::class -> (app.config.boolean(key, defaultValue as Boolean)) as T
             Double::class -> app.config.double(key, defaultValue as Double) as T
@@ -118,4 +116,7 @@ fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
     }
 }
 
+/**
+ * Helper method. Get value of property [key]. If the key value is not present, returns [defaultValue]
+ */
 inline fun <reified T> property(key: Properties, defaultValue: T) = Property(key).get(defaultValue)

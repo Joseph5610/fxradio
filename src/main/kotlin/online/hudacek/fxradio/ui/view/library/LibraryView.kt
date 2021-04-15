@@ -18,35 +18,29 @@ package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.Library
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.*
 
-class LibraryView : View() {
+class LibraryView : BaseView() {
+
     private val viewModel: LibraryViewModel by inject()
 
     private val librarySearchView: LibrarySearchView by inject()
     private val libraryCountriesView: LibraryCountriesView by inject()
     private val libraryListView: LibraryListView by inject()
-    private val libraryPinnedView: LibraryPinnedView by inject()
+    private val libraryCountriesPinnedView: LibraryCountriesPinnedView by inject()
 
     override fun onDock() {
-        viewModel.item = Library(
-                showLibrary = property(Properties.WINDOW_SHOW_LIBRARY, true),
-                showCountries = property(Properties.WINDOW_SHOW_COUNTRIES, true),
-                showPinned = property(Properties.WINDOW_SHOW_PINNED, true)
-        )
         Tables.pinnedCountries
                 .selectAll()
                 .subscribe {
                     viewModel.pinnedProperty.add(it)
                 }
 
-        viewModel.getCountries.subscribe()
+        viewModel.getCountries()
     }
 
     override val root = borderpane {
@@ -70,7 +64,7 @@ class LibraryView : View() {
                         viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
                         viewModel.commit()
                     })
-                    add(libraryPinnedView)
+                    add(libraryCountriesPinnedView)
                     showWhen {
                         viewModel.pinnedProperty.emptyProperty().not()
                     }
@@ -91,10 +85,11 @@ class LibraryView : View() {
                 vbox(alignment = Pos.CENTER) {
                     hyperlink(messages["downloadRetry"]) {
 
-                        action { viewModel.getCountries.subscribe() }
+                        action { viewModel.getCountries() }
 
                         showWhen {
-                            viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
+                            viewModel.countriesProperty.emptyProperty()
+                                    .and(viewModel.showCountriesProperty)
                         }
                     }
                 }

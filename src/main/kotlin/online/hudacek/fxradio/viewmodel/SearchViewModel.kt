@@ -14,31 +14,31 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.viewmodel
+package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
+import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
-import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.SearchBody
-import online.hudacek.fxradio.api.model.SearchByTagBody
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.usecase.SearchByNameUseCase
+import online.hudacek.fxradio.usecase.SearchByTagUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
-import online.hudacek.fxradio.utils.applySchedulers
+import online.hudacek.fxradio.utils.property
 import tornadofx.ItemViewModel
 import tornadofx.property
 import tornadofx.stringBinding
 
-class Search(query: String = "",
+class Search(query: String = property(Properties.SEARCH_QUERY, ""),
              useTagSearch: Boolean = false) {
     var query: String by property(query)
     var searchByTag: Boolean by property(useTagSearch)
 }
 
 class SearchViewModel : ItemViewModel<Search>(Search()) {
+
+    private val searchByTagUseCase: SearchByTagUseCase by inject()
+    private val searchByNameUseCase: SearchByNameUseCase by inject()
 
     val searchByTagProperty = bind(Search::searchByTag) as BooleanProperty
 
@@ -52,19 +52,13 @@ class SearchViewModel : ItemViewModel<Search>(Search()) {
         } else ""
     }
 
-    val queryChanges: Observable<String> = queryProperty
-            .toObservableChanges()
+    val queryObservable: Observable<String> = queryProperty
+            .toObservableChangesNonNull()
             .map { it.newVal }
 
-    val searchByTagSingle: Single<List<Station>>
-        get() = StationsApi.service
-                .searchStationByTag(SearchByTagBody(queryProperty.value))
-                .compose(applySchedulers())
+    fun searchByTag() = searchByTagUseCase.execute(queryProperty)
 
-    val searchByNameSingle: Single<List<Station>>
-        get() = StationsApi.service
-                .searchStationByName(SearchBody(queryProperty.value))
-                .compose(applySchedulers())
+    fun searchByName() = searchByNameUseCase.execute(queryProperty)
 
     override fun onCommit() = Property(Properties.SEARCH_QUERY).save(bindQueryProperty.value)
 }

@@ -14,17 +14,19 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.viewmodel
+package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.utils.property
 import tornadofx.ItemViewModel
 import tornadofx.property
 
-class OsNotification(show: Boolean = false) {
+//Notifications are currently enabled only on macOS
+class OsNotification(show: Boolean = property(Properties.NOTIFICATIONS, MacUtils.isMac)) {
     var show: Boolean by property(show)
 }
 

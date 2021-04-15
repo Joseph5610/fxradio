@@ -42,7 +42,6 @@ import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.api.model.countryCode
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.view.player.TickerView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
@@ -103,12 +102,6 @@ internal fun EventTarget.searchField(promptText: String, property: ObservableVal
 
 internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): CustomTextField =
         opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
-
-internal fun tickerView(op: TickerView.() -> Unit = {}): TickerView {
-    return TickerView().apply {
-        op(this)
-    }
-}
 
 /**
  * Copy Menu
@@ -220,7 +213,7 @@ internal fun EventTarget.field(message: String, prompt: String,
             }
         })
 
-val Country.flagIcon: FlagIcon?
+internal val Country.flagIcon: FlagIcon?
     get() {
         return try {
             countryCode?.let { FlagIcon(it) }

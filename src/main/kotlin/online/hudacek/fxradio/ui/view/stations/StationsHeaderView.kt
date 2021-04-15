@@ -16,29 +16,30 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.*
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 /**
  * Bar with opened library name and action button within stationsView
  */
-class StationsHeaderView : View() {
+class StationsHeaderView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
 
     private val stationsHeaderSearchView: StationsHeaderSearchView by inject()
 
     //Bindings for library name based on selected library
-    private val libraryNameTextProperty = selectedLibraryViewModel.itemProperty.stringBinding {
+    private val libraryNameTextProperty = libraryViewModel.stateProperty.stringBinding {
         it?.let {
-            when (it.type) {
-                LibraryType.Country -> it.libraryOption
-                LibraryType.Search -> messages["Search"]
-                else -> messages[it.type.toString()]
+            when (it) {
+                is LibraryState.IsCountry -> it.country.name
+                is LibraryState.Search -> messages["Search"]
+                else -> messages[it.key]
             }
         }
     }
@@ -59,8 +60,8 @@ class StationsHeaderView : View() {
                     paddingTop = 8.0
                     paddingBottom = 8.0
                     showWhen {
-                        selectedLibraryViewModel.itemProperty.booleanBinding {
-                            it?.type == LibraryType.Search
+                        libraryViewModel.stateProperty.booleanBinding {
+                            it is LibraryState.Search
                         }
                     }
                     addClass(Styles.grayTextColor)
@@ -75,7 +76,7 @@ class StationsHeaderView : View() {
 
         showWhen {
             //This view is shown always, except when clicking on empty search textfield
-            viewModel.viewStateProperty.isNotEqualTo(StationsViewState.ShortQuery)
+            viewModel.stateProperty.isNotEqualTo(StationsState.ShortQuery)
         }
 
         addClass(Styles.backgroundWhiteSmoke)

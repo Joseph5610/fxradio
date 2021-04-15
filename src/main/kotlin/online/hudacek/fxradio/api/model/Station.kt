@@ -36,3 +36,14 @@ data class Station(val stationuuid: String,
     }
 }
 
+//Contains tag or country name of station
+internal val Station.tagsSplit: String
+    get() {
+        val stationTagsSplit = tags.split(",")
+        return when {
+            tags.isEmpty() -> country
+            stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
+            else -> stationTagsSplit[0].capitalize()
+        }
+    }
+

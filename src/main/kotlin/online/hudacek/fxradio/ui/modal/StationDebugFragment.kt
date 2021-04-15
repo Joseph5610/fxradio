@@ -17,11 +17,15 @@
 package online.hudacek.fxradio.ui.modal
 
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import tornadofx.addClass
+import tornadofx.textarea
+import tornadofx.vbox
+import tornadofx.vgrow
 
-class StationDebugFragment : Fragment("Station Debug Window") {
+class StationDebugFragment : BaseFragment("Station Debug Window") {
 
     private val viewModel: PlayerViewModel by inject()
 

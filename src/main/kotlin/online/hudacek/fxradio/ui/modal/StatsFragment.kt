@@ -17,40 +17,39 @@
 package online.hudacek.fxradio.ui.modal
 
 import javafx.geometry.Pos
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
-import online.hudacek.fxradio.ui.viewmodel.StatsViewModel
-import online.hudacek.fxradio.ui.viewmodel.StatsViewState
+import online.hudacek.fxradio.viewmodel.ServersViewModel
+import online.hudacek.fxradio.viewmodel.StatsState
+import online.hudacek.fxradio.viewmodel.StatsViewModel
 import tornadofx.*
 
 /**
  * Modal window that shows status of API server
+ *
  */
-class StatsFragment : Fragment() {
+class StatsFragment : BaseFragment() {
 
-    private val viewModel: StatsViewModel by inject()
     private val serversViewModel: ServersViewModel by inject()
+    private val viewModel: StatsViewModel by inject()
 
-    private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
+    override fun onDock() = viewModel.fetchStats()
+
+    private val labelTextProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            StatsViewState.Loading -> {
+            is StatsState.Loading -> {
                 messages["loading"]
             }
-            StatsViewState.Error -> {
+            is StatsState.Error -> {
                 messages["stats.statsUnavailable"]
             }
             else -> {
                 ""
             }
         }
-    }
-
-    override fun onDock() {
-        //Refresh stats on every open of fragment
-        viewModel.viewStateProperty.value = StatsViewState.Loading
     }
 
     override val root = vbox {
@@ -73,7 +72,7 @@ class StatsFragment : Fragment() {
                     paddingAll = 20.0
                 }
                 showWhen {
-                    viewModel.viewStateProperty.isNotEqualTo(StatsViewState.Loaded)
+                    viewModel.stateProperty.isEqualTo(StatsState.Loading)
                 }
             }
         }
@@ -90,7 +89,12 @@ class StatsFragment : Fragment() {
             }
 
             showWhen {
-                viewModel.viewStateProperty.isEqualTo(StatsViewState.Loaded)
+                viewModel.stateProperty.booleanBinding {
+                    when (it) {
+                        is StatsState.Fetched -> true
+                        else -> false
+                    }
+                }
             }
             addClass(Styles.libraryListView)
         }

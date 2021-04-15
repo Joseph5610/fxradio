@@ -21,7 +21,7 @@ import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
@@ -35,19 +35,17 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 
 /**
- * Main View
- * --------------
  * Entry to the app, parent to all other views inside main window
  */
-class MainView : View(FxRadio.appName) {
-
-    private val appEvent: AppEvent by inject()
+class MainView : BaseView(FxRadio.appName) {
 
     //Main views of the app
     private val menuBarView: MenuBarView by inject()
     private val libraryView: LibraryView by inject()
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
+
+    private val windowDividerProperty = Property(Properties.WINDOW_DIVIDER)
 
     init {
         setStageIcon(Image(Config.Resources.stageIcon))
@@ -57,6 +55,14 @@ class MainView : View(FxRadio.appName) {
         //Correctly shutdown all classes
         currentStage?.setOnCloseRequest {
             FxRadio.shutdownApp()
+        }
+
+        with(leftPane) {
+            //Workaround for setting correct position of divider after restart of app
+            setDividerPositions(windowDividerProperty.get(0.30))
+            dividers[0].positionProperty().onChange {
+                windowDividerProperty.save(it)
+            }
         }
     }
 
@@ -69,6 +75,18 @@ class MainView : View(FxRadio.appName) {
         }
     }
 
+    private val leftPane by lazy {
+        splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
+
+            //Constrains width of left pane
+            libraryView.root.minWidthProperty().bind(widthProperty().divide(5))
+            libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
+
+            //Remove 1px border from splitpane
+            addClass(Styles.noBorder)
+        }
+    }
+
     override val root = vbox {
         setPrefSize(800.0, 600.0)
         add(menuBarView)
@@ -78,23 +96,10 @@ class MainView : View(FxRadio.appName) {
                     .subscribe { this[it.glyph] = it.title }
 
             content {
-                splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
-                    val windowDividerProperty = Property(Properties.WINDOW_DIVIDER)
-                    setDividerPositions(windowDividerProperty.get(0.30))
+                add(leftPane)
+                with(leftPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
-
-                    //Save position of divider to config file
-                    dividers[0].positionProperty().onChange {
-                        windowDividerProperty.save(it)
-                    }
-
-                    //Constrains width of left pane
-                    libraryView.root.minWidthProperty().bind(widthProperty().divide(5))
-                    libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
-
-                    //Remove 1px border from splitpane
-                    addClass(Styles.noBorder)
                 }
             }
         }

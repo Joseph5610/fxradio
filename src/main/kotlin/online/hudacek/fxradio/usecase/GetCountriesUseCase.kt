@@ -14,15 +14,21 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.usecase
 
-import javafx.scene.control.Menu
-import online.hudacek.fxradio.ui.viewmodel.AppMenuViewModel
-import tornadofx.Controller
+import io.reactivex.Single
+import online.hudacek.fxradio.api.model.CountriesBody
+import online.hudacek.fxradio.api.model.Country
+import online.hudacek.fxradio.api.model.isValid
+import online.hudacek.fxradio.utils.applySchedulers
 
-abstract class FxMenu : Controller() {
+/**
+ * Get list of valid country names and count of stations in it
+ */
+class GetCountriesUseCase : UseCase<Unit, Single<List<Country>>>() {
 
-    val appMenuViewModel: AppMenuViewModel by inject()
-
-    abstract val menu: Menu
+    override fun execute(input: Unit): Single<List<Country>> = apiService
+            .getCountries(CountriesBody())
+            .compose(applySchedulers())
+            .map { list -> list.filter { it.isValid } }
 }

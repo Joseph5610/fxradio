@@ -20,6 +20,7 @@ import javafx.geometry.Pos
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
 import tornadofx.*
 import tornadofx.controlsfx.right
@@ -28,7 +29,7 @@ import tornadofx.controlsfx.statusbar
 /***
  * Simple Information about the app
  */
-class AboutFragment : Fragment(FxRadio.appDesc) {
+class AboutFragment : BaseFragment(FxRadio.appDesc) {
 
     override val root = vbox {
         prefWidth = 300.0

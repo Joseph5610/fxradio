@@ -14,17 +14,16 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.viewmodel
+package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
-import javafx.beans.property.ListProperty
 import javafx.beans.property.StringProperty
-import javafx.collections.ObservableList
+import online.hudacek.fxradio.api.model.AddStation
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.usecase.AddStationUseCase
 import tornadofx.ItemViewModel
-import tornadofx.observableListOf
 import tornadofx.property
 import tornadofx.stringBinding
 import java.util.*
@@ -35,16 +34,15 @@ import java.util.*
  * Stores entered information into the form in [online.hudacek.fxradio.ui.modal.AddStationFragment]
  * Handles logic for adding new station into the API
  */
-class AddStation(name: String = "",
-                 url: String = "",
-                 homepage: String = "",
-                 favicon: String = "",
-                 country: String = "",
-                 language: String = "",
-                 tags: String = "",
-                 uuid: String = "",
-                 saveToFavourites: Boolean = false,
-                 countriesList: ObservableList<String> = observableListOf()) {
+class AddStationModel(name: String = "",
+                      url: String = "",
+                      homepage: String = "",
+                      favicon: String = "",
+                      country: String = "",
+                      language: String = "",
+                      tags: String = "",
+                      uuid: String = "",
+                      saveToFavourites: Boolean = false) {
     var name: String by property(name)
     var url: String by property(url)
     var homepage: String by property(homepage)
@@ -53,30 +51,41 @@ class AddStation(name: String = "",
     var language: String by property(language)
     var tags: String by property(tags)
     var saveToFavourites: Boolean by property(saveToFavourites)
-    var countriesList: ObservableList<String> by property(countriesList)
     var uuid: String by property(uuid)
 }
 
-class AddStationViewModel : ItemViewModel<AddStation>(AddStation()) {
+class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
 
     private val appEvent: AppEvent by inject()
 
-    val nameProperty = bind(AddStation::name) as StringProperty
-    val urlProperty = bind(AddStation::url) as StringProperty
-    val homePageProperty = bind(AddStation::homepage) as StringProperty
-    val faviconProperty = bind(AddStation::favicon) as StringProperty
-    val countryProperty = bind(AddStation::country) as StringProperty
-    val languageProperty = bind(AddStation::language) as StringProperty
-    val tagsProperty = bind(AddStation::tags) as StringProperty
-    val uuidProperty = bind(AddStation::uuid) as StringProperty
+    private val addStationUseCase: AddStationUseCase by inject()
 
-    val saveToFavouritesProperty = bind(AddStation::saveToFavourites) as BooleanProperty
-    val countriesListProperty = bind(AddStation::countriesList) as ListProperty
+    val nameProperty = bind(AddStationModel::name) as StringProperty
+    val urlProperty = bind(AddStationModel::url) as StringProperty
+    val homePageProperty = bind(AddStationModel::homepage) as StringProperty
+    val faviconProperty = bind(AddStationModel::favicon) as StringProperty
+    val countryProperty = bind(AddStationModel::country) as StringProperty
+    val languageProperty = bind(AddStationModel::language) as StringProperty
+    val tagsProperty = bind(AddStationModel::tags) as StringProperty
+    val uuidProperty = bind(AddStationModel::uuid) as StringProperty
 
-    //Retrieve countryCode value from entered country name
-    val countryCodeProperty = countryProperty.stringBinding { countryName ->
+    val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
+
+    //Find Country Code from countryProperty value
+    private val countryCodeProperty = countryProperty.stringBinding { countryName ->
         Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     }
+
+    fun addStation() = addStationUseCase.execute(AddStation(
+            nameProperty.value,
+            urlProperty.value,
+            homePageProperty.value,
+            faviconProperty.value,
+            countryCodeProperty.value,
+            countryProperty.value,
+            languageProperty.value,
+            tagsProperty.value
+    ))
 
     override fun onCommit() {
         saveToFavouritesProperty

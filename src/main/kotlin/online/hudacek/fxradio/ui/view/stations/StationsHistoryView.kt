@@ -19,19 +19,22 @@ package online.hudacek.fxradio.ui.view.stations
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import online.hudacek.fxradio.api.model.tagsSplit
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.HistoryViewModel
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
+import online.hudacek.fxradio.viewmodel.HistoryViewModel
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class StationsHistoryView : View() {
+class StationsHistoryView : BaseView() {
 
     private val historyViewModel: HistoryViewModel by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     override val root = listview(historyViewModel.stationsProperty) {
@@ -46,7 +49,9 @@ class StationsHistoryView : View() {
                     fitWidth = 30.0
                     isPreserveRatio = true
                 }
-                label(it.name) {
+                vbox {
+                    label(it.name)
+                    smallLabel(it.tagsSplit)
                 }
             }
             onUserSelect(1) {
@@ -58,8 +63,8 @@ class StationsHistoryView : View() {
 
         showWhen {
             //Show only while Search results are shown
-            selectedLibraryViewModel.itemProperty.booleanBinding {
-                it?.type == LibraryType.History
+            libraryViewModel.stateProperty.booleanBinding {
+                it is LibraryState.History
             }
         }
         addClass(Styles.historyListView)

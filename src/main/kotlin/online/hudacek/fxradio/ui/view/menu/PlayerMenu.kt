@@ -24,16 +24,13 @@ import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.ui.disableWhenInvalidStation
 import online.hudacek.fxradio.ui.menu
-import online.hudacek.fxradio.ui.viewmodel.OsNotification
-import online.hudacek.fxradio.ui.viewmodel.OsNotificationViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayerState
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacUtils
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.viewmodel.OsNotificationViewModel
+import online.hudacek.fxradio.viewmodel.PlayerState
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class PlayerMenu : FxMenu() {
+class PlayerMenu : BaseMenu() {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val osNotificationViewModel: OsNotificationViewModel by inject()
@@ -47,9 +44,6 @@ class PlayerMenu : FxMenu() {
         playerViewModel.mediaPlayerProperty.onChange {
             playerTypeItem.isSelected = it?.playerType == MediaPlayer.Type.Humble
         }
-
-        //Notifications are currently enabled only on macOS
-        osNotificationViewModel.item = OsNotification(property(Properties.NOTIFICATIONS, MacUtils.isMac))
     }
 
     override val menu by lazy {
@@ -57,14 +51,14 @@ class PlayerMenu : FxMenu() {
             item(messages["menu.player.start"], keyPlay) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    playerViewModel.playerStateProperty.value = PlayerState.Playing
+                    playerViewModel.stateProperty.value = PlayerState.Playing
                 }
             }
 
             item(messages["menu.player.stop"], keyStop) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    playerViewModel.playerStateProperty.value = PlayerState.Stopped
+                    playerViewModel.stateProperty.value = PlayerState.Stopped
                 }
             }
 
@@ -73,7 +67,7 @@ class PlayerMenu : FxMenu() {
             playerTypeItem = checkmenuitem(messages["menu.player.switch"]) {
                 isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == MediaPlayer.Type.Humble
                 action {
-                    playerViewModel.playerStateProperty.value = PlayerState.Stopped
+                    playerViewModel.stateProperty.value = PlayerState.Stopped
                     playerViewModel.mediaPlayerProperty.value?.release()
                     playerViewModel.mediaPlayerProperty.value =
                             MediaPlayerFactory.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
@@ -96,7 +90,7 @@ class PlayerMenu : FxMenu() {
 
                 visibleWhen {
                     //Notifications available only on Mac
-                    booleanProperty(MacUtils.isMac)
+                    MacUtils.isMac.toProperty()
                 }
             }
         }

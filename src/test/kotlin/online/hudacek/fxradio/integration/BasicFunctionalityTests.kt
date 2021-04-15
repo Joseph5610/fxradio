@@ -26,10 +26,10 @@ import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.ui.viewmodel.LibraryItem
-import online.hudacek.fxradio.ui.viewmodel.PlayerState
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.macos.MacMenu
+import online.hudacek.fxradio.viewmodel.LibraryItem
+import online.hudacek.fxradio.viewmodel.PlayerState
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
@@ -122,7 +122,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream start
         waitFor(5) {
-            player.playerStateProperty.value == PlayerState.Playing
+            player.stateProperty.value == PlayerState.Playing
         }
 
         val stopButton = robot.find(playerControls) as Button
@@ -132,7 +132,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream stop
         waitFor(2) {
-            player.playerStateProperty.value == PlayerState.Stopped
+            player.stateProperty.value == PlayerState.Stopped
         }
 
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
@@ -152,7 +152,7 @@ class BasicFunctionalityTests {
         sleep(2)
 
         //Find in list
-        val historyItem = robot.from(libraries).lookup(libraries.items[2].type.name).query<SmartListCell<LibraryItem>>()
+        val historyItem = robot.from(libraries).lookup(libraries.items[2].type.toString()).query<SmartListCell<LibraryItem>>()
         robot.clickOn(historyItem)
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>

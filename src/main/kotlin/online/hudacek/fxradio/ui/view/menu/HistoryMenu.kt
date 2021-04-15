@@ -19,19 +19,19 @@ package online.hudacek.fxradio.ui.view.menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.ui.viewmodel.*
+import online.hudacek.fxradio.viewmodel.HistoryViewModel
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class HistoryMenu : FxMenu() {
-    private val appEvent: AppEvent by inject()
+class HistoryMenu : BaseMenu() {
 
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
-
+    private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -48,7 +48,7 @@ class HistoryMenu : FxMenu() {
     override val menu by lazy {
         menu(messages["menu.history"]) {
             item(messages["menu.history.show"], keyHistory).action {
-                selectedLibraryViewModel.item = SelectedLibrary(LibraryType.History)
+                libraryViewModel.stateProperty.value = LibraryState.History
             }
 
             menu(messages["menu.history.recent"]) {
@@ -83,7 +83,7 @@ class HistoryMenu : FxMenu() {
                     confirm(messages["history.clear.confirm"],
                             messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size), owner = primaryStage) {
                         appEvent.cleanupHistory.onNext(Unit)
-                        appEvent.refreshLibrary.onNext(LibraryType.History)
+                        appEvent.refreshLibrary.onNext(LibraryState.History)
                     }
                 }
             }

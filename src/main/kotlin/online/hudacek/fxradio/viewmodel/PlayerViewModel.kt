@@ -14,47 +14,41 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.viewmodel
+package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
-import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
-import mu.KotlinLogging
-import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.Click
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
+import online.hudacek.fxradio.usecase.ClickUseCase
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.applySchedulers
+import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
-import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.onChange
 import tornadofx.property
 
-private val logger = KotlinLogging.logger {}
-
-enum class PlayerState {
-    Playing, Stopped, Error
+sealed class PlayerState {
+    object Playing : PlayerState()
+    object Stopped : PlayerState()
+    object Error : PlayerState()
 }
 
 class Player(station: Station,
-             animate: Boolean = true,
-             volume: Double,
-             playerState: PlayerState = PlayerState.Stopped,
+             animate: Boolean = property(Properties.PLAYER_ANIMATE, true),
+             volume: Double = property(Properties.VOLUME, 0.0),
              trackName: String = "",
-             mediaPlayer: MediaPlayer) {
+             mediaPlayer: MediaPlayer = MediaPlayerFactory.create(property(Properties.PLAYER, "VLC"))) {
     var animate: Boolean by property(animate)
     var station: Station by property(station)
     var volume: Double by property(volume)
-    var playerState: PlayerState by property(playerState)
     var trackName: String by property(trackName)
     var mediaPlayer: MediaPlayer by property(mediaPlayer)
 }
@@ -64,62 +58,40 @@ class Player(station: Station,
  * -------------------
  * Stores player settings, toggles playing
  */
-class PlayerViewModel : ItemViewModel<Player>() {
-    private val appEvent: AppEvent by inject()
+class PlayerViewModel : BaseViewModel<PlayerState, Player>(initialState = PlayerState.Stopped) {
+
+    private val clickUseCase: ClickUseCase by inject()
 
     val stationProperty = bind(Player::station) as ObjectProperty
-    val playerStateProperty = bind(Player::playerState) as ObjectProperty
     val animateProperty = bind(Player::animate) as BooleanProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
     val trackNameProperty = bind(Player::trackName) as StringProperty
 
     val mediaPlayerProperty = bind(Player::mediaPlayer) as ObjectProperty
 
-    val stationPropertyChanges: Observable<Station> = stationProperty
+    val stationObservable: Observable<Station> = stationProperty
             .toObservableChangesNonNull()
             .map { it.newVal }
 
     init {
-        stationPropertyChanges
+        stationObservable
                 .filter { it.isValid() }
                 .doOnEach(appEvent.addToHistory) //Send the new history item event
-                .doOnError { logger.error(it) { "Error with changing station..." } }
-                .flatMapSingle {
-                    //Increase count of the station
-                    StationsApi.service
-                            .click(it.stationuuid)
-                            .compose(applySchedulers())
-                            .onErrorResumeNext { _ ->
-                                //We do not care if this response fails
-                                Single.just(Click(false, "Error in ClickResponse", it.name))
-                            }
-                }
+                .flatMapSingle(clickUseCase::execute)
                 .subscribe {
                     //Update the name of the station
                     trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
 
                     //Restart playing status
-                    playerStateProperty.value = PlayerState.Stopped
-                    playerStateProperty.value = PlayerState.Playing
+                    stateProperty.value = PlayerState.Stopped
+                    stateProperty.value = PlayerState.Playing
                 }
 
         //Set volume for current player
         volumeProperty.onChange { mediaPlayerProperty.value?.changeVolume(it) }
 
-        playerStateProperty.onChange {
-            if (it == PlayerState.Playing) {
-                //Ignore stations with empty stream URL
-                stationProperty.value.url_resolved?.let { url ->
-                    mediaPlayerProperty.value?.changeVolume(volumeProperty.value)
-                    mediaPlayerProperty.value?.play(url)
-                }
-            } else {
-                mediaPlayerProperty.value?.stop()
-            }
-        }
-
         /**
-         * Called when new song starts playing or other metadata of stream changes
+         * Emitted when new song starts playing or other metadata of stream changes
          */
         appEvent.streamMetaData
                 .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
@@ -131,13 +103,25 @@ class PlayerViewModel : ItemViewModel<Player>() {
                 }
     }
 
+    override fun onNewState(newState: PlayerState) {
+        if (newState == PlayerState.Playing) {
+            //Ignore stations with empty stream URL
+            stationProperty.value.url_resolved?.let { url ->
+                mediaPlayerProperty.value?.changeVolume(volumeProperty.value)
+                mediaPlayerProperty.value?.play(url)
+            }
+        } else {
+            mediaPlayerProperty.value?.stop()
+        }
+    }
+
     fun releasePlayer() = mediaPlayerProperty.value.release()
 
     fun togglePlayerState() {
-        if (playerStateProperty.value == PlayerState.Playing) {
-            playerStateProperty.value = PlayerState.Stopped
+        if (stateProperty.value == PlayerState.Playing) {
+            stateProperty.value = PlayerState.Stopped
         } else {
-            playerStateProperty.value = PlayerState.Playing
+            stateProperty.value = PlayerState.Playing
         }
     }
 

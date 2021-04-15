@@ -17,33 +17,30 @@
 package online.hudacek.fxradio.ui.modal
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
-import io.reactivex.Single
 import javafx.scene.layout.Priority
-import mu.KotlinLogging
 import okhttp3.HttpUrl
-import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.AddedStation
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.field
 import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.AddStation
-import online.hudacek.fxradio.ui.viewmodel.AddStationViewModel
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.utils.applySchedulers
+import online.hudacek.fxradio.viewmodel.AddStationModel
+import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
 
-private val logger = KotlinLogging.logger {}
+class AddStationFragment : BaseFragment() {
 
-class AddStationFragment : Fragment() {
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
+    //Autocomplete list of countries
+    private val countriesListProperty = listProperty(observableListOf<String>())
+
     init {
-        //Bind autocomplete list of countries
-        viewModel.countriesListProperty.bind(libraryViewModel.countriesProperty) { it.name }
+        countriesListProperty.bind(libraryViewModel.countriesProperty) { it.name }
     }
 
     override fun onDock() {
@@ -113,9 +110,9 @@ class AddStationFragment : Fragment() {
                     }
 
                     field(messages["add.country"], messages["add.country.prompt"],
-                            viewModel.countryProperty, true, viewModel.countriesListProperty) { field ->
+                            viewModel.countryProperty, true, countriesListProperty) { field ->
                         field.validator {
-                            if (viewModel.countriesListProperty.contains(it))
+                            if (countriesListProperty.contains(it))
                                 success()
                             else
                                 error(messages["field.invalid.country"])
@@ -134,16 +131,7 @@ class AddStationFragment : Fragment() {
 
                         actionEvents()
                                 .flatMapSingle {
-                                    StationsApi.service
-                                            .add(online.hudacek.fxradio.api.model.AddStation(
-                                                    viewModel.nameProperty.value, viewModel.urlProperty.value,
-                                                    viewModel.homePageProperty.value,
-                                                    viewModel.faviconProperty.value, viewModel.countryCodeProperty.value,
-                                                    viewModel.countryProperty.value, viewModel.languageProperty.value,
-                                                    viewModel.tagsProperty.value
-                                            ))
-                                            .compose(applySchedulers())
-                                            .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, "invalid")) }
+                                    viewModel.addStation()
                                 }.subscribe {
                                     if (it.ok) {
                                         //Save UUID of new station
@@ -153,10 +141,9 @@ class AddStationFragment : Fragment() {
                                             close()
 
                                             //Cleanup view model
-                                            viewModel.item = AddStation()
+                                            viewModel.item = AddStationModel()
                                         }
                                     } else {
-                                        logger.error { "Error while adding station: ${it.message} " }
                                         this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = it.message
                                     }
                                 }
@@ -165,7 +152,7 @@ class AddStationFragment : Fragment() {
 
                     button(messages["add.cleanupForm"]) {
                         action {
-                            viewModel.item = AddStation()
+                            viewModel.item = AddStationModel()
                         }
                     }
 

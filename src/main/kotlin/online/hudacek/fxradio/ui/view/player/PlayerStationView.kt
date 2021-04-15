@@ -20,24 +20,24 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.tickerView
-import online.hudacek.fxradio.ui.viewmodel.PlayerState
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayerState
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
 /**
  * Player info box - now playing song, radio logo, radio name
  */
-class PlayerStationView : View() {
+class PlayerStationView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val tickerView by lazy { tickerView() }
+    private val tickerView by lazy { TickerView() }
 
-    private val playingStatusLabel = viewModel.playerStateProperty.stringBinding {
+    private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {
             PlayerState.Stopped -> messages["player.streamingStopped"]
             PlayerState.Error -> messages["player.streamingError"]
@@ -45,15 +45,15 @@ class PlayerStationView : View() {
         }
     }
 
-    private val stationLogo = imageview {
-        effect = DropShadow(20.0, Color.WHITE)
-        fitWidth = 30.0
-        isPreserveRatio = true
-    }
+    private val stationLogo by lazy {
+        imageview {
+            //Subscribe to property changes
+            viewModel.stationProperty.stationImage(this)
 
-    init {
-        //Subscribe to property changes
-        viewModel.stationProperty.stationImage(stationLogo)
+            effect = DropShadow(20.0, Color.WHITE)
+            fitWidth = 30.0
+            isPreserveRatio = true
+        }
     }
 
     override val root = hbox(5) {

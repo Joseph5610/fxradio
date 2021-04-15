@@ -14,18 +14,19 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.viewmodel
+package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.utils.property
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.ItemViewModel
 import tornadofx.property
 
-class Log(level: Level = Level.INFO) {
+class Log(level: Level = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))) {
     var level: Level by property(level)
 }
 

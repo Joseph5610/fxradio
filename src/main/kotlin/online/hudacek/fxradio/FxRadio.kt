@@ -23,14 +23,11 @@ import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
-import online.hudacek.fxradio.ui.viewmodel.Log
-import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacUtils
-import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
-import org.apache.logging.log4j.Level
+import online.hudacek.fxradio.viewmodel.LogViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -85,11 +82,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             }
             super.start(this)
         }
-
-        //init logger level based on stored settings
-        val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
-        logViewModel.item = Log(savedLevel)
-        logViewModel.commit()
     }
 
     override fun stop() {

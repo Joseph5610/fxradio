@@ -14,7 +14,17 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.model
+package online.hudacek.fxradio.usecase
 
-data class Vote(val ok: Boolean,
-                val message: String)
+import online.hudacek.fxradio.api.StationsApi
+import tornadofx.Controller
+
+/**
+ * UseCase interface defines actions for interaction with data layers
+ */
+abstract class UseCase<InputType, OutputType> : Controller() {
+
+    val apiService by lazy { StationsApi.service }
+
+    abstract fun execute(input: InputType): OutputType
+}

@@ -20,12 +20,12 @@ import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.ui.viewmodel.Log
-import online.hudacek.fxradio.ui.viewmodel.LogViewModel
+import online.hudacek.fxradio.viewmodel.Log
+import online.hudacek.fxradio.viewmodel.LogViewModel
 import org.apache.logging.log4j.Level
 import tornadofx.*
 
-class HelpMenu : FxMenu() {
+class HelpMenu : BaseMenu() {
     private val logViewModel: LogViewModel by inject()
 
     private var checkLoggerOff: CheckMenuItem by singleAssign()
@@ -63,19 +63,19 @@ class HelpMenu : FxMenu() {
 
             menu(messages["menu.help.loglevel"]) {
                 checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
-                    isSelected = logViewModel.levelProperty.value == Level.OFF
+                    isSelected = logViewModel.item.level == Level.OFF
                     action {
                         logViewModel.item = Log(Level.OFF)
                     }
                 }
                 checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
-                    isSelected = logViewModel.levelProperty.value == Level.INFO
+                    isSelected = logViewModel.item.level == Level.INFO
                     action {
                         logViewModel.item = Log(Level.INFO)
                     }
                 }
                 checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
-                    isSelected = logViewModel.levelProperty.value == Level.ALL
+                    isSelected = logViewModel.item.level == Level.ALL
                     action {
                         logViewModel.item = Log(Level.ALL)
                     }

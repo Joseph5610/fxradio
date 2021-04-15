@@ -18,26 +18,25 @@ package online.hudacek.fxradio.ui.view.stations
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import javafx.geometry.Pos
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
-import online.hudacek.fxradio.ui.viewmodel.SearchViewModel
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SearchViewModel
 import tornadofx.*
 import tornadofx.controlsfx.button
 import tornadofx.controlsfx.segmentedbutton
 
-class StationsHeaderSearchView : View() {
-    private val appEvent: AppEvent by inject()
+class StationsHeaderSearchView : BaseView() {
 
     private val viewModel: SearchViewModel by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
-    init {
+    override fun onDock() {
         viewModel.searchByTagProperty
                 .toObservableChangesNonNull()
-                .map { LibraryType.Search }
+                .map { LibraryState.Search }
                 .subscribe(appEvent.refreshLibrary)
     }
 
@@ -63,8 +62,8 @@ class StationsHeaderSearchView : View() {
 
             showWhen {
                 //Show only while Search results are shown
-                selectedLibraryViewModel.itemProperty.booleanBinding {
-                    it?.type == LibraryType.Search
+                libraryViewModel.stateProperty.booleanBinding {
+                    it is LibraryState.Search
                 }
             }
         }

@@ -21,13 +21,14 @@ import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.media.StreamMetaData
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
+import online.hudacek.fxradio.viewmodel.LibraryState
 import tornadofx.Controller
 
 /**
  * General App Events
  */
 class AppEvent : Controller() {
+
     val appNotification = BehaviorSubject.create<AppNotification>()
     val osNotification = BehaviorSubject.create<StreamMetaData>()
 
@@ -43,7 +44,7 @@ class AppEvent : Controller() {
 
     val vote = BehaviorSubject.create<Station>()
 
-    val refreshLibrary = BehaviorSubject.create<LibraryType>()
+    val refreshLibrary = BehaviorSubject.create<LibraryState>()
 
     val streamMetaData = BehaviorSubject.create<StreamMetaData>()
 }

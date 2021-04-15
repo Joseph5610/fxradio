@@ -24,22 +24,17 @@ import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.ui.copyMenu
-import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.*
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationInfo
-import online.hudacek.fxradio.ui.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationInfo
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import tornadofx.*
 import tornadofx.controlsfx.left
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(station: Station? = null) : Fragment() {
-    private val appEvent: AppEvent by inject()
+class StationInfoFragment(station: Station? = null) : BaseFragment() {
 
     private val viewModel: StationInfoViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()

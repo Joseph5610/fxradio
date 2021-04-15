@@ -16,32 +16,28 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Colors
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibrary
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.*
 
-class LibraryListView : View() {
+class LibraryListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
-    init {
+    override fun onDock() {
         //React to changes of library not from by clicking on list item
-        selectedLibraryViewModel.itemProperty
-                .toObservableChangesNonNull()
-                .map { it.newVal }
+        viewModel
+                .stateObservableChanges()
                 .subscribe {
-                    if (it.type == LibraryType.Country || it.type == LibraryType.Search) {
+                    if (it is LibraryState.IsCountry || it is LibraryState.Search) {
                         root.selectionModel.clearSelection()
                     } else {
-                        val selectedListItem = root.items.find { list -> list.type == it.type }
+                        val selectedListItem = root.items.find { list -> list.type == it }
                         selectedListItem?.let { item ->
                             root.selectionModel.select(item)
                         }
@@ -50,19 +46,21 @@ class LibraryListView : View() {
     }
 
     override val root = listview(viewModel.librariesProperty) {
+        id = "libraryListView"
+
         prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
             if (it != null) it.size * 30.0 + 10 else 30.0
         })
 
-        id = "libraryListView"
         cellFormat {
-            graphic = item.graphic.make(14.0, false, c(Colors.values.libraryIcon))
-            text = messages[item.type.toString()]
+            graphic = item.glyph.make(14.0, false, c(Colors.values.libraryIcon))
+            text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }
+
         showWhen { viewModel.showLibraryProperty }
         onUserSelect(1) {
-            selectedLibraryViewModel.item = SelectedLibrary(it.type)
+            viewModel.stateProperty.value = it.type
         }
         addClass(Styles.libraryListView)
     }

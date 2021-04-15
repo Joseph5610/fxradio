@@ -18,6 +18,7 @@ package online.hudacek.fxradio.ui.view.library
 
 import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
@@ -25,7 +26,10 @@ import online.hudacek.fxradio.ui.style.Colors
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : Fragment() {
+/**
+ * Custom title fragment with hide/unhide icons
+ */
+class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : BaseFragment() {
 
     private val chevronStyleProperty = showProperty.objectBinding {
         if (it!!)

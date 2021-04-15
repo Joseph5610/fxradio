@@ -19,8 +19,10 @@ package online.hudacek.fxradio.api
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.*
-import online.hudacek.fxradio.ui.viewmodel.Servers
-import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.viewmodel.Servers
+import online.hudacek.fxradio.viewmodel.ServersViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -53,34 +55,25 @@ interface StationsApi {
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Country>>
 
     @GET("json/stats")
-    fun getStats(): Single<Stats>
+    fun getStats(): Single<StatsResult>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Single<Vote>
+    fun vote(@Path("uuid") uuid: String): Single<VoteResult>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<Click>
+    fun click(@Path("uuid") uuid: String): Single<ClickResult>
 
     companion object : Component() {
 
         private val viewModel: ServersViewModel by inject()
 
-        val client: ApiClient by lazy {
-            //The little logic here: Try to init model with the previously stored value
-            //Only if the value is not stored try to get it by calling InetAddress.getAllByName
-            if (viewModel.savedServerValue.isPresent) {
-                logger.debug { "Setting model from saved state" }
-                viewModel.item = Servers(viewModel.savedServerValue.get())
-            } else {
-                logger.debug { "Setting model from new call" }
-                val servers = viewModel.performLookup() //blocking operation to get the servers
-                if (!servers.isNullOrEmpty()) {
-                    logger.debug { "Found servers: $servers" }
-                    viewModel.item = Servers(servers[0], servers)
-                    viewModel.commit()
-                }
-            }
+        private val apiServerProperty = Property(Properties.API_SERVER)
 
+        val client: ApiClient by lazy {
+            if (apiServerProperty.isPresent) {
+                logger.debug { "Setting model from saved state" }
+                viewModel.item = Servers(apiServerProperty.get())
+            }
             ApiClient("https://${viewModel.selectedProperty.value}")
         }
 

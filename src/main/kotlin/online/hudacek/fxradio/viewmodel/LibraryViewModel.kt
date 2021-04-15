@@ -14,37 +14,40 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.viewmodel
+package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.api.model.isValid
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.usecase.GetCountriesUseCase
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.applySchedulers
+import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.get
+import tornadofx.observableListOf
+import tornadofx.property
 
-enum class LibraryType {
-    Favourites, Search, History, Country, TopStations
+sealed class LibraryState(val key: String) {
+    object Favourites : LibraryState("favourites")
+    object Search : LibraryState("search")
+    object History : LibraryState("history")
+    data class IsCountry(val country: Country) : LibraryState("country")
+    object TopStations : LibraryState("topStations")
 }
 
-data class LibraryItem(val type: LibraryType, val graphic: FontAwesome.Glyph)
+data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
 
 class Library(countries: ObservableList<Country> = observableListOf(),
               pinned: ObservableList<Country> = observableListOf(),
-              showLibrary: Boolean = true,
-              showCountries: Boolean = true,
-              showPinned: Boolean = true) {
+              showLibrary: Boolean = property(Properties.WINDOW_SHOW_LIBRARY, true),
+              showCountries: Boolean = property(Properties.WINDOW_SHOW_COUNTRIES, true),
+              showPinned: Boolean = property(Properties.WINDOW_SHOW_PINNED, true)) {
 
     //Countries shown in Countries ListView
     var countries: ObservableList<Country> by property(countries)
@@ -54,9 +57,9 @@ class Library(countries: ObservableList<Country> = observableListOf(),
 
     //Default items shown in library ListView
     var libraries: ObservableList<LibraryItem> by property(observableListOf(
-            LibraryItem(LibraryType.TopStations, FontAwesome.Glyph.TROPHY),
-            LibraryItem(LibraryType.Favourites, FontAwesome.Glyph.STAR),
-            LibraryItem(LibraryType.History, FontAwesome.Glyph.HISTORY)
+            LibraryItem(LibraryState.TopStations, FontAwesome.Glyph.TROPHY),
+            LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.STAR),
+            LibraryItem(LibraryState.History, FontAwesome.Glyph.HISTORY)
     ))
 
     var showLibrary: Boolean by property(showLibrary)
@@ -70,8 +73,9 @@ class Library(countries: ObservableList<Country> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : ItemViewModel<Library>(Library()) {
-    private val appEvent: AppEvent by inject()
+class LibraryViewModel : BaseViewModel<LibraryState, Library>(Library(), LibraryState.TopStations) {
+
+    private val getCountriesUseCase: GetCountriesUseCase by inject()
 
     val countriesProperty = bind(Library::countries) as ListProperty
     val librariesProperty = bind(Library::libraries) as ListProperty
@@ -80,15 +84,6 @@ class LibraryViewModel : ItemViewModel<Library>(Library()) {
     val showLibraryProperty = bind(Library::showLibrary) as BooleanProperty
     val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
-
-    val getCountries: Single<List<Country>> = StationsApi.service
-            .getCountries(CountriesBody())
-            .compose(applySchedulers())
-            .doOnSuccess {
-                //Ignore invalid states
-                val validCountries = it.filter { station -> station.isValid }.asObservable()
-                countriesProperty.setAll(validCountries)
-            }
 
     init {
         appEvent.pinCountry
@@ -119,6 +114,12 @@ class LibraryViewModel : ItemViewModel<Library>(Library()) {
                                     FontAwesome.Glyph.WARNING))
                 })
     }
+
+    fun getCountries(): Disposable = getCountriesUseCase.execute(Unit)
+            .subscribe({
+                countriesProperty.setAll(it)
+            }, {
+            })
 
     override fun onCommit() {
         saveProperties(mapOf(

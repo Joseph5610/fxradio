@@ -16,25 +16,25 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
-import tornadofx.View
+import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.vbox
 
-class LibraryPinnedView : View() {
+class LibraryCountriesPinnedView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
-    private val listViewFragment = LibraryListFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty)
+    private val listViewFragment by lazy {
+        LibraryCountriesListFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty)
+    }
 
-    init {
-        selectedLibraryViewModel.itemProperty
-                .toObservableChangesNonNull()
-                .map { it.newVal }
-                .filter { it.type != LibraryType.Country }
+    override fun onDock() {
+        //React to changes of library not from by clicking on list item
+        libraryViewModel
+                .stateObservableChanges()
+                .filter { it !is LibraryState.IsCountry }
                 .subscribe { listViewFragment.root.selectionModel.clearSelection() }
     }
 

@@ -21,44 +21,43 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
 import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.flagIcon
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryType
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibrary
-import online.hudacek.fxradio.ui.viewmodel.SelectedLibraryViewModel
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.*
 
-class LibraryListFragment(property: ListProperty<Country>, showProperty: BooleanProperty) : Fragment() {
-    private val appEvent: AppEvent by inject()
+/**
+ * Custom listview fragment for countries
+ */
+class LibraryCountriesListFragment(countriesProperty: ListProperty<Country>,
+                                   showProperty: BooleanProperty) : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
 
-    override val root = listview(property) {
-        prefHeightProperty().bind(property.doubleBinding {
+    override val root = listview(countriesProperty) {
+        /**
+         * Set min/max size of listview based on its items size
+         */
+        prefHeightProperty().bind(countriesProperty.doubleBinding {
             if (it != null) it.size * 30.0 + 10 else 30.0
         })
 
         cellFormat {
             graphic = hbox(5) {
+                alignment = Pos.CENTER_LEFT
+
                 imageview {
                     image = it.flagIcon
                 }
-
-                val stationWord = if (it.stationcount > 1)
-                    messages["stations"] else messages["station"]
-
-                alignment = Pos.CENTER_LEFT
 
                 label(item.name.split("(")[0])
 
                 //Ignore it for pinned stations, they would always have 0 statinocount
                 if (it.stationcount > 0) {
                     label("${it.stationcount}") {
-                        tooltip("${it.stationcount} $stationWord")
                         addClass(Styles.libraryListItemTag)
                     }
                 }
@@ -74,6 +73,7 @@ class LibraryListFragment(property: ListProperty<Country>, showProperty: Boolean
                                 .map { _ -> it }
                                 .subscribe(appEvent.pinCountry)
                     }
+
                     item(messages["unpin"]) {
                         visibleWhen {
                             viewModel.pinnedProperty.booleanBinding { property ->
@@ -91,11 +91,13 @@ class LibraryListFragment(property: ListProperty<Country>, showProperty: Boolean
         }
 
         onUserSelect(1) {
-            selectedLibraryViewModel.item = SelectedLibrary(LibraryType.Country, it.name)
+            viewModel.stateProperty.value = LibraryState.IsCountry(it)
         }
+
         showWhen {
-            property.emptyProperty().not().and(showProperty)
+            countriesProperty.emptyProperty().not().and(showProperty)
         }
+
         addClass(Styles.libraryListView)
     }
 }

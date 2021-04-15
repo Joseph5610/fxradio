@@ -26,8 +26,9 @@ import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -43,7 +44,7 @@ open class TickerEntry<T : Node>(
     open fun updateObservable(): Completable? = null
 }
 
-class TickerView : View() {
+class TickerView : BaseView() {
 
     private val playerVewModel: PlayerViewModel by inject()
 
@@ -75,7 +76,7 @@ class TickerView : View() {
     }
 
     //Actual implementation of Ticker
-    class MarqueeView : View() {
+    class MarqueeView : BaseView() {
 
         private val offset = 10.0 //Amount of space between entries!
 

@@ -19,12 +19,12 @@ package online.hudacek.fxradio.ui.modal
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
-import online.hudacek.fxradio.ui.viewmodel.ServersViewState
+import online.hudacek.fxradio.viewmodel.ServersState
+import online.hudacek.fxradio.viewmodel.ServersViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -35,17 +35,20 @@ import tornadofx.*
  * Selected server is then saved into the app.config property file
  * and used on the next start of the app
  */
-class AvailableServersFragment : Fragment() {
-    private val appEvent: AppEvent by inject()
+class ServersFragment : BaseFragment() {
+
     private val viewModel: ServersViewModel by inject()
 
-    private val labelTextProperty = viewModel.viewStateProperty.stringBinding {
+    private val labelTextProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            ServersViewState.Loading -> {
+            ServersState.Loading -> {
                 messages["loading"]
             }
-            ServersViewState.Error -> {
+            ServersState.NoServersAvailable -> {
                 messages["servers.notAvailable"]
+            }
+            ServersState.Error -> {
+                messages["servers.error"]
             }
             else -> {
                 ""
@@ -53,9 +56,7 @@ class AvailableServersFragment : Fragment() {
         }
     }
 
-    override fun onDock() {
-        viewModel.viewStateProperty.value = ServersViewState.Loading
-    }
+    override fun onDock() = viewModel.fetchServers()
 
     override fun onUndock() {
         if (viewModel.selectedProperty.isDirty) {
@@ -90,7 +91,12 @@ class AvailableServersFragment : Fragment() {
                 }
 
                 showWhen {
-                    viewModel.viewStateProperty.isNotEqualTo(ServersViewState.Loaded)
+                    viewModel.stateProperty.booleanBinding {
+                        when (it) {
+                            is ServersState.Fetched -> false
+                            else -> true
+                        }
+                    }
                 }
             }
 
@@ -120,7 +126,12 @@ class AvailableServersFragment : Fragment() {
                 }
 
                 showWhen {
-                    viewModel.viewStateProperty.isEqualTo(ServersViewState.Loaded)
+                    viewModel.stateProperty.booleanBinding {
+                        when (it) {
+                            is ServersState.Fetched -> true
+                            else -> false
+                        }
+                    }
                 }
 
                 addClass(Styles.libraryListView)
@@ -133,7 +144,7 @@ class AvailableServersFragment : Fragment() {
 
             button(messages["servers.reload"]) {
                 action {
-                    viewModel.viewStateProperty.value = ServersViewState.Loading
+                    viewModel.fetchServers()
                 }
             }
             button(messages["save"]) {

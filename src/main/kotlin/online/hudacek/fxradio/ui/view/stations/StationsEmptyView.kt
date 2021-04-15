@@ -17,11 +17,12 @@ package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewState
+import online.hudacek.fxradio.viewmodel.StationsState
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
@@ -29,7 +30,7 @@ import tornadofx.controlsfx.glyph
 /**
  * This is a view that shows different errors or info messages on stationsView
  */
-class StationsEmptyView : View() {
+class StationsEmptyView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
 
@@ -37,26 +38,26 @@ class StationsEmptyView : View() {
     private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
     private val noResultsGlyph by lazy { FontAwesome.Glyph.FROWN_ALT.make() }
 
-    private val headerProperty = viewModel.viewStateProperty.stringBinding {
+    private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            StationsViewState.Error -> messages["connectionError"]
-            StationsViewState.ShortQuery -> messages["searchingLibrary"]
+            StationsState.Error -> messages["connectionError"]
+            StationsState.ShortQuery -> messages["searchingLibrary"]
             else -> messages["noResults"]
         }
     }
 
-    private val headerGraphicProperty = viewModel.viewStateProperty.objectBinding {
+    private val headerGraphicProperty = viewModel.stateProperty.objectBinding {
         when (it) {
-            StationsViewState.Error -> errorGlyph
-            StationsViewState.ShortQuery -> searchGlyph
+            StationsState.Error -> errorGlyph
+            StationsState.ShortQuery -> searchGlyph
             else -> noResultsGlyph
         }
     }
 
-    private val subHeaderProperty = viewModel.viewStateProperty.stringBinding {
+    private val subHeaderProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            StationsViewState.Error -> messages["connectionErrorDesc"]
-            StationsViewState.ShortQuery -> messages["searchingLibraryDesc"]
+            StationsState.Error -> messages["connectionErrorDesc"]
+            StationsState.ShortQuery -> messages["searchingLibraryDesc"]
             else -> ""
         }
     }
@@ -90,7 +91,12 @@ class StationsEmptyView : View() {
         add(subHeader)
 
         showWhen {
-            viewModel.viewStateProperty.isNotEqualTo(StationsViewState.Loaded)
+            viewModel.stateProperty.booleanBinding {
+                when (it) {
+                    is StationsState.Fetched -> false
+                    else -> true
+                }
+            }
         }
     }
 }

@@ -24,27 +24,27 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.api.model.tagsSplit
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.modal.StationDebugFragment
 import online.hudacek.fxradio.ui.modal.StationInfoFragment
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.view.menu.FavouritesMenu
-import online.hudacek.fxradio.ui.viewmodel.*
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 /**
  * Main view of stations
  * DataGrid shows radio station logo and name
  */
-class StationsDataGridView : View() {
-    private val events: AppEvent by inject()
+class StationsDataGridView : BaseView() {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
-    private val selectedLibraryViewModel: SelectedLibraryViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
@@ -76,7 +76,7 @@ class StationsDataGridView : View() {
                     item(messages["menu.station.vote"]) {
                         actionEvents()
                                 .map { station }
-                                .subscribe(events.vote)
+                                .subscribe(appEvent.vote)
                     }
 
                     if (Config.Flags.enableStationDebug) {
@@ -102,31 +102,24 @@ class StationsDataGridView : View() {
                     }
                 }
                 label(station.name) {
-                    onHover { _ -> tooltip(station.name) }
+                    onHover { tooltip(station.name) }
                     style {
                         fontSize = 13.px
                     }
                 }
-                smallLabel(createStationTags(station.tags, station.country))
+                smallLabel(station.tagsSplit)
             }
         }
 
         showWhen {
-            stationsViewModel.viewStateProperty.isEqualTo(StationsViewState.Loaded)
-                    .and(selectedLibraryViewModel.itemProperty.booleanBinding {
-                        it?.type != LibraryType.History
-                    })
-        }
-    }
-
-    //Small label shown under the station name in the grid
-    //Contains tag or country name of station
-    private fun createStationTags(tags: String, country: String): String {
-        val stationTagsSplit = tags.split(",")
-        return when {
-            tags.isEmpty() -> country
-            stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
-            else -> stationTagsSplit[0].capitalize()
+            stationsViewModel.stateProperty.booleanBinding {
+                when (it) {
+                    is StationsState.Fetched -> true
+                    else -> false
+                }
+            }.and(libraryViewModel.stateProperty.booleanBinding {
+                it !is LibraryState.History
+            })
         }
     }
 }

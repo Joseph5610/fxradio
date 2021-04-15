@@ -14,8 +14,20 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.model
+package online.hudacek.fxradio.usecase
 
-data class Click(val ok: Boolean,
-                 val message: String,
-                 val name: String)
+import io.reactivex.Single
+import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.model.VoteResult
+import online.hudacek.fxradio.utils.applySchedulers
+
+/**
+ * Increase vote count of the station
+ */
+class VoteUseCase : UseCase<Station, Single<VoteResult>>() {
+
+    override fun execute(input: Station): Single<VoteResult> = apiService
+            .vote(input.stationuuid)
+            .compose(applySchedulers())
+            .onErrorResumeNext { Single.just(VoteResult(false, it.localizedMessage)) }
+}
