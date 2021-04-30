@@ -18,12 +18,11 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.utils.applySchedulers
 
 /**
- * Get list of top 50 stations
+ * Gets list of Top 50 stations from radio-browser API
  */
-class GetTopStationsUseCase : UseCase<Unit, Single<List<Station>>>() {
+class GetTopStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
     override fun execute(input: Unit): Single<List<Station>> = apiService
             .getTopStations()

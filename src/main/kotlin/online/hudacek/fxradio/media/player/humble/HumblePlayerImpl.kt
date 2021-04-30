@@ -17,8 +17,6 @@ package online.hudacek.fxradio.media.player.humble
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.property
 
 private val logger = KotlinLogging.logger {}
 
@@ -30,13 +28,10 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     private val audioComponent = HumbleAudioComponent()
     private val metaDataService = HumbleMetaDataService()
 
-    //The metadata service can be disabled by respective property file setting
-    private val enableMetaDataService = property(Properties.PLAYER_HUMBLE_METADATA_REFRESH, true)
-
     override fun play(streamUrl: String) {
         stop() //this player should stop itself before playing new stream
 
-        if (enableMetaDataService) {
+        if (MediaPlayer.enableMetaDataService) {
             metaDataService.restartFor(streamUrl)
         }
         audioComponent.play(streamUrl)
@@ -53,7 +48,7 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     }
 
     override fun stop() {
-        if (enableMetaDataService) {
+        if (MediaPlayer.enableMetaDataService) {
             metaDataService.cancel()
         }
         audioComponent.cancel()

@@ -20,12 +20,11 @@ import io.reactivex.Single
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.isValid
-import online.hudacek.fxradio.utils.applySchedulers
 
 /**
- * Get list of valid country names and count of stations in it
+ * Gets list of valid country names and count of stations in it
  */
-class GetCountriesUseCase : UseCase<Unit, Single<List<Country>>>() {
+class GetCountriesUseCase : BaseUseCase<Unit, Single<List<Country>>>() {
 
     override fun execute(input: Unit): Single<List<Country>> = apiService
             .getCountries(CountriesBody())

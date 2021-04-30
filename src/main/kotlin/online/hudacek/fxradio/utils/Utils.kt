@@ -16,20 +16,9 @@
 
 package online.hudacek.fxradio.utils
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.SingleTransformer
-import io.reactivex.schedulers.Schedulers
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-/**
- * Perform async calls on correct thread
- */
-internal fun <T> applySchedulers(): SingleTransformer<T, T>? =
-        SingleTransformer {
-            it.subscribeOn(Schedulers.io())
-                    .observeOnFx()
-        }
 
 //Command line utilities
 internal fun Runtime.command(command: String) = exec(command)

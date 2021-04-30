@@ -19,12 +19,11 @@ package online.hudacek.fxradio.usecase
 import io.reactivex.Single
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.api.model.VoteResult
-import online.hudacek.fxradio.utils.applySchedulers
 
 /**
- * Increase vote count of the station
+ * Increases vote count of the station
  */
-class VoteUseCase : UseCase<Station, Single<VoteResult>>() {
+class VoteUseCase : BaseUseCase<Station, Single<VoteResult>>() {
 
     override fun execute(input: Station): Single<VoteResult> = apiService
             .vote(input.stationuuid)

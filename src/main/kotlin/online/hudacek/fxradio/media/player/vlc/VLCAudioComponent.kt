@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
+import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.StreamUnavailableException
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
@@ -49,7 +50,10 @@ class VLCAudioComponent {
 
         player?.let {
             it.mediaPlayer().events().addMediaPlayerEventListener(vlcEvents.mediaStatusAdapter)
-            it.mediaPlayer().events().addMediaEventListener(vlcEvents.mediaMetaDataAdapter)
+
+            if (MediaPlayer.enableMetaDataService) {
+                it.mediaPlayer().events().addMediaEventListener(vlcEvents.mediaMetaDataAdapter)
+            }
 
             nativeLog = it.mediaPlayerFactory().application().newLog().apply {
                 level = LogLevel.NOTICE
@@ -85,7 +89,9 @@ class VLCAudioComponent {
     fun release() {
         logger.info { "Releasing player" }
         player?.let {
-            it.mediaPlayer().events().removeMediaEventListener(vlcEvents.mediaMetaDataAdapter)
+            if (MediaPlayer.enableMetaDataService) {
+                it.mediaPlayer().events().removeMediaEventListener(vlcEvents.mediaMetaDataAdapter)
+            }
             it.mediaPlayer().events().removeMediaPlayerEventListener(vlcEvents.mediaStatusAdapter)
             nativeLog.removeLogListener(vlcEvents.nativeLogListener)
             nativeLog.release()

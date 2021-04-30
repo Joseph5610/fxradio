@@ -30,8 +30,8 @@ import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.usecase.ClickUseCase
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
+import online.hudacek.fxradio.utils.value
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.onChange
@@ -44,10 +44,10 @@ sealed class PlayerState {
 }
 
 class Player(station: Station,
-             animate: Boolean = property(Properties.PLAYER_ANIMATE, true),
-             volume: Double = property(Properties.VOLUME, 0.0),
+             animate: Boolean = Properties.PlayerAnimated.value(true),
+             volume: Double = Properties.Volume.value(0.0),
              trackName: String = "",
-             mediaPlayer: MediaPlayer = MediaPlayerFactory.create(property(Properties.PLAYER, "VLC"))) {
+             mediaPlayer: MediaPlayer = MediaPlayerFactory.create(Properties.Player.value("VLC"))) {
     var animate: Boolean by property(animate)
     var station: Station by property(station)
     var volume: Double by property(volume)
@@ -135,9 +135,9 @@ class PlayerViewModel : BaseViewModel<Player, PlayerState>(initialState = Player
      */
     override fun onCommit() {
         saveProperties(mapOf(
-                Properties.PLAYER to mediaPlayerProperty.value.playerType,
-                Properties.PLAYER_ANIMATE to animateProperty.value,
-                Properties.VOLUME to volumeProperty.value
+                Properties.Player to mediaPlayerProperty.value.playerType,
+                Properties.PlayerAnimated to animateProperty.value,
+                Properties.Volume to volumeProperty.value
         ))
     }
 }

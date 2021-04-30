@@ -16,15 +16,26 @@
 
 package online.hudacek.fxradio.usecase
 
+import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.SingleTransformer
+import io.reactivex.schedulers.Schedulers
 import online.hudacek.fxradio.api.StationsApi
 import tornadofx.Controller
 
 /**
  * UseCase interface defines actions for interaction with data layers
  */
-abstract class UseCase<InputType, OutputType> : Controller() {
+abstract class BaseUseCase<InputType, OutputType> : Controller() {
 
     val apiService by lazy { StationsApi.service }
 
     abstract fun execute(input: InputType): OutputType
+
+    /**
+     * Perform async calls on correct thread
+     */
+    protected fun <T> applySchedulers(): SingleTransformer<T, T>? = SingleTransformer {
+        it.subscribeOn(Schedulers.io())
+                .observeOnFx()
+    }
 }

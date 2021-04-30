@@ -61,16 +61,16 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             minHeight = 400.0
 
             //Setup window location on screen
-            config.double(Properties.WINDOW_WIDTH.key)?.let {
+            config.double(Properties.WindowWidth.key)?.let {
                 width = it
             }
-            config.double(Properties.WINDOW_HEIGHT.key)?.let {
+            config.double(Properties.WindowHeight.key)?.let {
                 height = it
             }
-            config.double(Properties.WINDOW_X.key)?.let {
+            config.double(Properties.WindowX.key)?.let {
                 x = it
             }
-            config.double(Properties.WINDOW_Y.key)?.let {
+            config.double(Properties.WindowY.key)?.let {
                 y = it
             }
             super.start(this)
@@ -80,10 +80,10 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     override fun stop() {
         //Save last used window width/height on close of the app to use it on next start
         saveProperties(mapOf(
-                Properties.WINDOW_WIDTH to primaryStage.width,
-                Properties.WINDOW_HEIGHT to primaryStage.height,
-                Properties.WINDOW_X to primaryStage.x,
-                Properties.WINDOW_Y to primaryStage.y
+                Properties.WindowWidth to primaryStage.width,
+                Properties.WindowHeight to primaryStage.height,
+                Properties.WindowX to primaryStage.x,
+                Properties.WindowY to primaryStage.y
         ))
         super.stop()
     }

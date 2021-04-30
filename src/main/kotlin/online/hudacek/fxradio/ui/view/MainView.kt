@@ -44,7 +44,7 @@ class MainView : BaseView(FxRadio.appName) {
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
 
-    private val windowDividerProperty = Property(Properties.WINDOW_DIVIDER)
+    private val windowDividerProperty = Property(Properties.WindowDivider)
 
     init {
         setStageIcon(Image(Config.Resources.stageIcon))

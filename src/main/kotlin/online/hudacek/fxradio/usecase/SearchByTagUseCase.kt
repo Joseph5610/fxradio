@@ -20,12 +20,11 @@ import io.reactivex.Single
 import javafx.beans.binding.StringBinding
 import online.hudacek.fxradio.api.model.SearchByTagBody
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.utils.applySchedulers
 
 /**
- * Search all stations that contains provided tag
+ * Searches for all stations that contains provided tag
  */
-class SearchByTagUseCase : UseCase<StringBinding, Single<List<Station>>>() {
+class SearchByTagUseCase : BaseUseCase<StringBinding, Single<List<Station>>>() {
 
     override fun execute(input: StringBinding): Single<List<Station>> = apiService
             .searchStationByTag(SearchByTagBody(input.value))

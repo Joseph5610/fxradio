@@ -26,7 +26,7 @@ import tornadofx.property
 sealed class StatsState {
     object Loading : StatsState()
     data class Fetched(val stats: StatsResult) : StatsState()
-    object Error : StatsState()
+    data class Error(val cause: String) : StatsState()
 }
 
 class Stats(stats: ObservableList<Pair<String, String>> = observableListOf()) {
@@ -48,7 +48,7 @@ class StatsViewModel : BaseViewModel<Stats, StatsState>(Stats()) {
         getStatsUseCase.execute(Unit).subscribe({
             stateProperty.value = StatsState.Fetched(it)
         }, {
-            stateProperty.value = StatsState.Error
+            stateProperty.value = StatsState.Error(it.localizedMessage)
         })
     }
 

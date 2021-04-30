@@ -48,7 +48,7 @@ class ServersFragment : BaseFragment() {
                 messages["servers.notAvailable"]
             }
             is ServersState.Error -> {
-                messages["servers.error"]
+                messages["servers.error"] + it.cause
             }
             else -> {
                 ""
@@ -86,8 +86,10 @@ class ServersFragment : BaseFragment() {
             vbox {
                 prefHeight = 120.0
                 alignment = Pos.BASELINE_CENTER
-                label(labelTextProperty) {
-                    paddingAll = 15.0
+                text(labelTextProperty) {
+                    paddingAll = 5.0
+                    wrappingWidth = 270.0
+                    textAlignment = TextAlignment.CENTER
                 }
 
                 showWhen {

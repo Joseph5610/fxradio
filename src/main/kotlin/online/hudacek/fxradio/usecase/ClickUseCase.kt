@@ -19,12 +19,11 @@ package online.hudacek.fxradio.usecase
 import io.reactivex.Single
 import online.hudacek.fxradio.api.model.ClickResult
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.utils.applySchedulers
 
 /**
- * Increase click count of the station
+ * Increases click count of the station
  */
-class ClickUseCase : UseCase<Station, Single<ClickResult>>() {
+class ClickUseCase : BaseUseCase<Station, Single<ClickResult>>() {
 
     override fun execute(input: Station): Single<ClickResult> = apiService
             .click(input.stationuuid)

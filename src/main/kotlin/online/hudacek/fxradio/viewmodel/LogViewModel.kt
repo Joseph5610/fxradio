@@ -19,14 +19,14 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.utils.value
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator
 import tornadofx.ItemViewModel
 import tornadofx.property
 
-class Log(level: Level = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))) {
+class Log(level: Level = Level.valueOf(Properties.LogLevel.value("INFO"))) {
     var level: Level by property(level)
 }
 
@@ -42,6 +42,6 @@ class LogViewModel : ItemViewModel<Log>(Log()) {
         Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
 
         //Save it
-        Property(Properties.LOG_LEVEL).save(levelProperty.value)
+        Property(Properties.LogLevel).save(levelProperty.value)
     }
 }

@@ -21,12 +21,12 @@ import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.macos.MacUtils
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.utils.value
 import tornadofx.ItemViewModel
 import tornadofx.property
 
 //Notifications are currently enabled only on macOS
-class OsNotification(show: Boolean = property(Properties.NOTIFICATIONS, MacUtils.isMac)) {
+class OsNotification(show: Boolean = Properties.SendOsNotifications.value(MacUtils.isMac)) {
     var show: Boolean by property(show)
 }
 
@@ -46,5 +46,5 @@ class OsNotificationViewModel : ItemViewModel<OsNotification>(OsNotification()) 
                 }
     }
 
-    override fun onCommit() = Property(Properties.NOTIFICATIONS).save(showProperty.value)
+    override fun onCommit() = Property(Properties.SendOsNotifications).save(showProperty.value)
 }

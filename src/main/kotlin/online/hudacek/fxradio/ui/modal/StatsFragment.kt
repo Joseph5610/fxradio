@@ -71,9 +71,6 @@ class StatsFragment : BaseFragment() {
                 label(labelTextProperty) {
                     paddingAll = 20.0
                 }
-                showWhen {
-                    viewModel.stateProperty.isEqualTo(StatsState.Loading)
-                }
             }
         }
 

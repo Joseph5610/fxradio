@@ -26,8 +26,8 @@ import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.usecase.GetCountriesUseCase
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
+import online.hudacek.fxradio.utils.value
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.observableListOf
@@ -45,9 +45,9 @@ data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
 
 class Library(countries: ObservableList<Country> = observableListOf(),
               pinned: ObservableList<Country> = observableListOf(),
-              showLibrary: Boolean = property(Properties.WINDOW_SHOW_LIBRARY, true),
-              showCountries: Boolean = property(Properties.WINDOW_SHOW_COUNTRIES, true),
-              showPinned: Boolean = property(Properties.WINDOW_SHOW_PINNED, true)) {
+              showLibrary: Boolean = Properties.ShowLibrary.value(true),
+              showCountries: Boolean = Properties.ShowCountries.value(true),
+              showPinned: Boolean = Properties.ShowPinnedCountries.value(true)) {
 
     //Countries shown in Countries ListView
     var countries: ObservableList<Country> by property(countries)
@@ -122,9 +122,9 @@ class LibraryViewModel : BaseViewModel<Library, LibraryState>(Library(), Library
 
     override fun onCommit() {
         saveProperties(mapOf(
-                Properties.WINDOW_SHOW_COUNTRIES to showCountriesProperty.value,
-                Properties.WINDOW_SHOW_LIBRARY to showLibraryProperty.value,
-                Properties.WINDOW_SHOW_PINNED to showPinnedProperty.value
+                Properties.ShowCountries to showCountriesProperty.value,
+                Properties.ShowLibrary to showLibraryProperty.value,
+                Properties.ShowPinnedCountries to showPinnedProperty.value
         ))
     }
 }

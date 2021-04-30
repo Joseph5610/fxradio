@@ -19,7 +19,10 @@ package online.hudacek.fxradio.usecase
 import javafx.concurrent.Task
 import online.hudacek.fxradio.storage.ImageCache
 
-class ClearCacheUseCase : UseCase<Unit, Task<Unit>>() {
+/**
+ * Clears FxRadio image cache directory
+ */
+class ClearCacheUseCase : BaseUseCase<Unit, Task<Unit>>() {
 
     override fun execute(input: Unit): Task<Unit> = runAsync(daemon = true) {
         ImageCache.clear()

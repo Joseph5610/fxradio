@@ -22,7 +22,10 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.HttpClient
 import tornadofx.asObservable
 
-class GetServersUseCase : UseCase<Unit, Task<ObservableList<String>>>() {
+/**
+ * Retrieves valid list of radio-browser API urls
+ */
+class GetServersUseCase : BaseUseCase<Unit, Task<ObservableList<String>>>() {
 
     //API lookup URL
     private val lookupUrl = Config.API.dnsLookupURL

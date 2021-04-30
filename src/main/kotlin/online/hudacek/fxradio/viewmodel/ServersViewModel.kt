@@ -78,5 +78,5 @@ class ServersViewModel : BaseViewModel<Servers, ServersState>(Servers()) {
     }
 
     //Save selected server to app.properties on commit
-    override fun onCommit() = Property(Properties.API_SERVER).save(selectedProperty.value)
+    override fun onCommit() = Property(Properties.ApiServer).save(selectedProperty.value)
 }

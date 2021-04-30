@@ -28,11 +28,11 @@ import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.usecase.ClearCacheUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacUtils
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.utils.value
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
-class AppMenu(usePlatform: Boolean = MacUtils.isMac && property(Properties.PLATFORM_MENU_BAR, true)) {
+class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuBar.value(true)) {
     var usePlatform: Boolean by property(usePlatform)
 }
 

@@ -16,6 +16,9 @@
 
 package online.hudacek.fxradio.media
 
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.value
+
 /**
  * Common interface for all available players
  */
@@ -44,4 +47,9 @@ interface MediaPlayer {
     fun stop()
 
     fun release()
+
+    companion object {
+        //The metadata service can be disabled by respective property file setting
+        val enableMetaDataService = Properties.PlayerRefreshMetaData.value(true)
+    }
 }

@@ -20,11 +20,13 @@ import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.AddStation
 import online.hudacek.fxradio.api.model.AddedStation
-import online.hudacek.fxradio.utils.applySchedulers
 
 private val logger = KotlinLogging.logger {}
 
-class AddStationUseCase : UseCase<AddStation, Single<AddedStation>>() {
+/**
+ * Adds new station to radio-browser API
+ */
+class AddStationUseCase : BaseUseCase<AddStation, Single<AddedStation>>() {
 
     override fun execute(input: AddStation): Single<AddedStation> = apiService
             .add(input)

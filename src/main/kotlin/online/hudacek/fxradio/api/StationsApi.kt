@@ -67,7 +67,7 @@ interface StationsApi {
 
         private val viewModel: ServersViewModel by inject()
 
-        private val apiServerProperty = Property(Properties.API_SERVER)
+        private val apiServerProperty = Property(Properties.ApiServer)
 
         val client: ApiClient by lazy {
             if (apiServerProperty.isPresent) {

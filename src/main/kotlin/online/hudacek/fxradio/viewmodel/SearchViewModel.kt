@@ -24,12 +24,12 @@ import online.hudacek.fxradio.usecase.SearchByNameUseCase
 import online.hudacek.fxradio.usecase.SearchByTagUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
-import online.hudacek.fxradio.utils.property
+import online.hudacek.fxradio.utils.value
 import tornadofx.ItemViewModel
 import tornadofx.property
 import tornadofx.stringBinding
 
-class Search(query: String = property(Properties.SEARCH_QUERY, ""),
+class Search(query: String = Properties.SearchQuery.value(""),
              useTagSearch: Boolean = false) {
     var query: String by property(query)
     var searchByTag: Boolean by property(useTagSearch)
@@ -60,5 +60,5 @@ class SearchViewModel : ItemViewModel<Search>(Search()) {
 
     fun searchByName() = searchByNameUseCase.execute(queryProperty)
 
-    override fun onCommit() = Property(Properties.SEARCH_QUERY).save(bindQueryProperty.value)
+    override fun onCommit() = Property(Properties.SearchQuery).save(bindQueryProperty.value)
 }

@@ -25,27 +25,27 @@ private val logger = KotlinLogging.logger {}
  * Keys for values stored in app.properties
  */
 enum class Properties(val key: String) {
-    PLATFORM_MENU_BAR("menu.native"),
-    VOLUME("player.volume"),
-    PLAYER("player.type"),
-    PLAYER_ANIMATE("player.animate"),
-    PLAYER_HUMBLE_METADATA_REFRESH("player.refreshMeta"),
-    API_SERVER("app.server"),
-    SEARCH_QUERY("search.query"),
-    NOTIFICATIONS("notifications"),
-    WINDOW_DIVIDER("windowDivider"),
-    WINDOW_SHOW_LIBRARY("window.showLibrary"),
-    WINDOW_SHOW_COUNTRIES("window.showCountries"),
-    WINDOW_SHOW_PINNED("window.showPinned"),
-    WINDOW_WIDTH("window.width"),
-    WINDOW_HEIGHT("window.height"),
-    WINDOW_X("window.x"),
-    WINDOW_Y("window.y"),
-    LOG_LEVEL("log.level");
+    UseNativeMenuBar("menu.native"),
+    Volume("player.volume"),
+    Player("player.type"),
+    PlayerAnimated("player.animate"),
+    PlayerRefreshMetaData("player.refreshMeta"),
+    ApiServer("app.server"),
+    SearchQuery("search.query"),
+    SendOsNotifications("notifications"),
+    WindowDivider("windowDivider"),
+    ShowLibrary("window.showLibrary"),
+    ShowCountries("window.showCountries"),
+    ShowPinnedCountries("window.showPinned"),
+    WindowWidth("window.width"),
+    WindowHeight("window.height"),
+    WindowX("window.x"),
+    WindowY("window.y"),
+    LogLevel("log.level");
 }
 
 /**
- * Creates app configuration for [property] key
+ * Creates app configuration for property key [Properties]
  */
 class Property(property: Properties) : Component() {
 
@@ -117,6 +117,6 @@ fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
 }
 
 /**
- * Helper method. Get value of property [key]. If the key value is not present, returns [defaultValue]
+ * Helper method. Get value of property. If the value is not stored, returns [defaultValue]
  */
-inline fun <reified T> property(key: Properties, defaultValue: T) = Property(key).get(defaultValue)
+inline fun <reified T> Properties.value(defaultValue: T) = Property(this).get(defaultValue)

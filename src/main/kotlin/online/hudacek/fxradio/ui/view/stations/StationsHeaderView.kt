@@ -36,7 +36,10 @@ class StationsHeaderView : BaseView() {
     //Bindings for library name based on selected library
     private val libraryNameTextProperty = libraryViewModel.stateProperty.stringBinding {
         it?.let {
-            messages[it.key]
+            when (it) {
+                is LibraryState.SelectedCountry -> it.key
+                else -> messages[it.key]
+            }
         }
     }
 

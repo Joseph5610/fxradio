@@ -18,12 +18,11 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
 import online.hudacek.fxradio.api.model.StatsResult
-import online.hudacek.fxradio.utils.applySchedulers
 
 /**
- * Get status information about API server
+ * Gets status information from currently used radio-browser API server
  */
-class GetStatsUseCase : UseCase<Unit, Single<StatsResult>>() {
+class GetStatsUseCase : BaseUseCase<Unit, Single<StatsResult>>() {
 
     override fun execute(input: Unit): Single<StatsResult> = apiService
             .getStats()
