@@ -31,9 +31,9 @@ import tornadofx.observableListOf
 import tornadofx.property
 
 sealed class StationsState {
-    object InitialEmpty : StationsState()
     data class Fetched(val stations: List<Station>) : StationsState()
     data class Error(val cause: String) : StationsState()
+    object NoStations : StationsState()
     object ShortQuery : StationsState()
 }
 
@@ -45,7 +45,7 @@ class Stations(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about currently shown
  * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
-class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), StationsState.InitialEmpty) {
+class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), StationsState.NoStations) {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
@@ -103,8 +103,12 @@ class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), Sta
     }
 
     fun show(stations: List<Station>) {
-        stateProperty.value = StationsState.Fetched(stations)
-        stationsProperty.setAll(stations)
+        if (stations.isNullOrEmpty()) {
+            stateProperty.value = StationsState.NoStations
+        } else {
+            stateProperty.value = StationsState.Fetched(stations)
+            stationsProperty.setAll(stations)
+        }
     }
 
     private fun handleError(throwable: Throwable) {
@@ -122,7 +126,7 @@ class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), Sta
                     .subscribe(::show, ::handleError)
             is LibraryState.Search -> search()
             else -> {
-                show(observableListOf())
+                show(observableListOf(Station.dummy))
             }
         }
     }
