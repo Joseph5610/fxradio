@@ -31,9 +31,9 @@ import tornadofx.observableListOf
 import tornadofx.property
 
 sealed class StationsState {
-    object Initial : StationsState()
+    object InitialEmpty : StationsState()
     data class Fetched(val stations: List<Station>) : StationsState()
-    object Error : StationsState()
+    data class Error(val cause: String) : StationsState()
     object ShortQuery : StationsState()
 }
 
@@ -42,12 +42,10 @@ class Stations(stations: ObservableList<Station> = observableListOf()) {
 }
 
 /**
- * Stations view model
- * -------------------
  * Holds information about currently shown
  * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
-class StationsViewModel : BaseViewModel<StationsState, Stations>(Stations(), StationsState.Initial) {
+class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), StationsState.InitialEmpty) {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
@@ -69,23 +67,13 @@ class StationsViewModel : BaseViewModel<StationsState, Stations>(Stations(), Sta
                     search() //Perform the search call again
                 }
 
+        appEvent.refreshLibrary
+                .filter { it == libraryViewModel.stateProperty.value }
+                .subscribe(::handleNewLibraryState)
+
         libraryViewModel
-                .stateObservable()
-                .subscribe {
-                    when (it) {
-                        is LibraryState.IsCountry -> getStationsByCountryUseCase
-                                .execute(it.country)
-                                .subscribe(::show, ::handleError)
-                        is LibraryState.Favourites -> show(favouritesViewModel.stationsProperty)
-                        is LibraryState.TopStations -> getTopStationsUseCase
-                                .execute(Unit)
-                                .subscribe(::show, ::handleError)
-                        is LibraryState.Search -> search()
-                        else -> {
-                            show(observableListOf())
-                        }
-                    }
-                }
+                .stateObservableChanges()
+                .subscribe(::handleNewLibraryState)
 
         //Increase vote count on the server
         appEvent.vote
@@ -114,16 +102,29 @@ class StationsViewModel : BaseViewModel<StationsState, Stations>(Stations(), Sta
         }
     }
 
-    override fun onNewState(newState: StationsState) {
-        if (newState is StationsState.Fetched) stationsProperty.setAll(newState.stations)
-    }
-
     fun show(stations: List<Station>) {
         stateProperty.value = StationsState.Fetched(stations)
+        stationsProperty.setAll(stations)
     }
 
     private fun handleError(throwable: Throwable) {
-        stateProperty.value = StationsState.Error
+        stateProperty.value = StationsState.Error(throwable.localizedMessage)
+    }
+
+    fun handleNewLibraryState(newState: LibraryState) {
+        when (newState) {
+            is LibraryState.SelectedCountry -> getStationsByCountryUseCase
+                    .execute(newState.country)
+                    .subscribe(::show, ::handleError)
+            is LibraryState.Favourites -> show(favouritesViewModel.stationsProperty)
+            is LibraryState.TopStations -> getTopStationsUseCase
+                    .execute(Unit)
+                    .subscribe(::show, ::handleError)
+            is LibraryState.Search -> search()
+            else -> {
+                show(observableListOf())
+            }
+        }
     }
 }
 

@@ -31,7 +31,7 @@ class OsNotification(show: Boolean = property(Properties.NOTIFICATIONS, MacUtils
 }
 
 /**
- * Show Native OS notification
+ * Shows Native OS notifications
  */
 class OsNotificationViewModel : ItemViewModel<OsNotification>(OsNotification()) {
     private val appEvent: AppEvent by inject()
@@ -39,7 +39,7 @@ class OsNotificationViewModel : ItemViewModel<OsNotification>(OsNotification()) 
     val showProperty = bind(OsNotification::show) as BooleanProperty
 
     init {
-        appEvent.osNotification
+        appEvent.streamMetaData
                 .filter { showProperty.value && MacUtils.isMac }
                 .subscribe {
                     MacUtils.notification(it.nowPlaying, it.stationName)

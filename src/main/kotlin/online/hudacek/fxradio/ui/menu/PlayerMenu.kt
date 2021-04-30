@@ -14,31 +14,33 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.control.CheckMenuItem
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
-import online.hudacek.fxradio.ui.disableWhenInvalidStation
-import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.utils.macos.MacUtils
 import online.hudacek.fxradio.viewmodel.OsNotificationViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class PlayerMenu : BaseMenu() {
+class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val osNotificationViewModel: OsNotificationViewModel by inject()
 
-    private var playerTypeItem: CheckMenuItem by singleAssign()
-
-    private val keyPlay = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
-    private val keyStop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
+    private val playerTypeItem by lazy {
+        checkMenuItem(messages["menu.player.switch"]) {
+            isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == MediaPlayer.Type.Humble
+            action {
+                playerViewModel.stateProperty.value = PlayerState.Stopped
+                playerViewModel.mediaPlayerProperty.value?.release()
+                playerViewModel.mediaPlayerProperty.value =
+                        MediaPlayerFactory.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
+                playerViewModel.commit()
+            }
+        }
+    }
 
     init {
         playerViewModel.mediaPlayerProperty.onChange {
@@ -46,44 +48,31 @@ class PlayerMenu : BaseMenu() {
         }
     }
 
-    override val menu by lazy {
-        menu(messages["menu.player.controls"]) {
-            item(messages["menu.player.start"], keyPlay) {
+    override val menuItems = listOf(
+            item(messages["menu.player.start"], KeyCodes.play) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.stateProperty.value = PlayerState.Playing
                 }
-            }
-
-            item(messages["menu.player.stop"], keyStop) {
+            },
+            item(messages["menu.player.stop"], KeyCodes.stop) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.stateProperty.value = PlayerState.Stopped
                 }
-            }
+            },
+            separator(),
+            playerTypeItem,
 
-            separator()
-
-            playerTypeItem = checkmenuitem(messages["menu.player.switch"]) {
-                isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == MediaPlayer.Type.Humble
-                action {
-                    playerViewModel.stateProperty.value = PlayerState.Stopped
-                    playerViewModel.mediaPlayerProperty.value?.release()
-                    playerViewModel.mediaPlayerProperty.value =
-                            MediaPlayerFactory.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
-                    playerViewModel.commit()
-                }
-            }
-
-            checkmenuitem(messages["menu.player.animate"]) {
-                bind(playerViewModel.animateProperty)
+            checkMenuItem(messages["menu.player.animate"],
+                    bindProperty = playerViewModel.animateProperty) {
                 action {
                     playerViewModel.commit()
                 }
-            }
+            },
 
-            checkmenuitem(messages["menu.player.notifications"]) {
-                bind(osNotificationViewModel.showProperty)
+            checkMenuItem(messages["menu.player.notifications"],
+                    bindProperty = osNotificationViewModel.showProperty) {
                 action {
                     osNotificationViewModel.commit()
                 }
@@ -93,6 +82,5 @@ class PlayerMenu : BaseMenu() {
                     MacUtils.isMac.toProperty()
                 }
             }
-        }
-    }
+    )
 }

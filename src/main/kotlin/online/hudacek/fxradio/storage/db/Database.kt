@@ -51,7 +51,7 @@ abstract class Database(open val tableName: String) {
             //Get trough all tables declared in Tables object and
             //execute create table statements accordingly
             Tables::class.declaredMemberProperties.forEach {
-                val member = it.get(Tables) as TableOperations<*> //Get instance of member
+                val member = it.get(Tables) as Table<*> //Get instance of member
 
                 execute(member.createTableSql)
                         .toSingle()

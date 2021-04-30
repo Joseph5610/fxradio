@@ -33,8 +33,6 @@ class History(stations: ObservableList<Station> = observableListOf()) {
 }
 
 /**
- * Stations History view model
- * -------------------
  * Holds information about last played stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */

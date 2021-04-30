@@ -14,49 +14,35 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
-import online.hudacek.fxradio.ui.disableWhenInvalidStation
-import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.action
 import tornadofx.get
-import tornadofx.item
-import tornadofx.separator
 
-class StationMenu : BaseMenu() {
+class StationMenu : BaseMenu("menu.station") {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    private val keyInfo = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
-    private val keyAdd = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
-
-    override val menu by lazy {
-        menu(messages["menu.station"]) {
-            item(messages["menu.station.info"], keyInfo) {
+    override val menuItems = listOf(
+            item(messages["menu.station.info"], KeyCodes.info) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     appMenuViewModel.openStationInfo()
                 }
-            }
-
+            },
             item(messages["copy.stream.url"]) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
                     playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
                 }
-            }
-
-            separator()
-            item(messages["menu.station.add"], keyAdd) {
+            },
+            separator(),
+            item(messages["menu.station.add"], KeyCodes.add) {
                 action {
                     appMenuViewModel.openAddNewStation()
                 }
             }
-        }
-    }
+    )
 }

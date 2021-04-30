@@ -32,10 +32,17 @@ import tornadofx.*
 /**
  * Custom listview fragment for countries
  */
-class LibraryCountriesListFragment(countriesProperty: ListProperty<Country>,
-                                   showProperty: BooleanProperty) : BaseFragment() {
+class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
+                               showProperty: BooleanProperty) : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
+
+    override fun onDock() {
+        viewModel
+                .stateObservableChanges()
+                .filter { it !is LibraryState.SelectedCountry }
+                .subscribe { root.selectionModel.clearSelection() }
+    }
 
     override val root = listview(countriesProperty) {
         /**
@@ -55,7 +62,7 @@ class LibraryCountriesListFragment(countriesProperty: ListProperty<Country>,
 
                 label(item.name.split("(")[0])
 
-                //Ignore it for pinned stations, they would always have 0 statinocount
+                //Ignore it for pinned stations, they would always have 0 station count
                 if (it.stationcount > 0) {
                     label("${it.stationcount}") {
                         addClass(Styles.libraryListItemTag)
@@ -91,7 +98,7 @@ class LibraryCountriesListFragment(countriesProperty: ListProperty<Country>,
         }
 
         onUserSelect(1) {
-            viewModel.stateProperty.value = LibraryState.IsCountry(it)
+            viewModel.stateProperty.value = LibraryState.SelectedCountry(it)
         }
 
         showWhen {

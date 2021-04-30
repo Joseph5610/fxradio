@@ -26,7 +26,6 @@ import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacUtils
 import online.hudacek.fxradio.utils.saveProperties
-import online.hudacek.fxradio.viewmodel.LogViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.nio.file.Path
@@ -36,16 +35,12 @@ import kotlin.reflect.KClass
 /**
  * Load app in Dark Mode
  */
-class FxRadioDark : FxRadio(StylesDark::class) {
-    override var useDarkModeStyle = true
-}
+class FxRadioDark(override var useDarkModeStyle: Boolean = true) : FxRadio(StylesDark::class)
 
 /**
  * Load app in Light Mode
  */
-class FxRadioLight : FxRadio(Styles::class) {
-    override var useDarkModeStyle = false
-}
+class FxRadioLight(override var useDarkModeStyle: Boolean = false) : FxRadio(Styles::class)
 
 /**
  * Load the app with provided [stylesheet] class
@@ -56,8 +51,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
      * override app.config path to $user.home/fxradio
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
-
-    private val logViewModel: LogViewModel by inject()
 
     open var useDarkModeStyle: Boolean by singleAssign()
 

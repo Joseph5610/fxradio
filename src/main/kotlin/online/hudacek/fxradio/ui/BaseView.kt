@@ -22,4 +22,5 @@ import tornadofx.View
 abstract class BaseView(title: String? = null) : View(title) {
 
     protected val appEvent: AppEvent by inject()
+
 }

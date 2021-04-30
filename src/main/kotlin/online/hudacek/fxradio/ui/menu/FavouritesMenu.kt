@@ -14,21 +14,16 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.control.MenuItem
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class FavouritesMenu : BaseMenu() {
+class FavouritesMenu : BaseMenu("menu.favourites") {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
@@ -43,11 +38,13 @@ class FavouritesMenu : BaseMenu() {
         it != null && it.isValid()
     }
 
-    val addRemoveItems
+    /**
+     * Items for add/remove favourite station reused in multiple menus around the app
+     */
+    val addRemoveFavouriteItems
         get() =
-            listOf(
-                    MenuItem(messages["menu.station.favourite"]).apply {
-                        accelerator = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
+            mutableListOf(
+                    item(messages["menu.station.favourite"], KeyCodes.favourite) {
                         enableWhen(playedStationNotInFavouritesProperty)
                         visibleWhen(favouriteMenuItemVisibleProperty)
 
@@ -58,7 +55,7 @@ class FavouritesMenu : BaseMenu() {
                         }
                     },
                     //Remove favourite
-                    MenuItem(messages["menu.station.favouriteRemove"]).apply {
+                    item(messages["menu.station.favouriteRemove"]) {
                         disableWhen(playedStationNotInFavouritesProperty)
                         visibleWhen(favouriteMenuItemVisibleProperty)
 
@@ -78,16 +75,13 @@ class FavouritesMenu : BaseMenu() {
                 }
     }
 
-    override val menu by lazy {
-        menu(messages["menu.favourites"]) {
-            item(messages["menu.favourites.show"]).action {
-                libraryViewModel.stateProperty.value = LibraryState.Favourites
-            }
-
-            items.addAll(addRemoveItems)
-
-            //Clean all favourites
-            separator()
+    override val menuItems = mutableListOf(
+            item(messages["menu.favourites.show"]) {
+                action {
+                    libraryViewModel.stateProperty.value = LibraryState.Favourites
+                }
+            },
+            separator(),
             item(messages["menu.station.favourite.clear"]) {
                 disableWhen {
                     favouritesViewModel.stationsProperty.emptyProperty()
@@ -98,7 +92,5 @@ class FavouritesMenu : BaseMenu() {
                         appEvent.refreshLibrary.onNext(LibraryState.Favourites)
                     }
                 }
-            }
-        }
-    }
+            }, separator()).apply { addAll(addRemoveFavouriteItems) }
 }

@@ -29,9 +29,7 @@ class LibraryView : BaseView() {
     private val viewModel: LibraryViewModel by inject()
 
     private val librarySearchView: LibrarySearchView by inject()
-    private val libraryCountriesView: LibraryCountriesView by inject()
     private val libraryListView: LibraryListView by inject()
-    private val libraryCountriesPinnedView: LibraryCountriesPinnedView by inject()
 
     override fun onDock() {
         Tables.pinnedCountries
@@ -57,6 +55,7 @@ class LibraryView : BaseView() {
                     viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
                     viewModel.commit()
                 })
+
                 add(libraryListView)
 
                 vbox {
@@ -64,7 +63,11 @@ class LibraryView : BaseView() {
                         viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
                         viewModel.commit()
                     })
-                    add(libraryCountriesPinnedView)
+
+                    vbox {
+                        add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
+                    }
+
                     showWhen {
                         viewModel.pinnedProperty.emptyProperty().not()
                     }
@@ -79,7 +82,10 @@ class LibraryView : BaseView() {
                     viewModel.commit()
                 })
 
-                add(libraryCountriesView)
+                vbox {
+                    add(LibraryCountriesFragment(viewModel.countriesProperty, viewModel.showCountriesProperty))
+                    prefHeightProperty().bind(this@center.heightProperty())
+                }
 
                 //Retry link
                 vbox(alignment = Pos.CENTER) {
@@ -88,12 +94,10 @@ class LibraryView : BaseView() {
                         action { viewModel.getCountries() }
 
                         showWhen {
-                            viewModel.countriesProperty.emptyProperty()
-                                    .and(viewModel.showCountriesProperty)
+                            viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
                         }
                     }
                 }
-                libraryCountriesView.root.prefHeightProperty().bind(heightProperty())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

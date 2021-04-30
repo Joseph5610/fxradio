@@ -40,24 +40,24 @@ class StationsEmptyView : BaseView() {
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            StationsState.Error -> messages["connectionError"]
-            StationsState.ShortQuery -> messages["searchingLibrary"]
+            is StationsState.Error -> messages["connectionError"]
+            is StationsState.ShortQuery -> messages["searchingLibrary"]
             else -> messages["noResults"]
         }
     }
 
     private val headerGraphicProperty = viewModel.stateProperty.objectBinding {
         when (it) {
-            StationsState.Error -> errorGlyph
-            StationsState.ShortQuery -> searchGlyph
+            is StationsState.Error -> errorGlyph
+            is StationsState.ShortQuery -> searchGlyph
             else -> noResultsGlyph
         }
     }
 
     private val subHeaderProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            StationsState.Error -> messages["connectionErrorDesc"]
-            StationsState.ShortQuery -> messages["searchingLibraryDesc"]
+            is StationsState.Error -> it.cause
+            is StationsState.ShortQuery -> messages["searchingLibraryDesc"]
             else -> ""
         }
     }

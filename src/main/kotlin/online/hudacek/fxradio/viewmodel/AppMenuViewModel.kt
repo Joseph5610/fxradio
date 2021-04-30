@@ -18,7 +18,6 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import javafx.stage.StageStyle
-import mu.KotlinLogging
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.events.data.AppNotification
@@ -32,8 +31,6 @@ import online.hudacek.fxradio.utils.macos.MacUtils
 import online.hudacek.fxradio.utils.property
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
-
-private val logger = KotlinLogging.logger {}
 
 class AppMenu(usePlatform: Boolean = MacUtils.isMac && property(Properties.PLATFORM_MENU_BAR, true)) {
     var usePlatform: Boolean by property(usePlatform)
@@ -67,13 +64,10 @@ class AppMenuViewModel : ItemViewModel<AppMenu>(AppMenu()) {
                 messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
             clearCacheUseCase.execute(Unit) success {
                 appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.ok"],
-                                FontAwesome.Glyph.CHECK))
+                        AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
             } fail {
                 appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.error"],
-                                FontAwesome.Glyph.WARNING))
-                logger.error(it) { "Exception when clearing cache" }
+                        AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
             }
         }
     }

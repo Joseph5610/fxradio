@@ -24,6 +24,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.HttpClient
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.storage.ImageCache
+import online.hudacek.fxradio.storage.ImageCache.isCached
 import tornadofx.onChange
 
 val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
@@ -49,7 +50,7 @@ internal fun Station.stationImage(view: ImageView) {
     view.image = defaultRadioLogo
 
     //If the image is in the cache, just load it into view
-    if (ImageCache.has(this)) {
+    if (isCached) {
         loadImage(view)
     } else {
         if (favicon.isNullOrEmpty()) {

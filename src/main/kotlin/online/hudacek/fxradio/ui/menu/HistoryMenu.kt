@@ -14,14 +14,10 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
@@ -29,13 +25,11 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
-class HistoryMenu : BaseMenu() {
+class HistoryMenu : BaseMenu("menu.history") {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
-
-    private val keyHistory = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
 
     init {
         Tables.history
@@ -45,12 +39,12 @@ class HistoryMenu : BaseMenu() {
                 }
     }
 
-    override val menu by lazy {
-        menu(messages["menu.history"]) {
-            item(messages["menu.history.show"], keyHistory).action {
-                libraryViewModel.stateProperty.value = LibraryState.History
-            }
-
+    override val menuItems = listOf(
+            item(messages["menu.history.show"], KeyCodes.history) {
+                action {
+                    libraryViewModel.stateProperty.value = LibraryState.History
+                }
+            },
             menu(messages["menu.history.recent"]) {
                 disableWhen {
                     historyViewModel.stationsProperty.emptyProperty()
@@ -72,8 +66,8 @@ class HistoryMenu : BaseMenu() {
                         }
                     }
                 }
-            }
-            separator()
+            },
+            separator(),
             item(messages["menu.history.clear"]) {
                 disableWhen {
                     historyViewModel.stationsProperty.emptyProperty()
@@ -87,6 +81,5 @@ class HistoryMenu : BaseMenu() {
                     }
                 }
             }
-        }
-    }
+    )
 }

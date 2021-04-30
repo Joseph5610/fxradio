@@ -37,4 +37,7 @@ object MacUtils {
 
     val isSystemDarkMode: Boolean
         get() = Runtime.getRuntime().command("defaults read -g AppleInterfaceStyle").result == "Dark"
+
+    val accentColor: String
+        get() = Runtime.getRuntime().command("defaults read -g AppleAccentColor").result
 }

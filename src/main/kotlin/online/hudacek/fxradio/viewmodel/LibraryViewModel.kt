@@ -35,9 +35,9 @@ import tornadofx.property
 
 sealed class LibraryState(val key: String) {
     object Favourites : LibraryState("favourites")
-    object Search : LibraryState("search")
+    object Search : LibraryState("Search")
     object History : LibraryState("history")
-    data class IsCountry(val country: Country) : LibraryState("country")
+    data class SelectedCountry(val country: Country) : LibraryState(country.name)
     object TopStations : LibraryState("topStations")
 }
 
@@ -73,7 +73,7 @@ class Library(countries: ObservableList<Country> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : BaseViewModel<LibraryState, Library>(Library(), LibraryState.TopStations) {
+class LibraryViewModel : BaseViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
 
@@ -118,8 +118,7 @@ class LibraryViewModel : BaseViewModel<LibraryState, Library>(Library(), Library
     fun getCountries(): Disposable = getCountriesUseCase.execute(Unit)
             .subscribe({
                 countriesProperty.setAll(it)
-            }, {
-            })
+            }, {})
 
     override fun onCommit() {
         saveProperties(mapOf(

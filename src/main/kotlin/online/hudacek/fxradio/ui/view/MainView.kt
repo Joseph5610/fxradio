@@ -26,7 +26,6 @@ import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.library.LibraryView
-import online.hudacek.fxradio.ui.view.menu.MenuBarView
 import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
 import online.hudacek.fxradio.utils.Properties

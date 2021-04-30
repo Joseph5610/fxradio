@@ -26,7 +26,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * Common operations on database of stations with different tables (e.g History, Favourites ..)
  */
-class StationTable(override val tableName: String) : TableOperations<Station>, Database(tableName) {
+class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
 
     override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
             " stationuuid VARCHAR, name VARCHAR, " +

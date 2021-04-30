@@ -65,10 +65,11 @@ object ImageCache {
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
     /**
-     * Check if [station] image is in cache
+     * Check if station image is in cache
      */
-    fun has(station: Station) = Files.exists(cacheBasePath.resolve(station.stationuuid))
-            || invalidStationUuids.contains(station.stationuuid)
+    val Station.isCached: Boolean
+        get() = (Files.exists(cacheBasePath.resolve(stationuuid))
+                || invalidStationUuids.contains(stationuuid))
 
     /**
      * Gets image for [station] from local cache
@@ -85,7 +86,7 @@ object ImageCache {
      * Saves [inputStream] containing logo of [station] into local cache dir
      */
     fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
-            .filter { !has(it) }
+            .filter { !it.isCached }
             .doOnError { logger.error(it) { "Cannot save downloaded image" } }
             .map { cacheBasePath.resolve(it.stationuuid) }
             .subscribe {

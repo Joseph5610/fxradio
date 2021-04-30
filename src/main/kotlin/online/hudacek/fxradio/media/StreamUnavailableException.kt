@@ -18,11 +18,8 @@ package online.hudacek.fxradio.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.AppEvent
-import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.find
 
 private val logger = KotlinLogging.logger {}
@@ -31,10 +28,11 @@ class StreamUnavailableException(message: String, cause: Throwable?) : Exception
 
     constructor(message: String) : this(message, null)
 
+    private val playerViewModel = find<PlayerViewModel>()
+
     init {
         Platform.runLater {
-            find<PlayerViewModel>().stateProperty.value = PlayerState.Error
-            find<AppEvent>().appNotification.onNext(AppNotification(localizedMessage, FontAwesome.Glyph.WARNING))
+            playerViewModel.stateProperty.value = PlayerState.Error(localizedMessage)
             logger.error(this) { "Stream can't be played" }
         }
     }

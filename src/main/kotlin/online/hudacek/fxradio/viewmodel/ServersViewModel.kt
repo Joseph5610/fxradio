@@ -32,7 +32,7 @@ sealed class ServersState {
     object Loading : ServersState()
     data class Fetched(val servers: ObservableList<String>) : ServersState()
     object NoServersAvailable : ServersState()
-    object Error : ServersState()
+    data class Error(val cause: String) : ServersState()
 }
 
 class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
@@ -48,7 +48,7 @@ class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
  * Search for available servers is performed only on first start of the app or when opening
  * [online.hudacek.fxradio.ui.modal.ServersFragment]
  */
-class ServersViewModel : BaseViewModel<ServersState, Servers>(Servers()) {
+class ServersViewModel : BaseViewModel<Servers, ServersState>(Servers()) {
 
     private val getServersUseCase: GetServersUseCase by inject()
 
@@ -67,7 +67,7 @@ class ServersViewModel : BaseViewModel<ServersState, Servers>(Servers()) {
                 stateProperty.value = ServersState.Fetched(it)
             }
         } fail {
-            stateProperty.value = ServersState.Error
+            stateProperty.value = ServersState.Error(it.localizedMessage)
         }
     }
 

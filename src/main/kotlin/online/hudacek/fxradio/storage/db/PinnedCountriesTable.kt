@@ -23,7 +23,7 @@ import online.hudacek.fxradio.api.model.Country
 
 private val logger = KotlinLogging.logger {}
 
-class PinnedCountriesTable(override val tableName: String = "PINNED") : TableOperations<Country>, Database(tableName) {
+class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
 
     override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
             " name VARCHAR " +

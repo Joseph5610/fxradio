@@ -41,13 +41,13 @@ class ServersFragment : BaseFragment() {
 
     private val labelTextProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            ServersState.Loading -> {
+            is ServersState.Loading -> {
                 messages["loading"]
             }
-            ServersState.NoServersAvailable -> {
+            is ServersState.NoServersAvailable -> {
                 messages["servers.notAvailable"]
             }
-            ServersState.Error -> {
+            is ServersState.Error -> {
                 messages["servers.error"]
             }
             else -> {

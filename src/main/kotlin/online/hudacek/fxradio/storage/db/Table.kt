@@ -22,7 +22,7 @@ import io.reactivex.Single
 /**
  * Basic interface for common table operations
  */
-interface TableOperations<T> {
+interface Table<T> {
     /**
      *  Name of the table in SQLite DB
      */

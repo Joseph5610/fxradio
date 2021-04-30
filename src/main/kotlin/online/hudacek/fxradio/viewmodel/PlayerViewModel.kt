@@ -24,6 +24,7 @@ import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
@@ -31,6 +32,7 @@ import online.hudacek.fxradio.usecase.ClickUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.property
 import online.hudacek.fxradio.utils.saveProperties
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.onChange
 import tornadofx.property
@@ -38,7 +40,7 @@ import tornadofx.property
 sealed class PlayerState {
     object Playing : PlayerState()
     object Stopped : PlayerState()
-    object Error : PlayerState()
+    data class Error(val cause: String) : PlayerState()
 }
 
 class Player(station: Station,
@@ -54,11 +56,9 @@ class Player(station: Station,
 }
 
 /**
- * Player view model
- * -------------------
- * Stores player settings, toggles playing
+ * Handles station playing logic
  */
-class PlayerViewModel : BaseViewModel<PlayerState, Player>(initialState = PlayerState.Stopped) {
+class PlayerViewModel : BaseViewModel<Player, PlayerState>(initialState = PlayerState.Stopped) {
 
     private val clickUseCase: ClickUseCase by inject()
 
@@ -97,20 +97,25 @@ class PlayerViewModel : BaseViewModel<PlayerState, Player>(initialState = Player
                 .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
                 .filter { it.nowPlaying.length > 1 }
                 .observeOnFx()
-                .doOnEach(appEvent.osNotification)
                 .subscribe {
                     trackNameProperty.value = it.nowPlaying
                 }
     }
 
+    /**
+     * Handles player state changes
+     */
     override fun onNewState(newState: PlayerState) {
-        if (newState == PlayerState.Playing) {
+        if (newState is PlayerState.Playing) {
             //Ignore stations with empty stream URL
             stationProperty.value.url_resolved?.let { url ->
                 mediaPlayerProperty.value?.changeVolume(volumeProperty.value)
                 mediaPlayerProperty.value?.play(url)
             }
         } else {
+            if (newState is PlayerState.Error) {
+                appEvent.appNotification.onNext(AppNotification(newState.cause, FontAwesome.Glyph.WARNING))
+            }
             mediaPlayerProperty.value?.stop()
         }
     }

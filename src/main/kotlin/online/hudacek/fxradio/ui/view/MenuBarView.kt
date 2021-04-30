@@ -14,16 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.ui.view
 
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.*
 import online.hudacek.fxradio.utils.macos.MacMenu
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
 import tornadofx.*
 
-class MenuBarView : View() {
+class MenuBarView : BaseView() {
 
     private val appMenuViewModel: AppMenuViewModel by inject()
 

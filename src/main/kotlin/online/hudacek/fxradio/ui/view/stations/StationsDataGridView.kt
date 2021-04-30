@@ -26,12 +26,12 @@ import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.modal.StationDebugFragment
 import online.hudacek.fxradio.ui.modal.StationInfoFragment
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.ui.view.menu.FavouritesMenu
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
@@ -45,6 +45,9 @@ class StationsDataGridView : BaseView() {
     private val stationsViewModel: StationsViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+
+    //Show initial stations
+    override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
@@ -70,7 +73,7 @@ class StationsDataGridView : BaseView() {
                     separator()
 
                     //Add Add/Remove from favourites menu items
-                    items.addAll(favouritesMenu.addRemoveItems)
+                    items.addAll(favouritesMenu.addRemoveFavouriteItems)
 
                     separator()
                     item(messages["menu.station.vote"]) {

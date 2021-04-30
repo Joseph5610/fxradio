@@ -39,8 +39,8 @@ class PlayerStationView : BaseView() {
 
     private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {
-            PlayerState.Stopped -> messages["player.streamingStopped"]
-            PlayerState.Error -> messages["player.streamingError"]
+            is PlayerState.Stopped -> messages["player.streamingStopped"]
+            is PlayerState.Error -> messages["player.streamingError"]
             else -> viewModel.stationProperty.value.name
         }
     }
@@ -90,6 +90,7 @@ class PlayerStationView : BaseView() {
                     }
                 }
             }
+
             bottom {
                 vbox(alignment = Pos.CENTER) {
                     label(playingStatusLabel) {

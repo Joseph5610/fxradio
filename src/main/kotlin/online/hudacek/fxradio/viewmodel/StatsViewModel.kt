@@ -34,12 +34,10 @@ class Stats(stats: ObservableList<Pair<String, String>> = observableListOf()) {
 }
 
 /**
- * Stats view model
- * -------------------
  * Holds information about radio-browser API stats and health
  * Shown inside [online.hudacek.fxradio.ui.modal.StatsFragment]
  */
-class StatsViewModel : BaseViewModel<StatsState, Stats>(Stats()) {
+class StatsViewModel : BaseViewModel<Stats, StatsState>(Stats()) {
 
     private val getStatsUseCase: GetStatsUseCase by inject()
 

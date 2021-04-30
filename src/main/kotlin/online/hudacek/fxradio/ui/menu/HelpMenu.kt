@@ -14,18 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.view.menu
+package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.viewmodel.Log
 import online.hudacek.fxradio.viewmodel.LogViewModel
 import org.apache.logging.log4j.Level
 import tornadofx.*
 
-class HelpMenu : BaseMenu() {
+class HelpMenu : BaseMenu("menu.help") {
+
     private val logViewModel: LogViewModel by inject()
 
     private var checkLoggerOff: CheckMenuItem by singleAssign()
@@ -43,47 +43,53 @@ class HelpMenu : BaseMenu() {
         }
     }
 
-    override val menu by lazy {
-        menu(messages["menu.help"]) {
-
-            item(messages["menu.help.openhomepage"]).action {
-                appMenuViewModel.openWebsite()
+    /**
+     * Sub-menu for setting logger level
+     */
+    private val logMenu = menu(messages["menu.help.loglevel"]) {
+        checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
+            isSelected = logViewModel.item.level == Level.OFF
+            action {
+                logViewModel.item = Log(Level.OFF)
             }
-            separator()
-
-            item(messages["menu.help.stats"]).action {
-                appMenuViewModel.openStats()
+        }
+        checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
+            isSelected = logViewModel.item.level == Level.INFO
+            action {
+                logViewModel.item = Log(Level.INFO)
             }
-
-            item(messages["menu.help.clearCache"]).action {
-                appMenuViewModel.clearCache()
-            }
-
-            separator()
-
-            menu(messages["menu.help.loglevel"]) {
-                checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
-                    isSelected = logViewModel.item.level == Level.OFF
-                    action {
-                        logViewModel.item = Log(Level.OFF)
-                    }
-                }
-                checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
-                    isSelected = logViewModel.item.level == Level.INFO
-                    action {
-                        logViewModel.item = Log(Level.INFO)
-                    }
-                }
-                checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
-                    isSelected = logViewModel.item.level == Level.ALL
-                    action {
-                        logViewModel.item = Log(Level.ALL)
-                    }
-                }
-            }
-            item(messages["menu.help.logs"]).action {
-                app.openUrl(logsFolderPath)
+        }
+        checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
+            isSelected = logViewModel.item.level == Level.ALL
+            action {
+                logViewModel.item = Log(Level.ALL)
             }
         }
     }
+
+    override val menuItems = listOf(
+            item(messages["menu.help.openhomepage"]) {
+                action {
+                    appMenuViewModel.openWebsite()
+                }
+            },
+            separator(),
+            item(messages["menu.help.stats"]) {
+                action {
+                    appMenuViewModel.openStats()
+                }
+            },
+            item(messages["menu.help.clearCache"]) {
+                action {
+                    appMenuViewModel.clearCache()
+                }
+            },
+            logMenu,
+            separator(),
+            item(messages["menu.help.logs"]) {
+                action {
+                    app.openUrl(logsFolderPath)
+                }
+            }
+    )
 }

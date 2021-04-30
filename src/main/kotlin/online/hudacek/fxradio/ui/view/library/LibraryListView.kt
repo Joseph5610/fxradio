@@ -34,7 +34,7 @@ class LibraryListView : BaseView() {
         viewModel
                 .stateObservableChanges()
                 .subscribe {
-                    if (it is LibraryState.IsCountry || it is LibraryState.Search) {
+                    if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
                         root.selectionModel.clearSelection()
                     } else {
                         val selectedListItem = root.items.find { list -> list.type == it }

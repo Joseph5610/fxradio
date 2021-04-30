@@ -31,8 +31,6 @@ class Log(level: Level = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))) 
 }
 
 /**
- * Log view model
- * -------------------
  * Keeps information about current logging level chosen in UI
  * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
  */

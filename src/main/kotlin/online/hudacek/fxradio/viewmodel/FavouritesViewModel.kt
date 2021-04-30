@@ -38,8 +38,6 @@ class Favourites(stations: ObservableList<Station> = observableListOf()) {
 }
 
 /**
- * Favourites view model
- * -------------------
  * Holds information about last favourites stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */

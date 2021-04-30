@@ -28,8 +28,6 @@ import javafx.event.EventTarget
 import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Label
-import javafx.scene.control.Menu
-import javafx.scene.control.MenuItem
 import javafx.scene.control.TextField
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
@@ -39,7 +37,6 @@ import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.api.model.countryCode
 import online.hudacek.fxradio.ui.style.Styles
 import org.controlsfx.control.NotificationPane
@@ -159,18 +156,6 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
             managedWhen(expr())
         }
 
-/**
- * Menu helpers
- */
-internal fun menu(name: String, op: Menu.() -> Unit = {}) = Menu(name).apply {
-    op(this)
-}
-
-internal fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
-    disableWhen(station.booleanBinding {
-        it == null || !it.isValid()
-    })
-}
 
 /**
  * Notification UI helpers
