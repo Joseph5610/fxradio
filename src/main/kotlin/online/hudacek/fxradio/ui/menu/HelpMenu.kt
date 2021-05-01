@@ -16,56 +16,16 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.viewmodel.Log
-import online.hudacek.fxradio.viewmodel.LogViewModel
-import org.apache.logging.log4j.Level
-import tornadofx.*
+import tornadofx.action
+import tornadofx.get
 
 class HelpMenu : BaseMenu("menu.help") {
 
-    private val logViewModel: LogViewModel by inject()
-
-    private var checkLoggerOff: CheckMenuItem by singleAssign()
-    private var checkLoggerInfo: CheckMenuItem by singleAssign()
-    private var checkLoggerAll: CheckMenuItem by singleAssign()
+    private val logMenu: LogMenu by inject()
 
     private val logsFolderPath = "file://${Config.Paths.baseAppPath}"
-
-    init {
-        logViewModel.levelProperty.onChange {
-            checkLoggerOff.isSelected = it == Level.OFF
-            checkLoggerInfo.isSelected = it == Level.INFO
-            checkLoggerAll.isSelected = it == Level.ALL
-            logViewModel.commit()
-        }
-    }
-
-    /**
-     * Sub-menu for setting logger level
-     */
-    private val logMenu = menu(messages["menu.help.loglevel"]) {
-        checkLoggerOff = checkmenuitem(messages["menu.help.loglevel.off"]) {
-            isSelected = logViewModel.item.level == Level.OFF
-            action {
-                logViewModel.item = Log(Level.OFF)
-            }
-        }
-        checkLoggerInfo = checkmenuitem(messages["menu.help.loglevel.info"]) {
-            isSelected = logViewModel.item.level == Level.INFO
-            action {
-                logViewModel.item = Log(Level.INFO)
-            }
-        }
-        checkLoggerAll = checkmenuitem(messages["menu.help.loglevel.debug"]) {
-            isSelected = logViewModel.item.level == Level.ALL
-            action {
-                logViewModel.item = Log(Level.ALL)
-            }
-        }
-    }
 
     override val menuItems = listOf(
             item(messages["menu.help.openhomepage"]) {
@@ -84,7 +44,7 @@ class HelpMenu : BaseMenu("menu.help") {
                     appMenuViewModel.clearCache()
                 }
             },
-            logMenu,
+            logMenu.menu,
             separator(),
             item(messages["menu.help.logs"]) {
                 action {

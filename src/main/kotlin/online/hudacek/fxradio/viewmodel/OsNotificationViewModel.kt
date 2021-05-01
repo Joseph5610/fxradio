@@ -17,12 +17,10 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.macos.MacUtils
 import online.hudacek.fxradio.utils.value
-import tornadofx.ItemViewModel
 import tornadofx.property
 
 //Notifications are currently enabled only on macOS
@@ -33,8 +31,7 @@ class OsNotification(show: Boolean = Properties.SendOsNotifications.value(MacUti
 /**
  * Shows Native OS notifications
  */
-class OsNotificationViewModel : ItemViewModel<OsNotification>(OsNotification()) {
-    private val appEvent: AppEvent by inject()
+class OsNotificationViewModel : BaseViewModel<OsNotification>(OsNotification()) {
 
     val showProperty = bind(OsNotification::show) as BooleanProperty
 

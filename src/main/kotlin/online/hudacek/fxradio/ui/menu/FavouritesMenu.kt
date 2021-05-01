@@ -31,7 +31,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
 
     private val playedStationNotInFavouritesProperty = playerViewModel.stationProperty.booleanBinding {
         //User should be able to add favourite station only when it is not already present
-        it != null && !favouritesViewModel.stationsProperty.contains(it)
+        it != null && it !in favouritesViewModel.stationsProperty
     }
 
     private val favouriteMenuItemVisibleProperty = playerViewModel.stationProperty.booleanBinding {
@@ -88,9 +88,10 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                 }
                 action {
                     confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                        appEvent.cleanupFavourites.onNext(Unit)
+                        favouritesViewModel.cleanupFavourites()
                         appEvent.refreshLibrary.onNext(LibraryState.Favourites)
                     }
                 }
-            }, separator()).apply { addAll(addRemoveFavouriteItems) }
+            },
+            separator()).apply { addAll(addRemoveFavouriteItems) }
 }

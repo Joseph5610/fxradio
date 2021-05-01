@@ -53,6 +53,8 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
         private val streamNowPlayingKey = "StreamTitle"
         private val streamStationName = "icy-name"
 
+        private val appEvent = find<AppEvent>()
+
         override fun call(): KeyValueBag {
             if (streamUrl.isEmpty()) throw IllegalArgumentException("streamUrl should not be empty.")
 
@@ -73,7 +75,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
                     && value.getValue(streamNowPlayingKey) != null) {
                 //Send new MetaData event if stream metadata values are present
                 val mediaMeta = StreamMetaData(value.getValue(streamStationName), value.getValue(streamNowPlayingKey))
-                find<AppEvent>().streamMetaData.onNext(mediaMeta)
+                appEvent.streamMetaData.onNext(mediaMeta)
             }
         }
 

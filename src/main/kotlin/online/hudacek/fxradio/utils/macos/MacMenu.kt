@@ -21,6 +21,7 @@ import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.SeparatorMenuItem
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.menu.separator
 import tornadofx.FX
 
 /**
@@ -45,10 +46,11 @@ object MacMenu {
         if (!isInTest) {
             op(this)
             items.addAll(
+                    separator(),
                     menuToolkit.createHideMenuItem(FxRadio.appName),
                     menuToolkit.createHideOthersMenuItem(),
                     menuToolkit.createUnhideAllMenuItem(),
-                    SeparatorMenuItem(),
+                    separator(),
                     menuToolkit.createQuitMenuItem(FxRadio.appName))
         }
     }

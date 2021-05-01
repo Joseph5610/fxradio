@@ -33,7 +33,7 @@ object Config {
     }
 
     /**
-     * Contains paths to common locations
+     * Paths to common locations
      * All user files should be stored in $USER_HOME/.fxradio/ directory
      */
     object Paths {

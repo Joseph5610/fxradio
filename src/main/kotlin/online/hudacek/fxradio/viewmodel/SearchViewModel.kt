@@ -25,7 +25,6 @@ import online.hudacek.fxradio.usecase.SearchByTagUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.value
-import tornadofx.ItemViewModel
 import tornadofx.property
 import tornadofx.stringBinding
 
@@ -35,7 +34,7 @@ class Search(query: String = Properties.SearchQuery.value(""),
     var searchByTag: Boolean by property(useTagSearch)
 }
 
-class SearchViewModel : ItemViewModel<Search>(Search()) {
+class SearchViewModel : BaseViewModel<Search>(Search()) {
 
     private val searchByTagUseCase: SearchByTagUseCase by inject()
     private val searchByNameUseCase: SearchByNameUseCase by inject()

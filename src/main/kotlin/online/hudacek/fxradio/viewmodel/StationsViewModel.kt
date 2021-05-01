@@ -25,10 +25,7 @@ import online.hudacek.fxradio.usecase.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.GetTopStationsUseCase
 import online.hudacek.fxradio.usecase.VoteUseCase
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.compareTo
-import tornadofx.get
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 
 sealed class StationsState {
     data class Fetched(val stations: List<Station>) : StationsState()
@@ -45,7 +42,7 @@ class Stations(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about currently shown
  * stations inside [online.hudacek.fxradio.ui.view.stations.StationsDataGridView]
  */
-class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), StationsState.NoStations) {
+class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations(), StationsState.NoStations) {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
@@ -107,7 +104,7 @@ class StationsViewModel : BaseViewModel<Stations, StationsState>(Stations(), Sta
             stateProperty.value = StationsState.NoStations
         } else {
             stateProperty.value = StationsState.Fetched(stations)
-            stationsProperty.setAll(stations)
+            item = Stations(stations.asObservable())
         }
     }
 

@@ -82,7 +82,6 @@ dependencies {
     compile "commons-io:commons-io:$versions.commonsio"
 
     compile "com.github.thomasnield:rxkotlinfx:$versions.rxkotlinfx"
-
     compile "org.xerial:sqlite-jdbc:$versions.sqliteJdbc"
     compile "org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc"
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"

@@ -20,9 +20,7 @@ import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.storage.db.Tables
-import tornadofx.ItemViewModel
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -36,8 +34,7 @@ class History(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about last played stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
-class HistoryViewModel : ItemViewModel<History>(History()) {
-    private val appEvent: AppEvent by inject()
+class HistoryViewModel : BaseViewModel<History>(History()) {
 
     val stationsProperty = bind(History::stations) as ListProperty
 
@@ -51,12 +48,13 @@ class HistoryViewModel : ItemViewModel<History>(History()) {
                 .subscribe {
                     stationsProperty.add(it)
                 }
-
-        appEvent.cleanupHistory
-                .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
-                .flatMapSingle { Tables.history.removeAll() }
-                .subscribe {
-                    item = History()
-                }
     }
+
+    fun cleanupHistory() = Tables.history
+            .removeAll()
+            .toObservable()
+            .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
+            .doOnEach { item = History() }
+            .map { LibraryState.History }
+            .subscribe(appEvent.refreshLibrary)
 }

@@ -69,7 +69,7 @@ object ImageCache {
      */
     val Station.isCached: Boolean
         get() = (Files.exists(cacheBasePath.resolve(stationuuid))
-                || invalidStationUuids.contains(stationuuid))
+                || stationuuid in invalidStationUuids)
 
     /**
      * Gets image for [station] from local cache
@@ -101,7 +101,7 @@ object ImageCache {
      * Means that image for given station is invalid / not supported by renderer or URL is invalid
      */
     fun addInvalid(station: Station) {
-        if (!invalidStationUuids.contains(station.stationuuid)) {
+        if (station.stationuuid !in invalidStationUuids) {
             logger.debug { "Image for ${station.name} is added as invalid" }
             invalidStationUuids.add(station.stationuuid)
         }

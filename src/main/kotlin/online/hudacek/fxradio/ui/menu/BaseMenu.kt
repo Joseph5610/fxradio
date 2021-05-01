@@ -37,7 +37,13 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
      * Parent menu object, extending classes defines its items via [menuItems] property
      */
     val menu: Menu by lazy {
-        menu(messages[menuTitle]) {
+        val actualTitle = if (messages.containsKey(menuTitle)) {
+            messages[menuTitle]
+        } else {
+            menuTitle
+        }
+
+        menu(actualTitle) {
             items.addAll(menuItems)
         }
     }

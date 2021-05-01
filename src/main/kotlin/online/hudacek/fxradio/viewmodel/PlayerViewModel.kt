@@ -58,7 +58,7 @@ class Player(station: Station,
 /**
  * Handles station playing logic
  */
-class PlayerViewModel : BaseViewModel<Player, PlayerState>(initialState = PlayerState.Stopped) {
+class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(initialState = PlayerState.Stopped) {
 
     private val clickUseCase: ClickUseCase by inject()
 

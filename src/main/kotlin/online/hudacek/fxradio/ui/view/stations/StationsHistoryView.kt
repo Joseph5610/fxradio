@@ -38,7 +38,6 @@ class StationsHistoryView : BaseView() {
     private val playerViewModel: PlayerViewModel by inject()
 
     override val root = listview(historyViewModel.stationsProperty) {
-
         cellFormat {
             graphic = hbox(10) {
                 alignment = Pos.CENTER_LEFT

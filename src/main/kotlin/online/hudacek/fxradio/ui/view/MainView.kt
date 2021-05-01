@@ -34,7 +34,7 @@ import tornadofx.*
 import tornadofx.controlsfx.content
 
 /**
- * Entry to the app, parent to all other views inside main window
+ * Entry to the app, parent to all other views inside it
  */
 class MainView : BaseView(FxRadio.appName) {
 

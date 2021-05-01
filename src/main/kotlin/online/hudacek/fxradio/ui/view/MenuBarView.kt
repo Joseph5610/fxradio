@@ -16,19 +16,18 @@
 
 package online.hudacek.fxradio.ui.view
 
-import javafx.scene.control.Menu
-import javafx.scene.control.MenuBar
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.*
 import online.hudacek.fxradio.utils.macos.MacMenu
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
-import tornadofx.*
+import tornadofx.get
+import tornadofx.menubar
 
 class MenuBarView : BaseView() {
 
     private val appMenuViewModel: AppMenuViewModel by inject()
 
+    private val aboutMenu: AboutMenu by inject()
     private val historyMenu: HistoryMenu by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val helpMenu: HelpMenu by inject()
@@ -42,14 +41,9 @@ class MenuBarView : BaseView() {
     }
 
     private fun defaultMenuBar() = menubar {
-        menu(FxRadio.appName) {
-            addAppMenuContent()
-            item(messages["menu.app.quit"]).action {
-                currentStage?.close()
-                FxRadio.shutdownApp()
-            }
-        }
-        menus.addAll(stationMenu.menu,
+        menus.addAll(
+                aboutMenu.menu,
+                stationMenu.menu,
                 playerMenu.menu,
                 favouritesMenu.menu,
                 historyMenu.menu,
@@ -60,29 +54,16 @@ class MenuBarView : BaseView() {
      * Platform specific menu bar working on OSX
      * used instead of in-app menubar
      */
-    private fun platformMenuBar(): MenuBar {
-        return MacMenu.menuBar {
-            MacMenu.appMenu {
-                addAppMenuContent()
-            }
-        }.apply {
-            menus.addAll(stationMenu.menu,
-                    playerMenu.menu,
-                    favouritesMenu.menu,
-                    historyMenu.menu,
-                    MacMenu.windowMenu(messages["macos.menu.window"]),
-                    helpMenu.menu)
+    private fun platformMenuBar() = MacMenu.menuBar {
+        MacMenu.appMenu {
+            items.addAll(aboutMenu.aboutMainItems)
         }
-    }
-
-    private fun Menu.addAppMenuContent() {
-        item(messages["menu.app.about"] + " " + FxRadio.appName).action {
-            appMenuViewModel.openAbout()
-        }
-        separator()
-        item(messages["menu.app.server"]).action {
-            appMenuViewModel.openAvailableServer()
-        }
-        separator()
+    }.apply {
+        menus.addAll(stationMenu.menu,
+                playerMenu.menu,
+                favouritesMenu.menu,
+                historyMenu.menu,
+                MacMenu.windowMenu(messages["macos.menu.window"]),
+                helpMenu.menu)
     }
 }

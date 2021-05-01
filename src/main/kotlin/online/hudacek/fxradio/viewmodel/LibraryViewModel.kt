@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
@@ -73,7 +74,7 @@ class Library(countries: ObservableList<Country> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : BaseViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
+class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
 
@@ -85,34 +86,37 @@ class LibraryViewModel : BaseViewModel<Library, LibraryState>(Library(), Library
     val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
-    init {
-        appEvent.pinCountry
-                .filter { !pinnedProperty.contains(it) }
-                .flatMapSingle { Tables.pinnedCountries.insert(it) }
-                .subscribe({
-                    pinnedProperty.add(it)
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["pinned.message"].formatted(it.name),
-                                    FontAwesome.Glyph.CHECK))
-                }, {
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["pinning.error"],
-                                    FontAwesome.Glyph.WARNING))
-                })
+    fun pinCountry(country: Country) {
+        if (country in pinnedProperty) return
+        Tables.pinnedCountries
+                .insert(country)
+                .flatMap { Single.just(pinnedProperty.add(it)) }
+                .flatMap {
+                    Single.just(if (it) {
+                        AppNotification(messages["pinned.message"].formatted(country.name), FontAwesome.Glyph.CHECK)
+                    } else {
+                        AppNotification(messages["pinning.error"], FontAwesome.Glyph.WARNING)
+                    })
+                }
+                .toObservable()
+                .subscribe(appEvent.appNotification)
+    }
 
-        appEvent.unpinCountry
-                .filter { pinnedProperty.contains(it) }
-                .flatMapSingle { Tables.pinnedCountries.remove(it) }
-                .subscribe({
-                    pinnedProperty.remove(it)
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["unpinned.message"].formatted(it.name),
-                                    FontAwesome.Glyph.CHECK))
-                }, {
-                    appEvent.appNotification.onNext(
-                            AppNotification(messages["pinning.error"],
-                                    FontAwesome.Glyph.WARNING))
-                })
+    fun unpinCountry(country: Country) {
+        if (country !in pinnedProperty) return
+
+        Tables.pinnedCountries
+                .remove(country)
+                .flatMap { Single.just(pinnedProperty.remove(it)) }
+                .flatMap {
+                    Single.just(if (it) {
+                        AppNotification(messages["unpinned.message"].formatted(country.name), FontAwesome.Glyph.CHECK)
+                    } else {
+                        AppNotification(messages["pinning.error"], FontAwesome.Glyph.WARNING)
+                    })
+                }
+                .toObservable()
+                .subscribe(appEvent.appNotification)
     }
 
     fun getCountries(): Disposable = getCountriesUseCase.execute(Unit)

@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.events
 
 import io.reactivex.subjects.BehaviorSubject
-import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.media.StreamMetaData
@@ -34,15 +33,8 @@ class AppEvent : Controller() {
 
     val addFavourite = BehaviorSubject.create<Station>()
     val removeFavourite = BehaviorSubject.create<Station>()
-    val cleanupFavourites = BehaviorSubject.create<Unit>()
 
     val addToHistory = BehaviorSubject.create<Station>()
-    val cleanupHistory = BehaviorSubject.create<Unit>()
-
-    val pinCountry = BehaviorSubject.create<Country>()
-    val unpinCountry = BehaviorSubject.create<Country>()
-
     val vote = BehaviorSubject.create<Station>()
-
     val refreshLibrary = BehaviorSubject.create<LibraryState>()
 }

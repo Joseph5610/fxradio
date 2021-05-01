@@ -28,7 +28,7 @@ import kotlin.reflect.full.declaredMemberProperties
 private val logger = KotlinLogging.logger {}
 
 /**
- * Database helper class contains useful methods to write/read from local sqlite.db
+ * Database helper class with useful methods to write/read from local sqlite.db
  */
 abstract class Database(open val tableName: String) {
 

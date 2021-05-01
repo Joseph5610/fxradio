@@ -19,7 +19,6 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.BooleanProperty
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.formatted
@@ -36,9 +35,7 @@ class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuB
     var usePlatform: Boolean by property(usePlatform)
 }
 
-class AppMenuViewModel : ItemViewModel<AppMenu>(AppMenu()) {
-
-    private val appEvent: AppEvent by inject()
+class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
 
     private val clearCacheUseCase: ClearCacheUseCase by inject()
 

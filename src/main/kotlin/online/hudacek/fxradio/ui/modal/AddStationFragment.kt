@@ -112,7 +112,7 @@ class AddStationFragment : BaseFragment() {
                     field(messages["add.country"], messages["add.country.prompt"],
                             viewModel.countryProperty, true, countriesListProperty) { field ->
                         field.validator {
-                            if (countriesListProperty.contains(it))
+                            if (it in countriesListProperty)
                                 success()
                             else
                                 error(messages["field.invalid.country"])

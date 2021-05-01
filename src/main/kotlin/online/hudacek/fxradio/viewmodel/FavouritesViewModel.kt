@@ -17,16 +17,15 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.ItemViewModel
 import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
@@ -41,28 +40,19 @@ class Favourites(stations: ObservableList<Station> = observableListOf()) {
  * Holds information about last favourites stations
  * shows in [online.hudacek.fxradio.ui.view.stations.StationsDataGridView] and in MenuBar
  */
-class FavouritesViewModel : ItemViewModel<Favourites>(Favourites()) {
-    private val appEvent: AppEvent by inject()
+class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
 
     val stationsProperty = bind(Favourites::stations) as ListProperty
 
     init {
         appEvent.addFavourite
-                .filter { it.isValid() && !stationsProperty.contains(it) }
+                .filter { it.isValid() && it !in stationsProperty }
                 .flatMapSingle { Tables.favourites.insert(it) }
                 .flatMapSingle {
                     stationsProperty.add(it)
                     Single.just(AppNotification(messages["menu.station.favouriteAdded"].formatted(it.name),
                             FontAwesome.Glyph.CHECK))
                 }.subscribe(appEvent.appNotification)
-
-
-        appEvent.cleanupFavourites
-                .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
-                .flatMapSingle { Tables.favourites.removeAll() }
-                .subscribe {
-                    item = Favourites()
-                }
 
         appEvent.removeFavourite
                 .flatMapSingle { Tables.favourites.remove(it) }
@@ -72,4 +62,12 @@ class FavouritesViewModel : ItemViewModel<Favourites>(Favourites()) {
                             FontAwesome.Glyph.CHECK))
                 }.subscribe(appEvent.appNotification)
     }
+
+    fun cleanupFavourites(): Disposable = Tables.favourites
+            .removeAll()
+            .subscribe({
+                item = Favourites()
+            }, {
+                logger.error(it) { "Cannot perform DB cleanup!" }
+            })
 }

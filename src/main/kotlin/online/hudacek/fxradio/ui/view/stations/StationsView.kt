@@ -25,7 +25,7 @@ import tornadofx.vbox
 import tornadofx.vgrow
 
 /**
- * Main view displaying grid of stations
+ * Shows grid of stations
  */
 class StationsView : BaseView() {
 

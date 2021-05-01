@@ -30,7 +30,7 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
 /**
- * Player info box - now playing song, radio logo, radio name
+ * Shows now playing song, radio logo, radio name
  */
 class PlayerStationView : BaseView() {
 

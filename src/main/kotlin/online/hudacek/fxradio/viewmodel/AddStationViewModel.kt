@@ -21,9 +21,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.api.model.AddStation
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.AppEvent
 import online.hudacek.fxradio.usecase.AddStationUseCase
-import tornadofx.ItemViewModel
 import tornadofx.property
 import tornadofx.stringBinding
 import java.util.*
@@ -52,9 +50,7 @@ class AddStationModel(name: String = "",
     var uuid: String by property(uuid)
 }
 
-class AddStationViewModel : ItemViewModel<AddStationModel>(AddStationModel()) {
-
-    private val appEvent: AppEvent by inject()
+class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
 
     private val addStationUseCase: AddStationUseCase by inject()
 

@@ -23,7 +23,6 @@ import online.hudacek.fxradio.utils.value
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator
-import tornadofx.ItemViewModel
 import tornadofx.property
 
 class Log(level: Level = Level.valueOf(Properties.LogLevel.value("INFO"))) {
@@ -34,7 +33,7 @@ class Log(level: Level = Level.valueOf(Properties.LogLevel.value("INFO"))) {
  * Keeps information about current logging level chosen in UI
  * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
  */
-class LogViewModel : ItemViewModel<Log>(Log()) {
+class LogViewModel : BaseViewModel<Log>(Log()) {
     val levelProperty = bind(Log::level) as ObjectProperty
 
     override fun onCommit() {

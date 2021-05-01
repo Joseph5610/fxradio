@@ -28,11 +28,11 @@ import tornadofx.observableListOf
 import tornadofx.property
 import tornadofx.success
 
-sealed class ServersState {
-    object Loading : ServersState()
+sealed class ServersState(val key: String = "") {
+    object Loading : ServersState("servers.loading")
     data class Fetched(val servers: ObservableList<String>) : ServersState()
-    object NoServersAvailable : ServersState()
-    data class Error(val cause: String) : ServersState()
+    object NoServersAvailable : ServersState("servers.notAvailable")
+    data class Error(val cause: String) : ServersState("servers.error")
 }
 
 class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
@@ -48,7 +48,7 @@ class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
  * Search for available servers is performed only on first start of the app or when opening
  * [online.hudacek.fxradio.ui.modal.ServersFragment]
  */
-class ServersViewModel : BaseViewModel<Servers, ServersState>(Servers()) {
+class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
 
     private val getServersUseCase: GetServersUseCase by inject()
 

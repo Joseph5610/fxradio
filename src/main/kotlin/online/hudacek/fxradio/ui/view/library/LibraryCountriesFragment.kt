@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
@@ -37,11 +36,13 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
 
     private val viewModel: LibraryViewModel by inject()
 
-    override fun onDock() {
+    init {
         viewModel
                 .stateObservableChanges()
                 .filter { it !is LibraryState.SelectedCountry }
-                .subscribe { root.selectionModel.clearSelection() }
+                .subscribe {
+                    root.selectionModel.clearSelection()
+                }
     }
 
     override val root = listview(countriesProperty) {
@@ -76,9 +77,9 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
                                 !property?.contains(it)!!
                             }
                         }
-                        actionEvents()
-                                .map { _ -> it }
-                                .subscribe(appEvent.pinCountry)
+                        action {
+                            viewModel.pinCountry(it)
+                        }
                     }
 
                     item(messages["unpin"]) {
@@ -87,10 +88,9 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
                                 property?.contains(it)!!
                             }
                         }
-
-                        actionEvents()
-                                .map { _ -> it }
-                                .subscribe(appEvent.unpinCountry)
+                        action {
+                            viewModel.unpinCountry(it)
+                        }
                     }
                 }
             }

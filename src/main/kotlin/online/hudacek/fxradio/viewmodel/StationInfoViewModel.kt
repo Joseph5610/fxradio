@@ -22,7 +22,6 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.api.model.Station
-import tornadofx.ItemViewModel
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -43,7 +42,7 @@ class StationInfo(station: Station) {
     var homePage: String by property(station.homepage)
 }
 
-class StationInfoViewModel : ItemViewModel<StationInfo>() {
+class StationInfoViewModel : BaseViewModel<StationInfo>() {
     val stationProperty = bind(StationInfo::station) as ObjectProperty
     val tagsProperty = bind(StationInfo::tags) as ListProperty<String>
     val homePageProperty = bind(StationInfo::homePage) as StringProperty

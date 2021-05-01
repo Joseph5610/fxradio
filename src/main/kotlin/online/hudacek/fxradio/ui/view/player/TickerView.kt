@@ -154,7 +154,7 @@ class TickerView : BaseView() {
                         //Now I ned to figure out how to remove it
                         entry.content.removeFromParent() //Is this legit?
                         activeTicks.remove(active) //no longer here, shouldn't ruin the loop
-                        if (subscriptions.containsKey(entry)) {
+                        if (entry in subscriptions) {
                             subscriptions.remove(entry)!!.dispose() //This should cancel it
                         }
                         if (entry.reschedule) {
@@ -167,7 +167,7 @@ class TickerView : BaseView() {
 
                         //If there's an observable that we haven't started, fire it up!
                         val updateObservable = entry.updateObservable()
-                        if (updateObservable != null && !subscriptions.containsKey(entry)) {
+                        if (updateObservable != null && entry !in subscriptions) {
                             //Start up the observable that updates the component, whatever it is
                             val disposable = updateObservable.subscribe()
                             subscriptions[entry] = disposable
