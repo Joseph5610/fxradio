@@ -16,17 +16,17 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toBinding
+import com.github.thomasnield.rxkotlinfx.toObservable
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.usecase.SearchByNameUseCase
-import online.hudacek.fxradio.usecase.SearchByTagUseCase
+import online.hudacek.fxradio.usecase.SearchUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.value
 import tornadofx.property
-import tornadofx.stringBinding
 
 class Search(query: String = Properties.SearchQuery.value(""),
              useTagSearch: Boolean = false) {
@@ -36,8 +36,7 @@ class Search(query: String = Properties.SearchQuery.value(""),
 
 class SearchViewModel : BaseViewModel<Search>(Search()) {
 
-    private val searchByTagUseCase: SearchByTagUseCase by inject()
-    private val searchByNameUseCase: SearchByNameUseCase by inject()
+    private val searchUseCase: SearchUseCase by inject()
 
     val searchByTagProperty = bind(Search::searchByTag) as BooleanProperty
 
@@ -45,19 +44,16 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
     val bindQueryProperty = bind(Search::query) as StringProperty
 
     //Search query is limited to 50 chars and trimmed to reduce requests to API
-    val queryProperty = bindQueryProperty.stringBinding {
-        if (it != null) {
-            if (it.length > 50) it.substring(0, 50).trim() else it.trim()
-        } else ""
-    }
-
-    val queryObservable: Observable<String> = queryProperty
+    val queryChanges: Observable<String> = bindQueryProperty
             .toObservableChangesNonNull()
             .map { it.newVal }
+            .map { if (it.length > 50) it.substring(0, 50).trim() else it.trim() }
 
-    fun searchByTag() = searchByTagUseCase.execute(queryProperty)
+    val queryBinding = bindQueryProperty.toObservable()
+            .map { if (it.length > 50) it.substring(0, 50).trim() else it.trim() }
+            .toBinding()
 
-    fun searchByName() = searchByNameUseCase.execute(queryProperty)
+    fun search() = searchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 
     override fun onCommit() = Property(Properties.SearchQuery).save(bindQueryProperty.value)
 }

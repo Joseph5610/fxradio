@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseFragment
@@ -31,30 +32,32 @@ import tornadofx.*
  */
 class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : BaseFragment() {
 
-    private val chevronStyleProperty = showProperty.objectBinding {
-        if (it!!)
-            FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0,
-                    useStyle = false,
-                    color = c(Colors.values.grayLabel))
-        else
-            FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0,
-                    useStyle = false,
-                    color = c(Colors.values.grayLabel))
-    }
-
     override val root = hbox {
         smallLabel(title) {
             paddingLeft = 10.0
         }
         region { hgrow = Priority.ALWAYS }
         smallLabel {
-            graphicProperty().bind(chevronStyleProperty)
             paddingLeft = 10.0
             paddingRight = 10.0
 
             setOnMouseClicked {
                 op()
             }
+
+            showProperty
+                    .toObservable()
+                    .subscribe {
+                        graphicProperty().value =
+                                if (it)
+                                    FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0,
+                                            useStyle = false,
+                                            color = c(Colors.values.grayLabel))
+                                else
+                                    FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0,
+                                            useStyle = false,
+                                            color = c(Colors.values.grayLabel))
+                    }
 
             showWhen {
                 this@hbox.hoverProperty()

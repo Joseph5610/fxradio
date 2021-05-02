@@ -46,14 +46,6 @@ class StationsEmptyView : BaseView() {
         }
     }
 
-    private val headerGraphicProperty = viewModel.stateProperty.objectBinding {
-        when (it) {
-            is StationsState.Error -> errorGlyph
-            is StationsState.ShortQuery -> searchGlyph
-            else -> noResultsGlyph
-        }
-    }
-
     private val subHeaderProperty = viewModel.stateProperty.stringBinding {
         when (it) {
             is StationsState.Error -> it.cause
@@ -81,12 +73,23 @@ class StationsEmptyView : BaseView() {
         }
     }
 
+    private val graphic by lazy {
+        glyph {
+            viewModel.stateObservableChanges()
+                    .subscribe {
+                        graphicProperty().value = when (it) {
+                            is StationsState.Error -> errorGlyph
+                            is StationsState.ShortQuery -> searchGlyph
+                            else -> noResultsGlyph
+                        }
+                    }
+        }
+    }
+
     override val root = vbox(alignment = Pos.CENTER) {
         paddingTop = 120.0
-        glyph {
-            graphicProperty().bind(headerGraphicProperty)
-        }
 
+        add(graphic)
         add(header)
         add(subHeader)
 

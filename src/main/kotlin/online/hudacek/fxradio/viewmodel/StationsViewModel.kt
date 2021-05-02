@@ -25,7 +25,10 @@ import online.hudacek.fxradio.usecase.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.GetTopStationsUseCase
 import online.hudacek.fxradio.usecase.VoteUseCase
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.asObservable
+import tornadofx.get
+import tornadofx.observableListOf
+import tornadofx.property
 
 sealed class StationsState {
     data class Fetched(val stations: List<Station>) : StationsState()
@@ -55,15 +58,6 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     val stationsProperty = bind(Stations::stations) as ListProperty
 
     init {
-        //Refresh search on query change
-        searchViewModel.queryObservable
-                .subscribe {
-                    //It can happen that the current library is not search when the query changes
-                    libraryViewModel.stateProperty.value = LibraryState.Search
-                    searchViewModel.commit()
-                    search() //Perform the search call again
-                }
-
         appEvent.refreshLibrary
                 .filter { it == libraryViewModel.stateProperty.value }
                 .subscribe(::handleNewLibraryState)
@@ -71,6 +65,10 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         libraryViewModel
                 .stateObservableChanges()
                 .subscribe(::handleNewLibraryState)
+
+        searchViewModel
+                .queryChanges
+                .subscribe { search() }
 
         //Increase vote count on the server
         appEvent.vote
@@ -85,26 +83,22 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                 .subscribe(appEvent.appNotification)
     }
 
-    private fun search() {
-        if (searchViewModel.queryProperty.length() <= 2) {
-            stateProperty.value = StationsState.ShortQuery
-        } else {
-            if (searchViewModel.searchByTagProperty.value) {
-                searchViewModel.searchByTag()
-                        .subscribe(::show, ::handleError)
-            } else {
-                searchViewModel.searchByName()
-                        .subscribe(::show, ::handleError)
-            }
-        }
-    }
-
     fun show(stations: List<Station>) {
         if (stations.isNullOrEmpty()) {
             stateProperty.value = StationsState.NoStations
         } else {
             stateProperty.value = StationsState.Fetched(stations)
             item = Stations(stations.asObservable())
+        }
+    }
+
+    fun search() {
+        if (searchViewModel.queryBinding.value.length <= 2) {
+            stateProperty.value = StationsState.ShortQuery
+        } else {
+            searchViewModel
+                    .search()
+                    .subscribe(::show, ::handleError)
         }
     }
 

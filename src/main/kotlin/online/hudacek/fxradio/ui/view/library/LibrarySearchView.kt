@@ -38,9 +38,7 @@ class LibrarySearchView : BaseView() {
     override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = label {
-            graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0)
-        }
+        left = label(graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0))
 
         setOnMouseClicked {
             libraryViewModel.stateProperty.value = LibraryState.Search

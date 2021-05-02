@@ -55,7 +55,7 @@ class StationsHeaderView : BaseView() {
                     addClass(Styles.subheader)
                 }
 
-                label(searchViewModel.queryProperty) {
+                label(searchViewModel.queryBinding) {
                     paddingTop = 8.0
                     paddingBottom = 8.0
                     showWhen {

@@ -17,16 +17,23 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import javafx.beans.binding.StringBinding
 import online.hudacek.fxradio.api.model.SearchBody
+import online.hudacek.fxradio.api.model.SearchByTagBody
 import online.hudacek.fxradio.api.model.Station
 
 /**
- * Searches for all stations in radio-browser API by provided name
+ * Searches for all stations that contains provided tag
+ * if input.first is set to true, search is performed by tag, otherwise by name
  */
-class SearchByNameUseCase : BaseUseCase<StringBinding, Single<List<Station>>>() {
+class SearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Station>>>() {
 
-    override fun execute(input: StringBinding): Single<List<Station>> = apiService
-            .searchStationByName(SearchBody(input.value))
-            .compose(applySchedulers())
+    override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
+        apiService
+                .searchStationByTag(SearchByTagBody(input.second))
+                .compose(applySchedulers())
+    } else {
+        apiService
+                .searchStationByName(SearchBody(input.second))
+                .compose(applySchedulers())
+    }
 }
