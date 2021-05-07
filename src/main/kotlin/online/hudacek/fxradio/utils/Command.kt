@@ -19,16 +19,23 @@ package online.hudacek.fxradio.utils
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+/**
+ * Execute OS command
+ */
+class Command(private val command: String) {
 
-//Command line utilities
-internal fun Runtime.command(command: String) = exec(command)
+    fun exec() = Runtime.getRuntime().exec(command).result
 
-internal val Process.result: String
-    get() {
-        val sb = StringBuilder()
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        reader.forEachLine {
-            sb.append(it)
+    /**
+     * Parse result of command to string
+     */
+    private val Process.result: String
+        get() {
+            val sb = StringBuilder()
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            reader.forEachLine {
+                sb.append(it)
+            }
+            return sb.toString()
         }
-        return sb.toString()
-    }
+}

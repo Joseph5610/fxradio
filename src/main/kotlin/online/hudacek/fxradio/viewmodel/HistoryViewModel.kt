@@ -46,7 +46,7 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
                 .doOnError { logger.error(it) { "Error adding station to history!" } }
                 .flatMapSingle { Tables.history.insert(it) }
                 .subscribe {
-                    stationsProperty.add(it)
+                    stationsProperty += it
                 }
     }
 

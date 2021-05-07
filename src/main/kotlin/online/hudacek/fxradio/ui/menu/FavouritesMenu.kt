@@ -71,7 +71,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
         Tables.favourites
                 .selectAll()
                 .subscribe {
-                    favouritesViewModel.stationsProperty.add(it)
+                    favouritesViewModel.stationsProperty += it
                 }
     }
 

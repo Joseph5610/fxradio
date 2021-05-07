@@ -17,8 +17,7 @@
 package online.hudacek.fxradio.utils.macos
 
 import airsquared.JMacNotification.NSUserNotification
-import online.hudacek.fxradio.utils.command
-import online.hudacek.fxradio.utils.result
+import online.hudacek.fxradio.utils.Command
 import org.controlsfx.tools.Platform
 
 object MacUtils {
@@ -36,8 +35,8 @@ object MacUtils {
             }
 
     val isSystemDarkMode: Boolean
-        get() = Runtime.getRuntime().command("defaults read -g AppleInterfaceStyle").result == "Dark"
+        get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"
 
     val accentColor: String
-        get() = Runtime.getRuntime().command("defaults read -g AppleAccentColor").result
+        get() = Command("defaults read -g AppleAccentColor").exec()
 }

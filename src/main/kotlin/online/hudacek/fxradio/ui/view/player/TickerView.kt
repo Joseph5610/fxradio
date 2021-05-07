@@ -138,8 +138,8 @@ class TickerView : BaseView() {
                         newTickerEntry.content.isVisible = true
                         //Then just put it into the active queue, so it will start processing like normal
                         newTickerEntry.content.layoutX = root.prefWidth //Where to start
-                        activeTicks.add(ActiveTick(newTickerEntry))
-                        root.add(newTickerEntry.content) //this is where it gets added
+                        activeTicks += ActiveTick(newTickerEntry)
+                        root += newTickerEntry.content //this is where it gets added
                     }
                 }
 
@@ -176,7 +176,7 @@ class TickerView : BaseView() {
                 }
             })
 
-            timeline.keyFrames.add(updateFrame)
+            timeline.keyFrames += updateFrame
             timeline.cycleCount = Animation.INDEFINITE
             timeline.play()
         }

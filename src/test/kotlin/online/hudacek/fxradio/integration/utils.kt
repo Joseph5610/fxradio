@@ -37,15 +37,14 @@ import java.util.concurrent.TimeUnit
 /**
  * Wait some time for action to finish
  */
-internal fun waitFor(seconds: Long, op: () -> Boolean = { false }) =
-        try {
-            println("Wait $seconds secs for operation to finish")
-            WaitForAsyncUtils.waitFor(seconds, TimeUnit.SECONDS) {
-                op()
-            }
-        } catch (e: Throwable) {
-            fail<Unit>("waitFor $op didn't finish in $seconds secs.", e)
+internal fun waitFor(seconds: Long, op: () -> Boolean = { false }) {
+    runCatching {
+        println("Wait $seconds secs for operation to finish")
+        WaitForAsyncUtils.waitFor(seconds, TimeUnit.SECONDS) {
+            op()
         }
+    }.onFailure { fail<Unit>("waitFor $op didn't finish in $seconds secs.") }
+}
 
 internal fun sleep(seconds: Long) {
     println("Sleep for $seconds secs")

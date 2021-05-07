@@ -49,7 +49,7 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
                 .filter { it.isValid() && it !in stationsProperty }
                 .flatMapSingle { Tables.favourites.insert(it) }
                 .flatMapSingle {
-                    stationsProperty.add(it)
+                    stationsProperty += it
                     Single.just(AppNotification(messages["menu.station.favouriteAdded"].formatted(it.name),
                             FontAwesome.Glyph.CHECK))
                 }.subscribe(appEvent.appNotification)

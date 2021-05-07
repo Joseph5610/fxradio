@@ -49,7 +49,7 @@ interface StationsApi {
     fun getTopStations(): Single<List<Station>>
 
     @POST("json/add")
-    fun add(@Body addStation: AddStation): Single<AddedStation>
+    fun addStation(@Body stationBody: StationBody): Single<AddedStation>
 
     @POST("json/countries")
     fun getCountries(@Body countriesBody: CountriesBody): Single<List<Country>>

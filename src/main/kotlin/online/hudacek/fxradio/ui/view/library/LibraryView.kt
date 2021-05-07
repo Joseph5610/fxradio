@@ -35,7 +35,7 @@ class LibraryView : BaseView() {
         Tables.pinnedCountries
                 .selectAll()
                 .subscribe {
-                    viewModel.pinnedProperty.add(it)
+                    viewModel.pinnedProperty += it
                 }
 
         viewModel.getCountries()

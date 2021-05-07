@@ -1,4 +1,3 @@
-
 /*
  *  Copyright 2020 FXRadio by hudacek.online
  *
@@ -29,7 +28,7 @@ object MediaPlayerFactory {
      * Create MediaPlayer from String [playerType] identifier
      */
     fun create(playerType: String): MediaPlayer {
-        logger.info { "MediaPlayer $playerType initializing" }
+        logger.debug { "MediaPlayer $playerType initializing" }
         return when (playerType.asPlayerType()) {
             MediaPlayer.Type.VLC -> tryLoadVLCPlayer()
             MediaPlayer.Type.Humble -> HumblePlayerImpl()
@@ -40,7 +39,7 @@ object MediaPlayerFactory {
      * Create opposite playerType than provided in [playerType] var
      */
     fun toggle(playerType: MediaPlayer.Type): MediaPlayer {
-        logger.info { "MediaPlayer $playerType toggling" }
+        logger.debug { "MediaPlayer $playerType toggling" }
         return when (playerType) {
             MediaPlayer.Type.Humble -> tryLoadVLCPlayer()
             MediaPlayer.Type.VLC -> HumblePlayerImpl()
@@ -61,10 +60,9 @@ object MediaPlayerFactory {
     /**
      * Helper for loading of playerType from app.properties file
      */
-    private fun String.asPlayerType() = try {
+    private fun String.asPlayerType() = runCatching {
         MediaPlayer.Type.valueOf(this)
-    } catch (e: IllegalArgumentException) {
-        logger.error(e) { "This playerType is invalid. Using Humble MediaPlayer as fallback" }
-        MediaPlayer.Type.Humble
-    }
+    }.onFailure {
+        logger.error(it) { "This playerType is invalid. Using Humble MediaPlayer as fallback" }
+    }.getOrDefault(MediaPlayer.Type.Humble)
 }

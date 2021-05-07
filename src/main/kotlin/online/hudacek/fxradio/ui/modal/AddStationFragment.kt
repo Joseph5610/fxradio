@@ -130,9 +130,8 @@ class AddStationFragment : BaseFragment() {
                         isDefaultButton = true
 
                         actionEvents()
-                                .flatMapSingle {
-                                    viewModel.addStation()
-                                }.subscribe {
+                                .flatMapSingle { viewModel.addStation() }
+                                .subscribe {
                                     if (it.ok) {
                                         //Save UUID of new station
                                         viewModel.uuidProperty.value = it.uuid

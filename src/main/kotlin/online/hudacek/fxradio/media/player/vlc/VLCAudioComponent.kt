@@ -35,13 +35,7 @@ class VLCAudioComponent {
 
     private lateinit var nativeLog: NativeLog
 
-    val player: AudioPlayerComponent? by lazy {
-        try {
-            AudioPlayerComponent()
-        } catch (e: UnsatisfiedLinkError) {
-            null
-        }
-    }
+    val player: AudioPlayerComponent? by lazy { runCatching { AudioPlayerComponent() }.getOrNull() }
 
     init {
         if (player == null) {
@@ -75,15 +69,13 @@ class VLCAudioComponent {
     fun stop() {
         // Its not allowed to call back into LibVLC from an event handling thread,
         // so submit() is used
-        try {
+        runCatching {
             player?.let {
                 it.mediaPlayer().submit {
                     it.mediaPlayer().controls().stop()
                 }
             }
-        } catch (e: Exception) {
-            logger.debug { "Can't stop stream" }
-        }
+        }.onFailure { logger.debug { "Can't stop stream" } }
     }
 
     fun release() {

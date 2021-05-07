@@ -18,18 +18,18 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.model.AddStation
 import online.hudacek.fxradio.api.model.AddedStation
+import online.hudacek.fxradio.api.model.StationBody
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * Adds new station to radio-browser API
  */
-class AddStationUseCase : BaseUseCase<AddStation, Single<AddedStation>>() {
+class AddStationUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
 
-    override fun execute(input: AddStation): Single<AddedStation> = apiService
-            .add(input)
+    override fun execute(input: StationBody): Single<AddedStation> = apiService
+            .addStation(input)
             .compose(applySchedulers())
             .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, "0")) }
             .doOnError { logger.error { "Error while adding station: ${it.message} " } }

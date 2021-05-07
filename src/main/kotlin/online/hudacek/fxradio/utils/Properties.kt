@@ -53,13 +53,7 @@ class Property(property: Properties) : Component() {
     val key = property.key
 
     val isPresent: Boolean
-        get() {
-            return try {
-                app.config.keys.any { it == key }
-            } catch (e: Exception) {
-                false
-            }
-        }
+        get() = runCatching { app.config.keys.any { it == key } }.getOrDefault(false)
 
     inline fun <reified T> get(): T {
         return when (T::class) {

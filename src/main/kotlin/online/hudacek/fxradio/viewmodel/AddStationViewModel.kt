@@ -19,8 +19,8 @@ package online.hudacek.fxradio.viewmodel
 import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.api.model.AddStation
 import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.model.StationBody
 import online.hudacek.fxradio.usecase.AddStationUseCase
 import tornadofx.property
 import tornadofx.stringBinding
@@ -70,7 +70,7 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
         Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     }
 
-    fun addStation() = addStationUseCase.execute(AddStation(
+    fun addStation() = addStationUseCase.execute(StationBody(
             nameProperty.value,
             urlProperty.value,
             homePageProperty.value,

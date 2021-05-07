@@ -35,7 +35,7 @@ class HistoryMenu : BaseMenu("menu.history") {
         Tables.history
                 .selectAll()
                 .subscribe {
-                    historyViewModel.stationsProperty.add(it)
+                    historyViewModel.stationsProperty += it
                 }
     }
 
