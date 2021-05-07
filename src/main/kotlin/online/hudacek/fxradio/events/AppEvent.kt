@@ -29,12 +29,12 @@ import tornadofx.Controller
 class AppEvent : Controller() {
 
     val appNotification = BehaviorSubject.create<AppNotification>()
-    val streamMetaData = BehaviorSubject.create<StreamMetaData>()
+    val streamMetaDataUpdated = BehaviorSubject.create<StreamMetaData>()
 
     val addFavourite = BehaviorSubject.create<Station>()
     val removeFavourite = BehaviorSubject.create<Station>()
 
     val addToHistory = BehaviorSubject.create<Station>()
-    val vote = BehaviorSubject.create<Station>()
+    val addVote = BehaviorSubject.create<Station>()
     val refreshLibrary = BehaviorSubject.create<LibraryState>()
 }

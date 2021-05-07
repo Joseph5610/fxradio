@@ -22,7 +22,7 @@ import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.usecase.GetServersUseCase
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.utils.save
 import tornadofx.fail
 import tornadofx.observableListOf
 import tornadofx.property
@@ -78,5 +78,5 @@ class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
     }
 
     //Save selected server to app.properties on commit
-    override fun onCommit() = Property(Properties.ApiServer).save(selectedProperty.value)
+    override fun onCommit() = Properties.ApiServer.save(selectedProperty.value)
 }

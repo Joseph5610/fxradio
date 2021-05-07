@@ -102,7 +102,7 @@ object ImageCache {
      */
     fun addInvalid(station: Station) {
         if (station.stationuuid !in invalidStationUuids) {
-            logger.debug { "Image for ${station.name} is added as invalid" }
+            logger.trace { "Image for ${station.name} is added as invalid" }
             invalidStationUuids += station.stationuuid
         }
     }

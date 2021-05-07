@@ -79,7 +79,7 @@ class StationsDataGridView : BaseView() {
                     item(messages["menu.station.vote"]) {
                         actionEvents()
                                 .map { station }
-                                .subscribe(appEvent.vote)
+                                .subscribe(appEvent.addVote)
                     }
 
                     if (Config.Flags.enableStationDebug) {

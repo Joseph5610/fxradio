@@ -88,7 +88,7 @@ class VLCEvents : Controller() {
                             it[Meta.NOW_PLAYING]
                                     .replace("\r", "")
                                     .replace("\n", ""))
-                    appEvent.streamMetaData.onNext(metaData)
+                    appEvent.streamMetaDataUpdated.onNext(metaData)
                 }
             }
         }

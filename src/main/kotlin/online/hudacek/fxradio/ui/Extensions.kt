@@ -199,10 +199,4 @@ internal fun EventTarget.field(message: String, prompt: String,
         })
 
 internal val Country.flagIcon: FlagIcon?
-    get() {
-        return try {
-            countryCode?.let { FlagIcon(it) }
-        } catch (e: IllegalArgumentException) {
-            null
-        }
-    }
+    get() = runCatching { countryCode?.let { FlagIcon(it) } }.getOrNull()

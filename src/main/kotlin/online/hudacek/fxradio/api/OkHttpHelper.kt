@@ -43,16 +43,17 @@ open class OkHttpHelper {
     /**
      * Enables Logging of http requests in app logger on debug level
      */
-    private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }
+    private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.trace { message } }
+            .apply {
+                //Set logging level for HTTP requests to full request and response
+                //Http requests are logged only on trace app logger level
+                level = HttpLoggingInterceptor.Level.BODY
+            }
 
     /**
      * Construct http client with custom user agent, connection pool and timeouts
      */
     protected val httpClient: OkHttpClient by lazy {
-        //Set logging level for HTTP requests to full request and response
-        //Http requests are logged only on debug app logger level
-        loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
-
         OkHttpClient.Builder()
                 //The whole call should not take longer than 20 secs
                 .callTimeout(20, TimeUnit.SECONDS)

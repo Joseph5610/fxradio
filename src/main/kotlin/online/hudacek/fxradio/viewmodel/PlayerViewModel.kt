@@ -93,7 +93,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(initialState = P
         /**
          * Emitted when new song starts playing or other metadata of stream changes
          */
-        appEvent.streamMetaData
+        appEvent.streamMetaDataUpdated
                 .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
                 .filter { it.nowPlaying.length > 1 }
                 .observeOnFx()

@@ -114,3 +114,8 @@ fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
  * Helper method. Get value of property. If the value is not stored, returns [defaultValue]
  */
 inline fun <reified T> Properties.value(defaultValue: T) = Property(this).get(defaultValue)
+
+/**
+ * Save new value for given property key
+ */
+fun <T> Properties.save(newValue: T) = Property(this).save(newValue)

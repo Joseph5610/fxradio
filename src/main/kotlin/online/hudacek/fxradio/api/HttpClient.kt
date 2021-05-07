@@ -53,7 +53,8 @@ object HttpClient : OkHttpHelper() {
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-                    logger.error(e) { "Request to $url failed." }
+                    logger.error { "Request to $url failed." }
+                    logger.trace(e) { "Request to $url failed." }
                     fail(e)
                 }
             }

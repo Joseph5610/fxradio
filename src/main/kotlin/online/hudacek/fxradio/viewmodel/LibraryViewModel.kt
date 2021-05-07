@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.viewmodel
 
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
@@ -119,10 +118,7 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
                 .subscribe(appEvent.appNotification)
     }
 
-    fun getCountries(): Disposable = getCountriesUseCase.execute(Unit)
-            .subscribe({
-                countriesProperty.setAll(it)
-            }, {})
+    fun getCountries() = getCountriesUseCase.execute(countriesProperty)
 
     override fun onCommit() {
         saveProperties(mapOf(

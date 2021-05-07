@@ -96,7 +96,7 @@ class StationInfoFragment(station: Station? = null) : BaseFragment() {
 
                     actionEvents()
                             .map { viewModel.stationProperty.value }
-                            .subscribe(appEvent.vote)
+                            .subscribe(appEvent.addVote)
 
                     addClass(Styles.primaryTextColor)
                 }

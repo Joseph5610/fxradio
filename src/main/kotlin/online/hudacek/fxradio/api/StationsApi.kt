@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.api
 
 import io.reactivex.Single
-import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.*
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
@@ -28,8 +27,6 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import tornadofx.Component
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * Provides HTTP endpoints for radio-browser.info API
@@ -58,7 +55,7 @@ interface StationsApi {
     fun getStats(): Single<StatsResult>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Single<VoteResult>
+    fun addVote(@Path("uuid") uuid: String): Single<VoteResult>
 
     @GET("json/url/{uuid}")
     fun click(@Path("uuid") uuid: String): Single<ClickResult>
@@ -71,7 +68,6 @@ interface StationsApi {
 
         val client: ApiClient by lazy {
             if (apiServerProperty.isPresent) {
-                logger.debug { "Setting model from saved state" }
                 viewModel.item = Servers(apiServerProperty.get())
             }
             ApiClient("https://${viewModel.selectedProperty.value}")

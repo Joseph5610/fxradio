@@ -24,7 +24,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.usecase.SearchUseCase
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.utils.save
 import online.hudacek.fxradio.utils.value
 import tornadofx.property
 
@@ -55,5 +55,5 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
 
     fun search() = searchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 
-    override fun onCommit() = Property(Properties.SearchQuery).save(bindQueryProperty.value)
+    override fun onCommit() = Properties.SearchQuery.save(bindQueryProperty.value)
 }

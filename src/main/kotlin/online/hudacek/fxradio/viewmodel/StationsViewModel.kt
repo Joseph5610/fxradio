@@ -71,7 +71,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                 .subscribe { search() }
 
         //Increase vote count on the server
-        appEvent.vote
+        appEvent.addVote
                 .flatMapSingle(voteUseCase::execute)
                 .flatMapSingle {
                     Single.just(if (it.ok) {

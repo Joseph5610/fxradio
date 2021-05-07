@@ -16,7 +16,8 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.Single
+import io.reactivex.disposables.Disposable
+import javafx.beans.property.ListProperty
 import online.hudacek.fxradio.api.model.CountriesBody
 import online.hudacek.fxradio.api.model.Country
 import online.hudacek.fxradio.api.model.isValid
@@ -24,10 +25,14 @@ import online.hudacek.fxradio.api.model.isValid
 /**
  * Gets list of valid country names and count of stations in it
  */
-class GetCountriesUseCase : BaseUseCase<Unit, Single<List<Country>>>() {
+class GetCountriesUseCase : BaseUseCase<ListProperty<Country>, Disposable>() {
 
-    override fun execute(input: Unit): Single<List<Country>> = apiService
+    override fun execute(input: ListProperty<Country>): Disposable = apiService
             .getCountries(CountriesBody())
             .compose(applySchedulers())
-            .map { list -> list.filter { it.isValid } }
+            .flattenAsObservable { it }
+            .filter { it.isValid }
+            .subscribe {
+                input.add(it)
+            }
 }

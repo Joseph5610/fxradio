@@ -59,10 +59,12 @@ class MainView : BaseView(FxRadio.appName) {
         with(leftPane) {
             //Workaround for setting correct position of divider after restart of app
             setDividerPositions(windowDividerProperty.get(0.30))
-            dividers[0].positionProperty().onChange {
-                windowDividerProperty.save(it)
-            }
         }
+    }
+
+    override fun onUndock() {
+        //Save divider position before closing the app
+        windowDividerProperty.save(leftPane.dividers[0].position)
     }
 
     //Right pane of the app (Player + Stations)

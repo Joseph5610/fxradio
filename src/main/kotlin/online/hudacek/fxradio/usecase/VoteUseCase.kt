@@ -26,7 +26,7 @@ import online.hudacek.fxradio.api.model.VoteResult
 class VoteUseCase : BaseUseCase<Station, Single<VoteResult>>() {
 
     override fun execute(input: Station): Single<VoteResult> = apiService
-            .vote(input.stationuuid)
+            .addVote(input.stationuuid)
             .compose(applySchedulers())
             .onErrorResumeNext { Single.just(VoteResult(false, it.localizedMessage)) }
 }

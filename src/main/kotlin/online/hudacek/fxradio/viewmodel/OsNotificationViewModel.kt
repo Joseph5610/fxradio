@@ -18,8 +18,8 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.utils.save
 import online.hudacek.fxradio.utils.value
 import tornadofx.property
 
@@ -36,12 +36,12 @@ class OsNotificationViewModel : BaseViewModel<OsNotification>(OsNotification()) 
     val showProperty = bind(OsNotification::show) as BooleanProperty
 
     init {
-        appEvent.streamMetaData
+        appEvent.streamMetaDataUpdated
                 .filter { showProperty.value && MacUtils.isMac }
                 .subscribe {
                     MacUtils.notification(it.nowPlaying, it.stationName)
                 }
     }
 
-    override fun onCommit() = Property(Properties.SendOsNotifications).save(showProperty.value)
+    override fun onCommit() = Properties.SendOsNotifications.save(showProperty.value)
 }
