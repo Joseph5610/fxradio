@@ -132,6 +132,7 @@ jfx {
     nativeOutputDir = "build/jfx/native"
     nativeReleaseVersion = version
     needShortcut = true
+    bundler = "ALL"
 
     additionalAppResources = 'src/main/deploy/additional'
     bundleArguments = [
