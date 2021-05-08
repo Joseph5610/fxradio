@@ -24,15 +24,13 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Setup java 
-        uses: actions/setup-java@v2
-         with:
+      - name: Build 
+      - uses: actions/setup-java@v2
+        with:
           distribution: 'zulu'
-          java-version: '8'
-          java-package: jdk+fx # optional (jdk, jre, jdk+fx or jre+fx) - defaults to jdk
-      # Runs a single command using the runners shell
-      - name: Build
-        run: ./gradlew jfxNative
+          java-version: '11'
+          java-package: jdk # optional (jdk, jre, jdk+fx or jre+fx) - defaults to jdk
+      - run: ./gradlew jfxNative
       - name: Prepare release files
         run: |
          ls -all build/jfx/*
