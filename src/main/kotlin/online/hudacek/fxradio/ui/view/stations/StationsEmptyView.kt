@@ -75,7 +75,7 @@ class StationsEmptyView : BaseView() {
 
     private val graphic by lazy {
         glyph {
-            viewModel.stateObservableChanges()
+            viewModel.stateObservableChanges
                     .subscribe {
                         graphicProperty().value = when (it) {
                             is StationsState.Error -> errorGlyph

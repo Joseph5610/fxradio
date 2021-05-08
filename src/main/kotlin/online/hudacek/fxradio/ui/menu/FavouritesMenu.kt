@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -66,14 +65,6 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                         }
                     }
             )
-
-    init {
-        Tables.favourites
-                .selectAll()
-                .subscribe {
-                    favouritesViewModel.stationsProperty += it
-                }
-    }
 
     override val menuItems = mutableListOf(
             item(messages["menu.favourites.show"]) {

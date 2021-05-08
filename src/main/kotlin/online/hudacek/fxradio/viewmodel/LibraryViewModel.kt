@@ -16,22 +16,23 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.events.data.AppNotification
-import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.usecase.GetCountriesUseCase
+import online.hudacek.fxradio.usecase.PinCountryUseCase
+import online.hudacek.fxradio.usecase.UnPinCountryUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.saveProperties
 import online.hudacek.fxradio.utils.value
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
+
+private val logger = KotlinLogging.logger {}
 
 sealed class LibraryState(val key: String) {
     object Favourites : LibraryState("favourites")
@@ -76,6 +77,8 @@ class Library(countries: ObservableList<Country> = observableListOf(),
 class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
+    private val pinCountryUseCase: PinCountryUseCase by inject()
+    private val unPinCountryUseCase: UnPinCountryUseCase by inject()
 
     val countriesProperty = bind(Library::countries) as ListProperty
     val librariesProperty = bind(Library::libraries) as ListProperty
@@ -85,38 +88,19 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
-    fun pinCountry(country: Country) {
-        if (country in pinnedProperty) return
-        Tables.pinnedCountries
-                .insert(country)
-                .flatMap { Single.just(pinnedProperty.add(it)) }
-                .flatMap {
-                    Single.just(if (it) {
-                        AppNotification(messages["pinned.message"].formatted(country.name), FontAwesome.Glyph.CHECK)
-                    } else {
-                        AppNotification(messages["pinning.error"], FontAwesome.Glyph.WARNING)
-                    })
-                }
-                .toObservable()
-                .subscribe(appEvent.appNotification)
-    }
+    fun pinCountry(country: Country): Disposable = pinCountryUseCase.execute(country)
+            .subscribe({
+                pinnedProperty.add(it)
+            }, {
+                logger.error(it) { "Pinning error" }
+            })
 
-    fun unpinCountry(country: Country) {
-        if (country !in pinnedProperty) return
-
-        Tables.pinnedCountries
-                .remove(country)
-                .flatMap { Single.just(pinnedProperty.remove(it)) }
-                .flatMap {
-                    Single.just(if (it) {
-                        AppNotification(messages["unpinned.message"].formatted(country.name), FontAwesome.Glyph.CHECK)
-                    } else {
-                        AppNotification(messages["pinning.error"], FontAwesome.Glyph.WARNING)
-                    })
-                }
-                .toObservable()
-                .subscribe(appEvent.appNotification)
-    }
+    fun unpinCountry(country: Country): Disposable = unPinCountryUseCase.execute(country)
+            .subscribe({
+                pinnedProperty.remove(it)
+            }, {
+                logger.error(it) { "Unpinning error" }
+            })
 
     fun getCountries() = getCountriesUseCase.execute(countriesProperty)
 

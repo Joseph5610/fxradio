@@ -17,19 +17,13 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
-import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.events.data.AppNotification
-import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.ui.modal.*
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.usecase.ClearCacheUseCase
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.macos.MacUtils
 import online.hudacek.fxradio.utils.value
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.property
 
 class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuBar.value(true)) {
     var usePlatform: Boolean by property(usePlatform)
@@ -41,33 +35,7 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
 
     val usePlatformProperty = bind(AppMenu::usePlatform) as BooleanProperty
 
-    //Station menu links
-    fun openStationInfo() = find<StationInfoFragment>().openModal(stageStyle = StageStyle.UTILITY)
-
-    fun openAddNewStation() = find<AddStationFragment>().openModal(stageStyle = StageStyle.UTILITY)
-
-    //About menu links
-    fun openAbout() = find<AboutFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
-
-    fun openAvailableServer() = find<ServersFragment>().openModal(stageStyle = StageStyle.UTILITY, resizable = false)
-
-    //Help menu links
-    fun openStats() = find<StatsFragment>().openModal(stageStyle = StageStyle.UTILITY)
-
-    fun clearCache() = if (ImageCache.totalSize < 1) {
-        appEvent.appNotification.onNext(AppNotification(messages["cache.clear.empty"], FontAwesome.Glyph.CHECK))
-    } else {
-        confirm(messages["cache.clear.confirm"],
-                messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
-            clearCacheUseCase.execute(Unit) success {
-                appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
-            } fail {
-                appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
-            }
-        }
-    }
+    fun clearCache() = clearCacheUseCase.execute(Unit)
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

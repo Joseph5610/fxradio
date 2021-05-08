@@ -18,6 +18,8 @@ package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.modal.Modals
+import online.hudacek.fxradio.ui.modal.open
 import tornadofx.FX
 import tornadofx.action
 import tornadofx.get
@@ -28,13 +30,13 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
         get() = listOf(
                 item(messages["menu.app.about"] + " " + FxRadio.appName) {
                     action {
-                        appMenuViewModel.openAbout()
+                        Modals.About.open()
                     }
                 },
                 separator(),
                 item(messages["menu.app.server"]) {
                     action {
-                        appMenuViewModel.openAvailableServer()
+                        Modals.Servers.open()
                     }
                 }
         )

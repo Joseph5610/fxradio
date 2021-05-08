@@ -18,7 +18,6 @@ package online.hudacek.fxradio.ui.modal
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import javafx.stage.StageStyle
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
@@ -48,7 +47,7 @@ class AttributionsFragment : BaseFragment() {
                 readonlyColumn(messages["attributions.version"], Attribution::version)
 
                 onUserSelect {
-                    find<LicenseFragment>().openModal(stageStyle = StageStyle.UTILITY)
+                    Modals.License.open()
                 }
             }
         }

@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.ui.modal
 
 import javafx.geometry.Pos
-import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
@@ -64,7 +63,7 @@ class AboutFragment : BaseFragment(FxRadio.appDesc) {
             right {
                 hyperlink(messages["menu.app.attributions"]) {
                     action {
-                        find<AttributionsFragment>().openModal(stageStyle = StageStyle.UTILITY)
+                        Modals.Attributions.open()
                     }
                 }
             }

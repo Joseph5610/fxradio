@@ -45,6 +45,12 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
     val stationsProperty = bind(Favourites::stations) as ListProperty
 
     init {
+        Tables.favourites
+                .selectAll()
+                .subscribe {
+                    stationsProperty += it
+                }
+
         appEvent.addFavourite
                 .filter { it.isValid() && it !in stationsProperty }
                 .flatMapSingle { Tables.favourites.insert(it) }

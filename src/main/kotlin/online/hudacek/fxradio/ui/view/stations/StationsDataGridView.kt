@@ -27,8 +27,9 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
-import online.hudacek.fxradio.ui.modal.StationDebugFragment
+import online.hudacek.fxradio.ui.modal.Modals
 import online.hudacek.fxradio.ui.modal.StationInfoFragment
+import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
@@ -85,7 +86,7 @@ class StationsDataGridView : BaseView() {
                     if (Config.Flags.enableStationDebug) {
                         separator()
                         item("Station Debug Info").action {
-                            find<StationDebugFragment>().openModal(stageStyle = StageStyle.UTILITY)
+                            Modals.StationDebug.open()
                         }
                     }
                 }

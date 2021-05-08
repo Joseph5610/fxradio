@@ -16,15 +16,35 @@
 
 package online.hudacek.fxradio.usecase
 
-import javafx.concurrent.Task
+import online.hudacek.fxradio.events.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
+import online.hudacek.fxradio.ui.formatted
+import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.confirm
+import tornadofx.fail
+import tornadofx.get
+import tornadofx.success
 
 /**
  * Clears FxRadio image cache directory
  */
-class ClearCacheUseCase : BaseUseCase<Unit, Task<Unit>>() {
+class ClearCacheUseCase : BaseUseCase<Unit, Unit>() {
 
-    override fun execute(input: Unit): Task<Unit> = runAsync(daemon = true) {
-        ImageCache.clear()
-    }
+    override fun execute(input: Unit) =
+            if (ImageCache.totalSize < 1) {
+                appEvent.appNotification.onNext(AppNotification(messages["cache.clear.empty"], FontAwesome.Glyph.CHECK))
+            } else {
+                confirm(messages["cache.clear.confirm"],
+                        messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
+                    runAsync(daemon = true) {
+                        ImageCache.clear()
+                    } success {
+                        appEvent.appNotification.onNext(
+                                AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+                    } fail {
+                        appEvent.appNotification.onNext(
+                                AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
+                    }
+                }
+            }
 }

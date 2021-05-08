@@ -16,6 +16,8 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import online.hudacek.fxradio.ui.modal.Modals
+import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.action
@@ -29,7 +31,7 @@ class StationMenu : BaseMenu("menu.station") {
             item(messages["menu.station.info"], KeyCodes.info) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {
-                    appMenuViewModel.openStationInfo()
+                    Modals.StationInfo.open()
                 }
             },
             item(messages["copy.stream.url"]) {
@@ -41,7 +43,7 @@ class StationMenu : BaseMenu("menu.station") {
             separator(),
             item(messages["menu.station.add"], KeyCodes.add) {
                 action {
-                    appMenuViewModel.openAddNewStation()
+                    Modals.AddNewStation.open()
                 }
             }
     )

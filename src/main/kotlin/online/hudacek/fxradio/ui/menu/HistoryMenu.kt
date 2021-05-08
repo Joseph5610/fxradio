@@ -16,7 +16,6 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
@@ -30,14 +29,6 @@ class HistoryMenu : BaseMenu("menu.history") {
     private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
-
-    init {
-        Tables.history
-                .selectAll()
-                .subscribe {
-                    historyViewModel.stationsProperty += it
-                }
-    }
 
     override val menuItems = listOf(
             item(messages["menu.history.show"], KeyCodes.history) {

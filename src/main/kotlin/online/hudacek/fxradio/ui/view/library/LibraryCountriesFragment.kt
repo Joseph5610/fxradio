@@ -38,7 +38,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
 
     init {
         viewModel
-                .stateObservableChanges()
+                .stateObservableChanges
                 .filter { it !is LibraryState.SelectedCountry }
                 .subscribe {
                     root.selectionModel.clearSelection()

@@ -39,6 +39,12 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
     val stationsProperty = bind(History::stations) as ListProperty
 
     init {
+        Tables.history
+                .selectAll()
+                .subscribe {
+                    stationsProperty += it
+                }
+
         //Add currently listened station to history
         appEvent.addToHistory
                 //Add only valid stations not already present in history

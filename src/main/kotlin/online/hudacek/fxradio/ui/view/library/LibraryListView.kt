@@ -32,7 +32,7 @@ class LibraryListView : BaseView() {
     override fun onDock() {
         //React to changes of library not from by clicking on list item
         viewModel
-                .stateObservableChanges()
+                .stateObservableChanges
                 .subscribe {
                     if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
                         root.selectionModel.clearSelection()

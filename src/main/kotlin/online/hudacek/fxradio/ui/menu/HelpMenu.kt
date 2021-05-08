@@ -17,6 +17,8 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.ui.modal.Modals
+import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.openUrl
 import tornadofx.action
 import tornadofx.get
@@ -36,7 +38,7 @@ class HelpMenu : BaseMenu("menu.help") {
             separator(),
             item(messages["menu.help.stats"]) {
                 action {
-                    appMenuViewModel.openStats()
+                    Modals.Stats.open()
                 }
             },
             item(messages["menu.help.clearCache"]) {

@@ -29,7 +29,7 @@ import tornadofx.property
 import tornadofx.success
 
 sealed class ServersState(val key: String = "") {
-    object Loading : ServersState("servers.loading")
+    object Loading : ServersState("loading")
     data class Fetched(val servers: ObservableList<String>) : ServersState()
     object NoServersAvailable : ServersState("servers.notAvailable")
     data class Error(val cause: String) : ServersState("servers.error")

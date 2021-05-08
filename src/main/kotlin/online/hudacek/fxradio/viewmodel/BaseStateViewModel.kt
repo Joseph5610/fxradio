@@ -29,31 +29,19 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item? = 
 
     val stateProperty = objectProperty(initialState)
 
-    init {
-        stateObservableChanges()
-                .subscribe({
-                    onNewState(it)
-                }, {
-                    onNewStateError(it)
-                })
-    }
-
-    fun stateObservableChanges(): Observable<State> = stateProperty
+    val stateObservableChanges: Observable<State> = stateProperty
             .toObservableChangesNonNull()
             .filter { it.newVal != null }
             .map { it.newVal }
+
+    init {
+        stateObservableChanges.subscribe(::onNewState)
+    }
 
     /**
      * Called on every new state
      */
     protected open fun onNewState(newState: State) {
         logger.debug { "StateChange: $newState" }
-    }
-
-    /**
-     * Called on state change error
-     */
-    protected open fun onNewStateError(error: Throwable) {
-        logger.debug { "Error ${error.localizedMessage} when changing state" }
     }
 }

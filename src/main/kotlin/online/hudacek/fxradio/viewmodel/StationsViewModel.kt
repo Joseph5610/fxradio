@@ -63,7 +63,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                 .subscribe(::handleNewLibraryState)
 
         libraryViewModel
-                .stateObservableChanges()
+                .stateObservableChanges
                 .subscribe(::handleNewLibraryState)
 
         searchViewModel
