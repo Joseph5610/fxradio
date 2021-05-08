@@ -32,6 +32,7 @@ jobs:
       - name: Prepare release files
         run: |
          ls -all build/*
+         zip -r releaseJar.zip build/jfx/app
       - name: Create Release
         id: create_release
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -41,6 +42,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            build/jfx/*.jar
-            build/jfx/*.app
-
+            releaseJar.zip
