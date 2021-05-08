@@ -16,23 +16,19 @@
 
 package online.hudacek.fxradio.api
 
-import mu.KotlinLogging
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.reflect.KClass
 
 /**
- * Api Client
- * ---------------------
- * Helper to construct Retrofit instance with custom HTTP client with
- * enabled logging and custom User-Agent string
+ * ApiClient for [baseUrl] that can create instance of Retrofit Service
  */
-private val logger = KotlinLogging.logger {}
-
 class ApiClient(private val baseUrl: String) : OkHttpHelper() {
 
-    //Retrofit instance
+    /**
+     * Retrofit client instance for [baseUrl] with custom [httpClient]
+     */
     private val client: Retrofit
         get() = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
@@ -41,9 +37,8 @@ class ApiClient(private val baseUrl: String) : OkHttpHelper() {
                 .client(httpClient)
                 .build()
 
-    //Helper to construct Retrofit service class
-    fun <T : Any> create(service: KClass<T>): T {
-        logger.debug { "Creating service: $service" }
-        return client.create(service.java)
-    }
+    /**
+     * Constructs Retrofit [service] class
+     */
+    fun <T : Any> create(service: KClass<T>): T = client.create(service.java)
 }

@@ -26,8 +26,9 @@ import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -43,7 +44,7 @@ open class TickerEntry<T : Node>(
     open fun updateObservable(): Completable? = null
 }
 
-class TickerView : View() {
+class TickerView : BaseView() {
 
     private val playerVewModel: PlayerViewModel by inject()
 
@@ -75,7 +76,7 @@ class TickerView : View() {
     }
 
     //Actual implementation of Ticker
-    class MarqueeView : View() {
+    class MarqueeView : BaseView() {
 
         private val offset = 10.0 //Amount of space between entries!
 
@@ -137,8 +138,8 @@ class TickerView : View() {
                         newTickerEntry.content.isVisible = true
                         //Then just put it into the active queue, so it will start processing like normal
                         newTickerEntry.content.layoutX = root.prefWidth //Where to start
-                        activeTicks.add(ActiveTick(newTickerEntry))
-                        root.add(newTickerEntry.content) //this is where it gets added
+                        activeTicks += ActiveTick(newTickerEntry)
+                        root += newTickerEntry.content //this is where it gets added
                     }
                 }
 
@@ -153,7 +154,7 @@ class TickerView : View() {
                         //Now I ned to figure out how to remove it
                         entry.content.removeFromParent() //Is this legit?
                         activeTicks.remove(active) //no longer here, shouldn't ruin the loop
-                        if (subscriptions.containsKey(entry)) {
+                        if (entry in subscriptions) {
                             subscriptions.remove(entry)!!.dispose() //This should cancel it
                         }
                         if (entry.reschedule) {
@@ -166,7 +167,7 @@ class TickerView : View() {
 
                         //If there's an observable that we haven't started, fire it up!
                         val updateObservable = entry.updateObservable()
-                        if (updateObservable != null && !subscriptions.containsKey(entry)) {
+                        if (updateObservable != null && entry !in subscriptions) {
                             //Start up the observable that updates the component, whatever it is
                             val disposable = updateObservable.subscribe()
                             subscriptions[entry] = disposable
@@ -175,7 +176,7 @@ class TickerView : View() {
                 }
             })
 
-            timeline.keyFrames.add(updateFrame)
+            timeline.keyFrames += updateFrame
             timeline.cycleCount = Animation.INDEFINITE
             timeline.play()
         }

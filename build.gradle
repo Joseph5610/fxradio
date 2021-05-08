@@ -15,7 +15,7 @@ plugins {
 
 apply plugin: 'javafx-gradle-plugin'
 
-version "0.6.0"
+version "0.7.0"
 
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
@@ -82,7 +82,6 @@ dependencies {
     compile "commons-io:commons-io:$versions.commonsio"
 
     compile "com.github.thomasnield:rxkotlinfx:$versions.rxkotlinfx"
-
     compile "org.xerial:sqlite-jdbc:$versions.sqliteJdbc"
     compile "org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc"
     compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"

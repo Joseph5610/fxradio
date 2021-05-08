@@ -17,42 +17,40 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.api.HttpClientHolder
+import online.hudacek.fxradio.api.HttpClient
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
-import online.hudacek.fxradio.ui.viewmodel.LogModel
-import online.hudacek.fxradio.ui.viewmodel.LogViewModel
-import online.hudacek.fxradio.utils.isSystemDarkMode
-import org.apache.logging.log4j.Level
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.utils.saveProperties
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
 /**
- * Main class of the app
- * main() method should be run to start the app
+ * Load app in Dark Mode
  */
+class FxRadioDark(override var useDarkModeStyle: Boolean = true) : FxRadio(StylesDark::class)
 
-//Dark mode
-class FxRadioDark : FxRadio(StylesDark::class) {
-    override var useDarkModeStyle = true
-}
+/**
+ * Load app in Light Mode
+ */
+class FxRadioLight(override var useDarkModeStyle: Boolean = false) : FxRadio(Styles::class)
 
-//Light mode
-class FxRadioLight : FxRadio(Styles::class) {
-    override var useDarkModeStyle = false
-}
-
+/**
+ * Load the app with provided [stylesheet] class
+ */
 open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
 
-    //override app.config path to user.home/fxradio
+    /**
+     * override app.config path to $user.home/fxradio
+     */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
-
-    private val logViewModel: LogViewModel by inject()
 
     open var useDarkModeStyle: Boolean by singleAssign()
 
@@ -61,18 +59,41 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         with(stage) {
             minWidth = 600.0
             minHeight = 400.0
+
+            //Setup window location on screen
+            config.double(Properties.WindowWidth.key)?.let {
+                width = it
+            }
+            config.double(Properties.WindowHeight.key)?.let {
+                height = it
+            }
+            config.double(Properties.WindowX.key)?.let {
+                x = it
+            }
+            config.double(Properties.WindowY.key)?.let {
+                y = it
+            }
             super.start(this)
         }
+    }
 
-        //init logger level based on stored settings
-        val savedLevel = Level.valueOf(property(Properties.LOG_LEVEL, "INFO"))
-        logViewModel.item = LogModel(savedLevel)
+    override fun stop() {
+        //Save last used window width/height on close of the app to use it on next start
+        saveProperties(mapOf(
+                Properties.WindowWidth to primaryStage.width,
+                Properties.WindowHeight to primaryStage.height,
+                Properties.WindowX to primaryStage.x,
+                Properties.WindowY to primaryStage.y
+        ))
+        super.stop()
     }
 
     /**
      * Basic info about the app
      */
     companion object : Component() {
+
+        private val playerViewModel: PlayerViewModel by inject()
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
@@ -83,20 +104,31 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         val isAppInDarkMode by lazy { (app as FxRadio).useDarkModeStyle }
 
         /**
-         * Get version from jar MANIFEST.MF file
+         * Gets version from jar MANIFEST.MF file
+         * On failure (e.g if app is not run from the jar file), returns the "0.0-DEVELOPMENT" value
          */
         val version: String by lazy {
-            FxRadio::class.java.getPackage().implementationVersion ?: "0.1-DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
         }
 
         //Should be called when on every place that is closing the app
         fun shutdownApp() {
+            playerViewModel.releasePlayer()
             StationsApi.client.shutdown()
-            HttpClientHolder.client.shutdown()
+            HttpClient.shutdown()
         }
     }
 }
 
+private val isSystemDarkMode: Boolean = if (MacUtils.isMac) {
+    MacUtils.isSystemDarkMode
+} else {
+    false
+}
+
+/**
+ * Main starting method for the App
+ */
 fun main(args: Array<String>) {
     if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
         launch<FxRadioDark>(args)

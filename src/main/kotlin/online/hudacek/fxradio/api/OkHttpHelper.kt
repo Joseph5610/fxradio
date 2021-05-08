@@ -25,25 +25,37 @@ import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * Helper variables and methods for OkHttpClient
+ */
 open class OkHttpHelper {
 
-    //To Limit the active connections
+    /**
+     * Defines the limits for the active connections
+     */
     private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
 
-    //What is app sending as a User Agent string
+    /**
+     * Defines what is app sending as a User Agent string
+     */
     private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
 
-    //Logging of http requests
-    private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.debug { message } }
+    /**
+     * Enables Logging of http requests in app logger on debug level
+     */
+    private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.trace { message } }
+            .apply {
+                //Set logging level for HTTP requests to full request and response
+                //Http requests are logged only on trace app logger level
+                level = HttpLoggingInterceptor.Level.BODY
+            }
 
-    //Construct http client with custom user agent
+    /**
+     * Construct http client with custom user agent, connection pool and timeouts
+     */
     protected val httpClient: OkHttpClient by lazy {
-        //Set logging level for HTTP requests to full request and response
-        //Http requests are logged only on debug app logger level
-        loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
-
         OkHttpClient.Builder()
-                //The whole call should not take longer than 10 secs
+                //The whole call should not take longer than 20 secs
                 .callTimeout(20, TimeUnit.SECONDS)
                 .addNetworkInterceptor { chain ->
                     chain.proceed(
@@ -58,10 +70,15 @@ open class OkHttpHelper {
                 .build()
     }
 
+    /**
+     * Correctly kill all OkHttpClient threads
+     */
     fun shutdown() {
         logger.info { "Shutting down OkHttpClient $httpClient" }
-        logger.debug { "Idle: ${connectionPool.idleConnectionCount()} All: ${connectionPool.connectionCount()}" }
-        //Kill all OkHttp Threads
+        logger.debug {
+            "Idle connections: ${connectionPool.idleConnectionCount()} " +
+                    "All connections: ${connectionPool.connectionCount()}"
+        }
         httpClient.dispatcher().executorService().shutdownNow()
         httpClient.connectionPool().evictAll()
     }

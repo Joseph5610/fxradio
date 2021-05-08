@@ -17,24 +17,31 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.fitToParentHeight
+import tornadofx.vbox
+import tornadofx.vgrow
 
 /**
- * Main view displaying grid of stations
+ * Shows grid of stations
  */
-class StationsView : View() {
+class StationsView : BaseView() {
 
     private val messageView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
+    private val historyView: StationsHistoryView by inject()
 
     override val root = vbox {
         vgrow = Priority.ALWAYS
         add(headerView)
         add(messageView)
         add(dataGridView)
+        add(historyView)
         dataGridView.root.fitToParentHeight()
+        historyView.root.fitToParentHeight()
         addClass(Styles.backgroundWhite)
     }
 }

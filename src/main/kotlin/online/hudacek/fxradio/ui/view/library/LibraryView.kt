@@ -17,27 +17,28 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.Properties
+import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.viewmodel.LibraryModel
-import online.hudacek.fxradio.ui.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.utils.showWhen
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.*
 
-class LibraryView : View() {
+class LibraryView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
 
     private val librarySearchView: LibrarySearchView by inject()
-    private val libraryCountriesListView: LibraryCountriesListView by inject()
     private val libraryListView: LibraryListView by inject()
 
     override fun onDock() {
-        viewModel.item = LibraryModel(
-                showLibrary = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_LIBRARY, true),
-                showCountries = online.hudacek.fxradio.property(Properties.WINDOW_SHOW_COUNTRIES, true))
+        Tables.pinnedCountries
+                .selectAll()
+                .subscribe {
+                    viewModel.pinnedProperty += it
+                }
 
-        viewModel.showCountries()
+        viewModel.getCountries()
     }
 
     override val root = borderpane {
@@ -54,7 +55,23 @@ class LibraryView : View() {
                     viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
                     viewModel.commit()
                 })
+
                 add(libraryListView)
+
+                vbox {
+                    add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
+                        viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
+                        viewModel.commit()
+                    })
+
+                    vbox {
+                        add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
+                    }
+
+                    showWhen {
+                        viewModel.pinnedProperty.emptyProperty().not()
+                    }
+                }
             }
         }
 
@@ -65,21 +82,22 @@ class LibraryView : View() {
                     viewModel.commit()
                 })
 
-                add(libraryCountriesListView)
+                vbox {
+                    add(LibraryCountriesFragment(viewModel.countriesProperty, viewModel.showCountriesProperty))
+                    prefHeightProperty().bind(this@center.heightProperty())
+                }
 
                 //Retry link
                 vbox(alignment = Pos.CENTER) {
                     hyperlink(messages["downloadRetry"]) {
-                        action {
-                            viewModel.showCountries()
-                        }
+
+                        action { viewModel.getCountries() }
+
                         showWhen {
-                            viewModel.countriesProperty.emptyProperty()
-                                    .and(viewModel.showCountriesProperty)
+                            viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
                         }
                     }
                 }
-                libraryCountriesListView.root.prefHeightProperty().bind(heightProperty())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

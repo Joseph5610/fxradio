@@ -16,35 +16,39 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.github.thomasnield.rxkotlinfx.onChangedObservable
 import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.storage.stationImage
-import online.hudacek.fxradio.ui.fragment.StationInfoFragment
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewModel
-import online.hudacek.fxradio.ui.viewmodel.StationsViewState
-import online.hudacek.fxradio.utils.showWhen
-import online.hudacek.fxradio.utils.smallLabel
+import javafx.stage.StageStyle
+import online.hudacek.fxradio.Config
+import online.hudacek.fxradio.api.model.tagsSplit
+import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.FavouritesMenu
+import online.hudacek.fxradio.ui.modal.Modals
+import online.hudacek.fxradio.ui.modal.StationInfoFragment
+import online.hudacek.fxradio.ui.modal.open
+import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.smallLabel
+import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
-import tornadofx.controlsfx.popover
-import tornadofx.controlsfx.showPopover
 
 /**
  * Main view of stations
  * DataGrid shows radio station logo and name
  */
-class StationsDataGridView : View() {
+class StationsDataGridView : BaseView() {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
+    private val favouritesMenu: FavouritesMenu by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
-    override fun onDock() {
-        //Load the stations grid
-        stationsViewModel.viewStateProperty.value = StationsViewState.Loading
-    }
+    //Show initial stations
+    override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
@@ -60,28 +64,39 @@ class StationsDataGridView : View() {
             playerViewModel.stationProperty.value = it
         }
 
-        cellCache {
+        cellCache { station ->
             vbox {
-                onRightClick {
-                    popover {
-                        title = it.name
-                        isCloseButtonEnabled = true
-                        isHeaderAlwaysVisible = true
-                        vbox {
-                            add(StationInfoFragment(it))
+                contextmenu {
+                    item(messages["menu.station.info"]).action {
+                        StationInfoFragment(station).openModal(stageStyle = StageStyle.UTILITY)
+                    }
+
+                    separator()
+
+                    //Add Add/Remove from favourites menu items
+                    items.addAll(favouritesMenu.addRemoveFavouriteItems)
+
+                    separator()
+                    item(messages["menu.station.vote"]) {
+                        actionEvents()
+                                .map { station }
+                                .subscribe(appEvent.addVote)
+                    }
+
+                    if (Config.Flags.enableStationDebug) {
+                        separator()
+                        item("Station Debug Info").action {
+                            Modals.StationDebug.open()
                         }
                     }
-                    showPopover()
                 }
-
-                onHover { _ -> tooltip(it.name) }
 
                 paddingAll = 5
                 vbox(alignment = Pos.CENTER) {
                     prefHeight = 120.0
                     paddingAll = 5
                     imageview {
-                        it.stationImage(this)
+                        station.stationImage(this)
                         effect = DropShadow(15.0, Color.LIGHTGRAY)
                         isCache = true
                         cacheHint = CacheHint.SPEED
@@ -90,28 +105,25 @@ class StationsDataGridView : View() {
                         isPreserveRatio = true
                     }
                 }
-                label(it.name) {
+                label(station.name) {
+                    onHover { tooltip(station.name) }
                     style {
                         fontSize = 13.px
                     }
                 }
-                smallLabel(createStationTags(it.tags, it.country))
+                smallLabel(station.tagsSplit)
             }
         }
 
         showWhen {
-            stationsViewModel.viewStateProperty.isEqualTo(StationsViewState.Loaded)
-        }
-    }
-
-    //Small label shown under the station name in the grid
-    //Contains tag or country name of station
-    private fun createStationTags(tags: String, country: String): String {
-        val stationTagsSplit = tags.split(",")
-        return when {
-            tags.isEmpty() -> country
-            stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
-            else -> stationTagsSplit[0].capitalize()
+            stationsViewModel.stateProperty.booleanBinding {
+                when (it) {
+                    is StationsState.Fetched -> true
+                    else -> false
+                }
+            }.and(libraryViewModel.stateProperty.booleanBinding {
+                it !is LibraryState.History
+            })
         }
     }
 }

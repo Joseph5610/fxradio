@@ -3,7 +3,7 @@ package online.hudacek.fxradio.api.model
 import online.hudacek.fxradio.FxRadio
 
 /**
- * Stations json structure
+ * Station data class
  */
 data class Station(val stationuuid: String,
                    val name: String,
@@ -21,35 +21,29 @@ data class Station(val stationuuid: String,
 
     fun isValid() = stationuuid != "0"
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is Station) {
-            this.stationuuid == other.stationuuid
-        } else super.equals(other)
+    override fun equals(other: Any?) = if (other is Station) {
+        this.stationuuid == other.stationuuid
+    } else {
+        super.equals(other)
     }
 
-    override fun hashCode() = super.hashCode()
-
-    override fun toString(): String {
-        return "Station(stationuuid='$stationuuid'\n, " +
-                "name='$name'\n," +
-                "url_resolved=$url_resolved\n, " +
-                "homepage='$homepage'\n, " +
-                "favicon=$favicon\n, " +
-                "tags='$tags'\n, " +
-                "country='$country'\n, " +
-                "countrycode='$countrycode'\n, " +
-                "state='$state'\n, " +
-                "language='$language'\n, " +
-                "codec='$codec'\n, " +
-                "bitrate=$bitrate,\n" +
-                " votes=$votes)"
-    }
+    override fun hashCode() = stationuuid.hashCode()
 
     companion object {
-        val stub by lazy {
-            Station("0", "Not playing", null,
-                    FxRadio.appUrl, null)
+        val dummy by lazy {
+            Station("0", "Not playing", null, FxRadio.appUrl, null)
         }
     }
 }
+
+//Contains tag or country name of station
+internal val Station.tagsSplit: String
+    get() {
+        val stationTagsSplit = tags.split(",")
+        return when {
+            tags.isEmpty() -> country
+            stationTagsSplit.size > 1 -> stationTagsSplit[0].capitalize() + ", " + stationTagsSplit[1].capitalize()
+            else -> stationTagsSplit[0].capitalize()
+        }
+    }
 

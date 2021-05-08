@@ -16,22 +16,40 @@
 
 package online.hudacek.fxradio.media
 
-import tornadofx.FXEvent
-
-data class MetaData(val stationName: String, val nowPlaying: String)
-
-class MetaDataChanged(val newMetaData: MetaData) : FXEvent()
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.value
 
 /**
  * Common interface for all available players
  */
 interface MediaPlayer {
 
+    /**
+     * Supported types of player
+     */
+    enum class Type {
+        Humble, VLC
+    }
+
+    val playerType: Type
+
+    /**
+     * Starts playing stream with URL [streamUrl]
+     */
     fun play(streamUrl: String)
 
+    /**
+     * Changes playing value to [newVolume]
+     * Returns true when change was successful, false otherwise
+     */
     fun changeVolume(newVolume: Double): Boolean
 
     fun stop()
 
     fun release()
+
+    companion object {
+        //The metadata service can be disabled by respective property file setting
+        val enableMetaDataService = Properties.PlayerRefreshMetaData.value(true)
+    }
 }

@@ -19,7 +19,7 @@ package online.hudacek.fxradio.integration
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioDark
-import online.hudacek.fxradio.macos.MacMenu
+import online.hudacek.fxradio.utils.macos.MacMenu
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert

@@ -16,13 +16,13 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import online.hudacek.fxradio.Properties
-import online.hudacek.fxradio.property
-import online.hudacek.fxradio.ui.viewmodel.*
-import online.hudacek.fxradio.utils.make
-import online.hudacek.fxradio.utils.searchField
+import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.searchField
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SearchViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.View
 import tornadofx.get
 import tornadofx.label
 import tornadofx.validator
@@ -30,24 +30,18 @@ import tornadofx.validator
 /**
  * Search input field view
  */
-class LibrarySearchView : View() {
+class LibrarySearchView : BaseView() {
 
     private val viewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    init {
-        viewModel.item = SearchModel(searchQuery = property(Properties.SEARCH_QUERY, ""))
-    }
-
-    override val root = searchField(messages["search"], viewModel.bindSearchQueryProperty) {
+    override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = label {
-            graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0)
-        }
+        left = label(graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0))
 
         setOnMouseClicked {
-            libraryViewModel.selectedProperty.value = SelectedLibrary(LibraryType.Search)
+            libraryViewModel.stateProperty.value = LibraryState.Search
         }
 
         validator {

@@ -17,10 +17,11 @@
 package online.hudacek.fxradio.api
 
 import io.reactivex.Single
-import mu.KotlinLogging
 import online.hudacek.fxradio.api.model.*
-import online.hudacek.fxradio.ui.viewmodel.ServersModel
-import online.hudacek.fxradio.ui.viewmodel.ServersViewModel
+import online.hudacek.fxradio.utils.Properties
+import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.viewmodel.Servers
+import online.hudacek.fxradio.viewmodel.ServersViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -28,12 +29,8 @@ import retrofit2.http.Path
 import tornadofx.Component
 
 /**
- * Stations API
- * --------------
- * HTTP endpoints for radio-browser.info API
+ * Provides HTTP endpoints for radio-browser.info API
  */
-private val logger = KotlinLogging.logger {}
-
 interface StationsApi {
 
     @POST("json/stations/bycountryexact/{countryName}")
@@ -49,40 +46,30 @@ interface StationsApi {
     fun getTopStations(): Single<List<Station>>
 
     @POST("json/add")
-    fun add(@Body addBody: AddStationBody): Single<AddStationResponse>
+    fun addStation(@Body stationBody: StationBody): Single<AddedStation>
 
     @POST("json/countries")
-    fun getCountries(@Body countriesBody: CountriesBody): Single<List<Countries>>
+    fun getCountries(@Body countriesBody: CountriesBody): Single<List<Country>>
 
     @GET("json/stats")
-    fun getStats(): Single<Stats>
+    fun getStats(): Single<StatsResult>
 
     @GET("json/vote/{uuid}")
-    fun vote(@Path("uuid") uuid: String): Single<VoteResponse>
+    fun addVote(@Path("uuid") uuid: String): Single<VoteResult>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<ClickResponse>
+    fun click(@Path("uuid") uuid: String): Single<ClickResult>
 
     companion object : Component() {
 
         private val viewModel: ServersViewModel by inject()
 
-        val client: ApiClient by lazy {
-            //The little logic here: Try to init model with the previously stored value
-            //Only if the value is not stored try to get it by calling InetAddress.getAllByName
-            if (viewModel.savedServerValue.isPresent) {
-                logger.debug { "Setting model from saved state" }
-                viewModel.item = ServersModel(viewModel.savedServerValue.get())
-            } else {
-                logger.debug { "Setting model from new call" }
-                val servers = viewModel.performLookup() //blocking operation to get the servers
-                if (!servers.isNullOrEmpty()) {
-                    logger.debug { "Found servers: $servers" }
-                    viewModel.item = ServersModel(servers[0], servers)
-                    viewModel.commit()
-                }
-            }
+        private val apiServerProperty = Property(Properties.ApiServer)
 
+        val client: ApiClient by lazy {
+            if (apiServerProperty.isPresent) {
+                viewModel.item = Servers(apiServerProperty.get())
+            }
             ApiClient("https://${viewModel.selectedProperty.value}")
         }
 

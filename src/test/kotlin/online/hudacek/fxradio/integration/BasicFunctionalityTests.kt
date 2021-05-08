@@ -25,11 +25,11 @@ import online.hudacek.fxradio.FxRadioLight
 import online.hudacek.fxradio.api.StationsApi
 import online.hudacek.fxradio.api.model.SearchBody
 import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.macos.MacMenu
-import online.hudacek.fxradio.storage.Database
-import online.hudacek.fxradio.ui.viewmodel.LibraryItem
-import online.hudacek.fxradio.ui.viewmodel.PlayerState
-import online.hudacek.fxradio.ui.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.utils.macos.MacMenu
+import online.hudacek.fxradio.viewmodel.LibraryItem
+import online.hudacek.fxradio.viewmodel.PlayerState
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
@@ -57,6 +57,7 @@ class BasicFunctionalityTests {
         //IDs
         private const val nowPlayingLabel = "#nowStreaming"
         private const val stationsDataGrid = "#stations"
+        private const val stationsHistory = "#stationsHistoryList"
         private const val libraryListView = "#libraryListView"
         private const val volumeMinIcon = "#volumeMinIcon"
         private const val volumeMaxIcon = "#volumeMaxIcon"
@@ -114,13 +115,15 @@ class BasicFunctionalityTests {
 
         //wait until loaded
         sleep(2)
-        robot.doubleClickOn(stations.items[0].name)
+        //Avoid station names that start with # as it is query locator for ID
+        val stationToClick = stations.items.filter { !it.name.startsWith("#") }.take(5).random()
+        robot.doubleClickOn(stationToClick.name)
 
         WaitForAsyncUtils.waitForFxEvents()
 
         //Wait for stream start
         waitFor(5) {
-            player.playerStateProperty.value == PlayerState.Playing
+            player.stateProperty.value == PlayerState.Playing
         }
 
         val stopButton = robot.find(playerControls) as Button
@@ -130,7 +133,7 @@ class BasicFunctionalityTests {
 
         //Wait for stream stop
         waitFor(2) {
-            player.playerStateProperty.value == PlayerState.Stopped
+            player.stateProperty.value == PlayerState.Stopped
         }
 
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
@@ -150,25 +153,25 @@ class BasicFunctionalityTests {
         sleep(2)
 
         //Find in list
-        val historyItem = robot.from(libraries).lookup(libraries.items[2].type.name).query<SmartListCell<LibraryItem>>()
+        val historyItem = robot.from(libraries).lookup(libraries.items[2].type.key.capitalize()).query<SmartListCell<LibraryItem>>()
         robot.clickOn(historyItem)
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        val historydbCount = Database.history.select().blockingGet().size
+        val historydbCount = Tables.history.selectAll().count().blockingGet()
 
-        if (historydbCount == 0) {
-            //Stations library is containing all stations
-            waitFor(2) {
-                !stations.isVisible
-            }
-        } else {
-            waitFor(2) {
-                stations.isVisible
-            }
+        val stationsHistory = robot.find(stationsHistory) as ListView<Station>
 
-            Assertions.assertEquals(historydbCount, stations.items.size)
+        //Stations datagrid is not visible in history
+        waitFor(2) {
+            !stations.isVisible
         }
+
+        waitFor(2) {
+            stationsHistory.isVisible
+        }
+
+        Assertions.assertEquals(historydbCount.toInt(), stationsHistory.items.size)
     }
 
     @Test
@@ -204,12 +207,9 @@ class BasicFunctionalityTests {
         verifyThat(stationMessageSubHeader, visible())
         verifyThat(search, hasValue("st"))
 
-        verifyThat(stationMessageHeader, hasText("Searching Your Library"))
+        verifyThat(stationMessageHeader, hasText("Searching Radio Directory"))
 
         robot.enterText(search, "station")
-
-        verifyThat(stationMessageHeader, hasText(""))
-        verifyThat(stationMessageSubHeader, hasLabel(""))
         verifyThat(search, hasValue("station"))
 
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
