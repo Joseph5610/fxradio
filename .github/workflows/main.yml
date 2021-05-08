@@ -32,7 +32,7 @@ jobs:
       - name: Prepare release files
         run: |
          ls -all build/jfx/*
-         find / -name *.app
+         find build/* -name "*.app"
          zip -r releaseJar.zip build/jfx/app
       - name: Create Release
         id: create_release
