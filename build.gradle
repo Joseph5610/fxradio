@@ -132,7 +132,7 @@ jfx {
     nativeOutputDir = "build/jfx/native"
     nativeReleaseVersion = version
     needShortcut = true
-    bundler = "ALL"
+    bundler = "mac.app"
 
     additionalAppResources = 'src/main/deploy/additional'
     bundleArguments = [
