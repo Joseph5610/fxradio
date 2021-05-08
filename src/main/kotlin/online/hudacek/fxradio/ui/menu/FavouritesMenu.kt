@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -66,23 +67,25 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     }
             )
 
-    override val menuItems = mutableListOf(
-            item(messages["menu.favourites.show"]) {
-                action {
-                    libraryViewModel.stateProperty.value = LibraryState.Favourites
-                }
-            },
-            separator(),
-            item(messages["menu.station.favourite.clear"]) {
-                disableWhen {
-                    favouritesViewModel.stationsProperty.emptyProperty()
-                }
-                action {
-                    confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                        favouritesViewModel.cleanupFavourites()
-                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+    override val menuItems = mutableListOf<MenuItem>().apply {
+        add(item(messages["menu.favourites.show"]) {
+            action {
+                libraryViewModel.stateProperty.value = LibraryState.Favourites
+            }
+        })
+        addAll(addRemoveFavouriteItems)
+        addAll(listOf(separator(),
+                item(messages["menu.station.favourite.clear"]) {
+                    disableWhen {
+                        favouritesViewModel.stationsProperty.emptyProperty()
                     }
-                }
-            },
-            separator()).apply { addAll(addRemoveFavouriteItems) }
+                    action {
+                        confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
+                            favouritesViewModel.cleanupFavourites()
+                            appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                        }
+                    }
+                },
+                separator()))
+    }
 }

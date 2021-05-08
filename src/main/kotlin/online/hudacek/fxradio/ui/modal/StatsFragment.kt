@@ -28,8 +28,7 @@ import online.hudacek.fxradio.viewmodel.StatsViewModel
 import tornadofx.*
 
 /**
- * Modal window that shows status of API server
- *
+ * Fragment shows stats of API server
  */
 class StatsFragment : BaseFragment() {
 
