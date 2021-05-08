@@ -36,11 +36,18 @@ class Log(level: Level = Level.valueOf(Properties.LogLevel.value("INFO"))) {
 class LogViewModel : BaseViewModel<Log>(Log()) {
     val levelProperty = bind(Log::level) as ObjectProperty
 
+    init {
+        //Init correct log level after view model creation
+        setLogLevel()
+    }
+
     override fun onCommit() {
         //Set Current Logger Level
-        Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
+        setLogLevel()
 
         //Save it
         Properties.LogLevel.save(levelProperty.value)
     }
+
+    private fun setLogLevel() = Configurator.setAllLevels(LogManager.getRootLogger().name, levelProperty.value)
 }
