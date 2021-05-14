@@ -21,10 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
+        env:
+         FX_PATH_APPEND: "/zulu-8.jdk/Contents/Home"
         with:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
+      - run: echo "$JAVA_HOME + $FX_PATH_APPEND"
       - run: ./gradlew -i jfxNative
       - name: Prepare JAR files
         run: |
@@ -43,7 +46,7 @@ jobs:
       - uses: actions/upload-artifact@v2 
         if: runner.os == 'macOS'
         with:
-          name: fxRadio_macOs
+          name: fxradio_macOS
           path: release_macOS.zip
           if-no-files-found: error
   
