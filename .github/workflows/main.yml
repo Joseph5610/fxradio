@@ -13,8 +13,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
+    name: "Build and create artifact"
     # The type of runner that the job will run on
     runs-on: macos-latest
 
@@ -33,8 +33,15 @@ jobs:
          ls -all */*
          find build/* -name "*.app"
          zip -r releaseJar.zip build/jfx/app
+         zip -r release_${RUNNER_OS}.zip build/jfx/native/FXRadio.app
       - uses: actions/upload-artifact@v2
         with:
-          name: fxradio
+          name: fxradio.jar
           path: releaseJar.zip
           if-no-files-found: error
+      - uses: actions/upload-artifact@v2 
+        with:
+          name: fxRadio_${RUNNER_OS}
+          path: release_${RUNNER_OS}.zip
+          if-no-files-found: error
+  
