@@ -25,9 +25,7 @@ jobs:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
-      - run: ls -all "$JAVA_HOME$FX_PATH_APPEND"/*/*; ./gradlew -i jfxNative
-        env:
-         FX_PATH_APPEND: /zulu-8.jdk/
+      - run: ./gradlew -i jfxNative
       - name: Prepare JAR files
         run: |
          zip -r releaseJar.zip build/jfx/app/
