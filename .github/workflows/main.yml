@@ -26,6 +26,8 @@ jobs:
           java-version: '8'
           java-package: jdk+fx
       - run: ./gradlew -i jfxNative
+        env:
+          FX_APPEND_PATH: /zulu-8.jdk/Contents/Home/jre
       - name: Prepare JAR files
         run: |
          zip -r releaseJar.zip build/jfx/app/
