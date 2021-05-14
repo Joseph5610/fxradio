@@ -132,12 +132,13 @@ jfx {
     nativeOutputDir = "build/jfx/native"
     nativeReleaseVersion = version
     needShortcut = true
-    bundler = "mac.app"
+    bundler = "ALL"
 
     additionalAppResources = 'src/main/deploy/additional'
     bundleArguments = [
             licenseType: 'ASL 2.0',
-            licenseFile: 'LICENSE'//,
+            licenseFile: 'LICENSE', //,
+            runtime: null
             //'signBundle': true,
             //'mac.signing-key-developer-id-app': 'Developer ID Application: XYZ'
     ]
