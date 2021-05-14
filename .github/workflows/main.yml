@@ -27,7 +27,7 @@ jobs:
           java-package: jdk+fx
       - run: ls -all "$JAVA_HOME"/*/*; echo "$JAVA_HOME$FX_PATH_APPEND"; ./gradlew -i jfxNative
         env:
-         FX_PATH_APPEND: /zulu-8.jdk/Contents/Home/jre/
+         FX_PATH_APPEND: /jre/
       - name: Prepare JAR files
         run: |
          zip -r releaseJar.zip build/jfx/app/
