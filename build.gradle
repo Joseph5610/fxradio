@@ -116,6 +116,7 @@ jfxJar {
 */
 
 jfx {
+    logger.warn('Test is: ' + System.getenv('JAVA_HOME') + "" + System.getenv('FX_PATH_APPEND'))
     HashMap<String, String> attributes = new HashMap<String, String>()
     attributes.put('Implementation-Version', version.toString())
     verbose = true
@@ -134,13 +135,11 @@ jfx {
     needShortcut = true
     bundler = "ALL"
 
-    println System.getProperty('JAVA_HOME') + "" + System.getProperty('FX_PATH_APPEND')
-
     additionalAppResources = 'src/main/deploy/additional'
     bundleArguments = [
             licenseType: 'ASL 2.0',
             licenseFile: 'LICENSE', //,
-            runtime: System.getProperty('JAVA_HOME') + "" + System.getProperty('FX_PATH_APPEND')
+            runtime: System.getenv('JAVA_HOME') + "" + System.getenv('FX_PATH_APPEND')
             //'signBundle': true,
             //'mac.signing-key-developer-id-app': 'Developer ID Application: XYZ'
     ]
