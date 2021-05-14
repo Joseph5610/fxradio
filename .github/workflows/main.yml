@@ -23,8 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Get runner OS
-        env:
-          run: echo "$RUNNER_OS"
+        run: echo "$RUNNER_OS"
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
