@@ -25,7 +25,9 @@ jobs:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
-      - run: ./gradlew -i jfxNative
+      - run: ls -all "$JAVA_HOME"/*/*; echo "$JAVA_HOME$FX_PATH_APPEND"; ./gradlew -i jfxNative
+        env:
+         FX_PATH_APPEND: /zulu-8.jdk/Contents/Home/jre/
       - name: Prepare JAR files
         run: |
          zip -r releaseJar.zip build/jfx/app/
@@ -43,7 +45,7 @@ jobs:
       - uses: actions/upload-artifact@v2 
         if: runner.os == 'macOS'
         with:
-          name: fxRadio_macOs
+          name: fxradio_macOS
           path: release_macOS.zip
           if-no-files-found: error
   
