@@ -26,7 +26,7 @@ jobs:
       - run: echo ${{github.ref}}
       - uses: battila7/jdk-via-jabba@v1
         with:
-          jdk: 1.8
+          jdk: adopt@1.8-0
 
       - run: ./gradlew jfxListBundlers jfxNative 
       - name: Prepare release files
