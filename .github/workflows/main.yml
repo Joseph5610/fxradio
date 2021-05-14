@@ -27,9 +27,14 @@ jobs:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
-      - run: ./gradlew -d jfxNative
+      - run: ./gradlew -i jfxNative
       - name: Prepare release files
         run: |
          ls -all */*
          find build/* -name "*.app"
          zip -r releaseJar.zip build/jfx/app
+      - uses: actions/upload-artifact@v2
+        with:
+          name: fxradio
+          path: releaseJar.zip
+          if-no-files-found: error
