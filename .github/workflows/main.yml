@@ -17,10 +17,14 @@ jobs:
     name: "Build and create artifact"
     # The type of runner that the job will run on
     runs-on: macos-latest
-
+    env:
+      RUNNER_OS: ${{ runner.os }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+      - name: Get runner OS
+        env:
+          run: echo "$RUNNER_OS"
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
@@ -29,8 +33,9 @@ jobs:
       - run: ./gradlew -i jfxNative
       - name: Prepare release files
         run: |
-         zip -r releaseJar.zip build/jfx/app
+         zip -r releaseJar.zip build/jfx/app/
          zip -r release_$RUNNER_OS.zip build/jfx/native/FXRadio.app
+         ls -all */*
          ls -all build/*/*
       - uses: actions/upload-artifact@v2
         with:
