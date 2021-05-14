@@ -138,7 +138,7 @@ jfx {
     bundleArguments = [
             licenseType: 'ASL 2.0',
             licenseFile: 'LICENSE', //,
-            runtime: null
+            runtime: System.getProperty('JAVA_HOME') + "" + System.getProperty('FX_PATH_APPEND')
             //'signBundle': true,
             //'mac.signing-key-developer-id-app': 'Developer ID Application: XYZ'
     ]
