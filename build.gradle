@@ -134,6 +134,8 @@ jfx {
     needShortcut = true
     bundler = "ALL"
 
+    println System.getProperty('JAVA_HOME') + "" + System.getProperty('FX_PATH_APPEND')
+
     additionalAppResources = 'src/main/deploy/additional'
     bundleArguments = [
             licenseType: 'ASL 2.0',
