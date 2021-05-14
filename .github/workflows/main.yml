@@ -27,7 +27,7 @@ jobs:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
-      - run: ./gradlew jfxNative
+      - run: ./gradlew -d jfxNative
       - name: Prepare release files
         run: |
          ls -all */*
