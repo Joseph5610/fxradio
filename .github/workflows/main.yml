@@ -13,28 +13,37 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
+    name: "Build and create artifact"
     # The type of runner that the job will run on
     runs-on: macos-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
-      - run: echo ${{github.ref}}
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
       - run: ./gradlew -i jfxNative
-      - name: Prepare release files
+      - name: Prepare JAR files
         run: |
+         zip -r releaseJar.zip build/jfx/app/
          ls -all */*
-         find build/* -name "*.app"
-         zip -r releaseJar.zip build/jfx/app
+         ls -all build/*/*
+      - name: Prepare DMG file
+        if: runner.os == 'macOS'
+        run: |
+         zip -r release_macOS.zip build/jfx/native/FXRadio-*.dmg
       - uses: actions/upload-artifact@v2
         with:
-          name: fxradio
+          name: fxradio.jar
           path: releaseJar.zip
           if-no-files-found: error
+      - uses: actions/upload-artifact@v2 
+        if: runner.os == 'macOS'
+        with:
+          name: fxRadio_macOs
+          path: release_macOS.zip
+          if-no-files-found: error
+  
