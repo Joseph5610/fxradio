@@ -31,10 +31,10 @@ jobs:
          zip -r releaseJar.zip build/jfx/app/
          ls -all */*
          ls -all build/*/*
-      - name: doing something on macOS
+      - name: Prepare DMG file
         if: runner.os == 'macOS'
         run: |
-         zip -r release_macOS.zip build/jfx/native/FXRadio.dmg
+         zip -r release_macOS.zip build/jfx/native/FXRadio-*.dmg
       - uses: actions/upload-artifact@v2
         with:
           name: fxradio.jar
