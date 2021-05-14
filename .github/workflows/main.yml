@@ -30,7 +30,7 @@ jobs:
       - name: Prepare release files
         run: |
          zip -r releaseJar.zip build/jfx/app
-         zip -r release_${{RUNNER_OS}}.zip build/jfx/native/FXRadio.app
+         zip -r release_$RUNNER_OS.zip build/jfx/native/FXRadio.app
          ls -all build/*/*
       - uses: actions/upload-artifact@v2
         with:
@@ -39,7 +39,7 @@ jobs:
           if-no-files-found: error
       - uses: actions/upload-artifact@v2 
         with:
-          name: fxRadio_${{RUNNER_OS}}
-          path: release_${{RUNNER_OS}}.zip
+          name: fxRadio_$RUNNER_OS
+          path: release_$RUNNER_OS.zip
           if-no-files-found: error
   
