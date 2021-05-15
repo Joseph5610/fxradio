@@ -45,6 +45,9 @@ jobs:
           asset_path: ./releaseJar.zip
           asset_name: fxradio_jar.zip
           asset_content_type: application/zip
+      - name: Find DMG file on filesystem
+        id: find-dmg 
+        run: echo "DMG_PATH=$(find . -name "*.dmg")" >> $GITHUB_ENV
       - name: Upload Release DMG
         id: upload-release-dmg
         uses: actions/upload-release-asset@v1
@@ -52,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./build/jfx/native/FXRadio-*.dmg
+          asset_path: ${{ env.DMG_PATH }
           asset_name: fxradio_macOS.dmg
           asset_content_type: application/octet-stream
 
