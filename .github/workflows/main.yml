@@ -33,6 +33,10 @@ jobs:
          zip -r releaseJar.zip build/jfx/app/
          ls -all */*
          ls -all build/*/*
+      - name: Prepare APP file
+        if: runner.os == 'macOS'
+        run: |
+         zip -r release_macOS_app.zip build/jfx/native/FXRadio.app
       - name: Prepare DMG file
         if: runner.os == 'macOS'
         run: |
@@ -45,7 +49,13 @@ jobs:
       - uses: actions/upload-artifact@v2 
         if: runner.os == 'macOS'
         with:
-          name: fxradio_macOS
+          name: fxradio_macOS_dmg
           path: release_macOS.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2 
+        if: runner.os == 'macOS'
+        with:
+          name: fxradio_macOS_app
+          path: release_macOS_app.zip
           if-no-files-found: error
   
