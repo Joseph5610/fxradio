@@ -18,8 +18,8 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.model.AddedStation
-import online.hudacek.fxradio.api.model.StationBody
+import online.hudacek.fxradio.api.stations.model.AddedStation
+import online.hudacek.fxradio.api.stations.model.StationBody
 
 private val logger = KotlinLogging.logger {}
 

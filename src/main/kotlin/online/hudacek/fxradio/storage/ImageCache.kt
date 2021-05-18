@@ -21,7 +21,7 @@ import io.reactivex.disposables.Disposable
 import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.ui.defaultRadioLogo
 import org.apache.commons.io.FileUtils
 import tornadofx.observableListOf

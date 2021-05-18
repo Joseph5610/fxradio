@@ -22,9 +22,9 @@ import javafx.scene.control.Slider
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
-import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.api.model.SearchBody
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.StationsApi
+import online.hudacek.fxradio.api.stations.model.SearchBody
+import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
 import online.hudacek.fxradio.utils.macos.MacMenu
 import online.hudacek.fxradio.viewmodel.LibraryItem

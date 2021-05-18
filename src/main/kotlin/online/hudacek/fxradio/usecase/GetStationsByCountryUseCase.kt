@@ -17,9 +17,9 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.model.CountriesBody
-import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.CountriesBody
+import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.api.stations.model.Station
 
 /**
  * Gets all stations from provided country name

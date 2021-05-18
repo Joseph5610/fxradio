@@ -14,13 +14,14 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api
+package online.hudacek.fxradio.api.http
 
 import mu.KotlinLogging
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
+import online.hudacek.fxradio.api.http.providers.DefaultClientProvider
 import java.io.IOException
 import java.net.InetAddress
 
@@ -30,14 +31,17 @@ private val logger = KotlinLogging.logger {}
  * Creates and holds single instance of OkHttpClient
  * Plain OkHttpClient is used mostly for downloading images of stations
  */
-object HttpClient : OkHttpHelper() {
+object HttpClient {
+
+    //Uses default HTTP client
+    private val clientProvider = DefaultClientProvider()
 
     /**
      * Performs DNS lookup for [address]
      */
     fun lookup(address: String): MutableList<InetAddress> {
         logger.debug { "Performing DNS lookup for $address" }
-        return httpClient.dns().lookup(address)
+        return clientProvider.client.dns().lookup(address)
     }
 
     /**
@@ -45,7 +49,7 @@ object HttpClient : OkHttpHelper() {
      */
     fun request(url: String,
                 success: (Response) -> Unit,
-                fail: (IOException) -> Unit) = httpClient.newCall(buildRequest(url)).enqueue(
+                fail: (IOException) -> Unit) = clientProvider.client.newCall(buildRequest(url)).enqueue(
             object : Callback {
                 override fun onResponse(call: Call, response: Response) {
                     success(response)
@@ -66,4 +70,6 @@ object HttpClient : OkHttpHelper() {
     private fun buildRequest(url: String) = Request.Builder()
             .url(url)
             .build()
+
+    fun close() = clientProvider.close()
 }

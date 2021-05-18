@@ -19,7 +19,7 @@ package online.hudacek.fxradio.usecase
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
-import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.stations.StationsApi
 import online.hudacek.fxradio.events.AppEvent
 import tornadofx.Controller
 

@@ -14,17 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.api.stations.model
 
-import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Station
-
-/**
- * Gets list of Top 50 stations from radio-browser API
- */
-class GetTopStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
-
-    override fun execute(input: Unit): Single<List<Station>> = apiService
-            .getTopStations()
-            .compose(applySchedulers())
-}
+data class VoteResult(val ok: Boolean,
+                      val message: String)

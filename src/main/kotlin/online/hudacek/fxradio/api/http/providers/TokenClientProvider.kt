@@ -14,17 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.api.http.providers
 
-import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.api.http.interceptors.TokenInterceptor
 
 /**
- * Gets list of Top 50 stations from radio-browser API
+ * OkHttpClient with token authentication
  */
-class GetTopStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
 
-    override fun execute(input: Unit): Single<List<Station>> = apiService
-            .getTopStations()
-            .compose(applySchedulers())
+    private val tokenInterceptor = TokenInterceptor(bearerToken)
+
+    init {
+        interceptors += tokenInterceptor
+    }
 }

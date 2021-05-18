@@ -14,10 +14,11 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api
+package online.hudacek.fxradio.api.stations
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.model.*
+import online.hudacek.fxradio.api.ApiServiceProvider
+import online.hudacek.fxradio.api.stations.model.*
 import online.hudacek.fxradio.utils.Properties
 import online.hudacek.fxradio.utils.Property
 import online.hudacek.fxradio.viewmodel.Servers
@@ -66,13 +67,13 @@ interface StationsApi {
 
         private val apiServerProperty = Property(Properties.ApiServer)
 
-        val client: ApiClient by lazy {
+        val serviceProvider: ApiServiceProvider by lazy {
             if (apiServerProperty.isPresent) {
                 viewModel.item = Servers(apiServerProperty.get())
             }
-            ApiClient("https://${viewModel.selectedProperty.value}")
+            ApiServiceProvider("https://${viewModel.selectedProperty.value}")
         }
 
-        val service by lazy { client.create(StationsApi::class) }
+        val service by lazy { serviceProvider.get<StationsApi>() }
     }
 }

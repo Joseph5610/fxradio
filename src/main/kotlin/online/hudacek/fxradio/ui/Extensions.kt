@@ -36,8 +36,8 @@ import javafx.scene.paint.Color
 import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.api.model.countryCode
+import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.api.stations.model.countryCode
 import online.hudacek.fxradio.ui.style.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.control.textfield.CustomTextField

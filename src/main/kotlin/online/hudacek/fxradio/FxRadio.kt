@@ -17,8 +17,8 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.api.HttpClient
-import online.hudacek.fxradio.api.StationsApi
+import online.hudacek.fxradio.api.http.HttpClient
+import online.hudacek.fxradio.api.stations.StationsApi
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
@@ -114,8 +114,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         //Should be called when on every place that is closing the app
         fun shutdownApp() {
             playerViewModel.releasePlayer()
-            StationsApi.client.shutdown()
-            HttpClient.shutdown()
+            StationsApi.serviceProvider.close()
+            HttpClient.close()
         }
     }
 }

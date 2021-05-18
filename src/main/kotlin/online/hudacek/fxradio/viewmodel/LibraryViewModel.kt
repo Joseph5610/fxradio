@@ -21,7 +21,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.model.Country
+import online.hudacek.fxradio.api.stations.model.Country
 import online.hudacek.fxradio.usecase.GetCountriesUseCase
 import online.hudacek.fxradio.usecase.PinCountryUseCase
 import online.hudacek.fxradio.usecase.UnPinCountryUseCase

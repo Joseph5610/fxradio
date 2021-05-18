@@ -24,7 +24,7 @@ import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.model.tagsSplit
+import online.hudacek.fxradio.api.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.modal.Modals

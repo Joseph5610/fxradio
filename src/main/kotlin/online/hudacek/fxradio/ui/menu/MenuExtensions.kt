@@ -19,7 +19,7 @@ package online.hudacek.fxradio.ui.menu
 import javafx.beans.property.Property
 import javafx.scene.control.*
 import javafx.scene.input.KeyCodeCombination
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.Station
 import tornadofx.bind
 import tornadofx.booleanBinding
 import tornadofx.disableWhen

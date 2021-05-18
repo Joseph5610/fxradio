@@ -14,17 +14,22 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.api.http.providers
 
-import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Station
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 
-/**
- * Gets list of Top 50 stations from radio-browser API
- */
-class GetTopStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+interface HttpClientProvider {
 
-    override fun execute(input: Unit): Single<List<Station>> = apiService
-            .getTopStations()
-            .compose(applySchedulers())
+    val client: OkHttpClient
+
+    val interceptors: List<Interceptor>
+
+    /**
+     * Default implementation of closing the OkHttpClient
+     */
+    fun close() {
+        client.dispatcher().executorService().shutdownNow()
+        client.connectionPool().evictAll()
+    }
 }

@@ -1,4 +1,4 @@
-package online.hudacek.fxradio.api.model
+package online.hudacek.fxradio.api.stations.model
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package online.hudacek.fxradio.api.model
+package online.hudacek.fxradio.api.stations.model
 
 data class StatsResult(val supported_version: String,
                        val software_version: String,

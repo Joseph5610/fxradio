@@ -17,9 +17,9 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.model.SearchBody
-import online.hudacek.fxradio.api.model.SearchByTagBody
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.SearchBody
+import online.hudacek.fxradio.api.stations.model.SearchByTagBody
+import online.hudacek.fxradio.api.stations.model.Station
 
 /**
  * Searches for all stations that contains provided tag

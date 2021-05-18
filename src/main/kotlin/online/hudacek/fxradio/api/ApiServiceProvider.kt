@@ -16,29 +16,33 @@
 
 package online.hudacek.fxradio.api
 
+import online.hudacek.fxradio.api.http.providers.DefaultClientProvider
+import online.hudacek.fxradio.api.http.providers.HttpClientProvider
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.reflect.KClass
 
 /**
- * ApiClient for [baseUrl] that can create instance of Retrofit Service
+ * Provides Retrofit instance for [baseUrl]
  */
-class ApiClient(private val baseUrl: String) : OkHttpHelper() {
+class ApiServiceProvider(private val baseUrl: String,
+                         private val httpClientProvider: HttpClientProvider = DefaultClientProvider()) {
 
     /**
      * Retrofit client instance for [baseUrl] with custom [httpClient]
      */
-    private val client: Retrofit
+    val retrofit: Retrofit
         get() = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(baseUrl)
-                .client(httpClient)
+                .client(httpClientProvider.client)
                 .build()
 
     /**
-     * Constructs Retrofit [service] class
+     * Constructs Retrofit service class of type [T]
      */
-    fun <T : Any> create(service: KClass<T>): T = client.create(service.java)
+    inline fun <reified T : Any> get(): T = retrofit.create(T::class.java)
+
+    fun close() = httpClientProvider.close()
 }

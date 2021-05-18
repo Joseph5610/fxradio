@@ -14,31 +14,32 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api
+package online.hudacek.fxradio.api.http.providers
 
 import mu.KotlinLogging
 import okhttp3.ConnectionPool
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.api.http.interceptors.UserAgentInterceptor
 import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
 /**
+ * Defines Connection timeout for the duration og w in seconds
+ */
+private const val timeoutInSeconds: Long = 20
+
+/**
  * Helper variables and methods for OkHttpClient
  */
-open class OkHttpHelper {
+open class DefaultClientProvider : HttpClientProvider {
 
     /**
      * Defines the limits for the active connections
      */
-    private val connectionPool = ConnectionPool(5, 20, TimeUnit.SECONDS)
-
-    /**
-     * Defines what is app sending as a User Agent string
-     */
-    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
+    private val connectionPool = ConnectionPool(5, timeoutInSeconds, TimeUnit.SECONDS)
 
     /**
      * Enables Logging of http requests in app logger on debug level
@@ -50,36 +51,30 @@ open class OkHttpHelper {
                 level = HttpLoggingInterceptor.Level.BODY
             }
 
+    override val interceptors: MutableList<Interceptor> = mutableListOf(loggerInterceptor)
+
     /**
      * Construct http client with custom user agent, connection pool and timeouts
      */
-    protected val httpClient: OkHttpClient by lazy {
+    override val client: OkHttpClient by lazy {
         OkHttpClient.Builder()
                 //The whole call should not take longer than 20 secs
-                .callTimeout(20, TimeUnit.SECONDS)
-                .addNetworkInterceptor { chain ->
-                    chain.proceed(
-                            chain.request()
-                                    .newBuilder()
-                                    .header("User-Agent", userAgent)
-                                    .build()
-                    )
-                }
-                .addInterceptor(loggerInterceptor)
+                .callTimeout(timeoutInSeconds, TimeUnit.SECONDS)
+                .addNetworkInterceptor(UserAgentInterceptor())
                 .connectionPool(connectionPool)
-                .build()
+                .apply {
+                    interceptors.forEach {
+                        addInterceptor(it)
+                    }
+                }.build()
     }
 
     /**
      * Correctly kill all OkHttpClient threads
      */
-    fun shutdown() {
-        logger.info { "Shutting down OkHttpClient $httpClient" }
-        logger.debug {
-            "Idle connections: ${connectionPool.idleConnectionCount()} " +
-                    "All connections: ${connectionPool.connectionCount()}"
-        }
-        httpClient.dispatcher().executorService().shutdownNow()
-        httpClient.connectionPool().evictAll()
+    override fun close() {
+        logger.info { "Shutting down OkHttpClient $client" }
+        logger.debug { "Idle/All: ${connectionPool.idleConnectionCount()}/${connectionPool.connectionCount()}" }
+        super.close()
     }
 }

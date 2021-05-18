@@ -19,7 +19,7 @@ package online.hudacek.fxradio.storage.db
 import io.reactivex.Observable
 import io.reactivex.Single
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.Station
 
 private val logger = KotlinLogging.logger {}
 
