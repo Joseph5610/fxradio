@@ -22,13 +22,12 @@ import javafx.geometry.Pos
 import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.modal.Modals
-import online.hudacek.fxradio.ui.modal.StationInfoFragment
+import online.hudacek.fxradio.ui.modal.new
 import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
@@ -68,7 +67,7 @@ class StationsDataGridView : BaseView() {
             vbox {
                 contextmenu {
                     item(messages["menu.station.info"]).action {
-                        StationInfoFragment(station).openModal(stageStyle = StageStyle.UTILITY)
+                        Modals.StationInfo.new()
                     }
 
                     separator()

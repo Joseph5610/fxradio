@@ -17,34 +17,27 @@
 package online.hudacek.fxradio.utils.macos
 
 import de.codecentric.centerdevice.MenuToolkit
-import javafx.scene.control.Menu
-import javafx.scene.control.MenuBar
+import javafx.scene.control.MenuItem
 import javafx.scene.control.SeparatorMenuItem
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
 import tornadofx.FX
 
 /**
- * NSMenu helpers
+ * NSMenu helper for MacOS only
  */
-object MacMenu {
+open class NSMenu {
 
-    var isInTest = false
+    /**
+     * NSMenu toolkit initialization
+     */
+    protected val menuToolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
 
-    //NSMenu toolkit
-    private val menuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
-
-    fun menuBar(op: MenuBar.() -> Menu) = MenuBar().apply {
+    fun appMenu(menuItems: List<MenuItem>) = menu(FxRadio.appName) {
         if (!isInTest) {
-            useSystemMenuBarProperty().value = true
-            menuToolkit.setApplicationMenu(op(this))
-            menuToolkit.setMenuBar(this)
-        }
-    }
-
-    fun appMenu(op: Menu.() -> Unit = {}) = Menu(FxRadio.appName).apply {
-        if (!isInTest) {
-            op(this)
+            menuToolkit.setApplicationMenu(this)
+            items.addAll(menuItems)
             items.addAll(
                     separator(),
                     menuToolkit.createHideMenuItem(FxRadio.appName),
@@ -55,7 +48,7 @@ object MacMenu {
         }
     }
 
-    fun windowMenu(name: String) = Menu(name).apply {
+    fun windowMenu(name: String) = menu(name) {
         if (!isInTest) {
             menuToolkit.autoAddWindowMenuItems(this)
             items.addAll(
@@ -66,4 +59,9 @@ object MacMenu {
                     menuToolkit.createBringAllToFrontItem())
         }
     }
+
+    companion object {
+        var isInTest: Boolean = false
+    }
 }
+

@@ -56,9 +56,9 @@ abstract class Database(open val tableName: String) {
                 execute(member.createTableSql)
                         .toSingle()
                         .subscribe({
-                            logger.info { "Create table for ${member.tableName} returned result $it" }
+                            logger.info { "Create Table ${member.tableName} returned result: $it" }
                         }, { e ->
-                            logger.error(e) { "There was an error creating ${member.tableName} table!" }
+                            logger.error(e) { "Exception when creating ${member.tableName} table!" }
                         })
             }
         }

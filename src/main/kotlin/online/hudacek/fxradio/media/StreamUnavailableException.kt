@@ -33,7 +33,7 @@ class StreamUnavailableException(message: String, cause: Throwable?) : Exception
     init {
         Platform.runLater {
             playerViewModel.stateProperty.value = PlayerState.Error(localizedMessage)
-            logger.error(this) { "Stream can't be played" }
+            logger.error(this) { "Exception when playing stream!" }
         }
     }
 }

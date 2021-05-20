@@ -79,7 +79,7 @@ object ImageCache {
             .flatMap {
                 Single.just(Image("file:" + it.toFile().absolutePath, true))
             }
-            .doOnError { logger.error(it) { "Failed to get Image from cached file" } }
+            .doOnError { logger.error(it) { "Exception when getting station image from file!" } }
             .onErrorReturnItem(defaultRadioLogo)
 
     /**
@@ -87,7 +87,7 @@ object ImageCache {
      */
     fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
             .filter { !it.isCached }
-            .doOnError { logger.error(it) { "Cannot save downloaded image" } }
+            .doOnError { logger.error(it) { "Exception when saving downloaded image!" } }
             .map { cacheBasePath.resolve(it.stationuuid) }
             .subscribe {
                 Files.copy(
@@ -102,7 +102,7 @@ object ImageCache {
      */
     fun addInvalid(station: Station) {
         if (station.stationuuid !in invalidStationUuids) {
-            logger.trace { "Image for ${station.name} is added as invalid" }
+            logger.trace { "Image for ${station.name} is added as invalid!" }
             invalidStationUuids += station.stationuuid
         }
     }

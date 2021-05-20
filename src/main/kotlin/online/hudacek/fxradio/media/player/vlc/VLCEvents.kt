@@ -43,7 +43,7 @@ class VLCEvents : Controller() {
      */
     val nativeLogListener = LogEventListener { level, module, _, _, name, _, _, message ->
         lastLogMessage = message
-        logger.debug { "[$module] ($name) $level: $message" }
+        logger.info { "[$module] ($name) $level: $message" }
     }
 
     /**

@@ -35,7 +35,7 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Co
                 //so the returned object will have count set to 0 and the number is not displayed in UI
                 Country(it.getString("name"), 0)
             }
-            .doOnError { logger.error(it) { "Error when getting $tableName" } }
+            .doOnError { logger.error(it) { "Exception when retrieving data from $tableName" } }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 

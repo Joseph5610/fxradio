@@ -32,5 +32,5 @@ class AddStationUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
             .addStation(input)
             .compose(applySchedulers())
             .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, "0")) }
-            .doOnError { logger.error { "Error while adding station: ${it.message} " } }
+            .doOnError { logger.error { "Error while adding station: ${it.message}" } }
 }

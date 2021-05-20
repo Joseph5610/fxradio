@@ -74,6 +74,6 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
             .subscribe({
                 item = Favourites()
             }, {
-                logger.error(it) { "Cannot perform DB cleanup!" }
+                logger.error(it) { "Exception when performing DB cleanup!" }
             })
 }

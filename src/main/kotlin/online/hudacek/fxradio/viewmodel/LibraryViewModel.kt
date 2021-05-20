@@ -92,14 +92,14 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
             .subscribe({
                 pinnedProperty.add(it)
             }, {
-                logger.error(it) { "Pinning error" }
+                logger.error(it) { "Exception when performing Pinning!" }
             })
 
     fun unpinCountry(country: Country): Disposable = unPinCountryUseCase.execute(country)
             .subscribe({
                 pinnedProperty.remove(it)
             }, {
-                logger.error(it) { "Unpinning error" }
+                logger.error(it) { "Exception when performing Unpinning!" }
             })
 
     fun getCountries() = getCountriesUseCase.execute(countriesProperty)

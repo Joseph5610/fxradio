@@ -19,6 +19,7 @@ package online.hudacek.fxradio.ui.modal
 import javafx.stage.StageStyle
 import tornadofx.Fragment
 import tornadofx.find
+import kotlin.reflect.full.createInstance
 
 /**
  * Generic modal dialog helper
@@ -43,3 +44,6 @@ internal inline fun <reified T : Fragment> Modals<T>.open() = find<T>().openModa
         stageStyle = style,
         resizable = resizable)
 
+internal inline fun <reified T : Fragment> Modals<T>.new() = T::class.createInstance().openModal(
+        stageStyle = style,
+        resizable = resizable)

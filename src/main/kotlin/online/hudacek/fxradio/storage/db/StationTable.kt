@@ -50,7 +50,7 @@ class StationTable(override val tableName: String) : Table<Station>, Database(ta
                         it.getString("codec"),
                         it.getInt("bitrate"))
             }
-            .doOnError { logger.error(it) { "Error when getting $tableName" } }
+            .doOnError { logger.error(it) { "Exception when retrieving data from $tableName" } }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 

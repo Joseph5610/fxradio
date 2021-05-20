@@ -26,7 +26,7 @@ import online.hudacek.fxradio.api.stations.StationsApi
 import online.hudacek.fxradio.api.stations.model.SearchBody
 import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.utils.macos.MacMenu
+import online.hudacek.fxradio.utils.macos.NSMenu
 import online.hudacek.fxradio.viewmodel.LibraryItem
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -73,7 +73,7 @@ class BasicFunctionalityTests {
 
     @Init
     fun init() {
-        MacMenu.isInTest = true
+        NSMenu.isInTest = true
     }
 
     @Start

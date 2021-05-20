@@ -88,6 +88,6 @@ private fun Station.loadImage(view: ImageView) {
                     }
                 }
             }, {
-                logger.error(it) { "Failed loading image" }
+                logger.error(it) { "Exception when loading image from cache!" }
             })
 }

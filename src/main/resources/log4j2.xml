@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <properties>
+        <property name="logname">app.log</property>
+        <property name="name">${sys:user.home}/.fxradio/${logname}</property>
+    </properties>
     <appenders>
         <console name="stdout" target="SYSTEM_OUT">
             <patternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
         </console>
-        <File name="MyFile" fileName="${sys:user.home}/.fxradio/app.log">
+        <RollingFile name="MyFile" fileName="${name}"
+                     filePattern="${name}-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
-        </File>
+            <Policies>
+                <TimeBasedTriggeringPolicy/><!-- Rotated everyday -->
+                <SizeBasedTriggeringPolicy size="100 MB"/> <!-- Or every 100 MB -->
+            </Policies>
+        </RollingFile>
         <Async name="Async">
             <AppenderRef ref="MyFile"/>
         </Async>

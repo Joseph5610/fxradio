@@ -28,7 +28,7 @@ object MediaPlayerFactory {
      * Create MediaPlayer from String [playerType] identifier
      */
     fun create(playerType: String): MediaPlayer {
-        logger.debug { "MediaPlayer $playerType initializing" }
+        logger.debug { "MediaPlayer $playerType is initializing..." }
         return when (playerType.asPlayerType()) {
             MediaPlayer.Type.VLC -> tryLoadVLCPlayer()
             MediaPlayer.Type.Humble -> HumblePlayerImpl()
@@ -39,7 +39,7 @@ object MediaPlayerFactory {
      * Create opposite playerType than provided in [playerType] var
      */
     fun toggle(playerType: MediaPlayer.Type): MediaPlayer {
-        logger.debug { "MediaPlayer $playerType toggling" }
+        logger.debug { "MediaPlayer $playerType is toggling..." }
         return when (playerType) {
             MediaPlayer.Type.Humble -> tryLoadVLCPlayer()
             MediaPlayer.Type.VLC -> HumblePlayerImpl()
@@ -50,12 +50,11 @@ object MediaPlayerFactory {
      * Tries to load VLCPlayer. If it is not installed on the system,
      * it loads the Humble player instead.
      */
-    private fun tryLoadVLCPlayer(): MediaPlayer = try {
+    private fun tryLoadVLCPlayer(): MediaPlayer = runCatching {
         VLCPlayerImpl()
-    } catch (e: Exception) {
-        logger.error(e) { "VLC can't be initialized." }
-        HumblePlayerImpl()
-    }
+    }.onFailure {
+        logger.error(it) { "Exception when initializing VLC Player!" }
+    }.getOrDefault(HumblePlayerImpl())
 
     /**
      * Helper for loading of playerType from app.properties file
@@ -63,6 +62,6 @@ object MediaPlayerFactory {
     private fun String.asPlayerType() = runCatching {
         MediaPlayer.Type.valueOf(this)
     }.onFailure {
-        logger.error(it) { "This playerType is invalid. Using Humble MediaPlayer as fallback" }
+        logger.error(it) { "This playerType is invalid. Using Humble MediaPlayer as fallback!" }
     }.getOrDefault(MediaPlayer.Type.Humble)
 }

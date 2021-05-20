@@ -31,8 +31,7 @@ object MacUtils {
             NSUserNotification().apply {
                 this.title = title
                 this.informativeText = subtitle
-                show()
-            }
+            }.show()
 
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"

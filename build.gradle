@@ -139,7 +139,7 @@ jfx {
     if(runtimePath != null && System.getenv('FX_APPEND_PATH') != null) {
         runtimePath = runtimePath + System.getenv('FX_APPEND_PATH')
     }
-    logger.warn('Runtime path is: {}', runtimePath)
+    logger.info('Runtime path is: {}', runtimePath)
     bundleArguments = [
             licenseType: 'ASL 2.0',
             licenseFile: 'LICENSE', //,

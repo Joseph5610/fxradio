@@ -49,6 +49,10 @@ open class DefaultClientProvider : HttpClientProvider {
                 //Set logging level for HTTP requests to full request and response
                 //Http requests are logged only on trace app logger level
                 level = HttpLoggingInterceptor.Level.BODY
+
+                //Do not show sensitive information
+                redactHeader("Authorization")
+                redactHeader("Cookie")
             }
 
     override val interceptors: MutableList<Interceptor> = mutableListOf(loggerInterceptor)
@@ -73,7 +77,7 @@ open class DefaultClientProvider : HttpClientProvider {
      * Correctly kill all OkHttpClient threads
      */
     override fun close() {
-        logger.info { "Shutting down OkHttpClient $client" }
+        logger.info { "Closing OkHttpClient..." }
         logger.debug { "Idle/All: ${connectionPool.idleConnectionCount()}/${connectionPool.connectionCount()}" }
         super.close()
     }

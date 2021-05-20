@@ -75,11 +75,11 @@ class VLCAudioComponent {
                     it.mediaPlayer().controls().stop()
                 }
             }
-        }.onFailure { logger.debug { "Can't stop stream" } }
+        }.onFailure { logger.debug { "Can't stop stream..." } }
     }
 
     fun release() {
-        logger.info { "Releasing player" }
+        logger.info { "Releasing VLC player..." }
         player?.let {
             if (MediaPlayer.enableMetaDataService) {
                 it.mediaPlayer().events().removeMediaEventListener(vlcEvents.mediaMetaDataAdapter)

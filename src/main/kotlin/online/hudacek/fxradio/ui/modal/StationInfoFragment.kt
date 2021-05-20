@@ -23,7 +23,6 @@ import javafx.geometry.Pos
 import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.ui.*
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -34,13 +33,13 @@ import tornadofx.controlsfx.left
 import tornadofx.controlsfx.right
 import tornadofx.controlsfx.statusbar
 
-class StationInfoFragment(station: Station? = null) : BaseFragment() {
+class StationInfoFragment : BaseFragment() {
 
     private val viewModel: StationInfoViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        viewModel.item = StationInfo(station ?: playerViewModel.stationProperty.value)
+        viewModel.item = StationInfo(playerViewModel.stationProperty.value)
     }
 
     override val root = vbox {

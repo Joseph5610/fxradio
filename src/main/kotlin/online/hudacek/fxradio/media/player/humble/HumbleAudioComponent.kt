@@ -106,7 +106,7 @@ class HumbleAudioComponent {
     fun cancel() {
         job?.let {
             if (it.isActive) {
-                logger.debug { "Cancelling playback" }
+                logger.debug { "Cancelling current playback..." }
                 it.cancel()
             }
         }

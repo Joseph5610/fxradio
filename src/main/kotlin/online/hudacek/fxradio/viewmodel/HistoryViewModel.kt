@@ -49,7 +49,7 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
         appEvent.addToHistory
                 //Add only valid stations not already present in history
                 .filter { it.isValid() }
-                .doOnError { logger.error(it) { "Error adding station to history!" } }
+                .doOnError { logger.error(it) { "Exception when adding station to history!" } }
                 .flatMapSingle { Tables.history.insert(it) }
                 .subscribe {
                     stationsProperty += it
@@ -59,7 +59,7 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
     fun cleanupHistory() = Tables.history
             .removeAll()
             .toObservable()
-            .doOnError { logger.error(it) { "Cannot perform DB cleanup!" } }
+            .doOnError { logger.error(it) { "Exception when performing DB cleanup!" } }
             .doOnEach { item = History() }
             .map { LibraryState.History }
             .subscribe(appEvent.refreshLibrary)
