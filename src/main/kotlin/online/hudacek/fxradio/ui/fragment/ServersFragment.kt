@@ -14,12 +14,12 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.modal
+package online.hudacek.fxradio.ui.fragment
 
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
-import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles

@@ -14,13 +14,13 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.viewmodel
+package online.hudacek.fxradio.usecase
 
-import online.hudacek.fxradio.event.AppEvent
-import tornadofx.ItemViewModel
+import io.reactivex.Single
+import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.storage.db.Tables
 
-abstract class BaseViewModel<Item : Any>(initialItem: Item? = null) :
-        ItemViewModel<Item>(initialValue = initialItem) {
+class FavouriteAddUseCase : BaseUseCase<Station, Single<Station>>() {
 
-    protected val appEvent: AppEvent by inject()
+    override fun execute(input: Station) = Tables.favourites.insert(input)
 }

@@ -21,8 +21,8 @@ import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.usecase.GetServersUseCase
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.save
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.save
 import tornadofx.fail
 import tornadofx.observableListOf
 import tornadofx.property
@@ -46,7 +46,7 @@ class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
  * Item is set in [online.hudacek.fxradio.api.StationsApi.Companion]
  *
  * Search for available servers is performed only on first start of the app or when opening
- * [online.hudacek.fxradio.ui.modal.ServersFragment]
+ * [online.hudacek.fxradio.ui.fragment.ServersFragment]
  */
 class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
 

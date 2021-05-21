@@ -14,14 +14,14 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.providers
+package online.hudacek.fxradio.api.http.provider
 
 import mu.KotlinLogging
 import okhttp3.ConnectionPool
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import online.hudacek.fxradio.api.http.interceptors.UserAgentInterceptor
+import online.hudacek.fxradio.api.http.interceptor.UserAgentInterceptor
 import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}

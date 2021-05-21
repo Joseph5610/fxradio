@@ -14,28 +14,13 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils
+package online.hudacek.fxradio.usecase
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import io.reactivex.Single
+import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.storage.db.Tables
 
-/**
- * Execute OS command
- */
-class Command(private val command: String) {
+class CountryPinUseCase : BaseUseCase<Country, Single<Country>>() {
 
-    fun exec() = Runtime.getRuntime().exec(command).result
-
-    /**
-     * Parse result of command to string
-     */
-    private val Process.result: String
-        get() {
-            val sb = StringBuilder()
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            reader.forEachLine {
-                sb.append(it)
-            }
-            return sb.toString()
-        }
+    override fun execute(input: Country) = Tables.pinnedCountries.insert(input)
 }

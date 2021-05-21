@@ -20,7 +20,7 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
 import online.hudacek.fxradio.api.stations.StationsApi
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import tornadofx.Controller
 
 /**

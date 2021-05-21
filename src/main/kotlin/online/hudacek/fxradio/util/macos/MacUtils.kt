@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils.macos
+package online.hudacek.fxradio.util.macos
 
 import airsquared.JMacNotification.NSUserNotification
-import online.hudacek.fxradio.utils.Command
+import online.hudacek.fxradio.util.Command
 import org.controlsfx.tools.Platform
 
 object MacUtils {

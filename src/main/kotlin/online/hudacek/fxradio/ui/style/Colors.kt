@@ -20,7 +20,7 @@ import online.hudacek.fxradio.FxRadio
 
 object Colors {
     val values: ColorValues by lazy {
-        if (FxRadio.isAppInDarkMode) DarkColorValues() else ColorValues()
+        if (FxRadio.darkModeEnabled) DarkColorValues() else ColorValues()
     }
 }
 

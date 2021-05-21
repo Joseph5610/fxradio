@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.modal
+package online.hudacek.fxradio.ui.fragment
 
 import javafx.stage.StageStyle
 import tornadofx.Fragment

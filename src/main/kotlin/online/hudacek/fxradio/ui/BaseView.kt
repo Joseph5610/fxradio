@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.ui
 
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import tornadofx.View
 
 abstract class BaseView(title: String? = null) : View(title) {

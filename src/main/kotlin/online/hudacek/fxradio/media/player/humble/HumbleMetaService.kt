@@ -22,7 +22,7 @@ import javafx.concurrent.ScheduledService
 import javafx.concurrent.Task
 import javafx.util.Duration
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.media.StreamMetaData
 import tornadofx.find
 

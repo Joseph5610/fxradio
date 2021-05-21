@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.modal
+package online.hudacek.fxradio.ui.fragment
 
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseFragment

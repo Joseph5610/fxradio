@@ -14,11 +14,11 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events
+package online.hudacek.fxradio.event
 
 import io.reactivex.subjects.BehaviorSubject
 import online.hudacek.fxradio.api.stations.model.Station
-import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.viewmodel.LibraryState
 import tornadofx.Controller

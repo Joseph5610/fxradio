@@ -162,7 +162,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
  */
 internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
     //Show dark notifications
-    if (FxRadio.isAppInDarkMode) {
+    if (FxRadio.darkModeEnabled) {
         styleClass += NotificationPane.STYLE_CLASS_DARK
     }
     op(this)

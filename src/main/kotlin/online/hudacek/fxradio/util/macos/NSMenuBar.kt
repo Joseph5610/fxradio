@@ -14,13 +14,24 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.viewmodel
+package online.hudacek.fxradio.util.macos
 
-import online.hudacek.fxradio.event.AppEvent
-import tornadofx.ItemViewModel
+import javafx.scene.control.MenuBar
 
-abstract class BaseViewModel<Item : Any>(initialItem: Item? = null) :
-        ItemViewModel<Item>(initialValue = initialItem) {
+/**
+ * NSMenu helper for MacOS only
+ */
+class NSMenuBar : NSMenu() {
 
-    protected val appEvent: AppEvent by inject()
+    val menuBar = MenuBar().apply {
+        if (!isInTest) {
+            useSystemMenuBarProperty().value = true
+            menuToolkit.setMenuBar(this)
+        }
+    }
+
+    companion object {
+        var isInTest: Boolean = false
+    }
 }
+

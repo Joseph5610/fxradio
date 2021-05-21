@@ -14,13 +14,22 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.viewmodel
+package online.hudacek.fxradio.api.http.provider
 
-import online.hudacek.fxradio.event.AppEvent
-import tornadofx.ItemViewModel
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 
-abstract class BaseViewModel<Item : Any>(initialItem: Item? = null) :
-        ItemViewModel<Item>(initialValue = initialItem) {
+interface HttpClientProvider {
 
-    protected val appEvent: AppEvent by inject()
+    val client: OkHttpClient
+
+    val interceptors: List<Interceptor>
+
+    /**
+     * Default implementation of closing the OkHttpClient
+     */
+    fun close() {
+        client.dispatcher().executorService().shutdownNow()
+        client.connectionPool().evictAll()
+    }
 }

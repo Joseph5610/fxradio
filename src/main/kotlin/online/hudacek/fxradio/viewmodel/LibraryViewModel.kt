@@ -22,12 +22,12 @@ import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.usecase.CountryPinUseCase
+import online.hudacek.fxradio.usecase.CountryUnpinUseCase
 import online.hudacek.fxradio.usecase.GetCountriesUseCase
-import online.hudacek.fxradio.usecase.PinCountryUseCase
-import online.hudacek.fxradio.usecase.UnPinCountryUseCase
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.saveProperties
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.saveProperties
+import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.observableListOf
 import tornadofx.property
@@ -77,8 +77,8 @@ class Library(countries: ObservableList<Country> = observableListOf(),
 class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
-    private val pinCountryUseCase: PinCountryUseCase by inject()
-    private val unPinCountryUseCase: UnPinCountryUseCase by inject()
+    private val countryPinUseCase: CountryPinUseCase by inject()
+    private val countryUnpinUseCase: CountryUnpinUseCase by inject()
 
     val countriesProperty = bind(Library::countries) as ListProperty
     val librariesProperty = bind(Library::libraries) as ListProperty
@@ -88,16 +88,16 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
-    fun pinCountry(country: Country): Disposable = pinCountryUseCase.execute(country)
+    fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
             .subscribe({
                 pinnedProperty.add(it)
             }, {
                 logger.error(it) { "Exception when performing Pinning!" }
             })
 
-    fun unpinCountry(country: Country): Disposable = unPinCountryUseCase.execute(country)
+    fun unpinCountry(country: Country): Disposable = countryUnpinUseCase.execute(country)
             .subscribe({
-                pinnedProperty.remove(it)
+                pinnedProperty -= it
             }, {
                 logger.error(it) { "Exception when performing Unpinning!" }
             })

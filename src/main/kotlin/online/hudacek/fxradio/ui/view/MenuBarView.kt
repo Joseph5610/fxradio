@@ -18,8 +18,8 @@ package online.hudacek.fxradio.ui.view
 
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.*
-import online.hudacek.fxradio.utils.macos.NSMenu
-import online.hudacek.fxradio.utils.macos.NSMenuBar
+import online.hudacek.fxradio.util.macos.NSMenu
+import online.hudacek.fxradio.util.macos.NSMenuBar
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
 import tornadofx.get
 import tornadofx.menubar

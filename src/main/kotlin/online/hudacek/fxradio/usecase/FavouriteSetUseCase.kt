@@ -14,22 +14,17 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.providers
+package online.hudacek.fxradio.usecase
 
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import io.reactivex.disposables.Disposable
+import javafx.beans.property.ListProperty
+import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.storage.db.Tables
 
-interface HttpClientProvider {
+class FavouriteSetUseCase : BaseUseCase<ListProperty<Station>, Disposable>() {
 
-    val client: OkHttpClient
-
-    val interceptors: List<Interceptor>
-
-    /**
-     * Default implementation of closing the OkHttpClient
-     */
-    fun close() {
-        client.dispatcher().executorService().shutdownNow()
-        client.connectionPool().evictAll()
-    }
+    override fun execute(input: ListProperty<Station>): Disposable = Tables.favourites.selectAll()
+            .subscribe {
+                input += it
+            }
 }

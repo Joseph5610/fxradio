@@ -25,10 +25,10 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.fragment.Modals
+import online.hudacek.fxradio.ui.fragment.new
+import online.hudacek.fxradio.ui.fragment.open
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
-import online.hudacek.fxradio.ui.modal.Modals
-import online.hudacek.fxradio.ui.modal.new
-import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage

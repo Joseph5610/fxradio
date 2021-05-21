@@ -35,7 +35,7 @@ class Stats(stats: ObservableList<Pair<String, String>> = observableListOf()) {
 
 /**
  * Holds information about radio-browser API stats and health
- * Shown inside [online.hudacek.fxradio.ui.modal.StatsFragment]
+ * Shown inside [online.hudacek.fxradio.ui.fragment.StatsFragment]
  */
 class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats()) {
 

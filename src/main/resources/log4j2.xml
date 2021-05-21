@@ -14,7 +14,6 @@
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
             <Policies>
-                <TimeBasedTriggeringPolicy/><!-- Rotated everyday -->
                 <SizeBasedTriggeringPolicy size="100 MB"/> <!-- Or every 100 MB -->
             </Policies>
         </RollingFile>

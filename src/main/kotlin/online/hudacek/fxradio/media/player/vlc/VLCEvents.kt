@@ -18,7 +18,7 @@ package online.hudacek.fxradio.media.player.vlc
 
 import io.reactivex.subjects.BehaviorSubject
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
 import tornadofx.Controller

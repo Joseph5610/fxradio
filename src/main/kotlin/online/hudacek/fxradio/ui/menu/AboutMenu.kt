@@ -18,9 +18,8 @@ package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.ui.modal.Modals
-import online.hudacek.fxradio.ui.modal.open
-import tornadofx.FX
+import online.hudacek.fxradio.ui.fragment.Modals
+import online.hudacek.fxradio.ui.fragment.open
 import tornadofx.action
 import tornadofx.get
 
@@ -47,8 +46,7 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
                 separator(),
                 item(messages["menu.app.quit"]) {
                     action {
-                        FX.primaryStage.close()
-                        FxRadio.shutdownApp()
+                        primaryStage.close()
                     }
                 }
         ))

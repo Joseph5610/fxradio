@@ -27,7 +27,7 @@ import tornadofx.stringBinding
 import java.util.*
 
 /**
- * Stores entered information into the form in [online.hudacek.fxradio.ui.modal.AddStationFragment]
+ * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
  * Handles logic for adding new station into the API
  */
 class AddStationModel(name: String = "",

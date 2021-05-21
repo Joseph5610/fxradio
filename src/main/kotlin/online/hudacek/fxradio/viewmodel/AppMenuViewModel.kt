@@ -20,9 +20,9 @@ import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.usecase.ClearCacheUseCase
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.macos.MacUtils
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.value
 import tornadofx.property
 
 class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuBar.value(true)) {

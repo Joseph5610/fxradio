@@ -14,23 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.interceptors
+package online.hudacek.fxradio.api.http.provider
 
-import okhttp3.Interceptor
-import okhttp3.Response
-import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.api.http.interceptor.TokenInterceptor
 
-class UserAgentInterceptor : Interceptor {
+/**
+ * OkHttpClient with token authentication
+ */
+class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
 
-    /**
-     * Defines what is app sending as a User Agent string
-     */
-    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
+    private val tokenInterceptor = TokenInterceptor(bearerToken)
 
-    override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
-            chain.request()
-                    .newBuilder()
-                    .header("User-Agent", userAgent)
-                    .build()
-    )
+    init {
+        interceptors += tokenInterceptor
+    }
 }

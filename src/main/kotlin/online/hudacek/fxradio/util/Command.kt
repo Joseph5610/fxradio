@@ -14,24 +14,28 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils.macos
+package online.hudacek.fxradio.util
 
-import javafx.scene.control.MenuBar
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 /**
- * NSMenu helper for MacOS only
+ * Execute OS command
  */
-class NSMenuBar : NSMenu() {
+class Command(private val command: String) {
 
-    val menuBar = MenuBar().apply {
-        if (!isInTest) {
-            useSystemMenuBarProperty().value = true
-            menuToolkit.setMenuBar(this)
+    fun exec() = Runtime.getRuntime().exec(command).result
+
+    /**
+     * Parse result of command to string
+     */
+    private val Process.result: String
+        get() {
+            val sb = StringBuilder()
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            reader.forEachLine {
+                sb.append(it)
+            }
+            return sb.toString()
         }
-    }
-
-    companion object {
-        var isInTest: Boolean = false
-    }
 }
-

@@ -14,13 +14,23 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.api.http.interceptor
 
-import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Country
-import online.hudacek.fxradio.storage.db.Tables
+import okhttp3.Interceptor
+import okhttp3.Response
+import online.hudacek.fxradio.FxRadio
 
-class PinCountryUseCase : BaseUseCase<Country, Single<Country>>() {
+class UserAgentInterceptor : Interceptor {
 
-    override fun execute(input: Country) = Tables.pinnedCountries.insert(input)
+    /**
+     * Defines what is app sending as a User Agent string
+     */
+    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
+
+    override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
+            chain.request()
+                    .newBuilder()
+                    .header("User-Agent", userAgent)
+                    .build()
+    )
 }

@@ -153,7 +153,7 @@ class TickerView : BaseView() {
                     if (layoutX <= 0 - textWidth - (2 * offset)) {
                         //Now I ned to figure out how to remove it
                         entry.content.removeFromParent() //Is this legit?
-                        activeTicks.remove(active) //no longer here, shouldn't ruin the loop
+                        activeTicks -= active //no longer here, shouldn't ruin the loop
                         if (entry in subscriptions) {
                             subscriptions.remove(entry)!!.dispose() //This should cancel it
                         }

@@ -16,8 +16,8 @@
 
 package online.hudacek.fxradio.api
 
-import online.hudacek.fxradio.api.http.providers.DefaultClientProvider
-import online.hudacek.fxradio.api.http.providers.HttpClientProvider
+import online.hudacek.fxradio.api.http.provider.DefaultClientProvider
+import online.hudacek.fxradio.api.http.provider.HttpClientProvider
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

@@ -14,18 +14,13 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.providers
+package online.hudacek.fxradio.usecase
 
-import online.hudacek.fxradio.api.http.interceptors.TokenInterceptor
+import io.reactivex.Single
+import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.storage.db.Tables
 
-/**
- * OkHttpClient with token authentication
- */
-class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
+class CountryUnpinUseCase : BaseUseCase<Country, Single<Country>>() {
 
-    private val tokenInterceptor = TokenInterceptor(bearerToken)
-
-    init {
-        interceptors += tokenInterceptor
-    }
+    override fun execute(input: Country) = Tables.pinnedCountries.remove(input)
 }

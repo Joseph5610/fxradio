@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.ui.modal
+package online.hudacek.fxradio.ui.fragment
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.beans.property.IntegerProperty

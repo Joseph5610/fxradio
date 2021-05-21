@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils
+package online.hudacek.fxradio.util
 
 import mu.KotlinLogging
 import tornadofx.Component

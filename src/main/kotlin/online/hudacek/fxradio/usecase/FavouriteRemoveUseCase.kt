@@ -14,17 +14,13 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.interceptors
+package online.hudacek.fxradio.usecase
 
-import okhttp3.Interceptor
-import okhttp3.Response
+import io.reactivex.Single
+import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.storage.db.Tables
 
-class TokenInterceptor(private val bearerToken: String) : Interceptor {
+class FavouriteRemoveUseCase : BaseUseCase<Station, Single<Station>>() {
 
-    override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
-            chain.request()
-                    .newBuilder()
-                    .addHeader("Authorization", "Bearer $bearerToken")
-                    .build()
-    )
+    override fun execute(input: Station) = Tables.favourites.remove(input)
 }

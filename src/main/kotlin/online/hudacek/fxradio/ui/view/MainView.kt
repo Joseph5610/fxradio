@@ -28,8 +28,8 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.Property
 import tornadofx.*
 import tornadofx.controlsfx.content
 
@@ -51,11 +51,6 @@ class MainView : BaseView(FxRadio.appName) {
     }
 
     override fun onDock() {
-        //Correctly shutdown all classes
-        currentStage?.setOnCloseRequest {
-            FxRadio.shutdownApp()
-        }
-
         with(leftPane) {
             //Workaround for setting correct position of divider after restart of app
             setDividerPositions(windowDividerProperty.get(0.30))

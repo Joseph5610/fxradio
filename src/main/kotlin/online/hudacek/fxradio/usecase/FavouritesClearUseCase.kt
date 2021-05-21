@@ -16,23 +16,23 @@
 
 package online.hudacek.fxradio.usecase
 
-import javafx.collections.ObservableList
-import javafx.concurrent.Task
-import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.http.HttpClient
-import tornadofx.asObservable
+import io.reactivex.disposables.Disposable
+import mu.KotlinLogging
+import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.viewmodel.Favourites
+import online.hudacek.fxradio.viewmodel.FavouritesViewModel
+
+private val logger = KotlinLogging.logger {}
 
 /**
- * Retrieves valid list of radio-browser API urls
+ * Removes favourites DB and resets viewmodel
  */
-class GetServersUseCase : BaseUseCase<Unit, Task<ObservableList<String>>>() {
+class FavouritesClearUseCase : BaseUseCase<FavouritesViewModel, Disposable>() {
 
-    private val lookupUrl = Config.API.dnsLookupURL
-
-    override fun execute(input: Unit): Task<ObservableList<String>> = runAsync(daemon = true) {
-        HttpClient.lookup(lookupUrl)
-                .map { it.canonicalHostName }
-                .distinct()
-                .asObservable()
-    }
+    override fun execute(input: FavouritesViewModel): Disposable = Tables.favourites.removeAll()
+            .subscribe({
+                input.item = Favourites()
+            }, {
+                logger.error(it) { "Exception when performing DB cleanup!" }
+            })
 }

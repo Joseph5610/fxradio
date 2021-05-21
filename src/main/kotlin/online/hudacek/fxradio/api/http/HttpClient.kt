@@ -21,7 +21,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
-import online.hudacek.fxradio.api.http.providers.DefaultClientProvider
+import online.hudacek.fxradio.api.http.provider.DefaultClientProvider
 import java.io.IOException
 import java.net.InetAddress
 

@@ -16,14 +16,13 @@
 
 package online.hudacek.fxradio.usecase
 
-import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.formatted
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.confirm
 import tornadofx.fail
 import tornadofx.get
-import tornadofx.success
 
 /**
  * Clears FxRadio image cache directory
@@ -38,7 +37,6 @@ class ClearCacheUseCase : BaseUseCase<Unit, Unit>() {
                         messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
                     runAsync(daemon = true) {
                         ImageCache.clear()
-                    } success {
                         appEvent.appNotification.onNext(
                                 AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
                     } fail {

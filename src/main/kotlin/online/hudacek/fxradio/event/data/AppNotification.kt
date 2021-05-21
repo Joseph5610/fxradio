@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.events.data
+package online.hudacek.fxradio.event.data
 
 import org.controlsfx.glyphfont.FontAwesome
 

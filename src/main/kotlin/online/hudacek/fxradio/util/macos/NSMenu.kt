@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.utils.macos
+package online.hudacek.fxradio.util.macos
 
 import de.codecentric.centerdevice.MenuToolkit
 import javafx.scene.control.MenuItem

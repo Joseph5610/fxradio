@@ -16,8 +16,8 @@
 
 package online.hudacek.fxradio.media
 
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.value
 
 /**
  * Common interface for all available players

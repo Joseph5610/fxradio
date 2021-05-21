@@ -19,8 +19,8 @@ package online.hudacek.fxradio.api.stations
 import io.reactivex.Single
 import online.hudacek.fxradio.api.ApiServiceProvider
 import online.hudacek.fxradio.api.stations.model.*
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.Property
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.viewmodel.Servers
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import retrofit2.http.Body

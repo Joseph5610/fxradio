@@ -20,17 +20,17 @@ import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import mu.KotlinLogging
 import online.hudacek.fxradio.api.stations.model.Station
-import online.hudacek.fxradio.events.data.AppNotification
-import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.usecase.FavouriteAddUseCase
+import online.hudacek.fxradio.usecase.FavouriteRemoveUseCase
+import online.hudacek.fxradio.usecase.FavouriteSetUseCase
+import online.hudacek.fxradio.usecase.FavouritesClearUseCase
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
-
-private val logger = KotlinLogging.logger {}
 
 class Favourites(stations: ObservableList<Station> = observableListOf()) {
     var stations: ObservableList<Station> by property(stations)
@@ -42,18 +42,19 @@ class Favourites(stations: ObservableList<Station> = observableListOf()) {
  */
 class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
 
+    private val favouriteAddUseCase: FavouriteAddUseCase by inject()
+    private val favouriteRemoveUseCase: FavouriteRemoveUseCase by inject()
+    private val cleanFavouritesClearUseCase: FavouritesClearUseCase by inject()
+    private val favouriteSetUseCase: FavouriteSetUseCase by inject()
+
     val stationsProperty = bind(Favourites::stations) as ListProperty
 
     init {
-        Tables.favourites
-                .selectAll()
-                .subscribe {
-                    stationsProperty += it
-                }
+        favouriteSetUseCase.execute(stationsProperty)
 
         appEvent.addFavourite
                 .filter { it.isValid() && it !in stationsProperty }
-                .flatMapSingle { Tables.favourites.insert(it) }
+                .flatMapSingle { favouriteAddUseCase.execute(it) }
                 .flatMapSingle {
                     stationsProperty += it
                     Single.just(AppNotification(messages["menu.station.favouriteAdded"].formatted(it.name),
@@ -61,19 +62,13 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
                 }.subscribe(appEvent.appNotification)
 
         appEvent.removeFavourite
-                .flatMapSingle { Tables.favourites.remove(it) }
+                .flatMapSingle { favouriteRemoveUseCase.execute(it) }
                 .flatMapSingle {
-                    stationsProperty.remove(it)
+                    stationsProperty -= it
                     Single.just(AppNotification(messages["menu.station.favouriteRemoved"].formatted(it.name),
                             FontAwesome.Glyph.CHECK))
                 }.subscribe(appEvent.appNotification)
     }
 
-    fun cleanupFavourites(): Disposable = Tables.favourites
-            .removeAll()
-            .subscribe({
-                item = Favourites()
-            }, {
-                logger.error(it) { "Exception when performing DB cleanup!" }
-            })
+    fun cleanupFavourites(): Disposable = cleanFavouritesClearUseCase.execute(this)
 }
