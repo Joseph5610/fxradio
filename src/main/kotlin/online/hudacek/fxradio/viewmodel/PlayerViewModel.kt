@@ -78,14 +78,16 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(initialState = P
                 .filter { it.isValid() }
                 .doOnEach(appEvent.addToHistory) //Send the new history item event
                 .flatMapSingle(clickUseCase::execute)
-                .subscribe {
+                .subscribe({
                     //Update the name of the station
                     trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
 
                     //Restart playing status
                     stateProperty.value = PlayerState.Stopped
                     stateProperty.value = PlayerState.Playing
-                }
+                }, {
+                    stateProperty.value = PlayerState.Error(it.localizedMessage)
+                })
 
         //Set volume for current player
         volumeProperty.onChange { mediaPlayerProperty.value?.changeVolume(it) }

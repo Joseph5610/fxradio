@@ -24,14 +24,10 @@ import javafx.scene.control.MenuBar
 class NSMenuBar : NSMenu() {
 
     val menuBar = MenuBar().apply {
-        if (!isInTest) {
+        if (MacUtils.useNSMenu) {
             useSystemMenuBarProperty().value = true
             menuToolkit.setMenuBar(this)
         }
-    }
-
-    companion object {
-        var isInTest: Boolean = false
     }
 }
 

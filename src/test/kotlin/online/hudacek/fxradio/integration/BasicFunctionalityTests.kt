@@ -20,13 +20,15 @@ import javafx.scene.control.Button
 import javafx.scene.control.ListView
 import javafx.scene.control.Slider
 import javafx.stage.Stage
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
+import online.hudacek.fxradio.api.ApiServiceProvider
 import online.hudacek.fxradio.api.stations.StationsApi
 import online.hudacek.fxradio.api.stations.model.SearchBody
 import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.util.macos.NSMenu
+import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.viewmodel.LibraryItem
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -52,6 +54,7 @@ import tornadofx.find
 class BasicFunctionalityTests {
 
     private lateinit var app: FxRadio
+    private lateinit var stage: Stage
 
     companion object {
         //IDs
@@ -69,17 +72,19 @@ class BasicFunctionalityTests {
     }
 
     //Http Client, init only once needed
-    private val service by lazy { StationsApi.service }
+    private val service
+        get() = ApiServiceProvider("https://${Config.API.fallbackApiServerURL}").get<StationsApi>()
 
     @Init
     fun init() {
-        NSMenu.isInTest = true
+        MacUtils.useNSMenu = false
     }
 
     @Start
     fun start(stage: Stage) {
         app = FxRadioLight()
         app.start(stage)
+        this.stage = stage
     }
 
     @Stop
@@ -116,7 +121,11 @@ class BasicFunctionalityTests {
         //wait until loaded
         sleep(2)
         //Avoid station names that start with # as it is query locator for ID
-        val stationToClick = stations.items.filter { !it.name.startsWith("#") }.take(5).random()
+        val stationToClick = stations.items
+                .filter { !it.name.startsWith("#") }
+                .filter { it.name != player.stationProperty.value.name }
+                .take(5)
+                .random()
         robot.doubleClickOn(stationToClick.name)
 
         WaitForAsyncUtils.waitForFxEvents()

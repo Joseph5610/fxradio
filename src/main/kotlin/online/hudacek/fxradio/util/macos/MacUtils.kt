@@ -24,6 +24,8 @@ object MacUtils {
 
     val isMac = Platform.getCurrent() == Platform.OSX
 
+    var useNSMenu = true
+
     /**
      * Shows MacOS native system notification
      */

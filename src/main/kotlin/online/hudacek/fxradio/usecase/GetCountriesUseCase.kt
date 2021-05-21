@@ -18,9 +18,12 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
+import mu.KotlinLogging
 import online.hudacek.fxradio.api.stations.model.CountriesBody
 import online.hudacek.fxradio.api.stations.model.Country
 import online.hudacek.fxradio.api.stations.model.isValid
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Gets list of valid country names and count of stations in it
@@ -32,6 +35,7 @@ class GetCountriesUseCase : BaseUseCase<ListProperty<Country>, Disposable>() {
             .compose(applySchedulers())
             .flattenAsObservable { it }
             .filter { it.isValid }
+            .doOnError { logger.error(it) { "Exception while getting Countries!" } }
             .subscribe {
                 input.add(it)
             }
