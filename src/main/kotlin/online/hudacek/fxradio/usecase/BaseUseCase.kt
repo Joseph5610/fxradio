@@ -30,8 +30,7 @@ abstract class BaseUseCase<InputType, OutputType> : Controller() {
 
     protected val appEvent: AppEvent by inject()
 
-    protected val apiService
-    get() = StationsApi.service
+    protected val apiService = StationsApi.service
 
     abstract fun execute(input: InputType): OutputType
 

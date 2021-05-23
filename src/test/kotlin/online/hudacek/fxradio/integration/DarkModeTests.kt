@@ -19,8 +19,6 @@ package online.hudacek.fxradio.integration
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioDark
-import online.hudacek.fxradio.util.macos.MacUtils
-import online.hudacek.fxradio.util.macos.NSMenu
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert
@@ -36,11 +34,11 @@ class DarkModeTests {
     private lateinit var app: FxRadio
 
     private val nowPlayingLabel = "#nowStreaming"
-    private val stationsDatarid = "#stations"
+    private val stationsDatagrid = "#stations"
 
     @Init
     fun init() {
-        MacUtils.useNSMenu = false
+        FxRadio.setTestEnvironment = true
     }
 
     @Start

@@ -81,9 +81,11 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
     }
 
     override fun stop() {
-        playerViewModel.releasePlayer()
-        StationsApi.serviceProvider.close()
-        HttpClient.close()
+        if (!setTestEnvironment) {
+            playerViewModel.releasePlayer()
+            StationsApi.serviceProvider.close()
+            HttpClient.close()
+        }
 
         //Save last used window width/height on close of the app to use it on next start
         saveProperties(mapOf(
@@ -99,6 +101,8 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
      * Basic info about the app
      */
     companion object : Component() {
+
+        var setTestEnvironment = false
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"

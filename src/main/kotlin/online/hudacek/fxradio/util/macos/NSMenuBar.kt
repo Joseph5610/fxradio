@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.util.macos
 
 import javafx.scene.control.MenuBar
+import online.hudacek.fxradio.FxRadio
 
 /**
  * NSMenu helper for MacOS only
@@ -24,7 +25,7 @@ import javafx.scene.control.MenuBar
 class NSMenuBar : NSMenu() {
 
     val menuBar = MenuBar().apply {
-        if (MacUtils.useNSMenu) {
+        if (!FxRadio.setTestEnvironment) {
             useSystemMenuBarProperty().value = true
             menuToolkit.setMenuBar(this)
         }

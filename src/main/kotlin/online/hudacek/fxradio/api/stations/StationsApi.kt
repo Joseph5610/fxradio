@@ -74,7 +74,6 @@ interface StationsApi {
             ApiServiceProvider("https://${viewModel.selectedProperty.value}")
         }
 
-        val service
-                get() = serviceProvider.get<StationsApi>()
+        val service = serviceProvider.get<StationsApi>()
     }
 }

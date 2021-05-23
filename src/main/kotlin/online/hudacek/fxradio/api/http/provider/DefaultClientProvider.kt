@@ -60,18 +60,17 @@ open class DefaultClientProvider : HttpClientProvider {
     /**
      * Construct http client with custom user agent, connection pool and timeouts
      */
-    override val client: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-                //The whole call should not take longer than 20 secs
-                .callTimeout(timeoutInSeconds, TimeUnit.SECONDS)
-                .addNetworkInterceptor(UserAgentInterceptor())
-                .connectionPool(connectionPool)
-                .apply {
-                    interceptors.forEach {
-                        addInterceptor(it)
-                    }
-                }.build()
-    }
+    override val client: OkHttpClient =
+            OkHttpClient.Builder()
+                    //The whole call should not take longer than 20 secs
+                    .callTimeout(timeoutInSeconds, TimeUnit.SECONDS)
+                    .addNetworkInterceptor(UserAgentInterceptor())
+                    .connectionPool(connectionPool)
+                    .apply {
+                        interceptors.forEach {
+                            addInterceptor(it)
+                        }
+                    }.build()
 
     /**
      * Correctly kill all OkHttpClient threads

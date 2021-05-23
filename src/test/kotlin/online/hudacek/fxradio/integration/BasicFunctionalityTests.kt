@@ -28,7 +28,6 @@ import online.hudacek.fxradio.api.stations.StationsApi
 import online.hudacek.fxradio.api.stations.model.SearchBody
 import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
-import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.viewmodel.LibraryItem
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -72,12 +71,11 @@ class BasicFunctionalityTests {
     }
 
     //Http Client, init only once needed
-    private val service
-        get() = ApiServiceProvider("https://${Config.API.fallbackApiServerURL}").get<StationsApi>()
+    private val service = ApiServiceProvider("https://${Config.API.fallbackApiServerURL}").get<StationsApi>()
 
     @Init
     fun init() {
-        MacUtils.useNSMenu = false
+        FxRadio.setTestEnvironment = true
     }
 
     @Start
@@ -94,22 +92,26 @@ class BasicFunctionalityTests {
     fun apiTest(robot: FxRobot) {
         val stations = service.getTopStations().blockingGet()
         Assertions.assertEquals(50, stations.size)
-        stations.forEach {
-            //top 50 stations should not have empty URL and have name
-            Assertions.assertTrue(it.name.isNotEmpty())
-            Assertions.assertTrue(it.url_resolved != null)
-        }
 
         //Wait for stations to load
         val appStations = robot.find(stationsDataGrid) as DataGrid<Station>
-        Assertions.assertEquals(appStations.items.toList(), stations)
+
+        stations.forEachIndexed { index, station ->
+            //top 50 stations should not have empty URL and have name
+
+            Assertions.assertTrue(station.name.isNotEmpty())
+            Assertions.assertTrue(station.url_resolved != null)
+            Assertions.assertEquals(stations[index].name, appStations.items[index].name)
+        }
     }
 
     @Test
     @Order(1)
     fun basicPlayPauseTest(robot: FxRobot) {
+        //Verify app initial state
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
+        //Get Instance of player
         val player = find<PlayerViewModel>()
 
         //Wait for stations to load
@@ -120,6 +122,7 @@ class BasicFunctionalityTests {
 
         //wait until loaded
         sleep(2)
+
         //Avoid station names that start with # as it is query locator for ID
         val stationToClick = stations.items
                 .filter { !it.name.startsWith("#") }
@@ -150,6 +153,7 @@ class BasicFunctionalityTests {
 
     @Test
     fun testHistoryTab(robot: FxRobot) {
+        //Verify app initial state
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         //Wait for stations to load
@@ -161,14 +165,15 @@ class BasicFunctionalityTests {
         //wait until loaded
         sleep(2)
 
-        //Find in list
-        val historyItem = robot.from(libraries).lookup(libraries.items[2].type.key.capitalize()).query<SmartListCell<LibraryItem>>()
+        //Click on History in Library List Item
+        val historyItem = robot.from(libraries)
+                .lookup(libraries.items[2].type.key.capitalize())
+                .query<SmartListCell<LibraryItem>>()
         robot.clickOn(historyItem)
 
+        //Find DataGrid, History List and actual db count
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
-
         val historydbCount = Tables.history.selectAll().count().blockingGet()
-
         val stationsHistory = robot.find(stationsHistory) as ListView<Station>
 
         //Stations datagrid is not visible in history
@@ -176,28 +181,32 @@ class BasicFunctionalityTests {
             !stations.isVisible
         }
 
+        //Instead, list of stations is visible
         waitFor(2) {
             stationsHistory.isVisible
         }
 
+        //Verify DB count equals actual list items count
         Assertions.assertEquals(historydbCount.toInt(), stationsHistory.items.size)
     }
 
     @Test
     fun testVolumeSliderIcons(robot: FxRobot) {
+        //Verify app initial state
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         //Wait for stations to load
         verifyThat(volumeMinIcon, visible())
         verifyThat(volumeMaxIcon, visible())
 
+        //Verify volume icon click changes the slider value
         robot.clickOn(volumeMinIcon)
-
         val slider = robot.find(volumeSlider) as Slider
         waitFor(2) {
             slider.value == -30.0
         }
 
+        //Verify volume icon click changes the slider value
         robot.clickOn(volumeMaxIcon)
         waitFor(2) {
             slider.value == 5.0
@@ -206,30 +215,36 @@ class BasicFunctionalityTests {
 
     @Test
     fun testSearch(robot: FxRobot) {
+        //Verify app initial state
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         //Verify search field is present
         verifyThat(search, visible())
-        robot.enterText(search, "st")
 
+        //Verify short query UI
+        robot.enterText(search, "st")
         verifyThat(stationMessageHeader, visible())
         verifyThat(stationMessageSubHeader, visible())
         verifyThat(search, hasValue("st"))
-
         verifyThat(stationMessageHeader, hasText("Searching Radio Directory"))
-
-        robot.enterText(search, "station")
-        verifyThat(search, hasValue("station"))
-
-        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
-        verifyThat(stationMessageHeader, visible())
 
         //Perform API search
         val stationResults = service.searchStationByName(SearchBody("station")).blockingGet()
 
-        println("search result items: " + stations.items.size)
-        println("search Results: " + stationResults.size)
+        //Enter query into field
+        robot.enterText(search, "station")
+        verifyThat(search, hasValue("station"))
 
+        //Wait until datagrid is loaded with stations for the provided searchquery
+        sleep(5)
+
+        //Get stations in DataGrid
+        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
+        verifyThat(stationMessageHeader, visible())
+
+        //Compare results from API and APP
+        println("Search results displayed: " + stations.items.size)
+        println("Search Results from API: " + stationResults.size)
         Assertions.assertEquals(stationResults.size, stations.items.size)
     }
 }
