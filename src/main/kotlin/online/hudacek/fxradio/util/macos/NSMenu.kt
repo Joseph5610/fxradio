@@ -18,7 +18,6 @@ package online.hudacek.fxradio.util.macos
 
 import de.codecentric.centerdevice.MenuToolkit
 import javafx.scene.control.MenuItem
-import javafx.scene.control.SeparatorMenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
@@ -55,7 +54,7 @@ open class NSMenu {
                     menuToolkit.createMinimizeMenuItem(),
                     menuToolkit.createZoomMenuItem(),
                     menuToolkit.createCycleWindowsItem(),
-                    SeparatorMenuItem(),
+                    separator(),
                     menuToolkit.createBringAllToFrontItem())
         }
     }

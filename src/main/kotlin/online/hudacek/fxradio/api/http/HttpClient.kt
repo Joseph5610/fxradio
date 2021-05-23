@@ -50,20 +50,24 @@ object HttpClient {
      */
     fun request(url: String,
                 success: (Response) -> Unit,
-                fail: (IOException) -> Unit) = clientProvider.client.newCall(buildRequest(url)).enqueue(
-            object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    success(response)
-                    response.close()
-                }
+                fail: (Throwable) -> Unit) = runCatching {
+        clientProvider.client.newCall(buildRequest(url)).enqueue(
+                object : Callback {
+                    override fun onResponse(call: Call, response: Response) {
+                        success(response)
+                        response.close()
+                    }
 
-                override fun onFailure(call: Call, e: IOException) {
-                    logger.error { "Request to $url failed." }
-                    logger.trace(e) { "Request to $url failed." }
-                    fail(e)
-                }
-            }
-    )
+                    override fun onFailure(call: Call, e: IOException) {
+                        logger.error { "Request to $url failed." }
+                        logger.trace(e) { "Request to $url failed." }
+                        fail(e)
+                    }
+                })
+    }.onFailure {
+        logger.trace(it) { "Call failed." }
+        fail(it)
+    }.isSuccess
 
     /**
      * Constructs [Request] object for given [url] address

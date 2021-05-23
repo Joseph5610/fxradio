@@ -27,14 +27,13 @@ import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.storage.ImageCache.isCached
 import tornadofx.onChange
 
-val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
+private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * This method is used for custom downloading of station's logo
  * and storing it in cache directory
- *
  *
  * In case of error defaultRadioLogo static png file is used as station logo
  */

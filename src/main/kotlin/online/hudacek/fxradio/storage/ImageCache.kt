@@ -22,7 +22,6 @@ import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.stations.model.Station
-import online.hudacek.fxradio.ui.defaultRadioLogo
 import org.apache.commons.io.FileUtils
 import tornadofx.observableListOf
 import java.io.InputStream
@@ -34,9 +33,9 @@ import java.nio.file.StandardCopyOption
 private val logger = KotlinLogging.logger {}
 
 /**
- * Simple image cache
- * Images are saved according to their station id
- * and loaded using fileInputStream
+ * Simple image cache used for station images
+ * Images are saved to files with /.fxradio/cache directory
+ * File name is the station UUID
  */
 object ImageCache {
 
@@ -47,7 +46,7 @@ object ImageCache {
     private val invalidStationUuids = observableListOf<String>()
 
     init {
-        //prepare cache directory
+        //Prepare cache directory
         if (!Files.isDirectory(cacheBasePath)) {
             Files.createDirectories(cacheBasePath)
         }
@@ -80,21 +79,21 @@ object ImageCache {
                 Single.just(Image("file:" + it.toFile().absolutePath, true))
             }
             .doOnError { logger.error(it) { "Exception when getting station image from file!" } }
-            .onErrorReturnItem(defaultRadioLogo)
 
     /**
      * Saves [inputStream] containing logo of [station] into local cache dir
      */
     fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
             .filter { !it.isCached }
-            .doOnError { logger.error(it) { "Exception when saving downloaded image!" } }
             .map { cacheBasePath.resolve(it.stationuuid) }
-            .subscribe {
+            .subscribe({
                 Files.copy(
                         inputStream,
                         it,
                         StandardCopyOption.REPLACE_EXISTING)
-            }
+            }, {
+                logger.error(it) { "Exception when saving downloaded image!" }
+            })
 
     /**
      * Adds [station] into list of invalid stations

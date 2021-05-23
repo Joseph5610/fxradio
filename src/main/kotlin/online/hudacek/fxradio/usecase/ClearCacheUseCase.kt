@@ -23,6 +23,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.confirm
 import tornadofx.fail
 import tornadofx.get
+import tornadofx.success
 
 /**
  * Clears FxRadio image cache directory
@@ -37,6 +38,7 @@ class ClearCacheUseCase : BaseUseCase<Unit, Unit>() {
                         messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage) {
                     runAsync(daemon = true) {
                         ImageCache.clear()
+                    } success {
                         appEvent.appNotification.onNext(
                                 AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
                     } fail {
