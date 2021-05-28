@@ -51,7 +51,6 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
                 .filter { it.isValid() && it !in stationsProperty }
                 .doOnError { logger.error(it) { "Exception when adding station to history!" } }
                 .flatMapSingle { Tables.history.insert(it) }
-                .doOnEach { println("new stuff") }
                 .subscribe {
                     stationsProperty += it
                 }

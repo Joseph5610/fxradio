@@ -43,7 +43,7 @@ sealed class PlayerState {
     data class Error(val cause: String) : PlayerState()
 }
 
-class Player(station: Station,
+class Player(station: Station = Station.dummy,
              animate: Boolean = Properties.PlayerAnimated.value(true),
              volume: Double = Properties.Volume.value(0.0),
              trackName: String = "",
@@ -58,7 +58,9 @@ class Player(station: Station,
 /**
  * Handles station playing logic
  */
-class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(initialState = PlayerState.Stopped) {
+class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
+        initialState = PlayerState.Stopped,
+        initialItem = Player()) {
 
     private val clickUseCase: ClickUseCase by inject()
 

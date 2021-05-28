@@ -18,14 +18,12 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.api.stations.model.Station
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
-import online.hudacek.fxradio.viewmodel.Player
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -81,18 +79,14 @@ class PlayerView : BaseView() {
             maxWidth = 90.0
             majorTickUnit = 8.0
             isSnapToTicks = true
-            isShowTickMarks = true
-            paddingTop = 10.0
+            //isShowTickMarks = true
+            paddingTop = 3.0
 
             //Save new value
             valueProperty().onChange {
                 viewModel.commit()
             }
         }
-    }
-
-    init {
-        viewModel.item = Player(station = historyViewModel.stationsProperty.lastOrNull() ?: Station.dummy)
     }
 
     override val root = vbox {
@@ -136,11 +130,11 @@ class PlayerView : BaseView() {
             //Volume controls
             hbox {
                 paddingRight = 30.0
-                alignment = Pos.CENTER_LEFT
+                alignment = Pos.CENTER
                 glyph {
                     id = "volumeMinIcon"
                     graphic = volumeDownGlyph
-                    onLeftClick {
+                    setOnMouseClicked {
                         volumeSlider.value = volumeSlider.min
                     }
                     addClass(Styles.playerControls)
@@ -150,7 +144,7 @@ class PlayerView : BaseView() {
                     id = "volumeMaxIcon"
                     graphic = volumeUpGlyph
                     minWidth = 20.0
-                    onLeftClick {
+                    setOnMouseClicked {
                         volumeSlider.value = volumeSlider.max
                     }
                     addClass(Styles.playerControls)

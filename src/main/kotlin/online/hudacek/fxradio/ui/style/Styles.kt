@@ -143,10 +143,6 @@ class Styles : Stylesheet() {
             borderRadius += box(6.px)
             padding = box(4.px, 10.px, 4.px, 10.px)
             textFill = c(colors.label)
-
-            and(focused) {
-                backgroundColor += c(colors.backgroundBorder)
-            }
         }
 
         primaryButton {
