@@ -97,6 +97,7 @@ dependencies {
     testCompile "org.testfx:testfx-core:$versions.testfx"
     testCompile "org.testfx:testfx-junit5:$versions.testfx"
     testCompile "org.awaitility:awaitility:$versions.awaitility"
+    testCompile "org.testfx:openjfx-monocle:8u76-b04"
 }
 
 sourceSets {

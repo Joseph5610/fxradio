@@ -22,6 +22,7 @@ import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
+import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.ui.*
 import online.hudacek.fxradio.ui.style.Styles
@@ -29,9 +30,6 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.StationInfo
 import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import tornadofx.*
-import tornadofx.controlsfx.left
-import tornadofx.controlsfx.right
-import tornadofx.controlsfx.statusbar
 
 class StationInfoFragment : BaseFragment() {
 
@@ -43,10 +41,9 @@ class StationInfoFragment : BaseFragment() {
     }
 
     override val root = vbox {
-        prefWidth = 300.0
-        titleProperty.bind(viewModel.nameProperty)
+        prefWidth = 400.0
 
-        vbox {
+        hbox(10) {
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10.0
                 imageview {
@@ -57,50 +54,12 @@ class StationInfoFragment : BaseFragment() {
                     isPreserveRatio = true
                 }
             }
-        }
-
-        flowpane {
-            hgap = 5.0
-            vgap = 5.0
-            alignment = Pos.CENTER
-            paddingAll = 5.0
-
-            createInfoLabel("info.codec", viewModel.codecProperty)?.let { add(it) }
-            createInfoLabel("info.bitrate", viewModel.bitrateProperty)?.let { add(it) }
-            createInfoLabel("info.language", viewModel.languageProperty)?.let { add(it) }
-            createInfoLabel("info.country", viewModel.countryProperty)?.let { add(it) }
-            createInfoLabel("info.votes", viewModel.votesProperty)?.let { add(it) }
-        }
-
-        flowpane {
-            hgap = 5.0
-            vgap = 5.0
-            alignment = Pos.CENTER
-            paddingAll = 5.0
-
-            viewModel.tagsProperty.forEach {
-                label(it) {
-                    addClass(Styles.tag)
-                    addClass(Styles.grayLabel)
-                    copyMenu(clipboard,
-                            name = messages["copy"],
-                            value = it)
+            vbox {
+                alignment = Pos.CENTER
+                label(viewModel.nameProperty) {
+                    addClass(Styles.subheader)
                 }
-            }
-        }
 
-        statusbar {
-            left {
-                hyperlink(messages["menu.station.vote"]) {
-
-                    actionEvents()
-                            .map { viewModel.stationProperty.value }
-                            .subscribe(appEvent.addVote)
-
-                    addClass(Styles.primaryTextColor)
-                }
-            }
-            right {
                 hyperlink(viewModel.homePageProperty) {
                     action {
                         app.openUrl(text)
@@ -112,12 +71,69 @@ class StationInfoFragment : BaseFragment() {
                     showWhen {
                         viewModel.homePageProperty.isNotEmpty
                     }
+                }
 
-                    addClass(Styles.primaryTextColor)
+                flowpane {
+                    hgap = 5.0
+                    vgap = 5.0
+                    alignment = Pos.CENTER
+                    paddingAll = 5.0
+
+                    viewModel.tagsProperty.forEach {
+                        label(it) {
+                            addClass(Styles.tag)
+                            addClass(Styles.grayLabel)
+                            copyMenu(clipboard,
+                                    name = messages["copy"],
+                                    value = it)
+                        }
+                    }
                 }
             }
         }
-        addClass(Styles.backgroundWhiteSmoke)
+
+        vbox {
+            flowpane {
+                hgap = 5.0
+                vgap = 5.0
+                alignment = Pos.CENTER
+                paddingAll = 5.0
+
+                createInfoLabel("info.codec", viewModel.codecProperty)?.let { add(it) }
+                createInfoLabel("info.bitrate", viewModel.bitrateProperty)?.let { add(it) }
+                createInfoLabel("info.language", viewModel.languageProperty)?.let { add(it) }
+                createInfoLabel("info.country", viewModel.countryProperty)?.let { add(it) }
+                createInfoLabel("info.votes", viewModel.votesProperty)?.let { add(it) }
+            }
+        }
+
+
+        hbox {
+            button(messages["menu.station.vote"]) {
+                actionEvents()
+                        .map { viewModel.stationProperty.value }
+                        .subscribe(appEvent.addVote)
+
+                addClass(Styles.primaryButton)
+            }
+            region {
+                hgrow = Priority.ALWAYS
+            }
+
+            vbox {
+                alignment = Pos.CENTER_RIGHT
+                button(messages["close"]) {
+                    action {
+                        close()
+                    }
+                }
+            }
+        }
+
+        style {
+            paddingAll = 8
+            backgroundColor += Color.WHITESMOKE
+        }
     }
 
     private fun createInfoLabel(key: String, valueProperty: StringProperty): Label? {

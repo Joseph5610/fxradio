@@ -29,7 +29,7 @@ enum class Properties(val key: String) {
     Volume("player.volume"),
     Player("player.type"),
     PlayerAnimated("player.animate"),
-    PlayerRefreshMetaData("player.refreshMeta"),
+    PlayerMetaDataRefresh("player.refreshMeta"),
     ApiServer("app.server"),
     SearchQuery("search.query"),
     SendOsNotifications("notifications"),
@@ -53,6 +53,7 @@ class Property(property: Properties) : Component() {
     val key = property.key
 
     val isPresent: Boolean
+        //runCatching handles situations where config or key fields are throwing NPE
         get() = runCatching { app.config.keys.any { it == key } }.getOrDefault(false)
 
     inline fun <reified T> get(): T {
@@ -62,7 +63,7 @@ class Property(property: Properties) : Component() {
             Int::class -> app.config.int(key) as T
             String::class -> app.config.string(key) as T
             else -> {
-                throw IllegalArgumentException("${T::class} is not supported argument")
+                throw IllegalArgumentException("${T::class} is not supported argument!")
             }
         }
     }

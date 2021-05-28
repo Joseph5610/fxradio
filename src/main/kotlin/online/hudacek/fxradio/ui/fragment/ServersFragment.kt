@@ -61,7 +61,7 @@ class ServersFragment : BaseFragment() {
     override val root = vbox {
         title = messages["menu.app.server"]
         paddingAll = 10.0
-        setPrefSize(300.0, 250.0)
+        setPrefSize(350.0, 250.0)
 
         vbox {
             vbox(alignment = Pos.CENTER) {
@@ -70,9 +70,8 @@ class ServersFragment : BaseFragment() {
                     addClass(Styles.header)
                 }
 
-                text(messages["servers.restartNeeded"]) {
+                label(messages["servers.restartNeeded"]) {
                     paddingAll = 5.0
-                    wrappingWidth = 270.0
                     textAlignment = TextAlignment.CENTER
                 }
             }

@@ -20,6 +20,7 @@ package online.hudacek.fxradio.storage.db
  * Object that holds kotlin classes representing SQLite tables
  */
 object Tables {
+
     /**
      * Table for stations saved as favourites
      */

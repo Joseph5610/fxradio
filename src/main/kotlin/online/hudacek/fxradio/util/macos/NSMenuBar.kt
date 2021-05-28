@@ -25,7 +25,7 @@ import online.hudacek.fxradio.FxRadio
 class NSMenuBar : NSMenu() {
 
     val menuBar = MenuBar().apply {
-        if (!FxRadio.setTestEnvironment) {
+        if (!FxRadio.isTestEnvironment) {
             useSystemMenuBarProperty().value = true
             menuToolkit.setMenuBar(this)
         }

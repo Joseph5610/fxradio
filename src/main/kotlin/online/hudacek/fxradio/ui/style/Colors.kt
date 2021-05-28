@@ -25,8 +25,8 @@ object Colors {
 }
 
 open class ColorValues {
-    open val primary = "#0097CE"
-    open val primaryHover = "#0097EA"
+    open val primary = "#d65458"
+    open val primaryHover = "#ff696b"
 
     open val background = "#E9E9E9"
     open val backgroundBorder = "#E8E8E8"

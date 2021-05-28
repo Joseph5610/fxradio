@@ -48,9 +48,10 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
         //Add currently listened station to history
         appEvent.addToHistory
                 //Add only valid stations not already present in history
-                .filter { it.isValid() }
+                .filter { it.isValid() && it !in stationsProperty }
                 .doOnError { logger.error(it) { "Exception when adding station to history!" } }
                 .flatMapSingle { Tables.history.insert(it) }
+                .doOnEach { println("new stuff") }
                 .subscribe {
                     stationsProperty += it
                 }

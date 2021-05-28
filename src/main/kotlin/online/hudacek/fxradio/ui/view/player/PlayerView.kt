@@ -30,6 +30,7 @@ import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+import tornadofx.controlsfx.glyph
 
 /**
  * Main player view above stations
@@ -57,7 +58,7 @@ class PlayerView : BaseView() {
     }
 
     private val playerControls by lazy {
-        button {
+        glyph {
             id = "playerControls"
             graphicProperty().bind(playerControlsBinding)
             requestFocusOnSceneAvailable()
@@ -66,7 +67,7 @@ class PlayerView : BaseView() {
                     it == null || !it.isValid()
                 }
             }
-            action {
+            setOnMouseClicked {
                 viewModel.togglePlayerState()
             }
             addClass(Styles.playerControls)
@@ -110,7 +111,7 @@ class PlayerView : BaseView() {
             //Station info box
             add(playerStationView)
 
-            button {
+            glyph {
                 id = "playRandomStation"
                 graphic = randomStationGlyph
                 tooltip(messages["player.playRandomStation"])
@@ -136,7 +137,7 @@ class PlayerView : BaseView() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER_LEFT
-                button {
+                glyph {
                     id = "volumeMinIcon"
                     graphic = volumeDownGlyph
                     onLeftClick {
@@ -145,7 +146,7 @@ class PlayerView : BaseView() {
                     addClass(Styles.playerControls)
                 }
                 add(volumeSlider)
-                button {
+                glyph {
                     id = "volumeMaxIcon"
                     graphic = volumeUpGlyph
                     minWidth = 20.0

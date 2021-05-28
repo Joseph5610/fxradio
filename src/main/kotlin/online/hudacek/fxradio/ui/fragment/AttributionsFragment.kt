@@ -23,6 +23,8 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
 import online.hudacek.fxradio.viewmodel.Attributions
@@ -47,7 +49,7 @@ class AttributionsFragment : BaseFragment() {
                 readonlyColumn(messages["attributions.version"], Attribution::version)
 
                 onUserSelect {
-                    Modals.License.open()
+                    Modal.License.open()
                 }
             }
         }

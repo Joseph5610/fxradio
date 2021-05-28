@@ -81,7 +81,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
     }
 
     override fun stop() {
-        if (!setTestEnvironment) {
+        if (!isTestEnvironment) {
             playerViewModel.releasePlayer()
             StationsApi.serviceProvider.close()
             HttpClient.close()
@@ -102,7 +102,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
      */
     companion object : Component() {
 
-        var setTestEnvironment = false
+        var isTestEnvironment = false
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"

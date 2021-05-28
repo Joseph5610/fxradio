@@ -50,6 +50,6 @@ interface MediaPlayer {
 
     companion object {
         //The metadata service can be disabled by respective property file setting
-        val enableMetaDataService = Properties.PlayerRefreshMetaData.value(true)
+        val enableMetaDataService = Properties.PlayerMetaDataRefresh.value(true)
     }
 }

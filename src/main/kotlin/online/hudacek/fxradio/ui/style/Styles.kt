@@ -136,6 +136,19 @@ class Styles : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
+        button {
+            prefWidth = 75.px
+            fontSize = 12.px
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            padding = box(4.px, 10.px, 4.px, 10.px)
+            textFill = c(colors.label)
+
+            and(focused) {
+                backgroundColor += c(colors.backgroundBorder)
+            }
+        }
+
         primaryButton {
             backgroundColor += c(colors.primary)
             textFill = Color.WHITESMOKE
@@ -146,6 +159,11 @@ class Styles : Stylesheet() {
 
         primaryTextColor {
             textFill = c(colors.primary)
+        }
+
+        hyperlink {
+            textFill = c(colors.primary)
+            borderColor += box(c(colors.primary))
         }
 
         libraryListView {

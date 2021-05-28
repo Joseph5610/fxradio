@@ -47,13 +47,17 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
     val queryChanges: Observable<String> = bindQueryProperty
             .toObservableChangesNonNull()
             .map { it.newVal }
-            .map { if (it.length > 50) it.substring(0, 50).trim() else it.trim() }
+            .map { if (it.length > maxQueryLength) it.substring(0, maxQueryLength).trim() else it.trim() }
 
     val queryBinding = bindQueryProperty.toObservable()
-            .map { if (it.length > 50) it.substring(0, 50).trim() else it.trim() }
+            .map { if (it.length > maxQueryLength) it.substring(0, maxQueryLength).trim() else it.trim() }
             .toBinding()
 
     fun search() = searchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 
     override fun onCommit() = Properties.SearchQuery.save(bindQueryProperty.value)
+
+    companion object {
+        private const val maxQueryLength = 50
+    }
 }

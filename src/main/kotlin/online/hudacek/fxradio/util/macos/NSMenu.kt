@@ -34,7 +34,7 @@ open class NSMenu {
     protected val menuToolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
 
     fun appMenu(menuItems: List<MenuItem>) = menu(FxRadio.appName) {
-        if (!FxRadio.setTestEnvironment) {
+        if (!FxRadio.isTestEnvironment) {
             menuToolkit.setApplicationMenu(this)
             items.addAll(menuItems)
             items.addAll(
@@ -48,7 +48,7 @@ open class NSMenu {
     }
 
     fun windowMenu(name: String) = menu(name) {
-        if (!FxRadio.setTestEnvironment) {
+        if (!FxRadio.isTestEnvironment) {
             menuToolkit.autoAddWindowMenuItems(this)
             items.addAll(
                     menuToolkit.createMinimizeMenuItem(),

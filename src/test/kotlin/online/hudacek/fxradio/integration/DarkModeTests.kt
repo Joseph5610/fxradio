@@ -38,7 +38,7 @@ class DarkModeTests {
 
     @Init
     fun init() {
-        FxRadio.setTestEnvironment = true
+        FxRadio.isTestEnvironment = true
     }
 
     @Start

@@ -37,6 +37,7 @@ class StationsHistoryView : BaseView() {
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
+
     override val root = listview(historyViewModel.stationsProperty) {
         id = "stationsHistoryList"
         cellFormat {
@@ -57,7 +58,6 @@ class StationsHistoryView : BaseView() {
             onUserSelect(1) {
                 playerViewModel.stationProperty.value = it
             }
-
             addClass(Styles.historyListItem)
         }
 

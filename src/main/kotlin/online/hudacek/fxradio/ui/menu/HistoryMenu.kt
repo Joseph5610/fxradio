@@ -41,7 +41,7 @@ class HistoryMenu : BaseMenu("menu.history") {
                     historyViewModel.stationsProperty.emptyProperty()
                 }
                 items.bind(historyViewModel.stationsProperty) {
-                    item("${it.name} (${it.countrycode})") {
+                    item(it.name) {
                         //for some reason macos native menu does not respect
                         //width/height setting so it is disabled for now
                         if (!appMenuViewModel.usePlatformProperty.value) {

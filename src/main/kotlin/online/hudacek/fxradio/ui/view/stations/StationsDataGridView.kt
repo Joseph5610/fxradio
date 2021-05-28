@@ -25,13 +25,13 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.fragment.Modals
-import online.hudacek.fxradio.ui.fragment.new
-import online.hudacek.fxradio.ui.fragment.open
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.new
+import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
@@ -67,7 +67,7 @@ class StationsDataGridView : BaseView() {
             vbox {
                 contextmenu {
                     item(messages["menu.station.info"]).action {
-                        Modals.StationInfo.new()
+                        Modal.StationInfo.new()
                     }
 
                     separator()
@@ -85,7 +85,7 @@ class StationsDataGridView : BaseView() {
                     if (Config.Flags.enableStationDebug) {
                         separator()
                         item("Station Debug Info").action {
-                            Modals.StationDebug.open()
+                            Modal.StationDebug.open()
                         }
                     }
                 }

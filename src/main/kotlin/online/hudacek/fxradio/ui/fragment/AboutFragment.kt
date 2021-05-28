@@ -21,9 +21,9 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.open
 import tornadofx.*
-import tornadofx.controlsfx.right
-import tornadofx.controlsfx.statusbar
 
 /***
  * Simple Information about the app
@@ -59,15 +59,17 @@ class AboutFragment : BaseFragment(FxRadio.appDesc) {
             }
         }
 
-        statusbar {
-            right {
-                hyperlink(messages["menu.app.attributions"]) {
-                    action {
-                        Modals.Attributions.open()
-                    }
+        vbox {
+            paddingAll = 10.0
+            alignment = Pos.CENTER_RIGHT
+
+            hyperlink(messages["menu.app.attributions"]) {
+                action {
+                    Modal.Attributions.open()
                 }
             }
         }
+
         addClass(Styles.backgroundWhiteSmoke)
     }
 }
