@@ -35,8 +35,9 @@ class GetCountriesUseCase : BaseUseCase<ListProperty<Country>, Disposable>() {
             .compose(applySchedulers())
             .flattenAsObservable { it }
             .filter { it.isValid }
-            .doOnError { logger.error(it) { "Exception while getting Countries!" } }
-            .subscribe {
+            .subscribe({
                 input.add(it)
-            }
+            }, {
+                logger.error(it) { "Exception while getting Countries!" }
+            })
 }

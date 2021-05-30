@@ -75,7 +75,7 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
 }
 
 internal fun FontAwesome.Glyph.make(
-        size: Double = 35.0,
+        size: Double,
         useStyle: Boolean = true,
         color: Color? = null) = toGlyph {
     size(size)

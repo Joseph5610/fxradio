@@ -101,8 +101,8 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
                 addClass(Styles.backgroundWhiteSmoke)
             }
 
-            val reportButton = ButtonType("Report issue", ButtonBar.ButtonData.HELP)
-            val copyButton = ButtonType("Copy to clipboard", ButtonBar.ButtonData.HELP_2)
+            val reportButton = ButtonType("Report", ButtonBar.ButtonData.HELP)
+            val copyButton = ButtonType("Copy", ButtonBar.ButtonData.HELP_2)
             buttonTypes.addAll(reportButton, copyButton)
 
             val result = showAndWait()

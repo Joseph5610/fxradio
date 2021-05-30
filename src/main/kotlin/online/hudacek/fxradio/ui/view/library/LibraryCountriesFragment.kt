@@ -50,7 +50,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
          * Set min/max size of listview based on its items size
          */
         prefHeightProperty().bind(countriesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10 else 30.0
+            if (it != null) it.size * 30.0 + 5.0 else 30.0
         })
 
         cellFormat {

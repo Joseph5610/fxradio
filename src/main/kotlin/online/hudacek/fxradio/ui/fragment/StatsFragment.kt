@@ -53,16 +53,17 @@ class StatsFragment : BaseFragment() {
 
     override val root = vbox {
         title = messages["stats.title"]
-        setPrefSize(300.0, 250.0)
+        prefWidth = 300.0
+        minHeight = 200.0
 
         vbox(alignment = Pos.CENTER) {
-            requestFocusOnSceneAvailable() //To get rid of the blue box around the hyperlink
+            paddingAll = 10.0
+
             hyperlink(serversViewModel.selectedProperty) {
-                paddingAll = 10.0
-                addClass(Styles.header)
                 action {
                     app.openUrl("http://${this.text}")
                 }
+                addClass(Styles.header)
             }
 
             vbox {
@@ -70,10 +71,18 @@ class StatsFragment : BaseFragment() {
                 label(labelTextProperty) {
                     paddingAll = 20.0
                 }
+
+                viewModel.stateObservableChanges.subscribe {
+                    managedProperty().value = when (it) {
+                        is StatsState.Fetched -> false
+                        else -> true
+                    }
+                }
             }
         }
 
         listview(viewModel.statsProperty) {
+            requestFocusOnSceneAvailable() //To get rid of the blue box around the hyperlink
             isMouseTransparent = true //Disable clicking into listview, as it is not needed for this listview
             cellFormat {
                 paddingAll = 0.0

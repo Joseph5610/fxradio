@@ -49,7 +49,7 @@ class LibraryListView : BaseView() {
         id = "libraryListView"
 
         prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10 else 30.0
+            if (it != null) it.size * 30.0 + 5 else 30.0
         })
 
         cellFormat {

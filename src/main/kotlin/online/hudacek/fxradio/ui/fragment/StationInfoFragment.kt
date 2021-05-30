@@ -42,6 +42,7 @@ class StationInfoFragment : BaseFragment() {
 
     override val root = vbox {
         prefWidth = 400.0
+        titleProperty.bind(viewModel.nameProperty)
 
         hbox(10) {
             vbox(alignment = Pos.CENTER) {
@@ -131,6 +132,8 @@ class StationInfoFragment : BaseFragment() {
         }
 
         style {
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             paddingAll = 8
             backgroundColor += Color.WHITESMOKE
         }

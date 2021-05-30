@@ -20,6 +20,8 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
@@ -28,9 +30,10 @@ import tornadofx.*
 /***
  * Simple Information about the app
  */
-class AboutFragment : BaseFragment(FxRadio.appDesc) {
+class AboutFragment : BaseFragment(FxRadio.appName) {
 
     override val root = vbox {
+        requestFocusOnSceneAvailable()
         prefWidth = 300.0
 
         vbox(alignment = Pos.CENTER) {
@@ -47,7 +50,7 @@ class AboutFragment : BaseFragment(FxRadio.appDesc) {
                 addClass(Styles.grayLabel)
             }
 
-            label(messages["about.datasource"]) {
+            label(FxRadio.appDesc) {
                 style {
                     paddingBottom = 8.0
                 }
@@ -62,6 +65,16 @@ class AboutFragment : BaseFragment(FxRadio.appDesc) {
         vbox {
             paddingAll = 10.0
             alignment = Pos.CENTER_RIGHT
+
+            hyperlink(messages["about.datasource"]) {
+                action {
+                    app.openUrl("http://radio-browser.info")
+                }
+            }
+
+            region {
+                paddingTop = 10.0
+            }
 
             hyperlink(messages["menu.app.attributions"]) {
                 action {

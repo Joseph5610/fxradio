@@ -52,6 +52,6 @@ object Config {
     object Flags {
         const val darkStylesEnabled = false
         const val useTrayIcon = false
-        const val enableStationDebug = true
+        const val enableStationDebug = false
     }
 }

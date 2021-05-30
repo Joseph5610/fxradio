@@ -37,7 +37,6 @@ class LibraryView : BaseView() {
                 .subscribe {
                     viewModel.pinnedProperty += it
                 }
-
         viewModel.getCountries()
     }
 
@@ -51,22 +50,28 @@ class LibraryView : BaseView() {
                     }
                 }
 
-                add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
-                    viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
-                    viewModel.commit()
-                })
-
-                add(libraryListView)
-
                 vbox {
-                    add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
-                        viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
+                    add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
+                        viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
                         viewModel.commit()
                     })
+                    paddingBottom = 5.0
+                }
 
+                vbox {
+                    add(libraryListView)
+                }
+
+                vbox {
                     vbox {
-                        add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
+                        add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
+                            viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
+                            viewModel.commit()
+                        })
+                        paddingBottom = 5.0
                     }
+
+                    add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
 
                     showWhen {
                         viewModel.pinnedProperty.emptyProperty().not()
@@ -77,14 +82,21 @@ class LibraryView : BaseView() {
 
         center {
             vbox {
-                add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
-                    viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
-                    viewModel.commit()
-                })
+                vbox {
+                    add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
+                        viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
+                        viewModel.commit()
+                    })
+                    paddingBottom = 5.0
+                }
 
                 vbox {
                     add(LibraryCountriesFragment(viewModel.countriesProperty, viewModel.showCountriesProperty))
                     prefHeightProperty().bind(this@center.heightProperty())
+
+                    showWhen {
+                        viewModel.countriesProperty.emptyProperty().not()
+                    }
                 }
 
                 //Retry link
