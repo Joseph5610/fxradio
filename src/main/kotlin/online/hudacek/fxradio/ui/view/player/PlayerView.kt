@@ -22,6 +22,7 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
+import online.hudacek.fxradio.ui.style.Colors
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
@@ -44,7 +45,9 @@ class PlayerView : BaseView() {
     private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false) }
     private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false) }
     private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false) }
-    private val randomStationGlyph by lazy { FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false) }
+    private val randomStationGlyph by lazy {
+        FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false, color = c(Colors.values.primary))
+    }
     private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
@@ -80,7 +83,7 @@ class PlayerView : BaseView() {
             majorTickUnit = 8.0
             isSnapToTicks = true
             //isShowTickMarks = true
-            paddingTop = 3.0
+            paddingTop = 2.0
 
             //Save new value
             valueProperty().onChange {

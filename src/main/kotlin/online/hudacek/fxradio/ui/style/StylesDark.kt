@@ -48,13 +48,10 @@ class StylesDark : Stylesheet() {
         val subheader by cssclass()
 
         val tag by cssclass()
-        val searchBoxLabel by cssclass()
-        val primaryTextColor by cssclass()
         val boldText by cssclass()
 
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
-        val statusBar by cssclass()
 
         //for Text()
         val defaultTextColor by cssclass()
@@ -70,10 +67,6 @@ class StylesDark : Stylesheet() {
 
         checkBox {
             textFill = c(colors.label)
-        }
-
-        searchBoxLabel {
-            padding = box(0.px, 2.px, 0.px, 7.px)
         }
 
         textInput {
@@ -156,13 +149,6 @@ class StylesDark : Stylesheet() {
         primaryButton {
             backgroundColor += c(colors.primary)
             textFill = Color.WHITESMOKE
-            and(hover) {
-                backgroundColor += c(colors.primaryHover)
-            }
-        }
-
-        primaryTextColor {
-            textFill = c(colors.primary)
         }
 
         libraryListView {
@@ -352,18 +338,6 @@ class StylesDark : Stylesheet() {
                     backgroundColor += c(colors.backgroundSelected)
                 }
             }
-        }
-
-        progressIndicator {
-            progressColor = c(colors.grayLabel)
-        }
-
-        statusBar {
-            padding = box(5.px)
-            borderRadius += box(0.px)
-            borderWidth += box(1.px, 0.px, 0.px, 0.px)
-            borderColor += box(c(colors.backgroundBorder), c(colors.transparent), c(colors.transparent), c(colors.transparent))
-            unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
         textField {

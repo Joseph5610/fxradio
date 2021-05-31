@@ -58,6 +58,14 @@ class AboutFragment : BaseFragment(FxRadio.appName) {
             }
 
             label("${FxRadio.copyright} ${FxRadio.author}") {
+                paddingBottom = 10.0
+                addClass(Styles.grayLabel)
+            }
+
+            hyperlink(messages["about.datasource"]) {
+                action {
+                    app.openUrl("http://radio-browser.info")
+                }
                 addClass(Styles.grayLabel)
             }
         }
@@ -66,20 +74,11 @@ class AboutFragment : BaseFragment(FxRadio.appName) {
             paddingAll = 10.0
             alignment = Pos.CENTER_RIGHT
 
-            hyperlink(messages["about.datasource"]) {
-                action {
-                    app.openUrl("http://radio-browser.info")
-                }
-            }
-
-            region {
-                paddingTop = 10.0
-            }
-
-            hyperlink(messages["menu.app.attributions"]) {
+            button(messages["menu.app.attributions"]) {
                 action {
                     Modal.Attributions.open()
                 }
+                addClass(Styles.primaryButton)
             }
         }
 

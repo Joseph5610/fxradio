@@ -19,10 +19,24 @@ package online.hudacek.fxradio.util.macos
 import airsquared.JMacNotification.NSUserNotification
 import online.hudacek.fxradio.util.Command
 import org.controlsfx.tools.Platform
+import tornadofx.Component
+import tornadofx.get
 
-object MacUtils {
+object MacUtils : Component() {
 
     val isMac = Platform.getCurrent() == Platform.OSX
+
+    enum class AccentColor(val colorCode: Int? = null) {
+        MULTICOLOR,
+        GRAPHITE(-1),
+        RED(0),
+        ORANGE(1),
+        YELLOW(2),
+        GREEN(3),
+        BLUE(4),
+        PURPLE(5),
+        PINK(6),
+    }
 
     /**
      * Shows MacOS native system notification
@@ -31,11 +45,17 @@ object MacUtils {
             NSUserNotification().apply {
                 this.title = title
                 this.informativeText = subtitle
+                this.actionButtonTitle = messages["show"]
             }.show()
 
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"
 
-    val accentColor: String
-        get() = Command("defaults read -g AppleAccentColor").exec()
+    val accentColor: AccentColor?
+        get() = AccentColor.values().find {
+            it.colorCode == Command("defaults read -g AppleAccentColor").exec().toIntOrNull()
+        }
+
+    val osVersion: String
+        get() = System.getProperty("os.version")
 }

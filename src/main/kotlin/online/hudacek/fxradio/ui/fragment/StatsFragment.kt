@@ -53,8 +53,7 @@ class StatsFragment : BaseFragment() {
 
     override val root = vbox {
         title = messages["stats.title"]
-        prefWidth = 300.0
-        minHeight = 200.0
+        setPrefSize(300.0, 230.0)
 
         vbox(alignment = Pos.CENTER) {
             paddingAll = 10.0

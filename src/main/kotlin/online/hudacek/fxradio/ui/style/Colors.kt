@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.ui.style
 
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.util.macos.MacUtils
 
 object Colors {
     val values: ColorValues by lazy {
@@ -24,9 +25,27 @@ object Colors {
     }
 }
 
+private fun getPrimaryColor(): String {
+    return if (MacUtils.isMac) {
+        when (MacUtils.accentColor) {
+            MacUtils.AccentColor.MULTICOLOR -> "#d65458"
+            MacUtils.AccentColor.GRAPHITE -> "#8C8C8C"
+            MacUtils.AccentColor.RED -> "#FF5258"
+            MacUtils.AccentColor.ORANGE -> "#F8821B"
+            MacUtils.AccentColor.YELLOW -> "#FFC500"
+            MacUtils.AccentColor.GREEN -> "#64B946"
+            MacUtils.AccentColor.BLUE -> "#037AFF"
+            MacUtils.AccentColor.PURPLE -> "#A550A6"
+            MacUtils.AccentColor.PINK -> "#F7509E"
+            null -> "#d65458"
+        }
+    } else {
+        "#d65458"
+    }
+}
+
 open class ColorValues {
-    open val primary = "#d65458"
-    open val primaryHover = "#ff696b"
+    open val primary = getPrimaryColor()
 
     open val background = "#E9E9E9"
     open val backgroundBorder = "#E8E8E8"
@@ -36,13 +55,10 @@ open class ColorValues {
     open val grayLabel = "#8B8B8B"
 
     open val transparent = "transparent"
-
-    open val libraryIcon = "#d65458"
 }
 
 class DarkColorValues : ColorValues() {
     override val primary = "#0097CE"
-    override val primaryHover = "#0097EA"
 
     override val background = "#333232"
     override val backgroundBorder = "#525356"

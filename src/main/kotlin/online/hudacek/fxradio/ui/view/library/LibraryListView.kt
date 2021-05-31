@@ -49,11 +49,11 @@ class LibraryListView : BaseView() {
         id = "libraryListView"
 
         prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 5 else 30.0
+            if (it != null) it.size * 30.0 + 10 else 30.0
         })
 
         cellFormat {
-            graphic = item.glyph.make(14.0, false, c(Colors.values.libraryIcon))
+            graphic = item.glyph.make(14.0, false, c(Colors.values.primary))
             text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }
