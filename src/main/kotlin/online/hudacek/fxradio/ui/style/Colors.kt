@@ -17,6 +17,8 @@
 package online.hudacek.fxradio.ui.style
 
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 
 object Colors {
@@ -26,22 +28,19 @@ object Colors {
 }
 
 private fun getPrimaryColor(): String {
-    return if (MacUtils.isMac) {
-        when (MacUtils.accentColor) {
-            MacUtils.AccentColor.MULTICOLOR -> "#d65458"
-            MacUtils.AccentColor.GRAPHITE -> "#8C8C8C"
-            MacUtils.AccentColor.RED -> "#FF5258"
-            MacUtils.AccentColor.ORANGE -> "#F8821B"
-            MacUtils.AccentColor.YELLOW -> "#FFC500"
-            MacUtils.AccentColor.GREEN -> "#64B946"
-            MacUtils.AccentColor.BLUE -> "#037AFF"
-            MacUtils.AccentColor.PURPLE -> "#A550A6"
-            MacUtils.AccentColor.PINK -> "#F7509E"
-            null -> "#d65458"
+    val accentProperty = Property(Properties.AccentColor)
+    return AccentColor.values().find {
+        if (accentProperty.isPresent) {
+            it.colorCode == accentProperty.get<Int>()
+        } else {
+            if (MacUtils.isMac) {
+                it.colorCode == MacUtils.systemAccentColor
+            } else {
+                //Fallback
+                it == AccentColor.MULTICOLOR
+            }
         }
-    } else {
-        "#d65458"
-    }
+    }.color()
 }
 
 open class ColorValues {

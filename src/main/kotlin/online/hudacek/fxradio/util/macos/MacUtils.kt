@@ -26,18 +26,6 @@ object MacUtils : Component() {
 
     val isMac = Platform.getCurrent() == Platform.OSX
 
-    enum class AccentColor(val colorCode: Int? = null) {
-        MULTICOLOR,
-        GRAPHITE(-1),
-        RED(0),
-        ORANGE(1),
-        YELLOW(2),
-        GREEN(3),
-        BLUE(4),
-        PURPLE(5),
-        PINK(6),
-    }
-
     /**
      * Shows MacOS native system notification
      */
@@ -51,10 +39,8 @@ object MacUtils : Component() {
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"
 
-    val accentColor: AccentColor?
-        get() = AccentColor.values().find {
-            it.colorCode == Command("defaults read -g AppleAccentColor").exec().toIntOrNull()
-        }
+    val systemAccentColor: Int?
+        get() = Command("defaults read -g AppleAccentColor").exec().toIntOrNull()
 
     val osVersion: String
         get() = System.getProperty("os.version")
