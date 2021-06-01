@@ -60,6 +60,11 @@ class StylesDark : Stylesheet() {
     }
 
     init {
+        root {
+            focusColor = c(colors.primary)
+            faintFocusColor = c("${colors.primary}22")
+        }
+
         label {
             textFill = c(colors.label)
             fontSmoothingType = FontSmoothingType.GRAY
@@ -67,11 +72,6 @@ class StylesDark : Stylesheet() {
 
         checkBox {
             textFill = c(colors.label)
-        }
-
-        textInput {
-            backgroundColor += c(colors.backgroundBorder)
-            textFill = Color.WHITESMOKE
         }
 
         playerMainBox {
@@ -121,8 +121,8 @@ class StylesDark : Stylesheet() {
             unsafe("-fx-padding", raw("0"))
             unsafe("-fx-background-insets", raw("0"))
             unsafe("-fx-background-color", raw(colors.background))
-            unsafe("-fx-border-color", raw("transparent"))
-            unsafe("-fx-faint-focus-color", raw("transparent"))
+            unsafe("-fx-border-color", raw(colors.transparent))
+            unsafe("-fx-faint-focus-color", raw(colors.transparent))
         }
 
         grayLabel {
@@ -146,28 +146,43 @@ class StylesDark : Stylesheet() {
             }
         }
 
+        button {
+            and(default) {
+                baseColor = c(colors.primary)
+                textFill = Color.WHITESMOKE
+            }
+            baseColor = c(colors.backgroundSelected)
+            minWidth = 75.px
+            fontSize = 12.px
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            padding = box(4.px, 10.px, 4.px, 10.px)
+            textFill = c(colors.label)
+        }
+
         primaryButton {
             backgroundColor += c(colors.primary)
             textFill = Color.WHITESMOKE
         }
 
         libraryListView {
-            backgroundColor += c("#333232")
+            backgroundColor += c(colors.background)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
         libraryListItem {
             fontSize = 12.px
+            prefHeight = 30.px
             textFill = c(colors.label)
-            backgroundColor += c("#333232")
+            backgroundColor += c(colors.background)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(selected) {
-                backgroundColor += c(colors.backgroundBorder)
+                backgroundColor += c(colors.backgroundSelected)
                 borderColor += box(c(colors.backgroundBorder))
                 textFill = Color.WHITESMOKE
             }
-            padding = box(5.px, 10.px, 5.px, 15.px)
+            padding = box(6.px, 10.px, 6.px, 15.px)
         }
 
         libraryListItemTag {
@@ -183,7 +198,7 @@ class StylesDark : Stylesheet() {
         }
 
         backgroundWhiteSmoke {
-            backgroundColor += c("#333232")
+            backgroundColor += c(colors.background)
         }
 
         backgroundWhite {
@@ -193,6 +208,15 @@ class StylesDark : Stylesheet() {
         // ===================================================================
         // Restyled default compontents
         // ===================================================================
+
+        tableView {
+            baseColor = c(colors.background)
+            tableRowCell {
+                and(selected) {
+                    backgroundColor += c(colors.primary)
+                }
+            }
+        }
 
         scrollBar {
             backgroundColor += c(colors.transparent)
@@ -251,9 +275,10 @@ class StylesDark : Stylesheet() {
         }
 
         datagridCell {
+            backgroundColor += c(colors.transparent)
+            borderColor += box(c(colors.transparent))
+
             padding = box(0.px, 5.px, 5.px, 5.px)
-            backgroundColor += c("#6e6e6e")
-            borderColor += box(c("#6e6e6e"))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
 
@@ -270,6 +295,7 @@ class StylesDark : Stylesheet() {
 
         textArea {
             fontFamily = "monospace"
+            textFill = Color.WHITESMOKE
             backgroundColor += c(colors.background)
             content {
                 backgroundColor += c(colors.background)
@@ -341,6 +367,9 @@ class StylesDark : Stylesheet() {
         }
 
         textField {
+            baseColor = c(colors.background)
+            textFill = Color.WHITESMOKE
+            promptTextFill = Color.WHITESMOKE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
         }

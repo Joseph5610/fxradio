@@ -25,46 +25,39 @@ object Colors {
     val values: ColorValues by lazy {
         if (FxRadio.darkModeEnabled) DarkColorValues() else ColorValues()
     }
-}
 
-private fun getPrimaryColor(): String {
-    val accentProperty = Property(Properties.AccentColor)
-    return AccentColor.values().find {
-        if (accentProperty.isPresent) {
-            it.colorCode == accentProperty.get<Int>()
-        } else {
-            if (MacUtils.isMac) {
-                it.colorCode == MacUtils.systemAccentColor
+    open class ColorValues {
+        val primary = getPrimaryColor()
+        val transparent = "transparent"
+
+        open val background = "#E9E9E9"
+        open val backgroundBorder = "#E8E8E8"
+        open val backgroundSelected = "#E9E9E9"
+        open val label = "#2b2b2b"
+        open val grayLabel = "#8B8B8B"
+    }
+
+    class DarkColorValues : ColorValues() {
+        override val background = "#333232"
+        override val backgroundBorder = "#525356"
+        override val backgroundSelected = "#525356"
+        override val label = "#ffffff"
+        override val grayLabel = "#a0a1a2"
+    }
+
+    private fun getPrimaryColor(): String {
+        val accentProperty = Property(Properties.AccentColor)
+        return AccentColor.values().find {
+            if (accentProperty.isPresent) {
+                it.colorCode == accentProperty.get<Int>()
             } else {
-                //Fallback
-                it == AccentColor.MULTICOLOR
+                if (MacUtils.isMac) {
+                    it.colorCode == MacUtils.systemAccentColor
+                } else {
+                    //Fallback
+                    it == AccentColor.MULTICOLOR
+                }
             }
-        }
-    }.color()
-}
-
-open class ColorValues {
-    open val primary = getPrimaryColor()
-
-    open val background = "#E9E9E9"
-    open val backgroundBorder = "#E8E8E8"
-    open val backgroundSelected = "#E9E9E9"
-
-    open val label = "#2b2b2b"
-    open val grayLabel = "#8B8B8B"
-
-    open val transparent = "transparent"
-}
-
-class DarkColorValues : ColorValues() {
-    override val primary = "#0097CE"
-
-    override val background = "#333232"
-    override val backgroundBorder = "#525356"
-    override val backgroundSelected = "#525356"
-
-    override val label = "#ffffff"
-    override val grayLabel = "#a0a1a2"
-
-    override val transparent = "transparent"
+        }.color()
+    }
 }

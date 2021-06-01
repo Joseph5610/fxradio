@@ -66,7 +66,7 @@ class Styles : Stylesheet() {
     init {
         root {
             focusColor = c(colors.primary)
-            faintFocusColor = c(colors.transparent)
+            faintFocusColor = c("${colors.primary}22")
         }
 
         label {
@@ -97,7 +97,6 @@ class Styles : Stylesheet() {
             backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
         }
-
 
         header {
             wrapText = true
@@ -135,7 +134,6 @@ class Styles : Stylesheet() {
         }
 
         button {
-
             and(default) {
                 baseColor = c(colors.primary)
                 textFill = Color.WHITESMOKE
