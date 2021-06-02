@@ -22,6 +22,7 @@ import javafx.scene.control.TextField
 import javafx.scene.control.TextInputControl
 import javafx.scene.input.KeyCode
 import javafx.scene.text.Text
+import mu.KotlinLogging
 import org.hamcrest.Matcher
 import org.junit.jupiter.api.Assertions.fail
 import org.testfx.api.FxRobot
@@ -33,13 +34,14 @@ import org.testfx.util.WaitForAsyncUtils
 import java.util.concurrent.TimeUnit
 
 //Test utils methods
+private val logger = KotlinLogging.logger("TestUtils")
 
 /**
  * Wait some time for action to finish
  */
 internal fun waitFor(seconds: Long, op: () -> Boolean = { false }) {
     runCatching {
-        println("Wait $seconds secs for operation to finish")
+        logger.info { "Wait $seconds secs for operation to finish" }
         WaitForAsyncUtils.waitFor(seconds, TimeUnit.SECONDS) {
             op()
         }
@@ -47,22 +49,22 @@ internal fun waitFor(seconds: Long, op: () -> Boolean = { false }) {
 }
 
 internal fun sleep(seconds: Long) {
-    println("Sleep for $seconds secs")
+    logger.info { "Sleep for $seconds secs" }
     WaitForAsyncUtils.sleep(seconds, TimeUnit.SECONDS)
 }
 
 internal fun hasLabel(txt: String): Matcher<Labeled> {
-    println("Check element has text: $txt ")
+    logger.info { "Check element has text: $txt " }
     return LabeledMatchers.hasText(txt)
 }
 
 internal fun hasText(txt: String): Matcher<Text> {
-    println("Check element has text: $txt ")
+    logger.info { "Check element has text: $txt" }
     return TextMatchers.hasText(txt)
 }
 
 internal fun hasValue(txt: String): Matcher<TextInputControl> {
-    println("Check textfield has value: $txt ")
+    logger.info { "Check TextField has value: $txt" }
     return TextInputControlMatchers.hasText(txt)
 }
 
@@ -70,8 +72,13 @@ internal fun visible() = NodeMatchers.isVisible()
 internal fun invisible() = NodeMatchers.isInvisible()
 
 internal inline fun <reified T : Node> FxRobot.find(name: String): T {
-    println("Find element: $name ")
+    logger.info { "Find element: $name" }
     return lookup(name).query() as T
+}
+
+internal inline fun <reified T : Node> FxRobot.findAll(name: String): Set<T> {
+    logger.info { "Find element: $name" }
+    return lookup(name).queryAll()
 }
 
 internal fun FxRobot.enterText(fieldQuery: String, textToEnter: String) {

@@ -46,6 +46,8 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
     }
 
     override val root = listview(countriesProperty) {
+        id = "libraryCountriesFragment"
+
         /**
          * Set min/max size of listview based on its items size
          */

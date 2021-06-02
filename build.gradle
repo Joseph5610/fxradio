@@ -48,7 +48,6 @@ ext.versions = [
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
         junit              : "5.4.0",
-        awaitility         : "4.0.3",
         flagIcon           : "1.1.0"
 ]
 
@@ -56,48 +55,48 @@ dependencies {
     // Align versions of all Kotlin components
     compile platform('org.jetbrains.kotlin:kotlin-bom')
 
-    //local jars
+    // Local JAR files
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    // Use the Kotlin JDK 8 standard library.
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    runtime group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: versions.kotlin
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines"
+    // Use the Kotlin JDK 8 standard library
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines")
 
-    compile "no.tornado:tornadofx:$versions.tornadofx"
-    compile "org.controlsfx:controlsfx:$versions.controlsfx"
-    compile "no.tornado:tornadofx-controlsfx:$versions.tornadofxControlsfx"
+    compile("no.tornado:tornadofx:$versions.tornadofx")
+    compile("org.controlsfx:controlsfx:$versions.controlsfx")
+    compile("no.tornado:tornadofx-controlsfx:$versions.tornadofxControlsfx")
 
-    compile "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofitAdapters"
-    compile "com.squareup.retrofit2:converter-gson:$versions.retrofitAdapters"
-    compile "com.squareup.okhttp3:logging-interceptor:$versions.retrofitLogger"
+    compile("com.squareup.retrofit2:retrofit:$versions.retrofit")
+    compile("com.squareup.retrofit2:adapter-rxjava2:$versions.retrofitAdapters")
+    compile("com.squareup.retrofit2:converter-gson:$versions.retrofitAdapters")
+    compile("com.squareup.okhttp3:logging-interceptor:$versions.retrofitLogger")
 
-    compile "io.github.microutils:kotlin-logging:$versions.kotlinLogging"
-    compile "org.slf4j:slf4j-api:$versions.slf4j"
-    compile "org.apache.logging.log4j:log4j-slf4j-impl:$versions.log4j2"
-    compile "org.apache.logging.log4j:log4j-api:$versions.log4j2"
-    compile "org.apache.logging.log4j:log4j-core:$versions.log4j2"
+    compile("io.github.microutils:kotlin-logging:$versions.kotlinLogging")
+    compile("org.slf4j:slf4j-api:$versions.slf4j")
+    compile("org.apache.logging.log4j:log4j-slf4j-impl:$versions.log4j2")
+    compile("org.apache.logging.log4j:log4j-api:$versions.log4j2")
+    compile("org.apache.logging.log4j:log4j-core:$versions.log4j2")
 
-    compile "commons-io:commons-io:$versions.commonsio"
+    compile("commons-io:commons-io:$versions.commonsio")
 
-    compile "com.github.thomasnield:rxkotlinfx:$versions.rxkotlinfx"
-    compile "org.xerial:sqlite-jdbc:$versions.sqliteJdbc"
-    compile "org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc"
-    compile "de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx"
+    compile("com.github.thomasnield:rxkotlinfx:$versions.rxkotlinfx")
+    compile("org.xerial:sqlite-jdbc:$versions.sqliteJdbc")
+    compile("org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc")
+    compile("de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx")
 
-    compile "org.codehaus.griffon.plugins:griffon-flagicons-javafx:$versions.flagIcon"
+    compile("org.codehaus.griffon.plugins:griffon-flagicons-javafx:$versions.flagIcon")
 
     //Players
-    compile "io.humble:humble-video-all:$versions.humble"
-    compile "uk.co.caprica:vlcj:$versions.vlcj"
+    compile("io.humble:humble-video-all:$versions.humble")
+    compile("uk.co.caprica:vlcj:$versions.vlcj")
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
-    testCompile "org.junit.jupiter:junit-jupiter-api:$versions.junit"
-    testCompile "org.testfx:testfx-core:$versions.testfx"
-    testCompile "org.testfx:testfx-junit5:$versions.testfx"
-    testCompile "org.awaitility:awaitility:$versions.awaitility"
-    testCompile "org.testfx:openjfx-monocle:8u76-b04"
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$versions.junit")
+    testCompile("org.junit.jupiter:junit-jupiter-api:$versions.junit")
+    testCompile("org.junit.jupiter:junit-jupiter-params:$versions.junit")
+    testCompile("org.testfx:testfx-core:$versions.testfx")
+    testCompile("org.testfx:testfx-junit5:$versions.testfx")
+    testCompile("org.testfx:openjfx-monocle:8u76-b04")
 }
 
 sourceSets {
@@ -137,7 +136,7 @@ jfx {
 
     additionalAppResources = 'src/main/deploy/additional'
     String runtimePath = System.getenv('JAVA_HOME')
-    if(runtimePath != null && System.getenv('FX_APPEND_PATH') != null) {
+    if (runtimePath != null && System.getenv('FX_APPEND_PATH') != null) {
         runtimePath = runtimePath + System.getenv('FX_APPEND_PATH')
     }
     logger.info('Runtime path is: {}', runtimePath)
