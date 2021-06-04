@@ -22,11 +22,11 @@ import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 
 object Colors {
-    val values: ColorValues by lazy {
-        if (FxRadio.darkModeEnabled) DarkColorValues() else ColorValues()
+    val palette: Palette by lazy {
+        if (FxRadio.darkModeEnabled) DarkPalette() else Palette()
     }
 
-    open class ColorValues {
+    open class Palette {
         val primary = getPrimaryColor()
         val transparent = "transparent"
 
@@ -37,7 +37,7 @@ object Colors {
         open val grayLabel = "#8B8B8B"
     }
 
-    class DarkColorValues : ColorValues() {
+    class DarkPalette : Palette() {
         override val background = "#333232"
         override val backgroundBorder = "#525356"
         override val backgroundSelected = "#525356"
@@ -45,13 +45,18 @@ object Colors {
         override val grayLabel = "#a0a1a2"
     }
 
+    /**
+     * Detects primary color from system accept color
+     */
     private fun getPrimaryColor(): String {
         val accentProperty = Property(Properties.AccentColor)
         return AccentColor.values().find {
+            //Use accent color from app.property file
             if (accentProperty.isPresent) {
                 it.colorCode == accentProperty.get<Int>()
             } else {
                 if (MacUtils.isMac) {
+                    //Use system accent color
                     it.colorCode == MacUtils.systemAccentColor
                 } else {
                     //Fallback

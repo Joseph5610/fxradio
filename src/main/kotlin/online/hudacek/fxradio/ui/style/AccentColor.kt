@@ -17,7 +17,7 @@
 package online.hudacek.fxradio.ui.style
 
 /**
- * App Accent Color definitions
+ * Accent Color definitions
  */
 enum class AccentColor(val colorCode: Int? = null) {
     MULTICOLOR,
@@ -32,7 +32,7 @@ enum class AccentColor(val colorCode: Int? = null) {
 }
 
 /**
- * Map internal representation of accent color into hex
+ * Maps internal representation of accent color into hex
  */
 internal fun AccentColor?.color() = when (this) {
     AccentColor.MULTICOLOR -> "#d65458"

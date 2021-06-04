@@ -46,7 +46,7 @@ class PlayerView : BaseView() {
     private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false) }
     private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false) }
     private val randomStationGlyph by lazy {
-        FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false, color = c(Colors.values.primary))
+        FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false, color = c(Colors.palette.primary))
     }
     private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false) }
 

@@ -52,11 +52,11 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                                 if (it)
                                     FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0,
                                             useStyle = false,
-                                            color = c(Colors.values.grayLabel))
+                                            color = c(Colors.palette.grayLabel))
                                 else
                                     FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0,
                                             useStyle = false,
-                                            color = c(Colors.values.grayLabel))
+                                            color = c(Colors.palette.grayLabel))
                     }
 
             showWhen {

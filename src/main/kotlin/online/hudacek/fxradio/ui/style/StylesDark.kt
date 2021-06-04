@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class StylesDark : Stylesheet() {
 
-    private val colors = Colors.values
+    private val colors = Colors.palette
 
     companion object {
 
@@ -55,7 +55,6 @@ class StylesDark : Stylesheet() {
 
         //for Text()
         val defaultTextColor by cssclass()
-
         val noBorder by cssclass()
     }
 
