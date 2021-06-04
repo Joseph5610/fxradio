@@ -24,6 +24,7 @@ import javafx.scene.control.Label
 import javafx.scene.effect.DropShadow
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.*
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -105,6 +106,23 @@ class StationInfoFragment : BaseFragment() {
                 createInfoLabel("info.language", viewModel.languageProperty)?.let { add(it) }
                 createInfoLabel("info.country", viewModel.countryProperty)?.let { add(it) }
                 createInfoLabel("info.votes", viewModel.votesProperty)?.let { add(it) }
+            }
+        }
+
+        vbox {
+            prefHeight = 210.0
+            paddingBottom = 10.0
+            webview {
+                engine.load(Config.API.mapURL +
+                        "?lat=${viewModel.stationProperty.value.geo_lat}" +
+                        "&lon=${viewModel.stationProperty.value.geo_long}"
+                )
+            }
+
+            showWhen {
+                viewModel.stationProperty.booleanBinding {
+                    it!!.geo_lat != 0.0 && it.geo_long != 0.0
+                }.and(booleanProperty(Config.Flags.enableMap))
             }
         }
 

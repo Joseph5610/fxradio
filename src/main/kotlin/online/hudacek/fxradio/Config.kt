@@ -30,6 +30,7 @@ object Config {
     object API {
         const val dnsLookupURL = "all.api.radio-browser.info"
         const val fallbackApiServerURL = "de1.api.radio-browser.info"
+        const val mapURL = "http://m2-multiplayer.eu/fxmap/"
     }
 
     /**
@@ -53,5 +54,6 @@ object Config {
         const val darkStylesEnabled = false
         const val useTrayIcon = false
         const val enableStationDebug = false
+        const val enableMap = true
     }
 }

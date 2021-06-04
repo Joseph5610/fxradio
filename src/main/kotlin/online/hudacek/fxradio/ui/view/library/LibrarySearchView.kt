@@ -25,6 +25,7 @@ import online.hudacek.fxradio.viewmodel.SearchViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.label
+import tornadofx.onChange
 import tornadofx.validator
 
 /**
@@ -42,6 +43,10 @@ class LibrarySearchView : BaseView() {
 
         setOnMouseClicked {
             libraryViewModel.stateProperty.value = LibraryState.Search
+        }
+
+        textProperty().onChange {
+            viewModel.commit()
         }
 
         validator {
