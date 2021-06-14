@@ -48,7 +48,8 @@ ext.versions = [
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
         junit              : "5.4.0",
-        flagIcon           : "1.1.0"
+        flagIcon           : "1.1.0",
+        flyway             : "7.10.0"
 ]
 
 dependencies {
@@ -84,6 +85,7 @@ dependencies {
     compile("org.xerial:sqlite-jdbc:$versions.sqliteJdbc")
     compile("org.nield:rxkotlin-jdbc:$versions.rxkotlinJdbc")
     compile("de.codecentric.centerdevice:centerdevice-nsmenufx:$versions.nsmenufx")
+    compile("org.flywaydb:flyway-core:$versions.flyway")
 
     compile("org.codehaus.griffon.plugins:griffon-flagicons-javafx:$versions.flagIcon")
 

@@ -16,16 +16,13 @@
 
 package online.hudacek.fxradio.storage.db
 
-import mu.KotlinLogging
 import online.hudacek.fxradio.Config
+import org.flywaydb.core.Flyway
 import org.nield.rxkotlinjdbc.execute
 import org.nield.rxkotlinjdbc.insert
 import org.nield.rxkotlinjdbc.select
 import java.sql.Connection
 import java.sql.DriverManager
-import kotlin.reflect.full.declaredMemberProperties
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * Database helper class with useful methods to write/read from local sqlite.db
@@ -40,7 +37,7 @@ abstract class Database(open val tableName: String) {
 
     fun removeQuery(query: String) = connection.execute(query)
 
-    private companion object DatabaseConnection {
+    private companion object {
         private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
 
         /**
@@ -48,19 +45,11 @@ abstract class Database(open val tableName: String) {
          * Performs create table operation for all tables in [Tables] object
          */
         private val connection: Connection = DriverManager.getConnection(dbUrl).apply {
-            //Get trough all tables declared in Tables object and
-            //execute create table statements accordingly
-            Tables::class.declaredMemberProperties.forEach {
-                val member = it.get(Tables) as Table<*> //Get instance of member
-
-                execute(member.createTableSql)
-                        .toSingle()
-                        .subscribe({
-                            logger.info { "Create Table ${member.tableName} returned result: $it" }
-                        }, { e ->
-                            logger.error(e) { "Exception when creating ${member.tableName} table!" }
-                        })
-            }
+            /**
+             * Apply flyway db migrations
+             */
+            val flyway = Flyway.configure().dataSource(dbUrl, null, null).load()
+            flyway.migrate()
         }
     }
 }

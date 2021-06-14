@@ -28,11 +28,6 @@ interface Table<T> {
      */
     val tableName: String
 
-    /**
-     * SQL query that will create the table with the name [tableName]
-     */
-    val createTableSql: String
-
     fun selectAll(): Observable<T>
     fun removeAll(): Single<Int>
     fun insert(element: T): Single<T>

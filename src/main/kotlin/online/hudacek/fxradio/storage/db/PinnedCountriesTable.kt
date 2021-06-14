@@ -22,10 +22,6 @@ import online.hudacek.fxradio.api.stations.model.Country
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
 
-    override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
-            " name VARCHAR " +
-            " )"
-
     override fun selectAll(): Observable<Country> = selectAllQuery()
             .toObservable {
                 //We do not store the count of stations for given pinned country

@@ -25,13 +25,6 @@ import online.hudacek.fxradio.api.stations.model.Station
  */
 class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
 
-    override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
-            " stationuuid VARCHAR, name VARCHAR, " +
-            " url_resolved VARCHAR, homepage VARCHAR," +
-            " favicon VARCHAR, tags VARCHAR, country VARCHAR, " +
-            " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
-            " )"
-
     override fun selectAll(): Observable<Station> = selectAllQuery()
             .toObservable {
                 Station(it.getString("stationuuid"),
