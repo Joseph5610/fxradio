@@ -19,8 +19,8 @@ package online.hudacek.fxradio.ui.style
 /**
  * Accent Color definitions
  */
-enum class AccentColor(val colorCode: Int? = null) {
-    MULTICOLOR,
+enum class AccentColor(val colorCode: Int) {
+    MULTICOLOR(Int.MIN_VALUE),
     GRAPHITE(-1),
     RED(0),
     ORANGE(1),
@@ -34,7 +34,7 @@ enum class AccentColor(val colorCode: Int? = null) {
 /**
  * Maps internal representation of accent color into hex
  */
-internal fun AccentColor?.color() = when (this) {
+internal fun AccentColor.color() = when (this) {
     AccentColor.MULTICOLOR -> "#d65458"
     AccentColor.GRAPHITE -> "#8C8C8C"
     AccentColor.RED -> "#FF5258"
@@ -44,5 +44,4 @@ internal fun AccentColor?.color() = when (this) {
     AccentColor.BLUE -> "#037AFF"
     AccentColor.PURPLE -> "#A550A6"
     AccentColor.PINK -> "#F7509E"
-    null -> "#d65458"
 }

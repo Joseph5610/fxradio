@@ -74,30 +74,33 @@ class AddStationFragment : BaseFragment() {
                     field(messages["add.site"], "https://example.com/",
                             viewModel.homePageProperty) { field ->
                         field.validator {
-                            if (it != null && HttpUrl.parse(it) != null)
-                                success()
-                            else
+                            if (it == null || HttpUrl.parse(it) == null) {
                                 error(messages["field.invalid.url"])
+                            } else {
+                                null
+                            }
                         }
                     }
 
                     field(messages["add.url"], "https://example.com/stream.m3u",
                             viewModel.urlProperty) { field ->
                         field.validator {
-                            if (it != null && HttpUrl.parse(it) != null)
-                                success()
-                            else
+                            if (it == null || HttpUrl.parse(it) == null) {
                                 error(messages["field.invalid.url"])
+                            } else {
+                                null
+                            }
                         }
                     }
 
                     field(messages["add.icon"], "https://example.com/favicon.ico",
                             viewModel.faviconProperty) { field ->
                         field.validator {
-                            if (it != null && HttpUrl.parse(it) != null)
-                                success()
-                            else
+                            if (it == null || HttpUrl.parse(it) == null) {
                                 error(messages["field.invalid.url"])
+                            } else {
+                                null
+                            }
                         }
                     }
 
@@ -112,10 +115,10 @@ class AddStationFragment : BaseFragment() {
                     field(messages["add.country"], messages["add.country.prompt"],
                             viewModel.countryProperty, true, countriesListProperty) { field ->
                         field.validator {
-                            if (it in countriesListProperty)
-                                success()
-                            else
+                            if (it !in countriesListProperty)
                                 error(messages["field.invalid.country"])
+                            else
+                                null
                         }
                     }
                     field(messages["add.tags"], messages["add.tags.prompt"], viewModel.tagsProperty)

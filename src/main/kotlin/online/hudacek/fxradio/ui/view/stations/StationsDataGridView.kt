@@ -19,7 +19,6 @@ package online.hudacek.fxradio.ui.view.stations
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.github.thomasnield.rxkotlinfx.onChangedObservable
 import javafx.geometry.Pos
-import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
@@ -97,11 +96,8 @@ class StationsDataGridView : BaseView() {
                     imageview {
                         station.stationImage(this)
                         effect = DropShadow(15.0, Color.LIGHTGRAY)
-                        isCache = true
-                        cacheHint = CacheHint.SPEED
                         fitHeight = 100.0
                         fitWidth = 100.0
-                        isPreserveRatio = true
                     }
                 }
                 label(station.name) {

@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.ui
 
 import javafx.beans.property.Property
+import javafx.scene.CacheHint
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
@@ -46,7 +47,11 @@ internal fun Property<Station>.stationImage(view: ImageView) {
 }
 
 internal fun Station.stationImage(view: ImageView) {
+    //Set basic image properties
     view.image = defaultRadioLogo
+    view.isCache = true
+    view.cacheHint = CacheHint.SPEED
+    view.isPreserveRatio = true
 
     //If the image is in the cache, just load it into view
     if (isCached) {

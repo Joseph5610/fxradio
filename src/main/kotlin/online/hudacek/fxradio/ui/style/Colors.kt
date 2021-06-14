@@ -48,21 +48,19 @@ object Colors {
     /**
      * Detects primary color from system accept color
      */
-    private fun getPrimaryColor(): String {
+    private fun getPrimaryColor() = AccentColor.values().first {
         val accentProperty = Property(Properties.AccentColor)
-        return AccentColor.values().find {
-            //Use accent color from app.property file
-            if (accentProperty.isPresent) {
-                it.colorCode == accentProperty.get<Int>()
+        //Use accent color from app.property file
+        if (accentProperty.isPresent) {
+            it.colorCode == accentProperty.get<Int>()
+        } else {
+            if (MacUtils.isMac) {
+                //Use system accent color
+                it.colorCode == MacUtils.systemAccentColor
             } else {
-                if (MacUtils.isMac) {
-                    //Use system accent color
-                    it.colorCode == MacUtils.systemAccentColor
-                } else {
-                    //Fallback
-                    it == AccentColor.MULTICOLOR
-                }
+                //Fallback
+                it == AccentColor.MULTICOLOR
             }
-        }.color()
-    }
+        }
+    }.color()
 }

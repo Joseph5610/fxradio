@@ -48,7 +48,6 @@ class StationsHistoryView : BaseView() {
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 30.0
                     fitWidth = 30.0
-                    isPreserveRatio = true
                 }
                 vbox {
                     label(it.name)

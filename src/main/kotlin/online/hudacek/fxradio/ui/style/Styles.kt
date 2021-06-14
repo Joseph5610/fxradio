@@ -104,7 +104,7 @@ class Styles : Stylesheet() {
 
         subheader {
             wrapText = true
-            fontSize = 15.px
+            fontSize = 14.px
         }
 
         defaultTextColor {

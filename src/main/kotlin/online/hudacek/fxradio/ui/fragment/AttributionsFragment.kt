@@ -22,6 +22,7 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.style.Colors
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
@@ -80,11 +81,12 @@ class AttributionsFragment : BaseFragment() {
 
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10
-                label(viewModel.licenseNameProperty) {
-                    addClass(Styles.header)
-                }
+                label(viewModel.licenseNameProperty)
                 showWhen {
                     viewModel.licenseNameProperty.isNotEmpty
+                }
+                style {
+                    backgroundColor += c(Colors.palette.background)
                 }
             }
 

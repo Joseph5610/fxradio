@@ -27,14 +27,14 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.*
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationInfo
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 class StationInfoFragment : BaseFragment() {
 
     private val viewModel: StationInfoViewModel by inject()
+    private val searchViewModel: SearchViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     init {
@@ -42,6 +42,7 @@ class StationInfoFragment : BaseFragment() {
     }
 
     override val root = vbox {
+        vgrow = Priority.ALWAYS
         prefWidth = 400.0
         titleProperty.bind(viewModel.nameProperty)
 
@@ -51,27 +52,27 @@ class StationInfoFragment : BaseFragment() {
                 imageview {
                     viewModel.stationProperty.stationImage(this)
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
-                    fitHeight = 100.0
-                    fitHeight = 100.0
-                    isPreserveRatio = true
+                    fitHeight = 60.0
+                    fitHeight = 60.0
                 }
             }
             vbox {
                 alignment = Pos.CENTER
-                label(viewModel.nameProperty) {
+                hyperlink(viewModel.nameProperty) {
+                    requestFocusOnSceneAvailable()
+                    action {
+                        app.openUrl(viewModel.homePageProperty.value)
+                    }
+                    showWhen {
+                        viewModel.homePageProperty.isNotEmpty
+                    }
                     addClass(Styles.subheader)
                 }
 
-                hyperlink(viewModel.homePageProperty) {
-                    action {
-                        app.openUrl(text)
-                    }
-                    copyMenu(clipboard,
-                            name = messages["copy"],
-                            value = text)
-
+                label(viewModel.nameProperty) {
+                    addClass(Styles.subheader)
                     showWhen {
-                        viewModel.homePageProperty.isNotEmpty
+                        viewModel.homePageProperty.isEmpty
                     }
                 }
 
@@ -82,12 +83,16 @@ class StationInfoFragment : BaseFragment() {
                     paddingAll = 5.0
 
                     viewModel.tagsProperty.forEach {
-                        label(it) {
+                        hyperlink(it) {
                             addClass(Styles.tag)
                             addClass(Styles.grayLabel)
-                            copyMenu(clipboard,
-                                    name = messages["copy"],
-                                    value = it)
+
+                            action {
+                                libraryViewModel.stateProperty.value = LibraryState.Search
+                                searchViewModel.bindQueryProperty.value = it
+                                searchViewModel.searchByTagProperty.value = true
+                                close()
+                            }
                         }
                     }
                 }
@@ -95,6 +100,9 @@ class StationInfoFragment : BaseFragment() {
         }
 
         vbox {
+            vgrow = Priority.ALWAYS
+            paddingBottom = 10.0
+
             flowpane {
                 hgap = 5.0
                 vgap = 5.0
@@ -107,22 +115,19 @@ class StationInfoFragment : BaseFragment() {
                 createInfoLabel("info.country", viewModel.countryProperty)?.let { add(it) }
                 createInfoLabel("info.votes", viewModel.votesProperty)?.let { add(it) }
             }
-        }
 
-        vbox {
-            prefHeight = 210.0
-            paddingBottom = 10.0
             webview {
+                prefHeight = 210.0
                 engine.load(Config.API.mapURL +
                         "?lat=${viewModel.stationProperty.value.geo_lat}" +
                         "&lon=${viewModel.stationProperty.value.geo_long}"
                 )
-            }
 
-            showWhen {
-                viewModel.stationProperty.booleanBinding {
-                    it!!.geo_lat != 0.0 && it.geo_long != 0.0
-                }.and(booleanProperty(Config.Flags.enableMap))
+                showWhen {
+                    viewModel.stationProperty.booleanBinding {
+                        it!!.geo_lat != 0.0 && it.geo_long != 0.0
+                    }.and(booleanProperty(Config.Flags.enableMap))
+                }
             }
         }
 

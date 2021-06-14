@@ -52,7 +52,6 @@ class PlayerStationView : BaseView() {
 
             effect = DropShadow(20.0, Color.WHITE)
             fitWidth = 30.0
-            isPreserveRatio = true
         }
     }
 

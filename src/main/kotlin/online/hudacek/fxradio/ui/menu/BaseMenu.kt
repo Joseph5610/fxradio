@@ -31,7 +31,7 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
     protected val appMenuViewModel: AppMenuViewModel by inject()
     protected val appEvent: AppEvent by inject()
 
-    abstract val menuItems: List<MenuItem>
+    protected abstract val menuItems: List<MenuItem>
 
     /**
      * Parent menu object, extending classes defines its items via [menuItems] property
@@ -53,7 +53,7 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
     /**
      * Defines keyboard shortcuts for menu actions
      */
-    protected object KeyCodes {
+    protected companion object KeyCodes {
         val favourite = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
         val history = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
         val play = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
