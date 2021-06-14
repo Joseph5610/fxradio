@@ -39,8 +39,8 @@ object MacUtils : Component() {
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"
 
-    val systemAccentColor: Int?
-        get() = Command("defaults read -g AppleAccentColor").exec().toIntOrNull()
+    val systemAccentColor: Int
+        get() = Command("defaults read -g AppleAccentColor").exec().toIntOrNull() ?: Int.MIN_VALUE
 
     val osVersion: String
         get() = System.getProperty("os.version")

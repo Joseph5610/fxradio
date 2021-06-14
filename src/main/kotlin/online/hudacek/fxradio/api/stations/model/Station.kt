@@ -21,7 +21,8 @@ data class Station(
         var votes: Int = 0,
         val geo_lat: Double = 0.0,
         val geo_long: Double = 0.0,
-        val clicktrend: Int = 0) {
+        val clicktrend: Int = 0,
+        val languagecodes: String = "") {
 
     fun isValid() = stationuuid != "0"
 
