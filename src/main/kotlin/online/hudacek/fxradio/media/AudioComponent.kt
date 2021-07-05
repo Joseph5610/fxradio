@@ -16,39 +16,14 @@
 
 package online.hudacek.fxradio.media
 
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.value
-
 /**
- * Common interface for all available players
+ * Common interface for audio components
  */
-interface MediaPlayer {
+interface AudioComponent {
 
-    /**
-     * Supported types of player
-     */
-    enum class Type {
-        Humble, VLC
-    }
-
-    val playerType: Type
-
-    /**
-     * Starts playing stream with URL [streamUrl]
-     */
     fun play(streamUrl: String)
 
-    /**
-     * Changes playing value to [newVolume]
-     */
-    fun changeVolume(newVolume: Double)
+    fun setVolume(newVolume: Double)
 
-    fun stop()
-
-    fun release()
-
-    companion object {
-        //The metadata service can be disabled by respective property file setting
-        val isMetaDataRefreshEnabled = Properties.PlayerMetaDataRefresh.value(true)
-    }
+    fun cancel()
 }

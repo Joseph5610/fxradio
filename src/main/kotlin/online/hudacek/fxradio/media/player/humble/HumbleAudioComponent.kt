@@ -21,6 +21,7 @@ import io.humble.video.MediaPacket
 import io.humble.video.javaxsound.AudioFrame
 import kotlinx.coroutines.*
 import mu.KotlinLogging
+import online.hudacek.fxradio.media.AudioComponent
 import online.hudacek.fxradio.media.StreamUnavailableException
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
@@ -31,16 +32,16 @@ import kotlin.reflect.jvm.isAccessible
 private val logger = KotlinLogging.logger {}
 
 /**
- * Play/stop logic of ffmpeg player
+ * Play/stop logic of Humble player
  */
-class HumbleAudioComponent {
+class HumbleAudioComponent : AudioComponent {
 
     private var lastTriedVolumeChange = 0.0
 
     private var audioFrame: AudioFrame? = null
     private var job: Job? = null
 
-    fun play(streamUrl: String) {
+    override fun play(streamUrl: String) {
         job = GlobalScope.launch(coroutineExceptionHandler) {
             val deMuxer = Demuxer.make()
             try {
@@ -56,7 +57,7 @@ class HumbleAudioComponent {
                     //Log audio format
                     logger.info { audioFrame?.format }
 
-                    changeLineVolume(lastTriedVolumeChange)
+                    setVolume(lastTriedVolumeChange)
 
                     val packet = MediaPacket.make()
                     while (deMuxer.read(packet) >= 0) {
@@ -89,7 +90,7 @@ class HumbleAudioComponent {
         }
     }
 
-    fun changeLineVolume(newVolume: Double) {
+    override fun setVolume(newVolume: Double) {
         lastTriedVolumeChange = newVolume
 
         //Dirty hack, since the api does not provide direct access to field,
@@ -103,7 +104,7 @@ class HumbleAudioComponent {
         }
     }
 
-    fun cancel() {
+    override fun cancel() {
         job?.let {
             if (it.isActive) {
                 logger.debug { "Cancelling current playback..." }
@@ -117,7 +118,7 @@ class HumbleAudioComponent {
          * Handler for unexpected exception inside [job]
          */
         private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            logger.error(throwable) { "Stream unavailable..." }
+            logger.error(throwable) { "Exception when playing stream!" }
         }
     }
 }

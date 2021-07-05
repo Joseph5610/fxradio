@@ -14,22 +14,25 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.media
+package online.hudacek.fxradio.media.player.vlc
 
-import javafx.application.Platform
-import online.hudacek.fxradio.viewmodel.PlayerState
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.find
+import mu.KotlinLogging
+import uk.co.caprica.vlcj.log.LogEventListener
+import uk.co.caprica.vlcj.log.LogLevel
 
-class StreamUnavailableException(message: String, cause: Throwable?) : Exception(message, cause) {
+private val logger = KotlinLogging.logger {}
 
-    constructor(message: String) : this(message, null)
+/**
+ * Listen for VLC native logs and print them to our logger
+ */
+class VLCLogListener : LogEventListener {
 
-    private val playerViewModel = find<PlayerViewModel>()
+    var lastLogMessage: String = ""
+        private set
 
-    init {
-        Platform.runLater {
-            playerViewModel.stateProperty.value = PlayerState.Error(localizedMessage)
-        }
+    override fun log(level: LogLevel?, module: String?, file: String?, line: Int?, name: String?,
+                     header: String?, id: Int?, message: String) {
+        lastLogMessage = message
+        logger.info { "[$module] ($name) $level: $message" }
     }
 }

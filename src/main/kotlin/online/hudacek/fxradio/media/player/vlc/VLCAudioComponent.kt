@@ -17,10 +17,12 @@
 package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
-import online.hudacek.fxradio.media.MediaPlayer
+import online.hudacek.fxradio.media.AudioComponent
 import online.hudacek.fxradio.media.StreamUnavailableException
+import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
+import uk.co.caprica.vlcj.media.MediaEventListener
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
 private val logger = KotlinLogging.logger {}
@@ -29,65 +31,53 @@ private val logger = KotlinLogging.logger {}
  * VLC Player Audio Component
  * Implements playing logic using VLC player
  */
-class VLCAudioComponent {
+class VLCAudioComponent : AudioComponent {
 
-    private val vlcEvents = VLCEvents()
+    private val player: AudioPlayerComponent? by lazy { runCatching { AudioPlayerComponent() }.getOrNull() }
 
     private lateinit var nativeLog: NativeLog
-
-    val player: AudioPlayerComponent? by lazy { runCatching { AudioPlayerComponent() }.getOrNull() }
 
     init {
         if (player == null) {
             throw StreamUnavailableException("VLC player cannot be found on the system.")
         }
-
-        player?.let {
-            it.mediaPlayer().events().addMediaPlayerEventListener(vlcEvents.mediaStatusAdapter)
-
-            if (MediaPlayer.enableMetaDataService) {
-                it.mediaPlayer().events().addMediaEventListener(vlcEvents.mediaMetaDataAdapter)
-            }
-
-            nativeLog = it.mediaPlayerFactory().application().newLog().apply {
-                level = LogLevel.NOTICE
-                addLogListener(vlcEvents.nativeLogListener)
-            }
-        }
-
-        vlcEvents.endPlayingEvent.subscribe {
-            stop()
-        }
     }
 
-    fun play(url: String) {
-        player?.mediaPlayer()?.media()?.play(url)
+    override fun play(streamUrl: String) {
+        player?.mediaPlayer()?.media()?.play(streamUrl)
     }
 
-    fun setVolume(volume: Int) = player?.mediaPlayer()?.audio()?.setVolume(volume) ?: false
+    override fun setVolume(newVolume: Double) {
+        player?.mediaPlayer()?.audio()?.setVolume(newVolume.toInt())
+    }
 
-    fun stop() {
-        // Its not allowed to call back into LibVLC from an event handling thread,
-        // so submit() is used
+    override fun cancel() {
         runCatching {
             player?.let {
+                // Its not allowed to call back into LibVLC from an event handling thread,
+                // so submit() is used
                 it.mediaPlayer().submit {
                     it.mediaPlayer().controls().stop()
                 }
             }
-        }.onFailure { logger.debug { "Can't stop stream..." } }
+        }.onFailure { logger.error(it) { "Can't cancel playing..." } }
     }
 
-    fun release() {
-        logger.info { "Releasing VLC player..." }
-        player?.let {
-            if (MediaPlayer.enableMetaDataService) {
-                it.mediaPlayer().events().removeMediaEventListener(vlcEvents.mediaMetaDataAdapter)
-            }
-            it.mediaPlayer().events().removeMediaPlayerEventListener(vlcEvents.mediaStatusAdapter)
-            nativeLog.removeLogListener(vlcEvents.nativeLogListener)
-            nativeLog.release()
-            it.release()
+    fun attachMediaListener(listener: MediaEventListener) = player?.mediaPlayer()?.events()?.addMediaEventListener(listener)
+
+    fun removeMediaListener(listener: MediaEventListener) = player?.mediaPlayer()?.events()?.removeMediaEventListener(listener)
+
+    fun attachLogListener(listener: LogEventListener, level: LogLevel = LogLevel.NOTICE) = player?.let {
+        nativeLog = it.mediaPlayerFactory().application().newLog().apply {
+            this.level = level
+            addLogListener(listener)
         }
     }
+
+    fun releaseLogListener(listener: LogEventListener) = player?.let {
+        nativeLog.removeLogListener(listener)
+        nativeLog.release()
+    }
+
+    fun release() = player?.release()
 }
