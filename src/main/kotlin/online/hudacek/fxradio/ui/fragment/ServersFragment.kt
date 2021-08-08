@@ -103,7 +103,7 @@ class ServersFragment : BaseFragment() {
                         alignment = Pos.CENTER_LEFT
 
                         imageview {
-                            image = FlagIcon(it.substring(0, 2))
+                            image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull()
                         }
 
                         label(messages["servers.selected"]) {
