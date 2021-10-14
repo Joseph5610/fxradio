@@ -27,7 +27,7 @@ object Colors {
     }
 
     open class Palette {
-        val primary = getPrimaryColor()
+        val primary by lazy { getPrimaryColor() }
         val transparent = "transparent"
 
         open val background = "#E9E9E9"
@@ -48,19 +48,20 @@ object Colors {
     /**
      * Detects primary color from system accept color
      */
-    private fun getPrimaryColor() = AccentColor.values().first {
+    private fun getPrimaryColor(): String {
         val accentProperty = Property(Properties.AccentColor)
         //Use accent color from app.property file
-        if (accentProperty.isPresent) {
-            it.colorCode == accentProperty.get<Int>()
+        val colorCode: Int = if (accentProperty.isPresent) {
+            accentProperty.get()
         } else {
             if (MacUtils.isMac) {
                 //Use system accent color
-                it.colorCode == MacUtils.systemAccentColor
+                MacUtils.systemAccentColor
             } else {
                 //Fallback
-                it == AccentColor.MULTICOLOR
+                AccentColor.MULTICOLOR.colorCode
             }
         }
-    }.color()
+        return AccentColor.values().first { it.colorCode == colorCode }.color()
+    }
 }

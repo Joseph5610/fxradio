@@ -16,15 +16,20 @@
 
 package online.hudacek.fxradio.util
 
+import mu.KotlinLogging
 import java.io.BufferedReader
 import java.io.InputStreamReader
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Execute OS command
  */
 class Command(private val command: String) {
 
-    fun exec() = Runtime.getRuntime().exec(command).result
+    fun exec() = Runtime.getRuntime().exec(command).result.also {
+        logger.info { "Executed command: $command, returned $it" }
+    }
 
     /**
      * Parse result of command to string
