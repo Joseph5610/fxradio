@@ -27,10 +27,8 @@ private val logger = KotlinLogging.logger {}
  */
 class Command(private val command: String) {
 
-    fun exec() = Runtime.getRuntime().exec(command).result.also {
-        logger.info { "Executed command: $command, returned $it" }
-    }
-
+    fun exec() = Runtime.getRuntime().exec(command).result
+    
     /**
      * Parse result of command to string
      */

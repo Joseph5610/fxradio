@@ -28,6 +28,7 @@ import online.hudacek.fxradio.util.Tray
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import org.apache.logging.log4j.LogManager
 import tornadofx.*
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -85,6 +86,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
             playerViewModel.releasePlayer()
             StationsApi.serviceProvider.close()
             HttpClient.close()
+            LogManager.shutdown()
         }
 
         //Save last used window width/height on close of the app to use it on next start
