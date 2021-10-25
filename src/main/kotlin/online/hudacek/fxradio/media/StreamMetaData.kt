@@ -17,6 +17,6 @@
 package online.hudacek.fxradio.media
 
 /**
- * Data class for meta data change event holding current station name / stream title
+ * Data class for metadata change event holding current station name / stream title
  */
 data class StreamMetaData(val stationName: String, val nowPlaying: String)

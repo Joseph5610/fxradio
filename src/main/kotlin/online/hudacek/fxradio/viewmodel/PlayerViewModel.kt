@@ -47,7 +47,7 @@ class Player(station: Station = Station.dummy,
              animate: Boolean = Properties.PlayerAnimated.value(true),
              volume: Double = Properties.Volume.value(0.0),
              trackName: String = "",
-             mediaPlayer: MediaPlayer = MediaPlayerFactory.create(Properties.Player.value("VLC"))) {
+             mediaPlayer: MediaPlayer = MediaPlayerFactory.create()) {
     var animate: Boolean by property(animate)
     var station: Station by property(station)
     var volume: Double by property(volume)

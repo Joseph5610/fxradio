@@ -35,8 +35,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
             action {
                 playerViewModel.stateProperty.value = PlayerState.Stopped
                 playerViewModel.mediaPlayerProperty.value?.release()
-                playerViewModel.mediaPlayerProperty.value =
-                        MediaPlayerFactory.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
+                playerViewModel.mediaPlayerProperty.value = MediaPlayerFactory.toggle()
                 playerViewModel.commit()
             }
         }

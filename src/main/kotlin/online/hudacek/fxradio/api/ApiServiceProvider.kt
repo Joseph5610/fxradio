@@ -25,19 +25,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Provides Retrofit instance for [baseUrl]
  */
-class ApiServiceProvider(private val baseUrl: String,
-                         private val httpClientProvider: HttpClientProvider = DefaultClientProvider()) {
+class ApiServiceProvider(
+    private val baseUrl: String,
+    private val httpClientProvider: HttpClientProvider = DefaultClientProvider()
+) {
 
     /**
-     * Retrofit client instance for [baseUrl] with custom [httpClient]
+     * Retrofit client instance for [baseUrl] with custom [httpClientProvider]
      */
     val retrofit: Retrofit
         get() = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(baseUrl)
-                .client(httpClientProvider.client)
-                .build()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(baseUrl)
+            .client(httpClientProvider.client)
+            .build()
 
     /**
      * Constructs Retrofit service class of type [T]

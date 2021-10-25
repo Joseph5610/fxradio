@@ -16,8 +16,11 @@
 
 package online.hudacek.fxradio.api.http.provider
 
+import mu.KotlinLogging
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+
+private val logger = KotlinLogging.logger {}
 
 interface HttpClientProvider {
 
@@ -29,6 +32,10 @@ interface HttpClientProvider {
      * Default implementation of closing the OkHttpClient
      */
     fun close() {
+        logger.info { "Closing OkHttpClient..." }
+        logger.debug {
+            "Idle/All: ${client.connectionPool().idleConnectionCount()}/${client.connectionPool().connectionCount()}"
+        }
         client.dispatcher().executorService().shutdownNow()
         client.connectionPool().evictAll()
     }

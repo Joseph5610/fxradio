@@ -72,12 +72,4 @@ open class DefaultClientProvider : HttpClientProvider {
                         }
                     }.build()
 
-    /**
-     * Correctly kill all OkHttpClient threads
-     */
-    override fun close() {
-        logger.info { "Closing OkHttpClient..." }
-        logger.debug { "Idle/All: ${connectionPool.idleConnectionCount()}/${connectionPool.connectionCount()}" }
-        super.close()
-    }
 }

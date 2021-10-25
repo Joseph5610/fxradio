@@ -19,28 +19,34 @@ package online.hudacek.fxradio.media
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.player.humble.HumblePlayerImpl
 import online.hudacek.fxradio.media.player.vlc.VLCPlayerImpl
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.value
 
 private val logger = KotlinLogging.logger {}
 
 object MediaPlayerFactory {
 
+    private val defaultPlayerType = MediaPlayer.Type.VLC
+
     /**
-     * Create MediaPlayer from String [playerType] identifier
+     * Create MediaPlayer
      */
-    fun create(playerType: String): MediaPlayer {
-        logger.debug { "MediaPlayer $playerType is initializing..." }
-        return when (playerType.asPlayerType()) {
+    fun create(): MediaPlayer {
+        val player = Properties.Player.value(defaultPlayerType.name)
+        logger.debug { "MediaPlayer $player is initializing..." }
+        return when (player.asPlayerType()) {
             MediaPlayer.Type.VLC -> tryLoadVLCPlayer()
             MediaPlayer.Type.Humble -> HumblePlayerImpl()
         }
     }
 
     /**
-     * Create opposite playerType than provided in [playerType] var
+     * Toggle MediaPlayer
      */
-    fun toggle(playerType: MediaPlayer.Type): MediaPlayer {
-        logger.debug { "MediaPlayer $playerType is toggling..." }
-        return when (playerType) {
+    fun toggle(): MediaPlayer {
+        logger.debug { "MediaPlayer toggling..." }
+        val currentPlayer = Properties.Player.value(defaultPlayerType.name)
+        return when (currentPlayer.asPlayerType()) {
             MediaPlayer.Type.Humble -> tryLoadVLCPlayer()
             MediaPlayer.Type.VLC -> HumblePlayerImpl()
         }
@@ -63,5 +69,5 @@ object MediaPlayerFactory {
         MediaPlayer.Type.valueOf(this)
     }.onFailure {
         logger.error(it) { "This playerType is invalid. Using Humble MediaPlayer as fallback!" }
-    }.getOrDefault(MediaPlayer.Type.Humble)
+    }.getOrDefault(defaultPlayerType)
 }

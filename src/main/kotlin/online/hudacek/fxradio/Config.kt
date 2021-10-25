@@ -40,7 +40,7 @@ object Config {
     object Paths {
         private val appName = FxRadio.appName.toLowerCase()
 
-        val baseAppPath = System.getProperty("user.home") + "/.$appName/"
+        val baseAppPath = System.getProperty("user.home") + "/.$appName"
         val confDirPath = "$baseAppPath/conf"
         val cacheDirPath = "$baseAppPath/cache"
         val dbPath = "$baseAppPath/$appName.db"
