@@ -18,7 +18,8 @@ package online.hudacek.fxradio.ui.view
 
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.*
-import online.hudacek.fxradio.utils.macos.MacMenu
+import online.hudacek.fxradio.util.macos.NSMenu
+import online.hudacek.fxradio.util.macos.NSMenuBar
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
 import tornadofx.get
 import tornadofx.menubar
@@ -54,16 +55,15 @@ class MenuBarView : BaseView() {
      * Platform specific menu bar working on OSX
      * used instead of in-app menubar
      */
-    private fun platformMenuBar() = MacMenu.menuBar {
-        MacMenu.appMenu {
-            items.addAll(aboutMenu.aboutMainItems)
-        }
-    }.apply {
-        menus.addAll(stationMenu.menu,
-                playerMenu.menu,
-                favouritesMenu.menu,
-                historyMenu.menu,
-                MacMenu.windowMenu(messages["macos.menu.window"]),
-                helpMenu.menu)
-    }
+    private fun platformMenuBar() = NSMenuBar()
+            .menuBar.apply {
+                NSMenu().appMenu(aboutMenu.aboutMainItems)
+                menus.addAll(
+                        stationMenu.menu,
+                        playerMenu.menu,
+                        favouritesMenu.menu,
+                        historyMenu.menu,
+                        NSMenu().windowMenu(messages["macos.menu.window"]),
+                        helpMenu.menu)
+            }
 }

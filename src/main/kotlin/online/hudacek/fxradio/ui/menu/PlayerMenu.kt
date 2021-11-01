@@ -18,7 +18,7 @@ package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
-import online.hudacek.fxradio.utils.macos.MacUtils
+import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.viewmodel.OsNotificationViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -35,8 +35,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
             action {
                 playerViewModel.stateProperty.value = PlayerState.Stopped
                 playerViewModel.mediaPlayerProperty.value?.release()
-                playerViewModel.mediaPlayerProperty.value =
-                        MediaPlayerFactory.toggle(playerViewModel.mediaPlayerProperty.value.playerType)
+                playerViewModel.mediaPlayerProperty.value = MediaPlayerFactory.toggle()
                 playerViewModel.commit()
             }
         }

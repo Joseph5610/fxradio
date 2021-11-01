@@ -36,8 +36,8 @@ import javafx.scene.paint.Color
 import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.api.model.Country
-import online.hudacek.fxradio.api.model.countryCode
+import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.api.stations.model.countryCode
 import online.hudacek.fxradio.ui.style.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.control.textfield.CustomTextField
@@ -75,7 +75,7 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
 }
 
 internal fun FontAwesome.Glyph.make(
-        size: Double = 35.0,
+        size: Double,
         useStyle: Boolean = true,
         color: Color? = null) = toGlyph {
     size(size)
@@ -162,7 +162,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
  */
 internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
     //Show dark notifications
-    if (FxRadio.isAppInDarkMode) {
+    if (FxRadio.darkModeEnabled) {
         styleClass += NotificationPane.STYLE_CLASS_DARK
     }
     op(this)

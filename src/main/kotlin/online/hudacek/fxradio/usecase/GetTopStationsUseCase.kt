@@ -17,7 +17,7 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.Station
 
 /**
  * Gets list of Top 50 stations from radio-browser API

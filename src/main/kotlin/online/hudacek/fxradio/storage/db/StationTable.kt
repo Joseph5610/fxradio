@@ -18,22 +18,12 @@ package online.hudacek.fxradio.storage.db
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import mu.KotlinLogging
-import online.hudacek.fxradio.api.model.Station
-
-private val logger = KotlinLogging.logger {}
+import online.hudacek.fxradio.api.stations.model.Station
 
 /**
  * Common operations on database of stations with different tables (e.g History, Favourites ..)
  */
 class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
-
-    override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
-            " stationuuid VARCHAR, name VARCHAR, " +
-            " url_resolved VARCHAR, homepage VARCHAR," +
-            " favicon VARCHAR, tags VARCHAR, country VARCHAR, " +
-            " countrycode VARCHAR, state VARCHAR, language VARCHAR, codec VARCHAR, bitrate INTEGER" +
-            " )"
 
     override fun selectAll(): Observable<Station> = selectAllQuery()
             .toObservable {
@@ -50,7 +40,6 @@ class StationTable(override val tableName: String) : Table<Station>, Database(ta
                         it.getString("codec"),
                         it.getInt("bitrate"))
             }
-            .doOnError { logger.error(it) { "Error when getting $tableName" } }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 

@@ -19,8 +19,8 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.usecase.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.GetTopStationsUseCase
 import online.hudacek.fxradio.usecase.VoteUseCase

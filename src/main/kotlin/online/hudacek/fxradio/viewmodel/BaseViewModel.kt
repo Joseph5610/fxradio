@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import tornadofx.ItemViewModel
 
 abstract class BaseViewModel<Item : Any>(initialItem: Item? = null) :

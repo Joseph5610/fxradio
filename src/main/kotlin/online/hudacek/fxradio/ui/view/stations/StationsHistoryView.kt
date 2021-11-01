@@ -19,7 +19,7 @@ package online.hudacek.fxradio.ui.view.stations
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.api.model.tagsSplit
+import online.hudacek.fxradio.api.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
@@ -37,6 +37,7 @@ class StationsHistoryView : BaseView() {
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
+
     override val root = listview(historyViewModel.stationsProperty) {
         id = "stationsHistoryList"
         cellFormat {
@@ -47,7 +48,6 @@ class StationsHistoryView : BaseView() {
                     effect = DropShadow(30.0, Color.LIGHTGRAY)
                     fitHeight = 30.0
                     fitWidth = 30.0
-                    isPreserveRatio = true
                 }
                 vbox {
                     label(it.name)
@@ -57,7 +57,6 @@ class StationsHistoryView : BaseView() {
             onUserSelect(1) {
                 playerViewModel.stationProperty.value = it
             }
-
             addClass(Styles.historyListItem)
         }
 

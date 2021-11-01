@@ -16,8 +16,8 @@
 
 package online.hudacek.fxradio.media
 
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.value
 
 /**
  * Common interface for all available players
@@ -40,9 +40,8 @@ interface MediaPlayer {
 
     /**
      * Changes playing value to [newVolume]
-     * Returns true when change was successful, false otherwise
      */
-    fun changeVolume(newVolume: Double): Boolean
+    fun changeVolume(newVolume: Double)
 
     fun stop()
 
@@ -50,6 +49,6 @@ interface MediaPlayer {
 
     companion object {
         //The metadata service can be disabled by respective property file setting
-        val enableMetaDataService = Properties.PlayerRefreshMetaData.value(true)
+        val isMetaDataRefreshEnabled = Properties.PlayerMetaDataRefresh.value(true)
     }
 }

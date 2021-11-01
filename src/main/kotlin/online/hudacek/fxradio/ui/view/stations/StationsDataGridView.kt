@@ -19,20 +19,18 @@ package online.hudacek.fxradio.ui.view.stations
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import com.github.thomasnield.rxkotlinfx.onChangedObservable
 import javafx.geometry.Pos
-import javafx.scene.CacheHint
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
-import javafx.stage.StageStyle
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.model.tagsSplit
+import online.hudacek.fxradio.api.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
-import online.hudacek.fxradio.ui.modal.Modals
-import online.hudacek.fxradio.ui.modal.StationInfoFragment
-import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.new
+import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
@@ -68,7 +66,7 @@ class StationsDataGridView : BaseView() {
             vbox {
                 contextmenu {
                     item(messages["menu.station.info"]).action {
-                        StationInfoFragment(station).openModal(stageStyle = StageStyle.UTILITY)
+                        Modal.StationInfo.new()
                     }
 
                     separator()
@@ -86,7 +84,7 @@ class StationsDataGridView : BaseView() {
                     if (Config.Flags.enableStationDebug) {
                         separator()
                         item("Station Debug Info").action {
-                            Modals.StationDebug.open()
+                            Modal.StationDebug.open()
                         }
                     }
                 }
@@ -98,11 +96,8 @@ class StationsDataGridView : BaseView() {
                     imageview {
                         station.stationImage(this)
                         effect = DropShadow(15.0, Color.LIGHTGRAY)
-                        isCache = true
-                        cacheHint = CacheHint.SPEED
                         fitHeight = 100.0
                         fitWidth = 100.0
-                        isPreserveRatio = true
                     }
                 }
                 label(station.name) {

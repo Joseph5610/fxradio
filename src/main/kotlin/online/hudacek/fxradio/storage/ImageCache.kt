@@ -21,8 +21,7 @@ import io.reactivex.disposables.Disposable
 import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.ui.defaultRadioLogo
+import online.hudacek.fxradio.api.stations.model.Station
 import org.apache.commons.io.FileUtils
 import tornadofx.observableListOf
 import java.io.InputStream
@@ -34,9 +33,9 @@ import java.nio.file.StandardCopyOption
 private val logger = KotlinLogging.logger {}
 
 /**
- * Simple image cache
- * Images are saved according to their station id
- * and loaded using fileInputStream
+ * Simple image cache used for station images
+ * Images are saved to files with /.fxradio/cache directory
+ * File name is the station UUID
  */
 object ImageCache {
 
@@ -47,7 +46,7 @@ object ImageCache {
     private val invalidStationUuids = observableListOf<String>()
 
     init {
-        //prepare cache directory
+        //Prepare cache directory
         if (!Files.isDirectory(cacheBasePath)) {
             Files.createDirectories(cacheBasePath)
         }
@@ -79,22 +78,22 @@ object ImageCache {
             .flatMap {
                 Single.just(Image("file:" + it.toFile().absolutePath, true))
             }
-            .doOnError { logger.error(it) { "Failed to get Image from cached file" } }
-            .onErrorReturnItem(defaultRadioLogo)
+            .doOnError { logger.error(it) { "Exception when getting station image from file!" } }
 
     /**
      * Saves [inputStream] containing logo of [station] into local cache dir
      */
     fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
             .filter { !it.isCached }
-            .doOnError { logger.error(it) { "Cannot save downloaded image" } }
             .map { cacheBasePath.resolve(it.stationuuid) }
-            .subscribe {
+            .subscribe({
                 Files.copy(
                         inputStream,
                         it,
                         StandardCopyOption.REPLACE_EXISTING)
-            }
+            }, {
+                logger.error(it) { "Exception when saving downloaded image!" }
+            })
 
     /**
      * Adds [station] into list of invalid stations
@@ -102,7 +101,7 @@ object ImageCache {
      */
     fun addInvalid(station: Station) {
         if (station.stationuuid !in invalidStationUuids) {
-            logger.trace { "Image for ${station.name} is added as invalid" }
+            logger.trace { "Image for ${station.name} is added as invalid!" }
             invalidStationUuids += station.stationuuid
         }
     }

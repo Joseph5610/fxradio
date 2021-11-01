@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
+import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -68,11 +69,34 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
             )
 
     override val menuItems = mutableListOf<MenuItem>().apply {
-        add(item(messages["menu.favourites.show"]) {
-            action {
-                libraryViewModel.stateProperty.value = LibraryState.Favourites
-            }
-        })
+        addAll(listOf(
+                item(messages["menu.favourites.show"]) {
+                    action {
+                        libraryViewModel.stateProperty.value = LibraryState.Favourites
+                    }
+                },
+                menu(messages["menu.favourites.all"]) {
+                    disableWhen {
+                        favouritesViewModel.stationsProperty.emptyProperty()
+                    }
+                    items.bind(favouritesViewModel.stationsProperty) {
+                        item(it.name) {
+                            //for some reason macos native menu does not respect
+                            //width/height setting so it is disabled for now
+                            if (!appMenuViewModel.usePlatformProperty.value) {
+                                graphic = imageview {
+                                    it.stationImage(this)
+                                    fitHeight = 15.0
+                                    fitWidth = 15.0
+                                    isPreserveRatio = true
+                                }
+                            }
+                            action {
+                                playerViewModel.stationProperty.value = it
+                            }
+                        }
+                    }
+                }))
         addAll(addRemoveFavouriteItems)
         addAll(listOf(separator(),
                 item(messages["menu.station.favourite.clear"]) {
@@ -85,7 +109,6 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                             appEvent.refreshLibrary.onNext(LibraryState.Favourites)
                         }
                     }
-                },
-                separator()))
+                }))
     }
 }

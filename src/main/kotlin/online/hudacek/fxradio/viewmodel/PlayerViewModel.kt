@@ -23,15 +23,15 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.usecase.ClickUseCase
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.saveProperties
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.saveProperties
+import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.onChange
@@ -43,11 +43,11 @@ sealed class PlayerState {
     data class Error(val cause: String) : PlayerState()
 }
 
-class Player(station: Station,
+class Player(station: Station = Station.dummy,
              animate: Boolean = Properties.PlayerAnimated.value(true),
              volume: Double = Properties.Volume.value(0.0),
              trackName: String = "",
-             mediaPlayer: MediaPlayer = MediaPlayerFactory.create(Properties.Player.value("VLC"))) {
+             mediaPlayer: MediaPlayer = MediaPlayerFactory.create()) {
     var animate: Boolean by property(animate)
     var station: Station by property(station)
     var volume: Double by property(volume)
@@ -58,7 +58,9 @@ class Player(station: Station,
 /**
  * Handles station playing logic
  */
-class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(initialState = PlayerState.Stopped) {
+class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
+        initialState = PlayerState.Stopped,
+        initialItem = Player()) {
 
     private val clickUseCase: ClickUseCase by inject()
 
@@ -78,14 +80,16 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(initialState = P
                 .filter { it.isValid() }
                 .doOnEach(appEvent.addToHistory) //Send the new history item event
                 .flatMapSingle(clickUseCase::execute)
-                .subscribe {
+                .subscribe({
                     //Update the name of the station
                     trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
 
                     //Restart playing status
                     stateProperty.value = PlayerState.Stopped
                     stateProperty.value = PlayerState.Playing
-                }
+                }, {
+                    stateProperty.value = PlayerState.Error(it.localizedMessage)
+                })
 
         //Set volume for current player
         volumeProperty.onChange { mediaPlayerProperty.value?.changeVolume(it) }

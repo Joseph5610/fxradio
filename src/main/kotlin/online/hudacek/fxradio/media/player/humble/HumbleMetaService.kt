@@ -22,7 +22,7 @@ import javafx.concurrent.ScheduledService
 import javafx.concurrent.Task
 import javafx.util.Duration
 import mu.KotlinLogging
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.media.StreamMetaData
 import tornadofx.find
 
@@ -63,7 +63,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
                     true, null, null)
             val data = deMuxer.metaData
             deMuxer.close()
-            logger.debug { "FetchDataTask: $data" }
+            logger.debug { "FetchDataTask retrieved MetaData: $data" }
             return data
         }
 

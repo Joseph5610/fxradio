@@ -18,16 +18,9 @@ package online.hudacek.fxradio.storage.db
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import mu.KotlinLogging
-import online.hudacek.fxradio.api.model.Country
-
-private val logger = KotlinLogging.logger {}
+import online.hudacek.fxradio.api.stations.model.Country
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
-
-    override val createTableSql = "CREATE TABLE IF NOT EXISTS $tableName (ID INTEGER PRIMARY KEY," +
-            " name VARCHAR " +
-            " )"
 
     override fun selectAll(): Observable<Country> = selectAllQuery()
             .toObservable {
@@ -35,7 +28,6 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Co
                 //so the returned object will have count set to 0 and the number is not displayed in UI
                 Country(it.getString("name"), 0)
             }
-            .doOnError { logger.error(it) { "Error when getting $tableName" } }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 

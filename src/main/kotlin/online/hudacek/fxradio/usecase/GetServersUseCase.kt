@@ -19,7 +19,7 @@ package online.hudacek.fxradio.usecase
 import javafx.collections.ObservableList
 import javafx.concurrent.Task
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.HttpClient
+import online.hudacek.fxradio.api.http.HttpClient
 import tornadofx.asObservable
 
 /**
@@ -27,7 +27,6 @@ import tornadofx.asObservable
  */
 class GetServersUseCase : BaseUseCase<Unit, Task<ObservableList<String>>>() {
 
-    //API lookup URL
     private val lookupUrl = Config.API.dnsLookupURL
 
     override fun execute(input: Unit): Task<ObservableList<String>> = runAsync(daemon = true) {

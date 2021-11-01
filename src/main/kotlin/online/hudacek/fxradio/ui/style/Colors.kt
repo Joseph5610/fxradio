@@ -17,39 +17,51 @@
 package online.hudacek.fxradio.ui.style
 
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.Property
+import online.hudacek.fxradio.util.macos.MacUtils
 
 object Colors {
-    val values: ColorValues by lazy {
-        if (FxRadio.isAppInDarkMode) DarkColorValues() else ColorValues()
+    val palette: Palette by lazy {
+        if (FxRadio.darkModeEnabled) DarkPalette() else Palette()
     }
-}
 
-open class ColorValues {
-    open val primary = "#0097CE"
-    open val primaryHover = "#0097EA"
+    open class Palette {
+        val primary by lazy { getPrimaryColor() }
+        val transparent = "transparent"
 
-    open val background = "#E9E9E9"
-    open val backgroundBorder = "#E8E8E8"
-    open val backgroundSelected = "#E9E9E9"
+        open val background = "#E9E9E9"
+        open val backgroundBorder = "#E8E8E8"
+        open val backgroundSelected = "#E9E9E9"
+        open val label = "#2b2b2b"
+        open val grayLabel = "#8B8B8B"
+    }
 
-    open val label = "#2b2b2b"
-    open val grayLabel = "#8B8B8B"
+    class DarkPalette : Palette() {
+        override val background = "#333232"
+        override val backgroundBorder = "#525356"
+        override val backgroundSelected = "#525356"
+        override val label = "#ffffff"
+        override val grayLabel = "#a0a1a2"
+    }
 
-    open val transparent = "transparent"
-
-    open val libraryIcon = "#d65458"
-}
-
-class DarkColorValues : ColorValues() {
-    override val primary = "#0097CE"
-    override val primaryHover = "#0097EA"
-
-    override val background = "#333232"
-    override val backgroundBorder = "#525356"
-    override val backgroundSelected = "#525356"
-
-    override val label = "#ffffff"
-    override val grayLabel = "#a0a1a2"
-
-    override val transparent = "transparent"
+    /**
+     * Detects primary color from system accept color
+     */
+    private fun getPrimaryColor(): String {
+        val accentProperty = Property(Properties.AccentColor)
+        //Use accent color from app.property file
+        val colorCode: Int = if (accentProperty.isPresent) {
+            accentProperty.get()
+        } else {
+            if (MacUtils.isMac) {
+                //Use system accent color
+                MacUtils.systemAccentColor
+            } else {
+                //Fallback
+                AccentColor.MULTICOLOR.colorCode
+            }
+        }
+        return AccentColor.values().first { it.colorCode == colorCode }.color()
+    }
 }

@@ -19,7 +19,7 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
-import online.hudacek.fxradio.api.model.Country
+import online.hudacek.fxradio.api.stations.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.flagIcon
 import online.hudacek.fxradio.ui.showWhen
@@ -46,11 +46,13 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
     }
 
     override val root = listview(countriesProperty) {
+        id = "libraryCountriesFragment"
+
         /**
          * Set min/max size of listview based on its items size
          */
         prefHeightProperty().bind(countriesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10 else 30.0
+            if (it != null) it.size * 30.0 + 10.0 else 30.0
         })
 
         cellFormat {

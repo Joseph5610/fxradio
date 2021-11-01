@@ -18,18 +18,18 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.api.model.Station
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
+import online.hudacek.fxradio.ui.style.Colors
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
-import online.hudacek.fxradio.viewmodel.Player
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
+import tornadofx.controlsfx.glyph
 
 /**
  * Main player view above stations
@@ -45,7 +45,9 @@ class PlayerView : BaseView() {
     private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false) }
     private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false) }
     private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false) }
-    private val randomStationGlyph by lazy { FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false) }
+    private val randomStationGlyph by lazy {
+        FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false, color = c(Colors.palette.primary))
+    }
     private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
@@ -57,7 +59,7 @@ class PlayerView : BaseView() {
     }
 
     private val playerControls by lazy {
-        button {
+        glyph {
             id = "playerControls"
             graphicProperty().bind(playerControlsBinding)
             requestFocusOnSceneAvailable()
@@ -66,7 +68,7 @@ class PlayerView : BaseView() {
                     it == null || !it.isValid()
                 }
             }
-            action {
+            setOnMouseClicked {
                 viewModel.togglePlayerState()
             }
             addClass(Styles.playerControls)
@@ -80,18 +82,14 @@ class PlayerView : BaseView() {
             maxWidth = 90.0
             majorTickUnit = 8.0
             isSnapToTicks = true
-            isShowTickMarks = true
-            paddingTop = 10.0
+            //isShowTickMarks = true
+            paddingTop = 2.0
 
             //Save new value
             valueProperty().onChange {
                 viewModel.commit()
             }
         }
-    }
-
-    init {
-        viewModel.item = Player(station = historyViewModel.stationsProperty.lastOrNull() ?: Station.dummy)
     }
 
     override val root = vbox {
@@ -110,7 +108,7 @@ class PlayerView : BaseView() {
             //Station info box
             add(playerStationView)
 
-            button {
+            glyph {
                 id = "playRandomStation"
                 graphic = randomStationGlyph
                 tooltip(messages["player.playRandomStation"])
@@ -135,21 +133,21 @@ class PlayerView : BaseView() {
             //Volume controls
             hbox {
                 paddingRight = 30.0
-                alignment = Pos.CENTER_LEFT
-                button {
+                alignment = Pos.CENTER
+                glyph {
                     id = "volumeMinIcon"
                     graphic = volumeDownGlyph
-                    onLeftClick {
+                    setOnMouseClicked {
                         volumeSlider.value = volumeSlider.min
                     }
                     addClass(Styles.playerControls)
                 }
                 add(volumeSlider)
-                button {
+                glyph {
                     id = "volumeMaxIcon"
                     graphic = volumeUpGlyph
                     minWidth = 20.0
-                    onLeftClick {
+                    setOnMouseClicked {
                         volumeSlider.value = volumeSlider.max
                     }
                     addClass(Styles.playerControls)

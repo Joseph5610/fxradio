@@ -19,15 +19,15 @@ package online.hudacek.fxradio.viewmodel
 import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.api.model.Station
-import online.hudacek.fxradio.api.model.StationBody
+import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.api.stations.model.StationBody
 import online.hudacek.fxradio.usecase.AddStationUseCase
 import tornadofx.property
 import tornadofx.stringBinding
 import java.util.*
 
 /**
- * Stores entered information into the form in [online.hudacek.fxradio.ui.modal.AddStationFragment]
+ * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
  * Handles logic for adding new station into the API
  */
 class AddStationModel(name: String = "",

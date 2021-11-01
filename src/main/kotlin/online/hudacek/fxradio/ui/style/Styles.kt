@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private val colors = Colors.values
+    private val colors = Colors.palette
 
     companion object {
 
@@ -50,30 +50,27 @@ class Styles : Stylesheet() {
         val subheader by cssclass()
 
         val tag by cssclass()
-        val searchBoxLabel by cssclass()
-        val primaryTextColor by cssclass()
         val boldText by cssclass()
 
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
-        val statusBar by cssclass()
 
         //For Text() elements
         val defaultTextColor by cssclass()
-
         val grayTextColor by cssclass()
 
         val noBorder by cssclass()
     }
 
     init {
+        root {
+            focusColor = c(colors.primary)
+            faintFocusColor = c("${colors.primary}22")
+        }
+
         label {
             textFill = c(colors.label)
             fontSmoothingType = FontSmoothingType.GRAY
-        }
-
-        searchBoxLabel {
-            padding = box(0.px, 2.px, 0.px, 7.px)
         }
 
         playerMainBox {
@@ -100,7 +97,6 @@ class Styles : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
         }
 
-
         header {
             wrapText = true
             fontSize = 20.px
@@ -108,7 +104,7 @@ class Styles : Stylesheet() {
 
         subheader {
             wrapText = true
-            fontSize = 15.px
+            fontSize = 14.px
         }
 
         defaultTextColor {
@@ -127,8 +123,8 @@ class Styles : Stylesheet() {
             unsafe("-fx-padding", raw("0"))
             unsafe("-fx-background-insets", raw("0"))
             unsafe("-fx-background-color", raw("-fx-background"))
-            unsafe("-fx-border-color", raw("transparent"))
-            unsafe("-fx-faint-focus-color", raw("transparent"))
+            unsafe("-fx-border-color", raw(colors.transparent))
+            unsafe("-fx-faint-focus-color", raw(colors.transparent))
         }
 
         grayLabel {
@@ -136,16 +132,28 @@ class Styles : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        primaryButton {
-            backgroundColor += c(colors.primary)
-            textFill = Color.WHITESMOKE
-            and(hover) {
-                backgroundColor += c(colors.primaryHover)
+        button {
+            and(default) {
+                baseColor = c(colors.primary)
+                textFill = Color.WHITESMOKE
             }
+
+            minWidth = 75.px
+            fontSize = 12.px
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            padding = box(4.px, 10.px, 4.px, 10.px)
+            textFill = c(colors.label)
         }
 
-        primaryTextColor {
+        primaryButton {
+            baseColor = c(colors.primary)
+            textFill = Color.WHITESMOKE
+        }
+
+        hyperlink {
             textFill = c(colors.primary)
+            borderColor += box(c(colors.primary))
         }
 
         libraryListView {
@@ -156,6 +164,7 @@ class Styles : Stylesheet() {
 
         libraryListItem {
             fontSize = 12.px
+            prefHeight = 30.px
             textFill = c(colors.label)
             backgroundColor += Color.WHITESMOKE
             backgroundRadius += box(6.px)
@@ -164,7 +173,9 @@ class Styles : Stylesheet() {
                 backgroundColor += c(colors.background)
                 borderColor += box(c(colors.backgroundBorder))
             }
-            padding = box(5.px, 10.px, 5.px, 15.px)
+            padding = box(6.px, 10.px, 6.px, 15.px)
+            //unsafe("-fx-background-insets", raw("0px 10px 0px 10px"))
+            //unsafe("-fx-border-insets", raw("0px 10px 0px 10px"))
         }
 
         libraryListItemTag {
@@ -214,6 +225,23 @@ class Styles : Stylesheet() {
         // ===================================================================
         // Restyled default compontents
         // ===================================================================
+
+        tableView {
+            tableRowCell {
+                and(selected) {
+                    backgroundColor += c(colors.primary)
+                }
+            }
+        }
+
+        checkBox {
+            baseColor = c(colors.primary)
+            and(selected) {
+                mark {
+                    backgroundColor += Color.WHITE
+                }
+            }
+        }
 
         scrollBar {
             backgroundColor += c(colors.transparent)
@@ -362,18 +390,6 @@ class Styles : Stylesheet() {
                     backgroundColor += c(colors.background)
                 }
             }
-        }
-
-        progressIndicator {
-            progressColor = c(colors.grayLabel)
-        }
-
-        statusBar {
-            padding = box(5.px)
-            borderRadius += box(0.px)
-            borderWidth += box(1.px, 0.px, 0.px, 0.px)
-            borderColor += box(c(colors.backgroundBorder), c(colors.transparent), c(colors.transparent), c(colors.transparent))
-            unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
         textField {

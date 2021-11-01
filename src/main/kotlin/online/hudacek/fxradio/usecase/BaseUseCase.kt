@@ -19,8 +19,8 @@ package online.hudacek.fxradio.usecase
 import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
-import online.hudacek.fxradio.api.StationsApi
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.api.stations.StationsApi
+import online.hudacek.fxradio.event.AppEvent
 import tornadofx.Controller
 
 /**
@@ -30,7 +30,7 @@ abstract class BaseUseCase<InputType, OutputType> : Controller() {
 
     protected val appEvent: AppEvent by inject()
 
-    protected val apiService by lazy { StationsApi.service }
+    protected val apiService = StationsApi.service
 
     abstract fun execute(input: InputType): OutputType
 

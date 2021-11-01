@@ -17,9 +17,9 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.ui.modal.Modals
-import online.hudacek.fxradio.ui.modal.open
 import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.open
 import tornadofx.action
 import tornadofx.get
 
@@ -30,7 +30,7 @@ class HelpMenu : BaseMenu("menu.help") {
     private val logsFolderPath = "file://${Config.Paths.baseAppPath}"
 
     override val menuItems = listOf(
-            item(messages["menu.help.openhomepage"]) {
+            item(messages["menu.help.openhomepage"], KeyCodes.website) {
                 action {
                     appMenuViewModel.openWebsite()
                 }
@@ -38,7 +38,7 @@ class HelpMenu : BaseMenu("menu.help") {
             separator(),
             item(messages["menu.help.stats"]) {
                 action {
-                    Modals.Stats.open()
+                    Modal.Stats.open()
                 }
             },
             item(messages["menu.help.clearCache"]) {
@@ -48,7 +48,7 @@ class HelpMenu : BaseMenu("menu.help") {
             },
             logMenu.menu,
             separator(),
-            item(messages["menu.help.logs"]) {
+            item(messages["menu.help.logs"], KeyCodes.open) {
                 action {
                     app.openUrl(logsFolderPath)
                 }

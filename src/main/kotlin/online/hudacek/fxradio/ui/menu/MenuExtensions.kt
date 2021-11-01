@@ -17,9 +17,12 @@
 package online.hudacek.fxradio.ui.menu
 
 import javafx.beans.property.Property
-import javafx.scene.control.*
+import javafx.scene.control.CheckMenuItem
+import javafx.scene.control.Menu
+import javafx.scene.control.MenuItem
+import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
-import online.hudacek.fxradio.api.model.Station
+import online.hudacek.fxradio.api.stations.model.Station
 import tornadofx.bind
 import tornadofx.booleanBinding
 import tornadofx.disableWhen
@@ -30,12 +33,6 @@ import tornadofx.disableWhen
 internal fun menu(name: String, op: Menu.() -> Unit = {}) = Menu(name).apply {
     op(this)
 }
-
-
-internal fun contextMenu(op: ContextMenu.() -> Unit = {}) = ContextMenu().apply {
-    op(this)
-}
-
 
 internal fun item(name: String, keyCode: KeyCodeCombination? = null,
                   op: MenuItem.() -> Unit = {}) = MenuItem(name).apply {

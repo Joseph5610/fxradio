@@ -17,12 +17,9 @@
 package online.hudacek.fxradio.media
 
 import javafx.application.Platform
-import mu.KotlinLogging
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.find
-
-private val logger = KotlinLogging.logger {}
 
 class StreamUnavailableException(message: String, cause: Throwable?) : Exception(message, cause) {
 
@@ -33,7 +30,6 @@ class StreamUnavailableException(message: String, cause: Throwable?) : Exception
     init {
         Platform.runLater {
             playerViewModel.stateProperty.value = PlayerState.Error(localizedMessage)
-            logger.error(this) { "Stream can't be played" }
         }
     }
 }

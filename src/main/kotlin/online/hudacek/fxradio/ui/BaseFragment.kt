@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.ui
 
-import online.hudacek.fxradio.events.AppEvent
+import online.hudacek.fxradio.event.AppEvent
 import tornadofx.Fragment
 
 abstract class BaseFragment(title: String? = null) : Fragment(title) {

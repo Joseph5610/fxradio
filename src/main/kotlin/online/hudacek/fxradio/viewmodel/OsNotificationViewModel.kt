@@ -17,10 +17,10 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.macos.MacUtils
-import online.hudacek.fxradio.utils.save
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.value
 import tornadofx.property
 
 //Notifications are currently enabled only on macOS

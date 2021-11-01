@@ -17,9 +17,9 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ObjectProperty
-import online.hudacek.fxradio.utils.Properties
-import online.hudacek.fxradio.utils.save
-import online.hudacek.fxradio.utils.value
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.value
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.config.Configurator

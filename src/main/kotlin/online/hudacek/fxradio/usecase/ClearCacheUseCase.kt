@@ -16,7 +16,7 @@
 
 package online.hudacek.fxradio.usecase
 
-import online.hudacek.fxradio.events.data.AppNotification
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.ui.formatted
 import org.controlsfx.glyphfont.FontAwesome

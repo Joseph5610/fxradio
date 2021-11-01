@@ -18,7 +18,7 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.api.model.StatsResult
+import online.hudacek.fxradio.api.stations.model.StatsResult
 import online.hudacek.fxradio.usecase.GetStatsUseCase
 import tornadofx.observableListOf
 import tornadofx.property
@@ -35,7 +35,7 @@ class Stats(stats: ObservableList<Pair<String, String>> = observableListOf()) {
 
 /**
  * Holds information about radio-browser API stats and health
- * Shown inside [online.hudacek.fxradio.ui.modal.StatsFragment]
+ * Shown inside [online.hudacek.fxradio.ui.fragment.StatsFragment]
  */
 class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats()) {
 

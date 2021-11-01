@@ -30,46 +30,52 @@ class HistoryMenu : BaseMenu("menu.history") {
     private val historyViewModel: HistoryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
-    override val menuItems = listOf(
-            item(messages["menu.history.show"], KeyCodes.history) {
-                action {
-                    libraryViewModel.stateProperty.value = LibraryState.History
-                }
-            },
-            menu(messages["menu.history.recent"]) {
-                disableWhen {
-                    historyViewModel.stationsProperty.emptyProperty()
-                }
-                items.bind(historyViewModel.stationsProperty) {
-                    item("${it.name} (${it.countrycode})") {
-                        //for some reason macos native menu does not respect
-                        //width/height setting so it is disabled for now
-                        if (!appMenuViewModel.usePlatformProperty.value) {
-                            graphic = imageview {
-                                it.stationImage(this)
-                                fitHeight = 15.0
-                                fitWidth = 15.0
-                                isPreserveRatio = true
-                            }
-                        }
-                        action {
-                            playerViewModel.stationProperty.value = it
+    private val showHistoryItem by lazy {
+        item(messages["menu.history.show"], KeyCodes.history) {
+            action {
+                libraryViewModel.stateProperty.value = LibraryState.History
+            }
+        }
+    }
+
+    private val recentHistoryItem by lazy {
+        menu(messages["menu.history.recent"]) {
+            disableWhen {
+                historyViewModel.stationsProperty.emptyProperty()
+            }
+            items.bind(historyViewModel.stationsProperty) {
+                item(it.name) {
+                    //for some reason macos native menu does not respect
+                    //width/height setting so it is disabled for now
+                    if (!appMenuViewModel.usePlatformProperty.value) {
+                        graphic = imageview {
+                            it.stationImage(this)
+                            fitHeight = 15.0
+                            fitWidth = 15.0
                         }
                     }
-                }
-            },
-            separator(),
-            item(messages["menu.history.clear"]) {
-                disableWhen {
-                    historyViewModel.stationsProperty.emptyProperty()
-                }
-
-                action {
-                    confirm(messages["history.clear.confirm"],
-                            messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size), owner = primaryStage) {
-                        historyViewModel.cleanupHistory()
+                    action {
+                        playerViewModel.stationProperty.value = it
                     }
                 }
             }
-    )
+        }
+    }
+
+    private val clearHistoryItem by lazy {
+        item(messages["menu.history.clear"]) {
+            disableWhen {
+                historyViewModel.stationsProperty.emptyProperty()
+            }
+
+            action {
+                confirm(messages["history.clear.confirm"],
+                        messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size), owner = primaryStage) {
+                    historyViewModel.cleanupHistory()
+                }
+            }
+        }
+    }
+
+    override val menuItems = listOf(showHistoryItem, recentHistoryItem, separator(), clearHistoryItem)
 }

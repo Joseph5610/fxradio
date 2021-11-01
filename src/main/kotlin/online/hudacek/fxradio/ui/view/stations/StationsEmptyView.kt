@@ -34,9 +34,9 @@ class StationsEmptyView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
 
-    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
-    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make() }
-    private val noResultsGlyph by lazy { FontAwesome.Glyph.FROWN_ALT.make() }
+    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = 50.0) }
+    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = 50.0) }
+    private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = 50.0) }
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
@@ -68,6 +68,7 @@ class StationsEmptyView : BaseView() {
     //Description of a message, shown only if relevant
     private val subHeader by lazy {
         label(subHeaderProperty) {
+            paddingTop = 5.0
             id = "stationMessageSubHeader"
             addClass(Styles.grayLabel)
         }

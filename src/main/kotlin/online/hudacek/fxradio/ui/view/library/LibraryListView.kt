@@ -53,7 +53,7 @@ class LibraryListView : BaseView() {
         })
 
         cellFormat {
-            graphic = item.glyph.make(14.0, false, c(Colors.values.libraryIcon))
+            graphic = item.glyph.make(14.0, false, c(Colors.palette.primary))
             text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }

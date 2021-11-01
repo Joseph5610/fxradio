@@ -31,24 +31,22 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     override fun play(streamUrl: String) {
         stop() //this player should stop itself before playing new stream
 
-        if (MediaPlayer.enableMetaDataService) {
+        if (MediaPlayer.isMetaDataRefreshEnabled) {
             metaDataService.restartFor(streamUrl)
         }
         audioComponent.play(streamUrl)
     }
 
-    override fun changeVolume(newVolume: Double): Boolean {
+    override fun changeVolume(newVolume: Double) {
         return try {
-            audioComponent.changeLineVolume(newVolume)
-            true
+            audioComponent.setVolume(newVolume)
         } catch (e: Exception) {
             logger.debug { "Can't change volume to: $newVolume" }
-            false
         }
     }
 
     override fun stop() {
-        if (MediaPlayer.enableMetaDataService) {
+        if (MediaPlayer.isMetaDataRefreshEnabled) {
             metaDataService.cancel()
         }
         audioComponent.cancel()
