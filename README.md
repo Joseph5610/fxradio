@@ -8,7 +8,7 @@ The app is using VLCLib, so we recommend installing VLC player for the best expe
 
 This app is using http://radio-browser.info public API
 
-[Visit the website for the app to find more information](https://hudacek.online/fxradio)
+[Visit the website of the project to find more information](https://hudacek.online/fxradio)
 
 # Download
 
@@ -31,6 +31,13 @@ If you downloaded ZIP archive **release_osx.zip** that contains native app file 
 
 If you are presented with the dialog that the app is unsafe to run, don't worry. The app is in early stages of development
 and because of that the distribution is currently not signed. You just need to enable the app in your macOS System Preferences -> Security and Privacy tab
+
+:warning: With some builds, macOS refuses to run the app entirely with the warning that the app is unsafe and should be moved to trash. This is because builds are not correctly signed. 
+There is a workaround that requires some basic Terminal skills. After installation of the app, perform this command:
+
+```bash
+sudo xattr -r -d com.apple.quarantine /Applications/FXRadio.app/
+```
 
 If you are not on macOS and you have downloaded .jar files, beware, this distribution is not officially supported but allows you to run the app on any system that supports Java.
 1. Ensure that you have Java8 installed, as this is only supported Java version
