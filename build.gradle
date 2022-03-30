@@ -38,17 +38,17 @@ ext.versions = [
         kotlinLogging      : "1.12.5",
         slf4j              : "1.7.36",
         log4j2             : "2.17.2",
-        commonsio          : "2.6",
+        commonsio          : "2.11.0",
         rxkotlinfx         : "2.2.2",
         humble             : "0.3.0",
-        vlcj               : "4.7.1",
-        sqliteJdbc         : "3.21.0.1",
+        vlcj               : "4.7.2",
+        sqliteJdbc         : "3.36.0.3",
         rxkotlinJdbc       : "0.4.1",
         nsmenufx           : "2.1.7",
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
         junit              : "5.4.0",
-        flyway             : "7.10.0"
+        flyway             : "8.5.4"
 ]
 
 dependencies {
@@ -60,7 +60,7 @@ dependencies {
 
     // Use the Kotlin JDK 8 standard library
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile("org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin")
     compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines")
 
     compile("no.tornado:tornadofx:$versions.tornadofx")

@@ -35,8 +35,10 @@ sealed class ServersState(val key: String = "") {
     data class Error(val cause: String) : ServersState("servers.error")
 }
 
-class Servers(selectedServer: String = Config.API.fallbackApiServerURL,
-              availableServers: ObservableList<String> = observableListOf()) {
+class Servers(
+    selectedServer: String = Config.API.fallbackApiServerURL,
+    availableServers: ObservableList<String> = observableListOf()
+) {
     var selected: String by property(selectedServer)
     var servers: ObservableList<String> by property(availableServers)
 }
@@ -61,7 +63,7 @@ class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
     fun fetchServers() {
         stateProperty.value = ServersState.Loading
         getServersUseCase.execute(Unit) success {
-            if (it.isNullOrEmpty()) {
+            if (it.isEmpty()) {
                 stateProperty.value = ServersState.NoServersAvailable
             } else {
                 stateProperty.value = ServersState.Fetched(it)
