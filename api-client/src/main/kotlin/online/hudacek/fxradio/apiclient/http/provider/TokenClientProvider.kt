@@ -14,7 +14,18 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.stations.model
+package online.hudacek.fxradio.apiclient.http.provider
 
-data class VoteResult(val ok: Boolean,
-                      val message: String)
+import online.hudacek.fxradio.apiclient.http.interceptor.TokenInterceptor
+
+/**
+ * OkHttpClient with token authentication
+ */
+class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
+
+    private val tokenInterceptor = TokenInterceptor(bearerToken)
+
+    init {
+        interceptors += tokenInterceptor
+    }
+}

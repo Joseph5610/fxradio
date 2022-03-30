@@ -18,7 +18,7 @@ package online.hudacek.fxradio.storage.db
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.apiclient.stations.model.Country
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
 

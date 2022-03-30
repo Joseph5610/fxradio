@@ -17,7 +17,7 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.apiclient.stations.model.Country
 import online.hudacek.fxradio.storage.db.Tables
 
 class CountryPinUseCase : BaseUseCase<Country, Single<Country>>() {

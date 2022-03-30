@@ -22,7 +22,7 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.stations.model.tagsSplit
+import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen

@@ -18,7 +18,7 @@ package online.hudacek.fxradio.storage.db
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.Station
 
 /**
  * Common operations on database of stations with different tables (e.g History, Favourites ..)

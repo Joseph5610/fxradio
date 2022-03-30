@@ -23,7 +23,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory

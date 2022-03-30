@@ -25,7 +25,18 @@ import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.button
+import tornadofx.get
+import tornadofx.hyperlink
+import tornadofx.imageview
+import tornadofx.label
+import tornadofx.paddingAll
+import tornadofx.paddingBottom
+import tornadofx.paddingTop
+import tornadofx.style
+import tornadofx.vbox
 
 /***
  * Simple Information about the app

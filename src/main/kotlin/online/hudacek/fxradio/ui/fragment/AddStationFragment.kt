@@ -18,7 +18,7 @@ package online.hudacek.fxradio.ui.fragment
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.layout.Priority
-import okhttp3.HttpUrl
+import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.field
 import online.hudacek.fxradio.ui.set
@@ -74,7 +74,7 @@ class AddStationFragment : BaseFragment() {
                     field(messages["add.site"], "https://example.com/",
                             viewModel.homePageProperty) { field ->
                         field.validator {
-                            if (it == null || HttpUrl.parse(it) == null) {
+                            if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
                             } else {
                                 null
@@ -85,7 +85,7 @@ class AddStationFragment : BaseFragment() {
                     field(messages["add.url"], "https://example.com/stream.m3u",
                             viewModel.urlProperty) { field ->
                         field.validator {
-                            if (it == null || HttpUrl.parse(it) == null) {
+                            if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
                             } else {
                                 null
@@ -96,7 +96,7 @@ class AddStationFragment : BaseFragment() {
                     field(messages["add.icon"], "https://example.com/favicon.ico",
                             viewModel.faviconProperty) { field ->
                         field.validator {
-                            if (it == null || HttpUrl.parse(it) == null) {
+                            if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
                             } else {
                                 null

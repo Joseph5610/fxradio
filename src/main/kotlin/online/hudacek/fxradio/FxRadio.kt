@@ -17,8 +17,9 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.api.http.HttpClient
-import online.hudacek.fxradio.api.stations.StationsApi
+import online.hudacek.fxradio.api.ApiClient
+import online.hudacek.fxradio.apiclient.http.HttpClient
+import online.hudacek.fxradio.apiclient.stations.StationsApi
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
@@ -84,7 +85,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
     override fun stop() {
         if (!isTestEnvironment) {
             playerViewModel.releasePlayer()
-            StationsApi.serviceProvider.close()
+            ApiClient.serviceProvider.close()
             HttpClient.close()
             LogManager.shutdown()
         }

@@ -14,23 +14,8 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.interceptor
+package online.hudacek.fxradio.apiclient.stations.model
 
-import okhttp3.Interceptor
-import okhttp3.Response
-import online.hudacek.fxradio.FxRadio
-
-class UserAgentInterceptor : Interceptor {
-
-    /**
-     * Defines what is app sending as a User Agent string
-     */
-    private val userAgent = "${FxRadio.appName}/${FxRadio.version}"
-
-    override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
-            chain.request()
-                    .newBuilder()
-                    .header("User-Agent", userAgent)
-                    .build()
-    )
-}
+data class ClickResult(val ok: Boolean,
+                       val message: String,
+                       val name: String)

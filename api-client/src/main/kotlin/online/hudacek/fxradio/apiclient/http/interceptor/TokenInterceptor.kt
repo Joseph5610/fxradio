@@ -14,8 +14,17 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.stations.model
+package online.hudacek.fxradio.apiclient.http.interceptor
 
-data class AddedStation(val ok: Boolean,
-                        val message: String,
-                        val uuid: String)
+import okhttp3.Interceptor
+import okhttp3.Response
+
+class TokenInterceptor(private val bearerToken: String) : Interceptor {
+
+    override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
+            chain.request()
+                    .newBuilder()
+                    .addHeader("Authorization", "Bearer $bearerToken")
+                    .build()
+    )
+}

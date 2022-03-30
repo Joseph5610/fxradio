@@ -14,17 +14,16 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.apiclient
 
-import io.reactivex.disposables.Disposable
-import javafx.beans.property.ListProperty
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.storage.db.Tables
+import okhttp3.HttpUrl
 
-class FavouriteSetUseCase : BaseUseCase<ListProperty<Station>, Disposable>() {
+object ApiUtils {
+    const val userAgent = "FxRadioClient"
 
-    override fun execute(input: ListProperty<Station>): Disposable = Tables.favourites.selectAll()
-            .subscribe {
-                input += it
-            }
+    val version: String by lazy {
+        ApiUtils::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
+    }
+
+    fun isValidUrl(url: String) = HttpUrl.parse(url) != null
 }

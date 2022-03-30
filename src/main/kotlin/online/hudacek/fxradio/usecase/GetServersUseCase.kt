@@ -19,7 +19,7 @@ package online.hudacek.fxradio.usecase
 import javafx.collections.ObservableList
 import javafx.concurrent.Task
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.http.HttpClient
+import online.hudacek.fxradio.apiclient.http.HttpClient
 import tornadofx.asObservable
 
 /**

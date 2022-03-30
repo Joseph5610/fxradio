@@ -14,17 +14,13 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.apiclient.stations.model
 
-import io.reactivex.disposables.Disposable
-import javafx.beans.property.ListProperty
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.storage.db.Tables
-
-class FavouriteSetUseCase : BaseUseCase<ListProperty<Station>, Disposable>() {
-
-    override fun execute(input: ListProperty<Station>): Disposable = Tables.favourites.selectAll()
-            .subscribe {
-                input += it
-            }
-}
+data class StationBody(val name: String = "",
+                       val url: String = "",
+                       val homepage: String = "",
+                       val favicon: String = "",
+                       val countrycode: String = "",
+                       val country: String = "",
+                       val language: String = "",
+                       val tags: String = "")

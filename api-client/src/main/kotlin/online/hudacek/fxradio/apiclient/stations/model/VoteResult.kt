@@ -14,8 +14,7 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.stations.model
+package online.hudacek.fxradio.apiclient.stations.model
 
-data class ClickResult(val ok: Boolean,
-                       val message: String,
-                       val name: String)
+data class VoteResult(val ok: Boolean,
+                      val message: String)

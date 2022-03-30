@@ -24,11 +24,11 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
-import online.hudacek.fxradio.api.ApiServiceProvider
-import online.hudacek.fxradio.api.stations.StationsApi
-import online.hudacek.fxradio.api.stations.model.Country
-import online.hudacek.fxradio.api.stations.model.SearchBody
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.ApiServiceProvider
+import online.hudacek.fxradio.apiclient.stations.StationsApi
+import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.stations.model.SearchBody
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.integration.Elements.libraryCountriesFragment
 import online.hudacek.fxradio.integration.Elements.libraryListView
 import online.hudacek.fxradio.integration.Elements.nowPlayingLabel

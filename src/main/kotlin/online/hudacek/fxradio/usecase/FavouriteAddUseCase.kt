@@ -17,7 +17,7 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
 
 class FavouriteAddUseCase : BaseUseCase<Station, Single<Station>>() {

@@ -19,9 +19,9 @@ package online.hudacek.fxradio.usecase
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.stations.model.CountriesBody
-import online.hudacek.fxradio.api.stations.model.Country
-import online.hudacek.fxradio.api.stations.model.isValid
+import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
+import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.stations.model.isValid
 
 private val logger = KotlinLogging.logger {}
 

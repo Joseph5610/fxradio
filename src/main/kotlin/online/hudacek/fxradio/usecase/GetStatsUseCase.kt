@@ -17,7 +17,7 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.StatsResult
+import online.hudacek.fxradio.apiclient.stations.model.StatsResult
 
 /**
  * Gets status information from currently used radio-browser API server
