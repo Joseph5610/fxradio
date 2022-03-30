@@ -84,7 +84,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     }
 
     fun show(stations: List<Station>) {
-        if (stations.isNullOrEmpty()) {
+        if (stations.isEmpty()) {
             stateProperty.value = StationsState.NoStations
         } else {
             stateProperty.value = StationsState.Fetched(stations)
