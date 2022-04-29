@@ -105,7 +105,7 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     fun getCountries() = getCountriesUseCase.execute(countriesProperty)
 
     override fun onCommit() {
-        saveProperties(mapOf(
+        app.saveProperties(mapOf(
                 Properties.ShowCountries to showCountriesProperty.value,
                 Properties.ShowLibrary to showLibraryProperty.value,
                 Properties.ShowPinnedCountries to showPinnedProperty.value

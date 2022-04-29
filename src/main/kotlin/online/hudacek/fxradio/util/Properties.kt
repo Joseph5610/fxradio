@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.util
 
 import mu.KotlinLogging
+import tornadofx.App
 import tornadofx.Component
 
 private val logger = KotlinLogging.logger {}
@@ -102,9 +103,9 @@ class Property(property: Properties) : Component() {
     }
 }
 
-fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
+fun App.saveProperties(keyValueMap: Map<Properties, Any>) {
     logger.debug { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
-    with(app.config) {
+    with(config) {
         keyValueMap.forEach {
             set(it.key.key to it.value)
         }

@@ -138,7 +138,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
      * Save player related key/values to app.properties file
      */
     override fun onCommit() {
-        saveProperties(mapOf(
+        app.saveProperties(mapOf(
                 Properties.Player to mediaPlayerProperty.value.playerType,
                 Properties.PlayerAnimated to animateProperty.value,
                 Properties.Volume to volumeProperty.value

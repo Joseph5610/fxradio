@@ -17,7 +17,6 @@
 package online.hudacek.fxradio.api
 
 import online.hudacek.fxradio.apiclient.ApiServiceProvider
-import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.apiclient.stations.StationsApi
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
@@ -25,7 +24,7 @@ import online.hudacek.fxradio.viewmodel.Servers
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import tornadofx.Component
 
-object ApiClient : Component() {
+object StationsProvider : Component() {
 
     private val viewModel: ServersViewModel by inject()
 
