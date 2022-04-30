@@ -26,14 +26,15 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Co
             .toObservable {
                 //We do not store the count of stations for given pinned country
                 //so the returned object will have count set to 0 and the number is not displayed in UI
-                Country(it.getString("name"), 0)
+                Country(it.getString("name"), it.getString("iso3"), 0)
             }
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
 
-    override fun insert(element: Country): Single<Country> = insertQuery("INSERT INTO $tableName (name)  " +
-            "VALUES (:name)")
+    override fun insert(element: Country): Single<Country> = insertQuery("INSERT INTO $tableName (name, iso3)  " +
+            "VALUES (:name, :iso3)")
             .parameter("name", element.name)
+            .parameter("iso3", element.iso_3166_1)
             .toSingle { element }
 
     override fun remove(element: Country): Single<Country> = removeQuery("DELETE FROM $tableName WHERE name = ?")

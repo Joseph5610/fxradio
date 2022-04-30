@@ -21,7 +21,7 @@ import javafx.beans.property.ListProperty
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
 import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.isValid
+import online.hudacek.fxradio.apiclient.stations.model.isRussia
 
 private val logger = KotlinLogging.logger {}
 
@@ -34,7 +34,7 @@ class GetCountriesUseCase : BaseUseCase<ListProperty<Country>, Disposable>() {
             .getCountries(CountriesBody())
             .compose(applySchedulers())
             .flattenAsObservable { it }
-            .filter { it.isValid }
+            .filter { !it.isRussia }
             .subscribe({
                 input.add(it)
             }, {

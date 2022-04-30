@@ -19,6 +19,7 @@ package online.hudacek.fxradio.apiclient.stations.model
 import java.util.*
 
 data class Country(val name: String,
+                   val iso_3166_1: String,
                    val stationcount: Int) {
 
     //Don't use stationCount when comparing this data class
@@ -33,8 +34,5 @@ data class Country(val name: String,
 
 data class CountriesBody(val hidebroken: Boolean = true)
 
-val Country.isValid: Boolean
-    get() = Locale.getISOCountries().any { Locale("", it).displayCountry == name }
-
-val Country.countryCode: String?
-    get() = Locale.getISOCountries().find { Locale("", it).displayCountry == name }
+val Country.isRussia: Boolean
+    get() = iso_3166_1 == "RU"
