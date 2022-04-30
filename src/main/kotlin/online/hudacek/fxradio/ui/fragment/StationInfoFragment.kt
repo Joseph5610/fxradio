@@ -158,8 +158,8 @@ class StationInfoFragment : BaseFragment() {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             paddingAll = 8
-            backgroundColor += Color.WHITESMOKE
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     private fun createInfoLabel(key: String, valueProperty: StringProperty): Label? {

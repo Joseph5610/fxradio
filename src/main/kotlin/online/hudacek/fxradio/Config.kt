@@ -51,7 +51,6 @@ object Config {
      * Experimental features
      */
     object Flags {
-        const val darkStylesEnabled = false
         const val useTrayIcon = false
         const val enableStationDebug = false
         const val enableMap = true

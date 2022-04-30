@@ -17,7 +17,7 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.FxRadio.Companion.useDarkMode
+import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
 import online.hudacek.fxradio.api.StationsProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.ui.CustomErrorHandler
@@ -30,9 +30,15 @@ import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.*
+import tornadofx.App
+import tornadofx.FX
+import tornadofx.Stylesheet
+import tornadofx.launch
+import tornadofx.stylesheet
+import java.io.FileInputStream
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.time.Year
 import kotlin.reflect.KClass
 
 /**
@@ -110,7 +116,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         const val appDesc = "Internet radio directory"
         const val appUrl = "https://hudacek.online/fxradio/"
         const val author = "hudacek.online"
-        const val copyright = "Copyright (c) 2020"
+        val copyright = "Copyright (c) 2020-" + Year.now().value
 
         /**
          * Gets version from jar MANIFEST.MF file
@@ -120,13 +126,20 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
         }
 
-        fun useDarkMode(): Boolean {
-            val isSystemDarkMode: Boolean = if (MacUtils.isMac) {
-                MacUtils.isSystemDarkMode
-            } else {
-                false
-            }
-            return Config.Flags.darkStylesEnabled && isSystemDarkMode
+        private fun hasSystemDarkMode() = if (MacUtils.isMac) {
+            MacUtils.isSystemDarkMode
+        } else {
+            false
+        }
+
+        fun isDarkModePreferred(): Boolean {
+            //we have to use the ugly java way to access this property as we want to access it
+            //in the time that the app is not yet instantiated
+            val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
+            val props = java.util.Properties()
+            props.load(fis)
+            val darkModeProp = props.getProperty("app.darkmode")
+            return darkModeProp?.toBoolean() ?: hasSystemDarkMode()
         }
     }
 }
@@ -135,7 +148,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
  * Main starting method for the App
  */
 fun main(args: Array<String>) {
-    if (useDarkMode()) {
+    if (isDarkModePreferred()) {
         launch<FxRadioDark>(args)
     } else {
         launch<FxRadioLight>(args)

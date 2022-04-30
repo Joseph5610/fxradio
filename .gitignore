@@ -3,3 +3,5 @@
 
 # Ignore Gradle build output directory
 build
+
+hs_err_pid*
