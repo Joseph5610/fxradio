@@ -18,7 +18,7 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
 
 class FavouriteSetUseCase : BaseUseCase<ListProperty<Station>, Disposable>() {

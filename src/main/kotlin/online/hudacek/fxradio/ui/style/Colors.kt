@@ -23,7 +23,7 @@ import online.hudacek.fxradio.util.macos.MacUtils
 
 object Colors {
     val palette: Palette by lazy {
-        if (FxRadio.darkModeEnabled) DarkPalette() else Palette()
+        if (FxRadio.isDarkModePreferred()) DarkPalette() else Palette()
     }
 
     open class Palette {

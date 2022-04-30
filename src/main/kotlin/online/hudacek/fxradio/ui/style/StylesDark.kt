@@ -39,6 +39,8 @@ class StylesDark : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
+        val historyListView by cssclass()
+        val historyListItem by cssclass()
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
@@ -190,6 +192,28 @@ class StylesDark : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+        }
+
+        historyListView {
+            backgroundColor += c(colors.transparent)
+            unsafe("-fx-control-inner-background", Color.TRANSPARENT)
+        }
+
+        historyListItem {
+            fontSize = 12.px
+            textFill = c(colors.label)
+            backgroundColor += c(colors.transparent)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            and(hover) {
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
+            }
+            and(selected) {
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
+            }
+            padding = box(5.px, 10.px, 5.px, 15.px)
         }
 
         boldText {
@@ -376,6 +400,10 @@ class StylesDark : Stylesheet() {
         noBorder {
             backgroundInsets += box(0.px)
             padding = box(0.px)
+        }
+
+        alert {
+            baseColor = c(colors.background)
         }
     }
 }

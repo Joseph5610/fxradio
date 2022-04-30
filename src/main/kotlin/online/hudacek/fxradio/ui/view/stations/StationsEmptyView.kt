@@ -21,11 +21,22 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanBinding
 import tornadofx.controlsfx.glyph
+import tornadofx.get
+import tornadofx.hyperlink
+import tornadofx.label
+import tornadofx.paddingTop
+import tornadofx.stringBinding
+import tornadofx.text
+import tornadofx.vbox
 
 /**
  * This is a view that shows different errors or info messages on stationsView
@@ -74,6 +85,15 @@ class StationsEmptyView : BaseView() {
         }
     }
 
+    private val connectionHelpMessage by lazy {
+        hyperlink(messages["connectionErrorDesc"]) {
+            action { Modal.Servers.open() }
+            paddingTop = 5.0
+            id = "stationMessageConnectionHelpMsg"
+            addClass(Styles.grayLabel)
+        }
+    }
+
     private val graphic by lazy {
         glyph {
             viewModel.stateObservableChanges
@@ -93,6 +113,19 @@ class StationsEmptyView : BaseView() {
         add(graphic)
         add(header)
         add(subHeader)
+
+        vbox(alignment = Pos.CENTER) {
+            paddingTop = 10.0
+            add(connectionHelpMessage)
+            showWhen {
+                viewModel.stateProperty.booleanBinding {
+                    when (it) {
+                        is StationsState.Error -> true
+                        else -> false
+                    }
+                }
+            }
+        }
 
         showWhen {
             viewModel.stateProperty.booleanBinding {

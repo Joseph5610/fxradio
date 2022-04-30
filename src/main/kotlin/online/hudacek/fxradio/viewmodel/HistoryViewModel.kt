@@ -19,7 +19,7 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.storage.db.Tables
 import tornadofx.observableListOf
 import tornadofx.property

@@ -17,8 +17,8 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.stations.model.Station
-import online.hudacek.fxradio.api.stations.model.VoteResult
+import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.VoteResult
 
 /**
  * Increases vote count of the station

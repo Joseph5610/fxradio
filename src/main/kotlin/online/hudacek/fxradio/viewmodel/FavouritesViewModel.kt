@@ -20,7 +20,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.api.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.usecase.FavouriteAddUseCase

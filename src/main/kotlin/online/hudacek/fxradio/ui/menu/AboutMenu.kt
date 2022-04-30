@@ -18,12 +18,17 @@ package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
+import tornadofx.bind
 import tornadofx.get
 
 class AboutMenu : BaseMenu(FxRadio.appName) {
+    private val darkModeViewModel: DarkModeViewModel by inject()
 
     val aboutMainItems: List<MenuItem>
         get() = listOf(
@@ -35,6 +40,13 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
                 item(messages["menu.app.server"]) {
                     action {
                         Modal.Servers.open()
+                    }
+                },
+                checkMenuItem(messages["menu.app.darkmode"]) {
+                    bind(darkModeViewModel.darkModeProperty)
+                    action {
+                        darkModeViewModel.commit()
+                        appEvent.appNotification.onNext(AppNotification(messages["menu.app.darkmode.restart"], FontAwesome.Glyph.CHECK))
                     }
                 }
         )

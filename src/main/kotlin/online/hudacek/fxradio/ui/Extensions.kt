@@ -36,17 +36,34 @@ import javafx.scene.paint.Color
 import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.api.stations.model.Country
-import online.hudacek.fxradio.api.stations.model.countryCode
+import online.hudacek.fxradio.apiclient.stations.model.Country
 import online.hudacek.fxradio.ui.style.Styles
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.App
+import tornadofx.action
+import tornadofx.add
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.box
+import tornadofx.contextmenu
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.notificationPane
 import tornadofx.controlsfx.toGlyph
+import tornadofx.field
+import tornadofx.item
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.onChange
+import tornadofx.opcr
+import tornadofx.px
+import tornadofx.required
+import tornadofx.setContent
+import tornadofx.style
+import tornadofx.textfield
+import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
@@ -162,7 +179,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
  */
 internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
     //Show dark notifications
-    if (FxRadio.darkModeEnabled) {
+    if (FxRadio.isDarkModePreferred()) {
         styleClass += NotificationPane.STYLE_CLASS_DARK
     }
     op(this)
@@ -199,4 +216,4 @@ internal fun EventTarget.field(message: String, prompt: String,
         })
 
 internal val Country.flagIcon: FlagIcon?
-    get() = runCatching { countryCode?.let { FlagIcon(it) } }.getOrNull()
+    get() = runCatching { FlagIcon(iso_3166_1) }.getOrNull()

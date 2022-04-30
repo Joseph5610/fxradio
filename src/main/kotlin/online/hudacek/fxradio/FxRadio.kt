@@ -17,8 +17,9 @@
 package online.hudacek.fxradio
 
 import javafx.stage.Stage
-import online.hudacek.fxradio.api.http.HttpClient
-import online.hudacek.fxradio.api.stations.StationsApi
+import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
+import online.hudacek.fxradio.api.StationsProvider
+import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
@@ -29,15 +30,21 @@ import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.*
+import tornadofx.App
+import tornadofx.FX
+import tornadofx.Stylesheet
+import tornadofx.launch
+import tornadofx.stylesheet
+import java.io.FileInputStream
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.time.Year
 import kotlin.reflect.KClass
 
 /**
  * Load app in Dark Mode
  */
-class FxRadioDark : FxRadio(darkModeEnabled = true, stylesheet = StylesDark::class)
+class FxRadioDark : FxRadio(stylesheet = StylesDark::class)
 
 /**
  * Load app in Light Mode
@@ -47,8 +54,7 @@ class FxRadioLight : FxRadio(stylesheet = Styles::class)
 /**
  * Load the app with provided [stylesheet] class
  */
-open class FxRadio(val darkModeEnabled: Boolean = false,
-                   stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
+open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -84,17 +90,17 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
     override fun stop() {
         if (!isTestEnvironment) {
             playerViewModel.releasePlayer()
-            StationsApi.serviceProvider.close()
+            StationsProvider.serviceProvider.close()
             HttpClient.close()
             LogManager.shutdown()
         }
 
         //Save last used window width/height on close of the app to use it on next start
         saveProperties(mapOf(
-                Properties.WindowWidth to primaryStage.width,
-                Properties.WindowHeight to primaryStage.height,
-                Properties.WindowX to primaryStage.x,
-                Properties.WindowY to primaryStage.y
+                Properties.WindowWidth to FX.primaryStage.width,
+                Properties.WindowHeight to FX.primaryStage.height,
+                Properties.WindowX to FX.primaryStage.x,
+                Properties.WindowY to FX.primaryStage.y
         ))
         super.stop()
     }
@@ -102,7 +108,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
     /**
      * Basic info about the app
      */
-    companion object : Component() {
+    companion object {
 
         var isTestEnvironment = false
 
@@ -110,9 +116,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
         const val appDesc = "Internet radio directory"
         const val appUrl = "https://hudacek.online/fxradio/"
         const val author = "hudacek.online"
-        const val copyright = "Copyright (c) 2020"
-
-        val darkModeEnabled by lazy { (app as FxRadio).darkModeEnabled }
+        val copyright = "Copyright (c) 2020-" + Year.now().value
 
         /**
          * Gets version from jar MANIFEST.MF file
@@ -121,6 +125,22 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
         val version: String by lazy {
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
         }
+
+        private fun hasSystemDarkMode() = if (MacUtils.isMac) {
+            MacUtils.isSystemDarkMode
+        } else {
+            false
+        }
+
+        fun isDarkModePreferred(): Boolean {
+            //we have to use the ugly java way to access this property as we want to access it
+            //in the time that the app is not yet instantiated
+            val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
+            val props = java.util.Properties()
+            props.load(fis)
+            val darkModeProp = props.getProperty("app.darkmode")
+            return darkModeProp?.toBoolean() ?: hasSystemDarkMode()
+        }
     }
 }
 
@@ -128,13 +148,7 @@ open class FxRadio(val darkModeEnabled: Boolean = false,
  * Main starting method for the App
  */
 fun main(args: Array<String>) {
-    val isSystemDarkMode: Boolean = if (MacUtils.isMac) {
-        MacUtils.isSystemDarkMode
-    } else {
-        false
-    }
-
-    if (Config.Flags.darkStylesEnabled && isSystemDarkMode) {
+    if (isDarkModePreferred()) {
         launch<FxRadioDark>(args)
     } else {
         launch<FxRadioLight>(args)

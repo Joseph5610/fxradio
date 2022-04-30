@@ -22,7 +22,7 @@ import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.api.stations.model.tagsSplit
+import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
@@ -95,7 +95,7 @@ class StationsDataGridView : BaseView() {
                     paddingAll = 5
                     imageview {
                         station.stationImage(this)
-                        effect = DropShadow(15.0, Color.LIGHTGRAY)
+                        effect = DropShadow(10.0, Color.LIGHTGRAY)
                         fitHeight = 100.0
                         fitWidth = 100.0
                     }

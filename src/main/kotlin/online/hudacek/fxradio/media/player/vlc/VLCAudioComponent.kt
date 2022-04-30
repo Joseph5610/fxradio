@@ -39,7 +39,7 @@ class VLCAudioComponent : AudioComponent {
 
     init {
         if (player == null) {
-            throw StreamUnavailableException("VLC player cannot be found on the system.")
+            throw RuntimeException("VLC player cannot be found on the system.")
         }
     }
 

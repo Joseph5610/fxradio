@@ -21,7 +21,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.api.stations.model.Country
+import online.hudacek.fxradio.apiclient.stations.model.Country
 import online.hudacek.fxradio.usecase.CountryPinUseCase
 import online.hudacek.fxradio.usecase.CountryUnpinUseCase
 import online.hudacek.fxradio.usecase.GetCountriesUseCase
@@ -105,7 +105,7 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     fun getCountries() = getCountriesUseCase.execute(countriesProperty)
 
     override fun onCommit() {
-        saveProperties(mapOf(
+        app.saveProperties(mapOf(
                 Properties.ShowCountries to showCountriesProperty.value,
                 Properties.ShowLibrary to showLibraryProperty.value,
                 Properties.ShowPinnedCountries to showPinnedProperty.value

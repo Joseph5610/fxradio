@@ -51,7 +51,7 @@ class StationInfoFragment : BaseFragment() {
                 paddingAll = 10.0
                 imageview {
                     viewModel.stationProperty.stationImage(this)
-                    effect = DropShadow(30.0, Color.LIGHTGRAY)
+                    effect = DropShadow(10.0, Color.LIGHTGRAY)
                     fitHeight = 60.0
                     fitHeight = 60.0
                 }
@@ -158,8 +158,8 @@ class StationInfoFragment : BaseFragment() {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             paddingAll = 8
-            backgroundColor += Color.WHITESMOKE
         }
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     private fun createInfoLabel(key: String, valueProperty: StringProperty): Label? {

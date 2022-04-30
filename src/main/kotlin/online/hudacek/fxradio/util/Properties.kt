@@ -17,6 +17,7 @@
 package online.hudacek.fxradio.util
 
 import mu.KotlinLogging
+import tornadofx.App
 import tornadofx.Component
 
 private val logger = KotlinLogging.logger {}
@@ -42,7 +43,8 @@ enum class Properties(val key: String) {
     WindowX("window.x"),
     WindowY("window.y"),
     AccentColor("app.accentColor"), //Not configurable in UI
-    LogLevel("log.level");
+    LogLevel("log.level"),
+    DarkMode("app.darkmode");
 }
 
 /**
@@ -102,9 +104,9 @@ class Property(property: Properties) : Component() {
     }
 }
 
-fun Component.saveProperties(keyValueMap: Map<Properties, Any>) {
+fun App.saveProperties(keyValueMap: Map<Properties, Any>) {
     logger.debug { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
-    with(app.config) {
+    with(config) {
         keyValueMap.forEach {
             set(it.key.key to it.value)
         }

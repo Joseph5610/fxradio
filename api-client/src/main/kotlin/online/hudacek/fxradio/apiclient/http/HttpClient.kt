@@ -14,15 +14,16 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http
+package online.hudacek.fxradio.apiclient.http
 
 import mu.KotlinLogging
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
-import online.hudacek.fxradio.api.http.provider.DefaultClientProvider
+import online.hudacek.fxradio.apiclient.http.provider.DefaultClientProvider
 import java.io.IOException
+import java.io.InputStream
 import java.net.InetAddress
 
 private val logger = KotlinLogging.logger {}
@@ -48,22 +49,24 @@ object HttpClient {
     /**
      * Performs HTTP request for [url]
      */
-    fun request(url: String,
-                success: (Response) -> Unit,
-                fail: (Throwable) -> Unit) = runCatching {
+    fun request(
+        url: String,
+        success: (InputStream) -> Unit,
+        fail: (Throwable) -> Unit
+    ) = runCatching {
         clientProvider.client.newCall(buildRequest(url)).enqueue(
-                object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
-                        success(response)
-                        response.close()
-                    }
+            object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    response.body()?.let { success(it.byteStream()) }
+                    response.close()
+                }
 
-                    override fun onFailure(call: Call, e: IOException) {
-                        logger.error { "Request to $url failed." }
-                        logger.trace(e) { "Request to $url failed." }
-                        fail(e)
-                    }
-                })
+                override fun onFailure(call: Call, e: IOException) {
+                    logger.error { "Request to $url failed." }
+                    logger.trace(e) { "Request to $url failed." }
+                    fail(e)
+                }
+            })
     }.onFailure {
         logger.trace(it) { "Call failed." }
         fail(it)
@@ -73,8 +76,8 @@ object HttpClient {
      * Constructs [Request] object for given [url] address
      */
     private fun buildRequest(url: String) = Request.Builder()
-            .url(url)
-            .build()
+        .url(url)
+        .build()
 
     fun close() = clientProvider.close()
 }

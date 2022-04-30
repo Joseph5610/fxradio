@@ -14,20 +14,24 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.stations
+package online.hudacek.fxradio.apiclient.stations
 
 import io.reactivex.Single
-import online.hudacek.fxradio.api.ApiServiceProvider
-import online.hudacek.fxradio.api.stations.model.*
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.Property
-import online.hudacek.fxradio.viewmodel.Servers
-import online.hudacek.fxradio.viewmodel.ServersViewModel
+import online.hudacek.fxradio.apiclient.stations.model.AddedStation
+import online.hudacek.fxradio.apiclient.stations.model.ClickResult
+import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
+import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.stations.model.SearchBody
+import online.hudacek.fxradio.apiclient.stations.model.SearchByTagBody
+import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.StationBody
+import online.hudacek.fxradio.apiclient.stations.model.StatsResult
+import online.hudacek.fxradio.apiclient.stations.model.VoteResult
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import tornadofx.Component
+import retrofit2.http.Query
 
 /**
  * Provides HTTP endpoints for radio-browser.info API
@@ -35,7 +39,10 @@ import tornadofx.Component
 interface StationsApi {
 
     @POST("json/stations/bycountryexact/{countryName}")
-    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryName") countryName: String): Single<List<Station>>
+    fun getStationsByCountry(
+            @Body countriesBody: CountriesBody,
+            @Path("countryName") countryName: String
+    ): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
@@ -44,7 +51,7 @@ interface StationsApi {
     fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
-    fun getTopStations(): Single<List<Station>>
+    fun getTopStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
 
     @POST("json/add")
     fun addStation(@Body stationBody: StationBody): Single<AddedStation>
@@ -60,20 +67,4 @@ interface StationsApi {
 
     @GET("json/url/{uuid}")
     fun click(@Path("uuid") uuid: String): Single<ClickResult>
-
-    companion object : Component() {
-
-        private val viewModel: ServersViewModel by inject()
-
-        private val apiServerProperty = Property(Properties.ApiServer)
-
-        val serviceProvider: ApiServiceProvider by lazy {
-            if (apiServerProperty.isPresent) {
-                viewModel.item = Servers(apiServerProperty.get())
-            }
-            ApiServiceProvider("https://${viewModel.selectedProperty.value}")
-        }
-
-        val service = serviceProvider.get<StationsApi>()
-    }
 }

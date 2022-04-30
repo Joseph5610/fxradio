@@ -14,18 +14,22 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.api.http.provider
+package online.hudacek.fxradio.apiclient.http.provider
 
-import online.hudacek.fxradio.api.http.interceptor.TokenInterceptor
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 
-/**
- * OkHttpClient with token authentication
- */
-class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
+interface HttpClientProvider {
 
-    private val tokenInterceptor = TokenInterceptor(bearerToken)
+    val client: OkHttpClient
 
-    init {
-        interceptors += tokenInterceptor
+    val interceptors: List<Interceptor>
+
+    /**
+     * Default implementation of closing the OkHttpClient
+     */
+    fun close() {
+        client.dispatcher().executorService().shutdownNow()
+        client.connectionPool().evictAll()
     }
 }
