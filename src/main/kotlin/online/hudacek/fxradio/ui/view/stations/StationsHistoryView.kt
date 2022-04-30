@@ -45,7 +45,7 @@ class StationsHistoryView : BaseView() {
                 alignment = Pos.CENTER_LEFT
                 imageview {
                     it.stationImage(this)
-                    effect = DropShadow(30.0, Color.LIGHTGRAY)
+                    effect = DropShadow(10.0, Color.LIGHTGRAY)
                     fitHeight = 30.0
                     fitWidth = 30.0
                 }
