@@ -401,5 +401,9 @@ class StylesDark : Stylesheet() {
             backgroundInsets += box(0.px)
             padding = box(0.px)
         }
+
+        alert {
+            baseColor = c(colors.background)
+        }
     }
 }
