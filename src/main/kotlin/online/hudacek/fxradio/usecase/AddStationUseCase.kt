@@ -20,6 +20,7 @@ import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.stations.model.AddedStation
 import online.hudacek.fxradio.apiclient.stations.model.StationBody
+import online.hudacek.fxradio.util.applySchedulers
 
 private val logger = KotlinLogging.logger {}
 

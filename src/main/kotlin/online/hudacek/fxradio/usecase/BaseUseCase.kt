@@ -33,12 +33,4 @@ abstract class BaseUseCase<InputType, OutputType> : Controller() {
     protected val apiService by lazy { StationsProvider.service }
 
     abstract fun execute(input: InputType): OutputType
-
-    /**
-     * Perform async calls on correct thread
-     */
-    protected fun <T> applySchedulers(): SingleTransformer<T, T>? = SingleTransformer {
-        it.subscribeOn(Schedulers.io())
-                .observeOnFx()
-    }
 }

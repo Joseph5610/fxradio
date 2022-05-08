@@ -26,6 +26,7 @@ import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.storage.ImageCache
 import online.hudacek.fxradio.storage.ImageCache.isCached
+import online.hudacek.fxradio.util.applySchedulers
 import tornadofx.onChange
 
 private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
@@ -66,13 +67,13 @@ internal fun Station.stationImage(view: ImageView) {
         //Download the image with OkHttp client
         favicon?.let { url ->
             HttpClient.request(url,
-                {
-                    ImageCache.save(this, it)
-                    loadImage(view)
-                },
-                {
-                    ImageCache.addInvalid(this)
-                })
+                    {
+                        ImageCache.save(this, it)
+                        loadImage(view)
+                    },
+                    {
+                        ImageCache.addInvalid(this)
+                    })
         }
     }
 }
@@ -80,16 +81,17 @@ internal fun Station.stationImage(view: ImageView) {
 //Load image into view asynchronously
 private fun Station.loadImage(view: ImageView) {
     ImageCache
-        .get(this)
-        .subscribe({
-            view.image = it
-            it.errorProperty().onChange { isError ->
-                if (isError) {
-                    view.image = defaultRadioLogo
-                    ImageCache.addInvalid(this)
+            .get(this)
+            .compose(applySchedulers())
+            .subscribe({
+                view.image = it
+                it.errorProperty().onChange { isError ->
+                    if (isError) {
+                        view.image = defaultRadioLogo
+                        ImageCache.addInvalid(this)
+                    }
                 }
-            }
-        }, {
-            logger.error(it) { "Exception when loading image from cache!" }
-        })
+            }, {
+                logger.error(it) { "Exception when loading image from cache!" }
+            })
 }

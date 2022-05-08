@@ -14,20 +14,16 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.util
 
-import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
-import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.util.applySchedulers
+import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.SingleTransformer
+import io.reactivex.schedulers.Schedulers
 
 /**
- * Gets all stations from provided country name
+ * Perform async calls on correct thread
  */
-class GetStationsByCountryUseCase : BaseUseCase<Country, Single<List<Station>>>() {
-
-    override fun execute(input: Country): Single<List<Station>> = apiService
-            .getStationsByCountry(CountriesBody(), input.name)
-            .compose(applySchedulers())
+internal fun <T> applySchedulers(): SingleTransformer<T, T> = SingleTransformer {
+    it.subscribeOn(Schedulers.io())
+            .observeOnFx()
 }

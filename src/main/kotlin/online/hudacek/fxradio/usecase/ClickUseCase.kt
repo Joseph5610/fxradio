@@ -19,6 +19,7 @@ package online.hudacek.fxradio.usecase
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.stations.model.ClickResult
 import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.util.applySchedulers
 
 /**
  * Increases click count of the station

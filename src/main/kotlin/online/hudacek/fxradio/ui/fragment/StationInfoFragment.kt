@@ -41,6 +41,33 @@ class StationInfoFragment : BaseFragment() {
         viewModel.item = StationInfo(playerViewModel.stationProperty.value)
     }
 
+    override fun onBeforeShow() {
+        viewModel.stationProperty.stationImage(stationLogo)
+    }
+
+    private val stationLogo by lazy {
+        imageview {
+            effect = DropShadow(10.0, Color.LIGHTGRAY)
+            fitHeight = 60.0
+            fitHeight = 60.0
+        }
+    }
+
+    private val webview by lazy {
+        webview {
+            prefHeight = 210.0
+            engine.load(Config.API.mapURL +
+                    "?lat=${viewModel.stationProperty.value.geo_lat}" +
+                    "&lon=${viewModel.stationProperty.value.geo_long}"
+            )
+            showWhen {
+                viewModel.stationProperty.booleanBinding {
+                    it!!.geo_lat != 0.0 && it.geo_long != 0.0
+                }.and(booleanProperty(Config.Flags.enableMap))
+            }
+        }
+    }
+
     override val root = vbox {
         vgrow = Priority.ALWAYS
         prefWidth = 400.0
@@ -49,12 +76,7 @@ class StationInfoFragment : BaseFragment() {
         hbox(10) {
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10.0
-                imageview {
-                    viewModel.stationProperty.stationImage(this)
-                    effect = DropShadow(10.0, Color.LIGHTGRAY)
-                    fitHeight = 60.0
-                    fitHeight = 60.0
-                }
+                add(stationLogo)
             }
             vbox {
                 alignment = Pos.CENTER
@@ -115,20 +137,7 @@ class StationInfoFragment : BaseFragment() {
                 createInfoLabel("info.country", viewModel.countryProperty)?.let { add(it) }
                 createInfoLabel("info.votes", viewModel.votesProperty)?.let { add(it) }
             }
-
-            webview {
-                prefHeight = 210.0
-                engine.load(Config.API.mapURL +
-                        "?lat=${viewModel.stationProperty.value.geo_lat}" +
-                        "&lon=${viewModel.stationProperty.value.geo_long}"
-                )
-
-                showWhen {
-                    viewModel.stationProperty.booleanBinding {
-                        it!!.geo_lat != 0.0 && it.geo_long != 0.0
-                    }.and(booleanProperty(Config.Flags.enableMap))
-                }
-            }
+            add(webview)
         }
 
 
