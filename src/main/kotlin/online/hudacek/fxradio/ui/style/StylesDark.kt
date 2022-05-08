@@ -16,6 +16,7 @@
 
 package online.hudacek.fxradio.ui.style
 
+import javafx.scene.layout.BorderStrokeStyle
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
@@ -404,6 +405,13 @@ class StylesDark : Stylesheet() {
 
         alert {
             baseColor = c(colors.background)
+        }
+
+        separator {
+            baseColor = c(colors.transparent)
+            line {
+                maxWidth = 1.px
+            }
         }
     }
 }
