@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class StylesDark : Stylesheet() {
 
-    private val colors = Colors.palette
+    private val colors = Colors.DarkPalette()
 
     companion object {
 
@@ -86,7 +86,7 @@ class StylesDark : Stylesheet() {
         playerMainBox {
             padding = box(10.0.px, 0.0.px)
             borderColor += box(
-                c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
             )
         }
 
@@ -94,7 +94,7 @@ class StylesDark : Stylesheet() {
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             borderRadius += box(3.px)
-            backgroundColor += c("#464646")
+            backgroundColor += c(colors.playerBox)
             borderColor += box(c(colors.backgroundBorder))
             maxWidth = 260.px
             prefWidth = 260.px
@@ -242,7 +242,7 @@ class StylesDark : Stylesheet() {
 
         mainMenuBox {
             borderColor += box(
-                c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
             )
         }
 
@@ -408,9 +408,9 @@ class StylesDark : Stylesheet() {
         }
 
         textField {
-            baseColor = c(colors.background)
+            backgroundColor += c(colors.playerBox)
             textFill = Color.WHITESMOKE
-            promptTextFill = Color.WHITESMOKE
+            promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
         }

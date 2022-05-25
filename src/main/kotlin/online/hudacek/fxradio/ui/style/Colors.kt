@@ -22,9 +22,6 @@ import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 
 object Colors {
-    val palette: Palette by lazy {
-        if (FxRadio.isDarkModePreferred()) DarkPalette() else Palette()
-    }
 
     open class Palette {
         val primary by lazy { getPrimaryColor() }
@@ -43,6 +40,8 @@ object Colors {
         override val backgroundSelected = "#525356"
         override val label = "#ffffff"
         override val grayLabel = "#a0a1a2"
+
+        val playerBox = "#464646"
     }
 
     /**
