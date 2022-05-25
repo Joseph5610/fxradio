@@ -32,7 +32,7 @@ object StationsProvider : Component() {
 
     val serviceProvider: ApiServiceProvider by lazy {
         if (apiServerProperty.isPresent) {
-            viewModel.item = Servers(apiServerProperty.get())
+            viewModel.item = Servers(selectedServer = apiServerProperty.get())
         }
         ApiServiceProvider("https://${viewModel.selectedProperty.value}")
     }
