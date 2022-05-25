@@ -83,6 +83,7 @@ class ServersFragment : BaseFragment() {
                     paddingAll = 5.0
                     wrappingWidth = 270.0
                     textAlignment = TextAlignment.CENTER
+                    addClass(Styles.defaultTextColor)
                 }
 
                 showWhen {

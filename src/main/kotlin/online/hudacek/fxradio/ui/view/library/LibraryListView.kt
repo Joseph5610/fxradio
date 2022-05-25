@@ -19,7 +19,7 @@ package online.hudacek.fxradio.ui.view.library
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.style.Colors
+import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -53,7 +53,7 @@ class LibraryListView : BaseView() {
         })
 
         cellFormat {
-            graphic = item.glyph.make(14.0, false, c(Colors.palette.primary))
+            graphic = item.glyph.make(14.0, false, c(Appearance.currentAppearance.primary))
             text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }

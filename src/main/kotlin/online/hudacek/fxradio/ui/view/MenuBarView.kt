@@ -18,9 +18,11 @@ package online.hudacek.fxradio.ui.view
 
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.*
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.macos.NSMenu
 import online.hudacek.fxradio.util.macos.NSMenuBar
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
+import tornadofx.addClass
 import tornadofx.get
 import tornadofx.menubar
 
@@ -49,6 +51,7 @@ class MenuBarView : BaseView() {
                 favouritesMenu.menu,
                 historyMenu.menu,
                 helpMenu.menu)
+        addClass(Styles.mainMenuBox)
     }
 
     /**

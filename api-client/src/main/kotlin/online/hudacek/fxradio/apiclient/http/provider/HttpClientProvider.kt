@@ -16,14 +16,17 @@
 
 package online.hudacek.fxradio.apiclient.http.provider
 
+import okhttp3.Call
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.net.InetAddress
 
-interface HttpClientProvider {
+abstract class HttpClientProvider {
 
-    val client: OkHttpClient
+    abstract val client: OkHttpClient
 
-    val interceptors: List<Interceptor>
+    protected abstract val interceptors: List<Interceptor>
 
     /**
      * Default implementation of closing the OkHttpClient
@@ -32,4 +35,15 @@ interface HttpClientProvider {
         client.dispatcher().executorService().shutdownNow()
         client.connectionPool().evictAll()
     }
+
+    fun dns(hostname: String): MutableList<InetAddress> = client.dns().lookup(hostname)
+
+    fun request(url: String): Call = client.newCall(buildRequest(url))
+
+    /**
+     * Constructs [Request] object for given [url] address
+     */
+    private fun buildRequest(url: String) = Request.Builder()
+            .url(url)
+            .build()
 }

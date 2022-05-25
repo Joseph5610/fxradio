@@ -14,18 +14,16 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.apiclient.http.provider
+package online.hudacek.fxradio.util
 
-import online.hudacek.fxradio.apiclient.http.interceptor.TokenInterceptor
+import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.SingleTransformer
+import io.reactivex.schedulers.Schedulers
 
 /**
- * OkHttpClient with token authentication
+ * Perform async calls on correct thread
  */
-class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
-
-    private val tokenInterceptor = TokenInterceptor(bearerToken)
-
-    init {
-        interceptors += tokenInterceptor
-    }
+internal fun <T> applySchedulers(): SingleTransformer<T, T> = SingleTransformer {
+    it.subscribeOn(Schedulers.io())
+            .observeOnFx()
 }

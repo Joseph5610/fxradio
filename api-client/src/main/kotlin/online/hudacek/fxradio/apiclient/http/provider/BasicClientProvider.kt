@@ -32,9 +32,9 @@ private val logger = KotlinLogging.logger {}
 private const val timeoutInSeconds: Long = 20
 
 /**
- * Helper variables and methods for OkHttpClient
+ * Base OkHttpClient implementation
  */
-open class DefaultClientProvider : HttpClientProvider {
+class BasicClientProvider : HttpClientProvider() {
 
     /**
      * Defines the limits for the active connections
@@ -42,18 +42,18 @@ open class DefaultClientProvider : HttpClientProvider {
     private val connectionPool = ConnectionPool(5, timeoutInSeconds, TimeUnit.SECONDS)
 
     /**
-     * Enables Logging of http requests in app logger on debug level
+     * Enables Logging of http requests in app logger on trace level
      */
     private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.trace { message } }
-        .apply {
-            //Set logging level for HTTP requests to full request and response
-            //Http requests are logged only on trace app logger level
-            level = HttpLoggingInterceptor.Level.BODY
+            .apply {
+                //Set logging level for HTTP requests to full request and response
+                //Http requests are logged only on trace app logger level
+                level = HttpLoggingInterceptor.Level.BODY
 
-            //Do not show sensitive information
-            redactHeader("Authorization")
-            redactHeader("Cookie")
-        }
+                //Do not show sensitive information
+                redactHeader("Authorization")
+                redactHeader("Cookie")
+            }
 
     override val interceptors: MutableList<Interceptor> = mutableListOf(loggerInterceptor)
 
@@ -61,15 +61,15 @@ open class DefaultClientProvider : HttpClientProvider {
      * Construct http client with custom user agent, connection pool and timeouts
      */
     override val client: OkHttpClient =
-        OkHttpClient.Builder()
-            //The whole call should not take longer than 20 secs
-            .callTimeout(timeoutInSeconds, TimeUnit.SECONDS)
-            .addNetworkInterceptor(UserAgentInterceptor())
-            .connectionPool(connectionPool)
-            .apply {
-                interceptors.forEach {
-                    addInterceptor(it)
-                }
-            }.build()
+            OkHttpClient.Builder()
+                    //The whole call should not take longer than 20 secs
+                    .callTimeout(timeoutInSeconds, TimeUnit.SECONDS)
+                    .addNetworkInterceptor(UserAgentInterceptor())
+                    .connectionPool(connectionPool)
+                    .apply {
+                        interceptors.forEach {
+                            addInterceptor(it)
+                        }
+                    }.build()
 
 }

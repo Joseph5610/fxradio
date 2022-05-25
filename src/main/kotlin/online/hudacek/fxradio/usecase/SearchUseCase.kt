@@ -20,6 +20,7 @@ import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.stations.model.SearchBody
 import online.hudacek.fxradio.apiclient.stations.model.SearchByTagBody
 import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.util.applySchedulers
 
 /**
  * Searches for all stations that contains provided tag

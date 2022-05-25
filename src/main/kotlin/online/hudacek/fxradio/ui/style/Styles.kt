@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private val colors = Colors.palette
+    private val colors by lazy { Appearance.currentAppearance }
 
     companion object {
 
@@ -60,6 +60,8 @@ class Styles : Stylesheet() {
         val grayTextColor by cssclass()
 
         val noBorder by cssclass()
+
+        val mainMenuBox by cssclass()
     }
 
     init {
@@ -166,6 +168,8 @@ class Styles : Stylesheet() {
             fontSize = 12.px
             prefHeight = 30.px
             textFill = c(colors.label)
+            borderInsets += box(0.px, 5.px, 0.px, 5.px)
+            backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += Color.WHITESMOKE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
@@ -174,8 +178,6 @@ class Styles : Stylesheet() {
                 borderColor += box(c(colors.backgroundBorder))
             }
             padding = box(6.px, 10.px, 6.px, 15.px)
-            //unsafe("-fx-background-insets", raw("0px 10px 0px 10px"))
-            //unsafe("-fx-border-insets", raw("0px 10px 0px 10px"))
         }
 
         libraryListItemTag {
@@ -220,6 +222,10 @@ class Styles : Stylesheet() {
 
         backgroundWhite {
             backgroundColor += Color.WHITE
+        }
+
+        mainMenuBox {
+
         }
 
         // ===================================================================

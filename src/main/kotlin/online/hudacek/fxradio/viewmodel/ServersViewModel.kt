@@ -36,8 +36,8 @@ sealed class ServersState(val key: String = "") {
 }
 
 class Servers(
-    selectedServer: String = Config.API.fallbackApiServerURL,
-    availableServers: ObservableList<String> = observableListOf()
+        selectedServer: String = Config.API.fallbackApiServerURL,
+        availableServers: ObservableList<String> = observableListOf()
 ) {
     var selected: String by property(selectedServer)
     var servers: ObservableList<String> by property(availableServers)
@@ -75,7 +75,7 @@ class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
 
     override fun onNewState(newState: ServersState) {
         if (newState is ServersState.Fetched) {
-            item = Servers(availableServers = newState.servers)
+            item = Servers(selectedServer = selectedProperty.value, availableServers = newState.servers)
         }
     }
 

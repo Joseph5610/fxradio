@@ -14,20 +14,6 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.apiclient.stations
 
-import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
-import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.util.applySchedulers
-
-/**
- * Gets all stations from provided country name
- */
-class GetStationsByCountryUseCase : BaseUseCase<Country, Single<List<Station>>>() {
-
-    override fun execute(input: Country): Single<List<Station>> = apiService
-            .getStationsByCountry(CountriesBody(), input.name)
-            .compose(applySchedulers())
-}
+interface ApiDefinition

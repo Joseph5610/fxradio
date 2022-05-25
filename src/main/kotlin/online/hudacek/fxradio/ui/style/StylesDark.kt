@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class StylesDark : Stylesheet() {
 
-    private val colors = Colors.palette
+    private val colors by lazy { Appearance.currentAppearance as DarkAppearance }
 
     companion object {
 
@@ -55,6 +55,8 @@ class StylesDark : Stylesheet() {
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
 
+        val mainMenuBox by cssclass()
+
         //for Text()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
@@ -72,19 +74,27 @@ class StylesDark : Stylesheet() {
         }
 
         checkBox {
+            baseColor = c(colors.primary)
+            and(selected) {
+                mark {
+                    backgroundColor += Color.WHITE
+                }
+            }
             textFill = c(colors.label)
         }
 
         playerMainBox {
             padding = box(10.0.px, 0.0.px)
-            borderColor += box(c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent))
+            borderColor += box(
+                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+            )
         }
 
         playerStationBox {
             padding = box(3.0.px, 10.0.px)
             backgroundRadius += box(3.px)
             borderRadius += box(3.px)
-            backgroundColor += c(colors.background)
+            backgroundColor += c(colors.playerBox)
             borderColor += box(c(colors.backgroundBorder))
             maxWidth = 260.px
             prefWidth = 260.px
@@ -175,6 +185,8 @@ class StylesDark : Stylesheet() {
             fontSize = 12.px
             prefHeight = 30.px
             textFill = c(colors.label)
+            borderInsets += box(0.px, 5.px, 0.px, 5.px)
+            backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += c(colors.background)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
@@ -226,6 +238,12 @@ class StylesDark : Stylesheet() {
 
         backgroundWhite {
             backgroundColor += c("#262625")
+        }
+
+        mainMenuBox {
+            borderColor += box(
+                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+            )
         }
 
         // ===================================================================
@@ -372,7 +390,7 @@ class StylesDark : Stylesheet() {
         }
 
         menuBar {
-            backgroundColor += c(colors.backgroundBorder)
+            backgroundColor += c(colors.background)
 
             menu {
                 backgroundColor += c(colors.background)
@@ -390,9 +408,9 @@ class StylesDark : Stylesheet() {
         }
 
         textField {
-            baseColor = c(colors.background)
+            backgroundColor += c(colors.playerBox)
             textFill = Color.WHITESMOKE
-            promptTextFill = Color.WHITESMOKE
+            promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
         }
@@ -404,6 +422,13 @@ class StylesDark : Stylesheet() {
 
         alert {
             baseColor = c(colors.background)
+        }
+
+        separator {
+            baseColor = c(colors.transparent)
+            line {
+                maxWidth = 1.px
+            }
         }
     }
 }
