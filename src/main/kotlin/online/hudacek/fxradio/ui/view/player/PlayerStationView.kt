@@ -49,8 +49,6 @@ class PlayerStationView : BaseView() {
         imageview {
             //Subscribe to property changes
             viewModel.stationProperty.stationImage(this)
-
-            effect = DropShadow(10.0, Color.WHITE)
             fitWidth = 30.0
         }
     }

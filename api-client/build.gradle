@@ -11,4 +11,4 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:$versions.retrofitLogger")
 }
 
-version "0.0.1"
+version "0.0.2"

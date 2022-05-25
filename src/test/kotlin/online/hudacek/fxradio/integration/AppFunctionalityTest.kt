@@ -243,7 +243,7 @@ class AppFunctionalityTest {
 
         //Simulate add country to pinned list
         robot.interact {
-            val testCountry = Country("TestPinnedCountryName", 250)
+            val testCountry = Country("TestPinnedCountryName", "AF",250)
             val library = find<LibraryViewModel>()
             logger.info { "Pin country $testCountry" }
             library.pinCountry(testCountry)
@@ -260,7 +260,7 @@ class AppFunctionalityTest {
         robot.interact {
             val library = find<LibraryViewModel>()
             logger.info { "Unpin item: $item" }
-            library.unpinCountry(Country(item.text, 250))
+            library.unpinCountry(Country(item.text, "AF",250))
         }
 
         //Check there is not item with this label in the app

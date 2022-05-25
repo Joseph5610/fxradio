@@ -36,13 +36,10 @@ import retrofit2.http.Query
 /**
  * Provides HTTP endpoints for radio-browser.info API
  */
-interface StationsApi {
+interface StationsApi : ApiDefinition {
 
     @POST("json/stations/bycountryexact/{countryName}")
-    fun getStationsByCountry(
-            @Body countriesBody: CountriesBody,
-            @Path("countryName") countryName: String
-    ): Single<List<Station>>
+    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryName") countryName: String): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>

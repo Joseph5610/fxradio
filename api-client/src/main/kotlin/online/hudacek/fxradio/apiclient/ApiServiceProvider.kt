@@ -16,8 +16,9 @@
 
 package online.hudacek.fxradio.apiclient
 
-import online.hudacek.fxradio.apiclient.http.provider.DefaultClientProvider
+import online.hudacek.fxradio.apiclient.http.provider.BasicClientProvider
 import online.hudacek.fxradio.apiclient.http.provider.HttpClientProvider
+import online.hudacek.fxradio.apiclient.stations.ApiDefinition
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -26,8 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Provides Retrofit instance for [baseUrl]
  */
 class ApiServiceProvider(
-    private val baseUrl: String,
-    private val httpClientProvider: HttpClientProvider = DefaultClientProvider()
+        private val baseUrl: String,
+        private val httpClientProvider: HttpClientProvider = BasicClientProvider()
 ) {
 
     /**
@@ -35,16 +36,16 @@ class ApiServiceProvider(
      */
     val retrofit: Retrofit
         get() = Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(baseUrl)
-            .client(httpClientProvider.client)
-            .build()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(baseUrl)
+                .client(httpClientProvider.client)
+                .build()
 
     /**
      * Constructs Retrofit service class of type [T]
      */
-    inline fun <reified T : Any> get(): T = retrofit.create(T::class.java)
+    inline fun <reified T : ApiDefinition> get(): T = retrofit.create(T::class.java)
 
     fun close() = httpClientProvider.close()
 }

@@ -14,18 +14,6 @@
  *    limitations under the License.
  */
 
-package online.hudacek.fxradio.apiclient.http.provider
+package online.hudacek.fxradio.apiclient.stations
 
-import online.hudacek.fxradio.apiclient.http.interceptor.TokenInterceptor
-
-/**
- * OkHttpClient with token authentication
- */
-class TokenClientProvider(bearerToken: String) : DefaultClientProvider() {
-
-    private val tokenInterceptor = TokenInterceptor(bearerToken)
-
-    init {
-        interceptors += tokenInterceptor
-    }
-}
+interface ApiDefinition
