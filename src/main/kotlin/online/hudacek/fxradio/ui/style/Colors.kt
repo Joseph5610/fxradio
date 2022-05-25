@@ -39,7 +39,7 @@ object Colors {
 
     class DarkPalette : Palette() {
         override val background = "#202121"
-        override val backgroundBorder = "#5b5b5b"
+        override val backgroundBorder = "#404040"
         override val backgroundSelected = "#525356"
         override val label = "#ffffff"
         override val grayLabel = "#a0a1a2"

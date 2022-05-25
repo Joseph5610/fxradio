@@ -63,7 +63,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
                     true, null, null)
             val data = deMuxer.metaData
             deMuxer.close()
-            logger.debug { "FetchDataTask retrieved MetaData: $data" }
+            logger.debug { "HumbleMetaService retrieved MetaData: $data" }
             return data
         }
 

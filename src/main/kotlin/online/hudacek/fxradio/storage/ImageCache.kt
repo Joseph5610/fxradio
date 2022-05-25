@@ -29,6 +29,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import kotlin.math.roundToInt
 
 private val logger = KotlinLogging.logger {}
 
@@ -55,11 +56,11 @@ object ImageCache {
     /**
      * Counts total size of cache directory in MB
      */
-    val totalSize
+    val totalSize: Int
         get() = (cacheBasePath.toFile()
                 .walkTopDown().filter { it.isFile }
                 .map { it.length() }
-                .sum() / 1024).toInt()
+                .sum() / 1e+6).roundToInt()
 
     fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
 
