@@ -26,7 +26,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private val colors = Colors.Palette()
+    private val colors by lazy { Appearance.currentAppearance }
 
     companion object {
 

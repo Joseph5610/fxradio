@@ -21,28 +21,33 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 
-object Colors {
+class LightAppearance : Appearance() {
+    override val background = "#E9E9E9"
+    override val backgroundBorder = "#E8E8E8"
+    override val backgroundSelected = "#E9E9E9"
+    override val label = "#2b2b2b"
+    override val grayLabel = "#8B8B8B"
+}
 
-    open class Palette {
-        val primary by lazy { getPrimaryColor() }
-        val transparent = "transparent"
+class DarkAppearance : Appearance() {
+    override val background = "#202121"
+    override val backgroundBorder = "#404040"
+    override val backgroundSelected = "#525356"
+    override val label = "#dddddd"
+    override val grayLabel = "#a0a1a2"
+    val playerBox = "#464646"
+}
 
-        open val background = "#E9E9E9"
-        open val backgroundBorder = "#E8E8E8"
-        open val backgroundSelected = "#E9E9E9"
-        open val label = "#2b2b2b"
-        open val grayLabel = "#8B8B8B"
-    }
+abstract class Appearance {
 
-    class DarkPalette : Palette() {
-        override val background = "#202121"
-        override val backgroundBorder = "#404040"
-        override val backgroundSelected = "#525356"
-        override val label = "#ffffff"
-        override val grayLabel = "#a0a1a2"
+    val primary by lazy { getPrimaryColor() }
+    val transparent = "transparent"
 
-        val playerBox = "#464646"
-    }
+    abstract val background: String
+    abstract val backgroundBorder: String
+    abstract val backgroundSelected: String
+    abstract val label: String
+    abstract val grayLabel: String
 
     /**
      * Detects primary color from system accept color
@@ -62,5 +67,11 @@ object Colors {
             }
         }
         return AccentColor.values().first { it.colorCode == colorCode }.color()
+    }
+
+    companion object {
+        val currentAppearance by lazy {
+            if (FxRadio.isDarkModePreferred()) DarkAppearance() else LightAppearance()
+        }
     }
 }

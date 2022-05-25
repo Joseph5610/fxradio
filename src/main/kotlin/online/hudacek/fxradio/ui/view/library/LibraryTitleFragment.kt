@@ -23,7 +23,7 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.style.Colors
+import online.hudacek.fxradio.ui.style.Appearance
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -52,11 +52,11 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                                 if (it)
                                     FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0,
                                             useStyle = false,
-                                            color = c(Colors.palette.grayLabel))
+                                            color = c(Appearance.currentAppearance.grayLabel))
                                 else
                                     FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0,
                                             useStyle = false,
-                                            color = c(Colors.palette.grayLabel))
+                                            color = c(Appearance.currentAppearance.grayLabel))
                     }
 
             showWhen {
