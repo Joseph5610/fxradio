@@ -38,8 +38,7 @@ object Attributions {
                 Attribution("sqliteJdbc", "3.36.0.3", license = Licenses.apache20),
                 Attribution("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),
                 Attribution("TickerView", license = Licenses.tickerView),
-                Attribution("macOS install disk background", license = Licenses.bg),
-                Attribution("Application logo, radio station icon", license = Licenses.iconArchive)
+                Attribution("Application Graphics", license = Licenses.graphics)
         )
     }
 }
@@ -67,8 +66,8 @@ class AttributionViewModel : BaseViewModel<Attribution>() {
 }
 
 private object Licenses {
-    val bg = License(content = "Designed by xb100 / Freepik")
-    val iconArchive = License(content = "Obtained from http://iconarchive.com")
+    val graphics = License(content = "Application logo, radio stations icon: Obtained from http://iconarchive.com\n\n" +
+            "macOS install disk background: Designed by xb100 / Freepik")
     val retrofit = License("Apache License 2.0", "Copyright 2013 Square, Inc.\n" +
             "\n" +
             "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +

@@ -18,6 +18,7 @@ package online.hudacek.fxradio.apiclient.stations
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.stations.model.AddedStation
+import online.hudacek.fxradio.apiclient.stations.model.AllStationsBody
 import online.hudacek.fxradio.apiclient.stations.model.ClickResult
 import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
 import online.hudacek.fxradio.apiclient.stations.model.Country
@@ -48,7 +49,10 @@ interface StationsApi : ApiDefinition {
     fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
-    fun getTopStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
+    fun getTopVotedStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
+
+    @POST("json/stations")
+    fun getAllStations(@Body stationsBody: AllStationsBody): Single<List<Station>>
 
     @POST("json/add")
     fun addStation(@Body stationBody: StationBody): Single<AddedStation>

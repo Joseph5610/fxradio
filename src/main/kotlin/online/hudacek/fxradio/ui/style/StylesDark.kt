@@ -251,10 +251,10 @@ class StylesDark : Stylesheet() {
         // ===================================================================
 
         tableView {
-            baseColor = c(colors.background)
+            baseColor = c(colors.backgroundSelected)
             tableRowCell {
                 and(selected) {
-                    backgroundColor += c(colors.primary)
+                    backgroundColor += c(colors.backgroundSelected)
                 }
             }
         }

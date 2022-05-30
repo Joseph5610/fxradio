@@ -22,7 +22,8 @@ import javafx.collections.ObservableList
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.usecase.GetStationsByCountryUseCase
-import online.hudacek.fxradio.usecase.GetTopStationsUseCase
+import online.hudacek.fxradio.usecase.GetTrendingStationsUseCase
+import online.hudacek.fxradio.usecase.GetTopVotedStationsUseCase
 import online.hudacek.fxradio.usecase.VoteUseCase
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.asObservable
@@ -51,7 +52,8 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     private val searchViewModel: SearchViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
-    private val getTopStationsUseCase: GetTopStationsUseCase by inject()
+    private val getTopVotedStationsUseCase: GetTopVotedStationsUseCase by inject()
+    private val getTrendingStationsUseCase: GetTrendingStationsUseCase by inject()
     private val getStationsByCountryUseCase: GetStationsByCountryUseCase by inject()
     private val voteUseCase: VoteUseCase by inject()
 
@@ -112,7 +114,10 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                     .execute(newState.country)
                     .subscribe(::show, ::handleError)
             is LibraryState.Favourites -> show(favouritesViewModel.stationsProperty)
-            is LibraryState.TopStations -> getTopStationsUseCase
+            is LibraryState.TopVotedStations -> getTopVotedStationsUseCase
+                    .execute(Unit)
+                    .subscribe(::show, ::handleError)
+            is LibraryState.TrendingStations -> getTrendingStationsUseCase
                     .execute(Unit)
                     .subscribe(::show, ::handleError)
             is LibraryState.Search -> search()

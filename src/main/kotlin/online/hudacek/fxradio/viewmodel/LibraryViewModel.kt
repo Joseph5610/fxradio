@@ -39,7 +39,8 @@ sealed class LibraryState(val key: String) {
     object Search : LibraryState("Search")
     object History : LibraryState("history")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
-    object TopStations : LibraryState("topStations")
+    object TopVotedStations : LibraryState("topStations")
+    object TrendingStations : LibraryState("trendingStations")
 }
 
 data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
@@ -58,7 +59,8 @@ class Library(countries: ObservableList<Country> = observableListOf(),
 
     //Default items shown in library ListView
     var libraries: ObservableList<LibraryItem> by property(observableListOf(
-            LibraryItem(LibraryState.TopStations, FontAwesome.Glyph.TROPHY),
+            LibraryItem(LibraryState.TopVotedStations, FontAwesome.Glyph.TROPHY),
+            LibraryItem(LibraryState.TrendingStations, FontAwesome.Glyph.ARROW_CIRCLE_UP),
             LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.STAR),
             LibraryItem(LibraryState.History, FontAwesome.Glyph.HISTORY)
     ))
@@ -74,7 +76,7 @@ class Library(countries: ObservableList<Country> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
+class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopVotedStations) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
     private val countryPinUseCase: CountryPinUseCase by inject()

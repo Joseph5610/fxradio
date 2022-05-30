@@ -17,15 +17,16 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
+import online.hudacek.fxradio.apiclient.stations.model.AllStationsBody
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.util.applySchedulers
 
 /**
- * Gets list of Top 50 stations from radio-browser API
+ * Gets list of Top 50 clicked stations from radio-browser API
  */
-class GetTopStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
     override fun execute(input: Unit): Single<List<Station>> = apiService
-            .getTopStations()
+            .getAllStations(AllStationsBody(order = "clicktrend"))
             .compose(applySchedulers())
 }

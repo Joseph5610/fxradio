@@ -46,7 +46,7 @@ class AttributionsFragment : BaseFragment() {
 
                 columnResizePolicy = SmartResize.POLICY
                 readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
-                readonlyColumn(messages["attributions.version"], Attribution::version)
+                readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
 
                 onUserSelect {
                     Modal.License.open()

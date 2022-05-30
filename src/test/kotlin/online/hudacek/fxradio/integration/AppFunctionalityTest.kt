@@ -135,7 +135,7 @@ class AppFunctionalityTest {
 
     @Test
     fun `api should return same results as in app`() {
-        val stations = service.getTopStations().blockingGet()
+        val stations = service.getTopVotedStations().blockingGet()
         Assertions.assertEquals(50, stations.size)
 
         //Wait for stations to load
