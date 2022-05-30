@@ -75,11 +75,6 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
                 action {
                     osNotificationViewModel.commit()
                 }
-
-                visibleWhen {
-                    //Notifications available only on Mac
-                    MacUtils.isMac.toProperty()
-                }
             }
     )
 }

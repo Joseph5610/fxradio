@@ -27,7 +27,7 @@ object MacUtils : Component() {
     val isMac = Platform.getCurrent() == Platform.OSX
 
     /**
-     * Shows MacOS native system notification
+     * Shows macOS native system notification
      */
     fun notification(title: String, subtitle: String) =
             NSUserNotification().apply {

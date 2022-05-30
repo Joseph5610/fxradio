@@ -16,14 +16,17 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import javafx.application.Platform
 import javafx.beans.property.BooleanProperty
+import javafx.geometry.Pos
+import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
+import org.controlsfx.control.Notifications
 import tornadofx.property
 
-//Notifications are currently enabled only on macOS
 class OsNotification(show: Boolean = Properties.SendOsNotifications.value(MacUtils.isMac)) {
     var show: Boolean by property(show)
 }
@@ -37,9 +40,27 @@ class OsNotificationViewModel : BaseViewModel<OsNotification>(OsNotification()) 
 
     init {
         appEvent.streamMetaDataUpdated
-                .filter { showProperty.value && MacUtils.isMac }
+                .filter { showProperty.value }
+                .distinctUntilChanged()
                 .subscribe {
-                    MacUtils.notification(it.nowPlaying, it.stationName)
+                    if (MacUtils.isMac) {
+                        MacUtils.notification(it.nowPlaying, it.stationName)
+                    } else {
+                        Platform.runLater {
+                            val builder = Notifications.create()
+                                    .position(Pos.TOP_RIGHT)
+                                    .owner(primaryStage)
+                                    .title(it.stationName)
+                                    .text(it.nowPlaying)
+                                    .onAction {
+                                        primaryStage.show()
+                                    }
+                            if (FxRadio.isDarkModePreferred()) {
+                                builder.darkStyle()
+                            }
+                            builder.show()
+                        }
+                    }
                 }
     }
 
