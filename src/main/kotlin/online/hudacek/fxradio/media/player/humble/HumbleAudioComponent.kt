@@ -50,7 +50,7 @@ class HumbleAudioComponent : AudioComponent {
                 val streamInfo = deMuxer.getStreamInfo(streamUrl)
                 streamInfo?.decoder?.let {
                     val samples = it.getMediaAudio()
-                    val converter = HumbleAudioConverter(samples)
+                    val converter = HumbleAudioConverter(samples.sampleRate, samples.channelLayout, samples.format)
                     audioFrame = AudioFrame.make(converter.javaFormat)
                             ?: throw StreamUnavailableException("No output device available!")
 
