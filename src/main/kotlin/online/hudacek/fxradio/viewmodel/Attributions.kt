@@ -1,17 +1,19 @@
 /*
- *  Copyright 2020 FXRadio by hudacek.online
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package online.hudacek.fxradio.viewmodel
@@ -26,7 +28,7 @@ object Attributions {
                 Attribution("tornadofx", "1.7.20", Licenses.apache20),
                 Attribution("controlsfx", "8.40.18", Licenses.controlsfx),
                 Attribution("vlcj", "4.7.2", Licenses.gpl3),
-                Attribution("humble video", "0.3.0", Licenses.gpl3),
+                Attribution("humble video", "0.3.0", Licenses.agpl3),
                 Attribution("Retrofit HTTP client", "2.9.0", Licenses.retrofit),
                 Attribution("slf4j-api", "1.7.36", Licenses.sl4fj),
                 Attribution("log4j", "2.17.2", Licenses.apache20),
@@ -38,8 +40,7 @@ object Attributions {
                 Attribution("sqliteJdbc", "3.36.0.3", license = Licenses.apache20),
                 Attribution("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),
                 Attribution("TickerView", license = Licenses.tickerView),
-                Attribution("macOS install disk background", license = Licenses.bg),
-                Attribution("Application logo, radio station icon", license = Licenses.iconArchive)
+                Attribution("Application Graphics", license = Licenses.graphics)
         )
     }
 }
@@ -67,8 +68,8 @@ class AttributionViewModel : BaseViewModel<Attribution>() {
 }
 
 private object Licenses {
-    val bg = License(content = "Designed by xb100 / Freepik")
-    val iconArchive = License(content = "Obtained from http://iconarchive.com")
+    val graphics = License(content = "Application logo, radio stations icon: Obtained from http://iconarchive.com\n\n" +
+            "macOS install disk background: Designed by xb100 / Freepik")
     val retrofit = License("Apache License 2.0", "Copyright 2013 Square, Inc.\n" +
             "\n" +
             "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
@@ -94,6 +95,21 @@ private object Licenses {
             "\n" +
             "    You should have received a copy of the GNU General Public License\n" +
             "    along with this program.  If not, see <https://www.gnu.org/licenses/>.")
+    val agpl3 = License("AGPL v3", "Copyright (c) 2014, Andrew \"Art\" Clarke.  All rights reserved.\n" +
+            " *   \n" +
+            " *\n" +
+            " * Humble-Video is free software: you can redistribute it and/or modify\n" +
+            " * it under the terms of the GNU Affero General Public License as published by\n" +
+            " * the Free Software Foundation, either version 3 of the License, or\n" +
+            " * (at your option) any later version.\n" +
+            " *\n" +
+            " * Humble-Video is distributed in the hope that it will be useful,\n" +
+            " * but WITHOUT ANY WARRANTY; without even the implied warranty of\n" +
+            " * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n" +
+            " * GNU Affero General Public License for more details.\n" +
+            " *\n" +
+            " * You should have received a copy of the GNU Affero General Public License\n" +
+            " * along with Humble-Video.  If not, see <http://www.gnu.org/licenses/>.")
     val sl4fj = License("MIT License", "Copyright (c) 2004-2017 QOS.ch\n" +
             " All rights reserved.\n" +
             "\n" +

@@ -16,6 +16,9 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations
+package online.hudacek.fxradio.apiclient.stations.model
 
-interface ApiDefinition
+data class AllStationsBody(val order: String = "name",
+                           val limit: Int = 50,
+                           val hidebroken: Boolean = true,
+                           val reverse: Boolean = true)

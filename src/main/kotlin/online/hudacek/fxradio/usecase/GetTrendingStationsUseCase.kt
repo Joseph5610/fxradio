@@ -16,6 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations
+package online.hudacek.fxradio.usecase
 
-interface ApiDefinition
+import io.reactivex.Single
+import online.hudacek.fxradio.apiclient.stations.model.AllStationsBody
+import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.util.applySchedulers
+
+/**
+ * Gets list of Top 50 clicked stations from radio-browser API
+ */
+class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+
+    override fun execute(input: Unit): Single<List<Station>> = apiService
+            .getAllStations(AllStationsBody(order = "clicktrend"))
+            .compose(applySchedulers())
+}

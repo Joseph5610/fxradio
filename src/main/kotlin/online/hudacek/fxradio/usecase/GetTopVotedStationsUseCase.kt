@@ -16,6 +16,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations
+package online.hudacek.fxradio.usecase
 
-interface ApiDefinition
+import io.reactivex.Single
+import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.util.applySchedulers
+
+/**
+ * Gets list of Top 50 stations from radio-browser API
+ */
+class GetTopVotedStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+
+    override fun execute(input: Unit): Single<List<Station>> = apiService
+            .getTopVotedStations()
+            .compose(applySchedulers())
+}

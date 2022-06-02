@@ -1,17 +1,19 @@
 /*
- *  Copyright 2020 FXRadio by hudacek.online
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package online.hudacek.fxradio.viewmodel
@@ -39,7 +41,8 @@ sealed class LibraryState(val key: String) {
     object Search : LibraryState("Search")
     object History : LibraryState("history")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
-    object TopStations : LibraryState("topStations")
+    object TopVotedStations : LibraryState("topStations")
+    object TrendingStations : LibraryState("trendingStations")
 }
 
 data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
@@ -58,7 +61,8 @@ class Library(countries: ObservableList<Country> = observableListOf(),
 
     //Default items shown in library ListView
     var libraries: ObservableList<LibraryItem> by property(observableListOf(
-            LibraryItem(LibraryState.TopStations, FontAwesome.Glyph.TROPHY),
+            LibraryItem(LibraryState.TopVotedStations, FontAwesome.Glyph.TROPHY),
+            LibraryItem(LibraryState.TrendingStations, FontAwesome.Glyph.ARROW_CIRCLE_UP),
             LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.STAR),
             LibraryItem(LibraryState.History, FontAwesome.Glyph.HISTORY)
     ))
@@ -74,7 +78,7 @@ class Library(countries: ObservableList<Country> = observableListOf(),
  * Stores shown libraries and countries in the sidebar
  * Used in [online.hudacek.fxradio.ui.view.library.LibraryView]
  */
-class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopStations) {
+class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.TopVotedStations) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
     private val countryPinUseCase: CountryPinUseCase by inject()

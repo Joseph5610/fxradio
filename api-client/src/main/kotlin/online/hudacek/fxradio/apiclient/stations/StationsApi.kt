@@ -1,23 +1,26 @@
 /*
- *  Copyright 2020 FXRadio by hudacek.online
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package online.hudacek.fxradio.apiclient.stations
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.stations.model.AddedStation
+import online.hudacek.fxradio.apiclient.stations.model.AllStationsBody
 import online.hudacek.fxradio.apiclient.stations.model.ClickResult
 import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
 import online.hudacek.fxradio.apiclient.stations.model.Country
@@ -48,7 +51,10 @@ interface StationsApi : ApiDefinition {
     fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
-    fun getTopStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
+    fun getTopVotedStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
+
+    @POST("json/stations")
+    fun getAllStations(@Body stationsBody: AllStationsBody): Single<List<Station>>
 
     @POST("json/add")
     fun addStation(@Body stationBody: StationBody): Single<AddedStation>
