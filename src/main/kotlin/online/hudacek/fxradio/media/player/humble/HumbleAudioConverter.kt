@@ -1,17 +1,19 @@
 /*
- *  Copyright 2020 FXRadio by hudacek.online
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package online.hudacek.fxradio.media.player.humble
@@ -23,54 +25,58 @@ import io.humble.video.MediaAudioResampler
 import io.humble.video.javaxsound.MediaAudioConverter
 import java.nio.ByteBuffer
 
-class HumbleAudioConverter(private val mMediaSampleRate: Int,
-                           private val mMediaLayout: AudioChannel.Layout,
-                           private val mMediaFormat: AudioFormat.Type) : MediaAudioConverter {
+private val javaLayout = AudioChannel.Layout.CH_LAYOUT_STEREO
+private val javaAudioFormat = AudioFormat.Type.SAMPLE_FMT_S16
+private val javaChannels: Int by lazy { AudioChannel.getNumChannelsInLayout(javaLayout) }
 
-    private val mJavaSampleRate = 44100
-    private val mJavaChannels: Int
-    private val mJavaLayout = AudioChannel.Layout.CH_LAYOUT_STEREO
-    private val mJavaFormat = AudioFormat.Type.SAMPLE_FMT_S16
+private const val javaSampleRate = 44100
 
-    private val mMediaChannels: Int
+class HumbleAudioConverter(mediaAudio: MediaAudio) : MediaAudioConverter {
 
-    private val mMediaAudioToJavaSoundResampler: MediaAudioResampler?
-    private var mResampledAudio: MediaAudio? = null
+    private val mediaSampleRate: Int = mediaAudio.sampleRate
+    private val mediaLayout: AudioChannel.Layout = mediaAudio.channelLayout
+    private val mediaFormat: AudioFormat.Type = mediaAudio.format
+    private val mediaChannels: Int = AudioChannel.getNumChannelsInLayout(mediaLayout)
+
+    private val resample by lazy {
+        (mediaSampleRate == javaSampleRate && mediaChannels == javaChannels && mediaFormat == javaAudioFormat)
+    }
+
+    private val mediaAudioToJavaSoundResampler: MediaAudioResampler?
+
+    private var resampledAudio: MediaAudio? = null
 
     init {
-        require(mMediaSampleRate >= 0) { "sample rate must be > 0" }
-        require(mMediaLayout != AudioChannel.Layout.CH_LAYOUT_UNKNOWN) { "channel layout must be known" }
-        mJavaChannels = AudioChannel.getNumChannelsInLayout(mJavaLayout)
-        mMediaChannels = AudioChannel.getNumChannelsInLayout(mMediaLayout)
-        if (willResample()) {
-            mMediaAudioToJavaSoundResampler = MediaAudioResampler.make(mJavaLayout,
-                    mJavaSampleRate, mJavaFormat, mMediaLayout, mMediaSampleRate, mMediaFormat)
-            mMediaAudioToJavaSoundResampler.open()
+        require(mediaSampleRate >= 0) { "sample rate must be > 0" }
+        require(mediaLayout != AudioChannel.Layout.CH_LAYOUT_UNKNOWN) { "channel layout must be known" }
+
+        mediaAudioToJavaSoundResampler = if (resample) {
+            MediaAudioResampler.make(javaLayout,
+                    javaSampleRate, javaAudioFormat, mediaLayout, mediaSampleRate, mediaFormat)
         } else {
-            mMediaAudioToJavaSoundResampler = null
+            null
         }
+
+        mediaAudioToJavaSoundResampler?.open()
     }
 
     override fun getJavaFormat(): javax.sound.sampled.AudioFormat {
-        return javax.sound.sampled.AudioFormat(mJavaSampleRate.toFloat(),
-                AudioFormat.getBytesPerSample(mJavaFormat) * 8, mJavaChannels, true, false)
+        return javax.sound.sampled.AudioFormat(javaSampleRate.toFloat(),
+                AudioFormat.getBytesPerSample(javaAudioFormat) * 8, javaChannels, true, false)
     }
 
-    override fun getMediaSampleRate() = mMediaSampleRate
+    override fun getMediaSampleRate() = mediaSampleRate
 
-    override fun getMediaChannels() = mMediaChannels
+    override fun getMediaChannels() = mediaChannels
 
-    override fun getMediaLayout() = mMediaLayout
+    override fun getMediaLayout() = mediaLayout
 
-    override fun getMediaFormat() = mMediaFormat
+    override fun getMediaFormat() = mediaFormat
 
-    private fun willResample() = !(mMediaSampleRate == mJavaSampleRate && mMediaChannels == mJavaChannels && mMediaFormat == mJavaFormat)
-
-    private fun validateMediaAudio(audio: MediaAudio?) {
-        requireNotNull(audio) { "must pass in audio" }
-        require(audio.sampleRate == mMediaSampleRate) { "input sample rate does not match value converter expected" }
-        require(audio.channelLayout == mMediaLayout) { "input channel layout does not match value converter expected" }
-        require(audio.format == mMediaFormat) { "input sample format does not match value converter expected" }
+    private fun validateMediaAudio(audio: MediaAudio) {
+        require(audio.sampleRate == mediaSampleRate) { "input sample rate does not match value converter expected" }
+        require(audio.channelLayout == mediaLayout) { "input channel layout does not match value converter expected" }
+        require(audio.format == mediaFormat) { "input sample format does not match value converter expected" }
         require(audio.isComplete) { "input audio is not complete" }
     }
 
@@ -79,15 +85,15 @@ class HumbleAudioConverter(private val mMediaSampleRate: Int,
         validateMediaAudio(input)
         val audio: MediaAudio?
         val outputNumSamples: Int
-        if (willResample()) {
-            outputNumSamples = mMediaAudioToJavaSoundResampler!!.getNumResampledSamples(input.numSamples)
-            if (mResampledAudio == null ||
-                    mResampledAudio!!.maxNumSamples < outputNumSamples) {
-                if (mResampledAudio != null) mResampledAudio!!.delete()
-                mResampledAudio = MediaAudio.make(outputNumSamples,
-                        mJavaSampleRate, mJavaChannels, mJavaLayout, mJavaFormat)
+        if (resample) {
+            outputNumSamples = mediaAudioToJavaSoundResampler!!.getNumResampledSamples(input.numSamples)
+            if (resampledAudio == null ||
+                    resampledAudio!!.maxNumSamples < outputNumSamples) {
+                if (resampledAudio != null) resampledAudio!!.delete()
+                resampledAudio = MediaAudio.make(outputNumSamples,
+                        javaSampleRate, javaChannels, javaLayout, javaAudioFormat)
             }
-            audio = mResampledAudio
+            audio = resampledAudio
         } else {
             outputNumSamples = input.numSamples
             audio = input
@@ -98,8 +104,8 @@ class HumbleAudioConverter(private val mMediaSampleRate: Int,
         } else {
             if (outputBuffer.capacity() < size) throw RuntimeException("output bytes not large enough to hold data")
         }
-        if (willResample()) {
-            mMediaAudioToJavaSoundResampler!!.resample(audio, input)
+        if (resample) {
+            mediaAudioToJavaSoundResampler!!.resample(audio, input)
         }
         // now, copy the resulting data into the bytes.
         // we force audio to be packed, so only one plane.
