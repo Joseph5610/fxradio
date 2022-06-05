@@ -65,6 +65,7 @@ class StatsFragment : BaseFragment() {
                     app.openUrl("http://${this.text}")
                 }
                 addClass(Styles.header)
+                addClass(Styles.primaryTextColor)
             }
 
             vbox {

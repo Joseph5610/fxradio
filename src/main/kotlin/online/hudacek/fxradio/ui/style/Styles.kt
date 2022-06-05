@@ -58,6 +58,7 @@ class Styles : Stylesheet() {
         val backgroundWhiteSmoke by cssclass()
 
         //For Text() elements
+        val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val grayTextColor by cssclass()
 
@@ -109,6 +110,11 @@ class Styles : Stylesheet() {
         subheader {
             wrapText = true
             fontSize = 14.px
+        }
+
+        primaryTextColor {
+            fill = c(colors.primary)
+            textFill = c(colors.primary)
         }
 
         defaultTextColor {

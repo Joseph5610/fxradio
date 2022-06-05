@@ -60,6 +60,7 @@ class StylesDark : Stylesheet() {
         val mainMenuBox by cssclass()
 
         //for Text()
+        val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
     }
@@ -128,6 +129,11 @@ class StylesDark : Stylesheet() {
 
         defaultTextColor {
             fill = Color.WHITESMOKE
+        }
+
+        primaryTextColor {
+            fill = c(colors.primary)
+            textFill = c(colors.primary)
         }
 
         playerControls {

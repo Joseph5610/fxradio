@@ -29,6 +29,7 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.*
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
@@ -90,6 +91,7 @@ class StationInfoFragment : BaseFragment() {
                         viewModel.homePageProperty.isNotEmpty
                     }
                     addClass(Styles.subheader)
+                    addClass(Styles.primaryTextColor)
                 }
 
                 label(viewModel.nameProperty) {
