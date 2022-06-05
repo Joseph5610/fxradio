@@ -50,7 +50,7 @@ class StationsHeaderSearchView : BaseView() {
                 }
                 button(messages["search.byName"]) {
                     isSelected = true
-                    //Little hack that allows use to use togglegroup.bind() method
+                    // Little hack that allows use to use togglegroup.bind() method
                     properties["tornadofx.toggleGroupValue"] = false
                     addClass(Styles.coloredButton)
                 }
@@ -63,7 +63,7 @@ class StationsHeaderSearchView : BaseView() {
             }
 
             showWhen {
-                //Show only while Search results are shown
+                // Show this view only while Search is current LibraryState
                 libraryViewModel.stateProperty.booleanBinding {
                     it is LibraryState.Search
                 }

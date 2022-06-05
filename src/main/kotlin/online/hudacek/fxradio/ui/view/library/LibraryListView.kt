@@ -27,6 +27,8 @@ import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.*
 
+private const val libraryGlyphSize = 14.0
+
 class LibraryListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
@@ -55,7 +57,7 @@ class LibraryListView : BaseView() {
         })
 
         cellFormat {
-            graphic = item.glyph.make(14.0, false, c(Appearance.currentAppearance.primary))
+            graphic = item.glyph.make(libraryGlyphSize, false, c(Appearance.currentAppearance.primary))
             text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }

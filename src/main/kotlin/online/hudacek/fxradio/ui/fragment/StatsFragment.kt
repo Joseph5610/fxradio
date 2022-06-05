@@ -30,7 +30,7 @@ import online.hudacek.fxradio.viewmodel.StatsViewModel
 import tornadofx.*
 
 /**
- * Fragment shows stats of API server
+ * Fragment that presents stats of currently used API server
  */
 class StatsFragment : BaseFragment() {
 
@@ -84,8 +84,8 @@ class StatsFragment : BaseFragment() {
         }
 
         listview(viewModel.statsProperty) {
-            requestFocusOnSceneAvailable() //To get rid of the blue box around the hyperlink
-            isMouseTransparent = true //Disable clicking into listview, as it is not needed for this listview
+            requestFocusOnSceneAvailable() // To get rid of the blue box around the hyperlink
+            isMouseTransparent = true // Disable clicking into listview, as it is not needed for this listview
             cellFormat {
                 paddingAll = 0.0
                 graphic = hbox(5) {

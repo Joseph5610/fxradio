@@ -50,23 +50,23 @@ internal fun Property<Station>.stationImage(view: ImageView) {
 }
 
 internal fun Station.stationImage(view: ImageView) {
-    //Set basic image properties
+    // Set basic image properties
     view.image = defaultRadioLogo
     view.isCache = true
     view.cacheHint = CacheHint.SPEED
     view.isPreserveRatio = true
 
-    //If the image is in the cache, just load it into view
+    // If the image is in the cache, just load it into view
     if (isCached) {
         loadImage(view)
     } else {
         if (favicon.isNullOrEmpty()) {
-            //Ignore invalid image and add it to list of invalid stations to not load it again
+            // Ignore invalid image and add it to list of invalid stations to not load it again
             ImageCache.addInvalid(this)
             return
         }
 
-        //Download the image with OkHttp client
+        // Download the image with OkHttp client
         favicon?.let { url ->
             HttpClient.request(url,
                     {
@@ -80,7 +80,9 @@ internal fun Station.stationImage(view: ImageView) {
     }
 }
 
-//Load image into view asynchronously
+/**
+ * Loads image of [Station] from cache into [view] asynchronously
+ */
 private fun Station.loadImage(view: ImageView) {
     ImageCache
             .get(this)
@@ -94,6 +96,6 @@ private fun Station.loadImage(view: ImageView) {
                     }
                 }
             }, {
-                logger.error(it) { "Exception when loading image from cache!" }
+                logger.error(it) { "Exception when retrieving image from cache!" }
             })
 }

@@ -36,7 +36,7 @@ sealed class Modal<out T : Fragment>(val style: StageStyle = StageStyle.UTILITY,
     object Servers : Modal<ServersFragment>(resizable = true)
     object Stats : Modal<StatsFragment>()
     object Attributions : Modal<AttributionsFragment>()
-    object StationDebug : Modal<StationDebugFragment>()
+    object Debug : Modal<DebugFragment>()
     object License : Modal<AttributionsFragment.LicenseFragment>()
 }
 

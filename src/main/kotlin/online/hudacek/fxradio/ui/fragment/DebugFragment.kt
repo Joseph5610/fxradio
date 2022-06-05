@@ -23,19 +23,31 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.addClass
+import tornadofx.fieldset
+import tornadofx.form
 import tornadofx.textarea
+import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.vgrow
 
-class StationDebugFragment : BaseFragment("Station Debug Window") {
+class DebugFragment : BaseFragment("Debug Window") {
 
     private val viewModel: PlayerViewModel by inject()
 
     override val root = vbox {
         setPrefSize(600.0, 400.0)
-        textarea(viewModel.stationProperty.asString()) {
-            vgrow = Priority.ALWAYS
-            isWrapText = true
+        form {
+            fieldset("Station") {
+                textarea(viewModel.stationProperty.asString()) {
+                    vgrow = Priority.ALWAYS
+                    isWrapText = true
+                }
+            }
+            fieldset("Player values") {
+                textfield(viewModel.trackNameProperty.value)
+                textfield(viewModel.mediaPlayerProperty.value.toString())
+                textfield(viewModel.volumeProperty.value.toString())
+            }
         }
         addClass(Styles.backgroundWhiteSmoke)
     }

@@ -314,7 +314,6 @@ class Styles : Stylesheet() {
         }
 
         datagridCell {
-            padding = box(0.px, 5.px, 5.px, 5.px)
             backgroundColor += c(colors.transparent)
             borderColor += box(c(colors.transparent))
             backgroundRadius += box(6.px)

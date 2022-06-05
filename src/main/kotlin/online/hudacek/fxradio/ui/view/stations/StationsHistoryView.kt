@@ -33,6 +33,8 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
 
+private const val historyStationLogoSize = 30.0
+
 class StationsHistoryView : BaseView() {
 
     private val historyViewModel: HistoryViewModel by inject()
@@ -47,8 +49,8 @@ class StationsHistoryView : BaseView() {
                 alignment = Pos.CENTER_LEFT
                 imageview {
                     it.stationImage(this)
-                    fitHeight = 30.0
-                    fitWidth = 30.0
+                    fitHeight = historyStationLogoSize
+                    fitWidth = historyStationLogoSize
                 }
                 vbox {
                     label(it.name)
@@ -62,7 +64,7 @@ class StationsHistoryView : BaseView() {
         }
 
         showWhen {
-            //Show only while Search results are shown
+            // Show only while Library State is History
             libraryViewModel.stateProperty.booleanBinding {
                 it is LibraryState.History
             }

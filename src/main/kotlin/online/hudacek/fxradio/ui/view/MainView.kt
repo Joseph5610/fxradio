@@ -40,13 +40,13 @@ import tornadofx.controlsfx.content
  */
 class MainView : BaseView(FxRadio.appName) {
 
-    //Main views of the app
+    private val windowDividerProperty = Property(Properties.WindowDivider)
+
+    // Main views of the app
     private val menuBarView: MenuBarView by inject()
     private val libraryView: LibraryView by inject()
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
-
-    private val windowDividerProperty = Property(Properties.WindowDivider)
 
     init {
         setStageIcon(Image(Config.Resources.stageIcon))
@@ -54,17 +54,17 @@ class MainView : BaseView(FxRadio.appName) {
 
     override fun onDock() {
         with(leftPane) {
-            //Workaround for setting correct position of divider after restart of app
+            // Workaround for setting correct position of divider after restart of app
             setDividerPositions(windowDividerProperty.get(0.30))
         }
     }
 
     override fun onUndock() {
-        //Save divider position before closing the app
+        // Save divider position before closing the app
         windowDividerProperty.save(leftPane.dividers[0].position)
     }
 
-    //Right pane of the app (Player + Stations)
+    // Right pane of the app (Player + Stations)
     private val rightPane by lazy {
         vbox {
             hgrow = Priority.NEVER
@@ -76,11 +76,11 @@ class MainView : BaseView(FxRadio.appName) {
     private val leftPane by lazy {
         splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
 
-            //Constrains width of left pane
+            // Constrains width of left pane
             libraryView.root.minWidthProperty().bind(widthProperty().divide(5))
             libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
 
-            //Remove 1px border from splitpane
+            // Remove 1px border from SplitPane
             addClass(Styles.noBorder)
         }
     }

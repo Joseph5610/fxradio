@@ -35,7 +35,7 @@ class StationsHeaderView : BaseView() {
 
     private val stationsHeaderSearchView: StationsHeaderSearchView by inject()
 
-    //Bindings for library name based on selected library
+    // Bindings for library name based on selected library
     private val libraryNameTextProperty = libraryViewModel.stateProperty.stringBinding {
         it?.let {
             when (it) {
@@ -76,7 +76,7 @@ class StationsHeaderView : BaseView() {
         }
 
         showWhen {
-            //This view is shown always, except when clicking on empty search textfield
+            // This view is shown always, except when clicking on empty search TextField
             viewModel.stateProperty.isNotEqualTo(StationsState.ShortQuery)
         }
 

@@ -24,6 +24,7 @@ import javafx.scene.control.Alert.AlertType.ERROR
 import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
 import mu.KotlinLogging
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.style.Styles
 import tornadofx.FX
@@ -35,7 +36,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import java.net.URLEncoder
 
-private const val issueUrl = "https://github.com/Joseph5610/fxradio-main/issues/new?assignees=&labels=bug&template=bug_report.md&title="
+private const val issueUrl = "${Config.API.repositoryURL}issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
 private val log = KotlinLogging.logger("ErrorHandler")
 

@@ -21,13 +21,14 @@ package online.hudacek.fxradio.ui.view.stations
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.view.player.TickerView
 import tornadofx.addClass
 import tornadofx.fitToParentHeight
 import tornadofx.vbox
 import tornadofx.vgrow
 
 /**
- * Shows grid of stations
+ * Main left pane of the app
  */
 class StationsView : BaseView() {
 

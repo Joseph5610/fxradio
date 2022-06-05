@@ -30,11 +30,15 @@ import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.view.player.TickerView
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.new
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
+
+private const val gridCellWidth = 140.0
+private const val gridStationLogoSize = 100.0
 
 /**
  * Main view of stations
@@ -52,6 +56,7 @@ class StationsDataGridView : BaseView() {
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
+        cellWidth = gridCellWidth
 
         //Cleanup selected item on refresh of library
         itemsProperty
@@ -66,6 +71,9 @@ class StationsDataGridView : BaseView() {
 
         cellCache { station ->
             vbox {
+                paddingAll = 5
+
+                onHover { tooltip(station.name) }
                 contextmenu {
                     item(messages["menu.station.info"]).action {
                         Modal.StationInfo.new()
@@ -73,7 +81,7 @@ class StationsDataGridView : BaseView() {
 
                     separator()
 
-                    //Add Add/Remove from favourites menu items
+                    // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
 
                     separator()
@@ -82,32 +90,25 @@ class StationsDataGridView : BaseView() {
                                 .map { station }
                                 .subscribe(appEvent.addVote)
                     }
-
-                    if (Config.Flags.enableStationDebug) {
-                        separator()
-                        item("Station Debug Info").action {
-                            Modal.StationDebug.open()
-                        }
-                    }
                 }
 
-                paddingAll = 5
                 vbox(alignment = Pos.CENTER) {
-                    prefHeight = 120.0
                     paddingAll = 5
+                    prefHeight = 120.0
                     imageview {
                         station.stationImage(this)
-                        fitHeight = 100.0
-                        fitWidth = 100.0
+                        fitHeight = gridStationLogoSize
+                        fitWidth = gridStationLogoSize
                     }
                 }
-                label(station.name) {
-                    onHover { tooltip(station.name) }
-                    style {
-                        fontSize = 13.px
+                vbox(alignment = Pos.CENTER) {
+                    label(station.name) {
+                        style {
+                            fontSize = 13.px
+                        }
                     }
+                    smallLabel(station.tagsSplit)
                 }
-                smallLabel(station.tagsSplit)
             }
         }
 

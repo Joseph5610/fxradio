@@ -58,7 +58,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
         })
 
         cellFormat {
-            graphic = hbox(5) {
+            graphic = hbox(spacing = 5) {
                 alignment = Pos.CENTER_LEFT
 
                 imageview {
@@ -67,7 +67,8 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
 
                 label(item.name.split("(")[0])
 
-                //Ignore it for pinned stations, they would always have 0 station count
+                // Do not show count of stations for pinned stations, they would always show 0
+                // as we do not store this in DB
                 if (it.stationcount > 0) {
                     label("${it.stationcount}") {
                         addClass(Styles.libraryListItemTag)
@@ -101,7 +102,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
             addClass(Styles.libraryListItem)
         }
 
-        onUserSelect(1) {
+        onUserSelect(clickCount = 1) {
             viewModel.stateProperty.value = LibraryState.SelectedCountry(it)
         }
 

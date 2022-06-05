@@ -28,6 +28,7 @@ import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
+import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -46,43 +47,55 @@ open class TickerEntry<T : Node>(
     open fun updateObservable(): Completable? = null
 }
 
-class TickerView : BaseView() {
+private data class ActiveTick(val entry: TickerEntry<Node>, var cleared: Boolean = false)
 
-    private val playerVewModel: PlayerViewModel by inject()
+class PlayerTickerView : TickerView() {
 
-    private var entry = TickerEntry<Node>(content = createText())
-
-    private val marqueeView: MarqueeView by inject()
-
-    override val root = pane {
-        prefHeight = 15.0
-        marqueeView.inside(this)
-        add(marqueeView)
-    }
+    private val playerViewModel: PlayerViewModel by inject()
 
     init {
-        //Update text property
-        playerVewModel.trackNameProperty.onChange {
+        // Update "TickerEntry" value
+        playerViewModel.trackNameProperty.onChange {
             if (it != null) {
-                marqueeView.clear(entry)
-                entry = TickerEntry(content = createText(it), reschedule = true)
-                marqueeView.enqueueTickEntry(entry)
+                setNewEntry(TickerEntry(content = createText(it), reschedule = true))
             }
         }
     }
+}
 
-    private fun createText(content: String = "") = text(content) {
+open class TickerView(content: String = "", reschedule: Boolean = true) : BaseView() {
+
+    private var entry = TickerEntry<Node>(content = createText(content), reschedule = reschedule)
+
+    private val marqueeFragment by lazy { MarqueeFragment() }
+
+    init {
+        marqueeFragment.enqueueTickEntry(entry)
+    }
+
+    override val root = pane {
+        prefHeight = 12.0
+        marqueeFragment.inside(this)
+        add(marqueeFragment)
+    }
+
+    fun setNewEntry(futureEntry: TickerEntry<Node>) {
+        marqueeFragment.clear(entry)
+        entry = futureEntry
+        marqueeFragment.enqueueTickEntry(entry)
+    }
+
+    protected fun createText(content: String = "") = text(content) {
         layoutY = 12.0
         isVisible = false
         addClass(Styles.defaultTextColor)
     }
 
     //Actual implementation of Ticker
-    class MarqueeView : BaseView() {
+    class MarqueeFragment : BaseFragment() {
 
-        private val offset = 10.0 //Amount of space between entries!
-
-        private data class ActiveTick(val entry: TickerEntry<Node>, var cleared: Boolean = false)
+        // Amount of space between entries
+        private val offset = 10.0
 
         private val activeTicks = ConcurrentLinkedQueue<ActiveTick>() //This might not need to be threadsafe, only one thing is adding/removing it
         private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Node>>() //This one does, multiple threads!
@@ -153,7 +166,7 @@ class TickerView : BaseView() {
 
                     //Check to see if it's been animated out.
                     if (layoutX <= 0 - textWidth - (2 * offset)) {
-                        //Now I ned to figure out how to remove it
+                        //Now I need to figure out how to remove it
                         entry.content.removeFromParent() //Is this legit?
                         activeTicks -= active //no longer here, shouldn't ruin the loop
                         if (entry in subscriptions) {

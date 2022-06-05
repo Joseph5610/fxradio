@@ -35,7 +35,7 @@ import tornadofx.*
 class PlayerStationView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val tickerView by lazy { TickerView() }
+    private val tickerView by lazy { PlayerTickerView() }
 
     private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {

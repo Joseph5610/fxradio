@@ -29,6 +29,8 @@ import online.hudacek.fxradio.ui.style.Appearance
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
+private const val arrowIconSize = 11.0
+
 /**
  * Custom title fragment with hide/unhide icons
  */
@@ -52,11 +54,11 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                     .subscribe {
                         graphicProperty().value =
                                 if (it)
-                                    FontAwesome.Glyph.CHEVRON_DOWN.make(size = 11.0,
+                                    FontAwesome.Glyph.CHEVRON_DOWN.make(size = arrowIconSize,
                                             useStyle = false,
                                             color = c(Appearance.currentAppearance.grayLabel))
                                 else
-                                    FontAwesome.Glyph.CHEVRON_RIGHT.make(size = 11.0,
+                                    FontAwesome.Glyph.CHEVRON_RIGHT.make(size = arrowIconSize,
                                             useStyle = false,
                                             color = c(Appearance.currentAppearance.grayLabel))
                     }

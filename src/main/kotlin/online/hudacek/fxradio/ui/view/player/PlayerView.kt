@@ -20,18 +20,24 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
+
+private const val controlsGlyphSize = 22.0
+private const val volumeGlyphSize = 14.0
 
 /**
  * Main player view above stations
@@ -44,13 +50,13 @@ class PlayerView : BaseView() {
 
     private val playerStationView: PlayerStationView by inject()
 
-    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false) }
-    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false) }
-    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false) }
+    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(controlsGlyphSize, useStyle = false) }
+    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(controlsGlyphSize, useStyle = false) }
+    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(volumeGlyphSize, useStyle = false) }
     private val randomStationGlyph by lazy {
-        FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false, color = c(Appearance.currentAppearance.primary))
+        FontAwesome.Glyph.RANDOM.make(volumeGlyphSize, useStyle = false, color = c(Appearance.currentAppearance.primary))
     }
-    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false) }
+    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(volumeGlyphSize, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
         if (it == PlayerState.Playing) {
@@ -95,10 +101,18 @@ class PlayerView : BaseView() {
     }
 
     override val root = vbox {
-        hbox(12) {
+        hbox(spacing = 12) {
             vgrow = Priority.NEVER
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
+
+            if (Config.Flags.enableDebugWindow) {
+                contextmenu {
+                    item("Debug Window").action {
+                        Modal.Debug.open()
+                    }
+                }
+            }
 
             //Play/Pause buttons
             add(playerControls)
