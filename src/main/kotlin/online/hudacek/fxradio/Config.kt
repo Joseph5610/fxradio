@@ -24,9 +24,9 @@ package online.hudacek.fxradio
 object Config {
 
     object Resources {
-        const val appLogo = "appLogo.png"
-        const val stageIcon = "Industry-Radio-Tower-icon.png"
-        const val waveIcon = "Sound-Wave-icon.png"
+        const val appLogo = "radio-icon-applogo.png"
+        const val stageIcon = "radio-logo-stageicon.png"
+        const val waveIcon = "radio-logo-big.png"
     }
 
     object API {

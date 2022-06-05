@@ -20,8 +20,6 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.effect.DropShadow
-import javafx.scene.paint.Color
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.showWhen

@@ -97,7 +97,6 @@ class StationsDataGridView : BaseView() {
                     paddingAll = 5
                     imageview {
                         station.stationImage(this)
-                        effect = DropShadow(10.0, Color.LIGHTGRAY)
                         fitHeight = 100.0
                         fitWidth = 100.0
                     }

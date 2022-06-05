@@ -49,7 +49,6 @@ class StationInfoFragment : BaseFragment() {
 
     private val stationLogo by lazy {
         imageview {
-            effect = DropShadow(10.0, Color.LIGHTGRAY)
             fitHeight = 60.0
             fitHeight = 60.0
         }

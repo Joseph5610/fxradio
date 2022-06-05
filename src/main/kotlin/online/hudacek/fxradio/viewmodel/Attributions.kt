@@ -68,8 +68,8 @@ class AttributionViewModel : BaseViewModel<Attribution>() {
 }
 
 private object Licenses {
-    val graphics = License(content = "Application logo, radio stations icon: Obtained from http://iconarchive.com\n\n" +
-            "macOS install disk background: Designed by xb100 / Freepik")
+    val graphics = License(content = "macOS install disk background: Designed by xb100 / Freepik\n\n" +
+            "Voice chat icons created by Rizki Ahmad Fauzi - Flaticon")
     val retrofit = License("Apache License 2.0", "Copyright 2013 Square, Inc.\n" +
             "\n" +
             "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
