@@ -29,16 +29,16 @@ import online.hudacek.fxradio.util.value
 import org.controlsfx.control.Notifications
 import tornadofx.property
 
-class OsNotification(show: Boolean = Properties.SendOsNotifications.value(MacUtils.isMac)) {
+class StreamTitleNotification(show: Boolean = Properties.SendStreamTitleNotification.value(MacUtils.isMac)) {
     var show: Boolean by property(show)
 }
 
 /**
- * Shows Native OS notifications
+ * Shows Native OS notification when current stream title has changed
  */
-class OsNotificationViewModel : BaseViewModel<OsNotification>(OsNotification()) {
+class StreamTitleNotificationViewModel : BaseViewModel<StreamTitleNotification>(StreamTitleNotification()) {
 
-    val showProperty = bind(OsNotification::show) as BooleanProperty
+    val showProperty = bind(StreamTitleNotification::show) as BooleanProperty
 
     init {
         appEvent.streamMetaDataUpdated
@@ -49,22 +49,22 @@ class OsNotificationViewModel : BaseViewModel<OsNotification>(OsNotification()) 
                         MacUtils.notification(it.nowPlaying, it.stationName)
                     } else {
                         Platform.runLater {
-                            val builder = Notifications.create()
+                            val notificationBuilder = Notifications.create()
                                     .position(Pos.TOP_RIGHT)
-                                    .owner(primaryStage)
                                     .title(it.stationName)
                                     .text(it.nowPlaying)
+                                    //.graphic(ImageView(Image(Config.Resources.appLogo)))
                                     .onAction {
                                         primaryStage.show()
                                     }
                             if (FxRadio.isDarkModePreferred()) {
-                                builder.darkStyle()
+                                notificationBuilder.darkStyle()
                             }
-                            builder.show()
+                            notificationBuilder.show()
                         }
                     }
                 }
     }
 
-    override fun onCommit() = Properties.SendOsNotifications.save(showProperty.value)
+    override fun onCommit() = Properties.SendStreamTitleNotification.save(showProperty.value)
 }

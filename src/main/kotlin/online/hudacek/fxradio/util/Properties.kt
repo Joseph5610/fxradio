@@ -35,7 +35,7 @@ enum class Properties(val key: String) {
     PlayerMetaDataRefresh("player.refreshMeta"), //Not configurable in UI
     ApiServer("app.server"),
     SearchQuery("search.query"),
-    SendOsNotifications("notifications"),
+    SendStreamTitleNotification("notifications"),
     WindowDivider("windowDivider"),
     ShowLibrary("window.showLibrary"),
     ShowCountries("window.showCountries"),

@@ -20,8 +20,7 @@ package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
-import online.hudacek.fxradio.util.macos.MacUtils
-import online.hudacek.fxradio.viewmodel.OsNotificationViewModel
+import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.*
@@ -29,7 +28,7 @@ import tornadofx.*
 class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val playerViewModel: PlayerViewModel by inject()
-    private val osNotificationViewModel: OsNotificationViewModel by inject()
+    private val streamTitleNotificationViewModel: StreamTitleNotificationViewModel by inject()
 
     private val playerTypeItem by lazy {
         checkMenuItem(messages["menu.player.switch"]) {
@@ -73,9 +72,9 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
             },
 
             checkMenuItem(messages["menu.player.notifications"],
-                    bindProperty = osNotificationViewModel.showProperty) {
+                    bindProperty = streamTitleNotificationViewModel.showProperty) {
                 action {
-                    osNotificationViewModel.commit()
+                    streamTitleNotificationViewModel.commit()
                 }
             }
     )

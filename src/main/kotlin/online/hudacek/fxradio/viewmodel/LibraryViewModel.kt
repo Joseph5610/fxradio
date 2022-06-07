@@ -53,13 +53,13 @@ class Library(countries: ObservableList<Country> = observableListOf(),
               showCountries: Boolean = Properties.ShowCountries.value(true),
               showPinned: Boolean = Properties.ShowPinnedCountries.value(true)) {
 
-    //Countries shown in Countries ListView
+    // Countries shown in Countries ListView
     var countries: ObservableList<Country> by property(countries)
 
-    //Countries shown in Countries ListView
+    // Countries shown in Countries ListView
     var pinned: ObservableList<Country> by property(pinned)
 
-    //Default items shown in library ListView
+    // Default items shown in library ListView
     var libraries: ObservableList<LibraryItem> by property(observableListOf(
             LibraryItem(LibraryState.TopVotedStations, FontAwesome.Glyph.TROPHY),
             LibraryItem(LibraryState.TrendingStations, FontAwesome.Glyph.ARROW_CIRCLE_UP),
