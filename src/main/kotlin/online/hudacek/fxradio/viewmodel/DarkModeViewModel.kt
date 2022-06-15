@@ -20,9 +20,11 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
+import tornadofx.cleanBind
 import tornadofx.property
 
 class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
@@ -38,7 +40,10 @@ class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
 
 
     override fun onCommit() {
-        //Save it
+        // Save it
         Properties.DarkMode.save(darkModeProperty.value)
+
+        // Live reload styles
+        Appearance.toggleAppearance(darkModeProperty.value)
     }
 }

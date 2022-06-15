@@ -32,6 +32,8 @@ import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
+import org.controlsfx.control.NotificationPane
 import tornadofx.*
 import tornadofx.controlsfx.content
 
@@ -41,6 +43,7 @@ import tornadofx.controlsfx.content
 class MainView : BaseView(FxRadio.appName) {
 
     private val windowDividerProperty = Property(Properties.WindowDivider)
+    private val darkModeViewModel: DarkModeViewModel by inject()
 
     // Main views of the app
     private val menuBarView: MenuBarView by inject()
@@ -92,6 +95,14 @@ class MainView : BaseView(FxRadio.appName) {
         stylableNotificationPane {
             appEvent.appNotification
                     .subscribe { this[it.glyph] = it.title }
+
+            darkModeViewModel.darkModeProperty.onChange {
+                if (!it) {
+                    styleClass -= NotificationPane.STYLE_CLASS_DARK
+                } else {
+                    styleClass += NotificationPane.STYLE_CLASS_DARK
+                }
+            }
 
             content {
                 add(leftPane)

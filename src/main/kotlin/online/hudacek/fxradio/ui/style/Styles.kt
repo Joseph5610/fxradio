@@ -28,7 +28,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private val colors by lazy { Appearance.currentAppearance }
+    private val colors = LightAppearance()
 
     companion object {
 

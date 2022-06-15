@@ -28,7 +28,7 @@ import tornadofx.*
  */
 class StylesDark : Stylesheet() {
 
-    private val colors by lazy { Appearance.currentAppearance as DarkAppearance }
+    private val colors = DarkAppearance()
 
     companion object {
 

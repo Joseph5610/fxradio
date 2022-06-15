@@ -21,13 +21,25 @@ package online.hudacek.fxradio.ui.menu
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.event.data.AppNotification
+import online.hudacek.fxradio.ui.style.Appearance
+import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.FX
+import tornadofx.Stylesheet
 import tornadofx.action
 import tornadofx.bind
+import tornadofx.findUIComponents
 import tornadofx.get
+import tornadofx.importStylesheet
+import tornadofx.onChange
+import tornadofx.reloadStylesheets
+import tornadofx.reloadStylesheetsOnFocus
+import tornadofx.reloadViewsOnFocus
+import tornadofx.removeStylesheet
 
 class AboutMenu : BaseMenu(FxRadio.appName) {
     private val darkModeViewModel: DarkModeViewModel by inject()
@@ -48,7 +60,6 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
                     bind(darkModeViewModel.darkModeProperty)
                     action {
                         darkModeViewModel.commit()
-                        appEvent.appNotification.onNext(AppNotification(messages["menu.app.darkmode.restart"], FontAwesome.Glyph.CHECK))
                     }
                 }
         )

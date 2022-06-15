@@ -22,6 +22,12 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
+import tornadofx.FX
+import tornadofx.Stylesheet
+import tornadofx.dumpStylesheets
+import tornadofx.importStylesheet
+import tornadofx.reloadStylesheets
+import tornadofx.removeStylesheet
 
 class LightAppearance : Appearance() {
     override val background = "#E9E9E9"
@@ -37,13 +43,13 @@ class DarkAppearance : Appearance() {
     override val backgroundSelected = "#525356"
     override val label = "#dddddd"
     override val grayLabel = "#a0a1a2"
-    val playerBox = "#464646"
 }
 
 abstract class Appearance {
 
     val primary by lazy { getPrimaryColor() }
     val transparent = "transparent"
+    val playerBox = "#464646"
 
     abstract val background: String
     abstract val backgroundBorder: String
@@ -72,8 +78,21 @@ abstract class Appearance {
     }
 
     companion object {
-        val currentAppearance by lazy {
-            if (FxRadio.isDarkModePreferred()) DarkAppearance() else LightAppearance()
+
+        val currentAppearance: Appearance
+            get() {
+                return if (FxRadio.isDarkModePreferred()) DarkAppearance() else LightAppearance()
+            }
+
+        fun toggleAppearance(useDarkMode: Boolean) {
+            removeStylesheet(Styles::class)
+            removeStylesheet(StylesDark::class)
+            if (useDarkMode) {
+                importStylesheet(StylesDark::class)
+            } else {
+                importStylesheet(Styles::class)
+            }
+            FX.applyStylesheetsTo(FX.primaryStage.scene)
         }
     }
 }

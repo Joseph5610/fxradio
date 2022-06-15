@@ -28,7 +28,9 @@ import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
@@ -37,6 +39,7 @@ class AddStationFragment : BaseFragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+    private val darkModeViewModel: DarkModeViewModel by inject()
 
     //Autocomplete list of countries
     private val countriesListProperty = listProperty(observableListOf<String>())
@@ -53,6 +56,14 @@ class AddStationFragment : BaseFragment() {
     override val root = stylableNotificationPane {
         title = messages["add.title"]
         prefWidth = 400.0
+
+        darkModeViewModel.darkModeProperty.onChange {
+            if (!it) {
+                styleClass -= NotificationPane.STYLE_CLASS_DARK
+            } else {
+                styleClass += NotificationPane.STYLE_CLASS_DARK
+            }
+        }
 
         content {
             form {
