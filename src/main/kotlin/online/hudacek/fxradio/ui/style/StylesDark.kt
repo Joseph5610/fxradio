@@ -26,7 +26,8 @@ import tornadofx.*
 /**
  * Dark mode CSS classes used around the app
  */
-class StylesDark : Stylesheet() {
+class
+StylesDark : Stylesheet() {
 
     private val colors = DarkAppearance()
 
@@ -212,6 +213,7 @@ class StylesDark : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            backgroundColor += c(colors.playerBox)
         }
 
         historyListView {
@@ -338,7 +340,7 @@ class StylesDark : Stylesheet() {
 
             and(selected) {
                 backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
         }
 

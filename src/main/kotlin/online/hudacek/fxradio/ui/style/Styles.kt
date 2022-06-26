@@ -326,7 +326,7 @@ class Styles : Stylesheet() {
 
             and(selected) {
                 backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
         }
 

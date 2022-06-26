@@ -32,6 +32,7 @@ import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.glyph
@@ -46,7 +47,7 @@ private const val volumeGlyphSize = 14.0
 class PlayerView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val historyViewModel: HistoryViewModel by inject()
+    private val stationsViewModel: StationsViewModel by inject()
 
     private val playerStationView: PlayerStationView by inject()
 
@@ -82,6 +83,7 @@ class PlayerView : BaseView() {
             addClass(Styles.playerControls)
         }
     }
+
 
     private val volumeSlider by lazy {
         slider(-30..5) {
@@ -129,14 +131,13 @@ class PlayerView : BaseView() {
                 graphic = randomStationGlyph
                 tooltip(messages["player.playRandomStation"])
                 onLeftClick {
-                    viewModel.stationProperty.value = historyViewModel.stationsProperty.filter {
+                    viewModel.stationProperty.value = stationsViewModel.stationsProperty.filter {
                         it != viewModel.stationProperty.value
                     }.random()
                 }
 
                 enableWhen {
-                    historyViewModel.stationsProperty.emptyProperty().not()
-                            .and(historyViewModel.stationsProperty.sizeProperty().greaterThan(2))
+                    stationsViewModel.stationsProperty.emptyProperty().not()
                 }
 
                 addClass(Styles.playerControls)

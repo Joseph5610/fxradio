@@ -77,7 +77,7 @@ class AboutFragment : BaseFragment(FxRadio.appName) {
 
             hyperlink(messages["about.datasource"]) {
                 action {
-                    app.openUrl("http://radio-browser.info")
+                    app.openUrl(Config.API.radioBrowserUrl)
                 }
                 addClass(Styles.grayLabel)
             }

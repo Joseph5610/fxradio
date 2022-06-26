@@ -18,15 +18,33 @@
 
 package online.hudacek.fxradio.util
 
+import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.Component
 import tornadofx.get
+import tornadofx.onChange
+import java.awt.MenuItem
+import java.awt.MenuShortcut
+import java.awt.event.KeyEvent
+
 
 /**
  * Adds system tray. Experimental, enabled under flag
  */
 class Tray : Component() {
+
+    private val playerViewModel: PlayerViewModel by inject()
+    private var stationItem: MenuItem? = null
+
+    init {
+        playerViewModel.stationObservable.subscribe {
+            stationItem?.let { mi ->
+                mi.label = it.name
+            }
+        }
+    }
 
     fun addIcon() = with(app) {
         if (Config.Flags.useTrayIcon) {
@@ -36,15 +54,29 @@ class Tray : Component() {
                     primaryStage.toFront()
                 }
                 menu(FxRadio.appName) {
-                    item(messages["show"]) {
+                    item(messages["show"] + " " + FxRadio.appName) {
                         setOnAction(fxThread = true) {
                             primaryStage.show()
                             primaryStage.toFront()
                         }
                     }
+                    addSeparator()
+
+                    stationItem = item(messages["player.streamingStopped"]) {
+                        isEnabled = false
+                    }
+
+                    item("Play/Stop") {
+                        setOnAction(fxThread = true) {
+                            if (playerViewModel.stationProperty.value.isValid()) {
+                                playerViewModel.togglePlayerState()
+                            }
+                        }
+                    }
+                    addSeparator()
                     item(messages["exit"]) {
                         setOnAction(fxThread = true) {
-                            primaryStage.close()
+                            Platform.exit()
                         }
                     }
                 }

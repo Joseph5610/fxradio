@@ -34,6 +34,7 @@ object Config {
         const val fallbackApiServerURL = "de1.api.radio-browser.info"
         const val mapURL = "http://m2-multiplayer.eu/fxmap/"
         const val repositoryURL = "https://github.com/Joseph5610/fxradio-main/"
+        const val radioBrowserUrl = "https://radio-browser.info"
     }
 
     /**
@@ -54,7 +55,7 @@ object Config {
      * Experimental features
      */
     object Flags {
-        const val useTrayIcon = false
+        const val useTrayIcon = true
         const val enableDebugWindow = false
         const val enableMap = true
     }

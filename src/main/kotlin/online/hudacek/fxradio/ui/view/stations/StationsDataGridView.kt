@@ -63,6 +63,7 @@ class StationsDataGridView : BaseView() {
                 .onChangedObservable()
                 .subscribe {
                     selectionModel.clearSelection()
+                    selectionModel.select(playerViewModel.stationProperty.value)
                 }
 
         onUserSelect(1) {
