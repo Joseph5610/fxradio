@@ -20,10 +20,17 @@ package online.hudacek.fxradio.ui.view.stations
 
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.view.player.TickerView
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.borderpane
+import tornadofx.center
 import tornadofx.fitToParentHeight
+import tornadofx.hgrow
+import tornadofx.right
+import tornadofx.top
 import tornadofx.vbox
 import tornadofx.vgrow
 
@@ -36,13 +43,34 @@ class StationsView : BaseView() {
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
     private val historyView: StationsHistoryView by inject()
+    private val stationsInfoView: StationsInfoView by inject()
 
-    override val root = vbox {
+    private val stationInfoViewModel: StationInfoViewModel by inject()
+
+    override val root = borderpane {
         vgrow = Priority.ALWAYS
-        add(headerView)
-        add(messageView)
-        add(dataGridView)
-        add(historyView)
+        top {
+            add(headerView)
+        }
+        center {
+            vbox {
+                hgrow = Priority.ALWAYS
+                add(messageView)
+                add(dataGridView)
+                add(historyView)
+            }
+        }
+
+        right {
+            add(stationsInfoView)
+
+            right.showWhen {
+                stationInfoViewModel.stationProperty.booleanBinding {
+                    it?.isValid() == true
+                }.and(stationInfoViewModel.showPanelProperty)
+            }
+        }
+
         dataGridView.root.fitToParentHeight()
         historyView.root.fitToParentHeight()
         addClass(Styles.backgroundWhite)

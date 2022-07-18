@@ -19,26 +19,46 @@
 package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
+import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
-import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
-import online.hudacek.fxradio.viewmodel.HistoryViewModel
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationsViewModel
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.booleanBinding
+import tornadofx.c
+import tornadofx.contextmenu
 import tornadofx.controlsfx.glyph
+import tornadofx.disableWhen
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.item
+import tornadofx.objectBinding
+import tornadofx.onChange
+import tornadofx.paddingLeft
+import tornadofx.paddingRight
+import tornadofx.paddingTop
+import tornadofx.region
+import tornadofx.slider
+import tornadofx.togglebutton
+import tornadofx.vbox
+import tornadofx.vgrow
 
 private const val controlsGlyphSize = 22.0
 private const val volumeGlyphSize = 14.0
+private const val infoGlyphSize = 14.0
 
 /**
  * Main player view above stations
@@ -47,16 +67,18 @@ private const val volumeGlyphSize = 14.0
 class PlayerView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val stationsViewModel: StationsViewModel by inject()
+    private val darkModeViewModel: DarkModeViewModel by inject()
+    private val stationInfoViewModel: StationInfoViewModel by inject()
 
     private val playerStationView: PlayerStationView by inject()
 
     private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(controlsGlyphSize, useStyle = false) }
     private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(controlsGlyphSize, useStyle = false) }
-    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(volumeGlyphSize, useStyle = false) }
-    private val randomStationGlyph by lazy {
-        FontAwesome.Glyph.RANDOM.make(volumeGlyphSize, useStyle = false, color = c(Appearance.currentAppearance.primary))
+    private val infoGlyph by lazy {
+        FontAwesome.Glyph.INFO_CIRCLE.make(infoGlyphSize, useStyle = false,
+                color = c(darkModeViewModel.appearanceProperty.value!!.primary))
     }
+    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(volumeGlyphSize, useStyle = false) }
     private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(volumeGlyphSize, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
@@ -84,6 +106,19 @@ class PlayerView : BaseView() {
         }
     }
 
+    private val stationInfo by lazy {
+        togglebutton(group = ToggleGroup()) {
+            selectedProperty().bindBidirectional(stationInfoViewModel.showPanelProperty)
+            id = "stationInfo"
+            graphic = infoGlyph
+            disableWhen {
+                viewModel.stationProperty.booleanBinding {
+                    it == null || !it.isValid()
+                }
+            }
+            addClass(Styles.playerControls)
+        }
+    }
 
     private val volumeSlider by lazy {
         slider(-30..5) {
@@ -126,22 +161,8 @@ class PlayerView : BaseView() {
             //Station info box
             add(playerStationView)
 
-            glyph {
-                id = "playRandomStation"
-                graphic = randomStationGlyph
-                tooltip(messages["player.playRandomStation"])
-                onLeftClick {
-                    viewModel.stationProperty.value = stationsViewModel.stationsProperty.filter {
-                        it != viewModel.stationProperty.value
-                    }.random()
-                }
-
-                enableWhen {
-                    stationsViewModel.stationsProperty.emptyProperty().not()
-                }
-
-                addClass(Styles.playerControls)
-            }
+            // Show station details
+            add(stationInfo)
 
             region {
                 hgrow = Priority.ALWAYS

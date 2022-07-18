@@ -27,11 +27,9 @@ class StreamUnavailableException(message: String, cause: Throwable?) : Exception
 
     constructor(message: String) : this(message, null)
 
-    private val playerViewModel = find<PlayerViewModel>()
-
     init {
         Platform.runLater {
-            playerViewModel.stateProperty.value = PlayerState.Error(localizedMessage)
+            find<PlayerViewModel>().stateProperty.value = PlayerState.Error(localizedMessage)
         }
     }
 }

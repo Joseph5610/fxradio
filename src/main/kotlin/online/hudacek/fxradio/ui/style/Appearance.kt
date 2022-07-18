@@ -17,17 +17,9 @@
  */
 
 package online.hudacek.fxradio.ui.style
-
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
-import tornadofx.FX
-import tornadofx.Stylesheet
-import tornadofx.dumpStylesheets
-import tornadofx.importStylesheet
-import tornadofx.reloadStylesheets
-import tornadofx.removeStylesheet
 
 class LightAppearance : Appearance() {
     override val background = "#E9E9E9"
@@ -77,22 +69,7 @@ abstract class Appearance {
         return AccentColor.values().first { it.colorCode == colorCode }.color()
     }
 
-    companion object {
-
-        val currentAppearance: Appearance
-            get() {
-                return if (FxRadio.isDarkModePreferred()) DarkAppearance() else LightAppearance()
-            }
-
-        fun toggleAppearance(useDarkMode: Boolean) {
-            removeStylesheet(Styles::class)
-            removeStylesheet(StylesDark::class)
-            if (useDarkMode) {
-                importStylesheet(StylesDark::class)
-            } else {
-                importStylesheet(Styles::class)
-            }
-            FX.applyStylesheetsTo(FX.primaryStage.scene)
-        }
+    override fun toString(): String {
+        return "Appearance(primary='$primary', transparent='$transparent', playerBox='$playerBox', background='$background', backgroundBorder='$backgroundBorder', backgroundSelected='$backgroundSelected', label='$label', grayLabel='$grayLabel')"
     }
 }

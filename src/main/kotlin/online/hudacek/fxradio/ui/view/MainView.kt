@@ -19,9 +19,7 @@
 package online.hudacek.fxradio.ui.view
 
 import javafx.geometry.Orientation
-import javafx.scene.image.Image
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.set
@@ -34,26 +32,26 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import org.controlsfx.control.NotificationPane
-import tornadofx.*
+import tornadofx.addClass
 import tornadofx.controlsfx.content
+import tornadofx.hgrow
+import tornadofx.onChange
+import tornadofx.splitpane
+import tornadofx.vbox
 
 /**
  * Entry to the app, parent to all other views inside it
  */
 class MainView : BaseView(FxRadio.appName) {
 
-    private val windowDividerProperty = Property(Properties.WindowDivider)
-    private val darkModeViewModel: DarkModeViewModel by inject()
+    private val windowDividerProperty by lazy { Property(Properties.WindowDivider) }
 
     // Main views of the app
-    private val menuBarView: MenuBarView by inject()
-    private val libraryView: LibraryView by inject()
     private val playerView: PlayerView by inject()
     private val stationsView: StationsView by inject()
-
-    init {
-        setStageIcon(Image(Config.Resources.stageIcon))
-    }
+    private val menuBarView: MenuBarView by inject()
+    private val libraryView: LibraryView by inject()
+    private val darkModeViewModel: DarkModeViewModel by inject()
 
     override fun onDock() {
         with(leftPane) {

@@ -27,7 +27,7 @@ private val logger = KotlinLogging.logger {}
  */
 class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.Humble) : MediaPlayer {
 
-    private val audioComponent = HumbleAudioComponent()
+    private val audioComponent by lazy { HumbleAudioComponent() }
     private val metaDataService = HumbleMetaDataService()
 
     override fun play(streamUrl: String) {

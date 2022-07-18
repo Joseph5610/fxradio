@@ -26,10 +26,12 @@ import online.hudacek.fxradio.FxRadio
  */
 class NSMenuBar : NSMenu() {
 
-    val menuBar = MenuBar().apply {
-        if (!FxRadio.isTestEnvironment) {
-            useSystemMenuBarProperty().value = true
-            menuToolkit.setMenuBar(this)
+    val menuBar by lazy {
+        MenuBar().apply {
+            if (!FxRadio.isTestEnvironment) {
+                useSystemMenuBarProperty().value = true
+                menuToolkit.setMenuBar(this)
+            }
         }
     }
 }

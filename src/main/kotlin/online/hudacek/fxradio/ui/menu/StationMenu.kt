@@ -30,12 +30,6 @@ class StationMenu : BaseMenu("menu.station") {
     private val playerViewModel: PlayerViewModel by inject()
 
     override val menuItems = listOf(
-            item(messages["menu.station.info"], KeyCodes.info) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    Modal.StationInfo.open()
-                }
-            },
             item(messages["copy.stream.url"]) {
                 disableWhenInvalidStation(playerViewModel.stationProperty)
                 action {

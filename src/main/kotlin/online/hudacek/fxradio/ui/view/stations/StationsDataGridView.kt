@@ -18,22 +18,14 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
-import com.github.thomasnield.rxkotlinfx.onChangedObservable
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
-import javafx.scene.effect.DropShadow
-import javafx.scene.paint.Color
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.ui.view.player.TickerView
-import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.new
-import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
@@ -47,6 +39,7 @@ private const val gridStationLogoSize = 100.0
 class StationsDataGridView : BaseView() {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val stationInfoViewModel: StationInfoViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
@@ -54,13 +47,14 @@ class StationsDataGridView : BaseView() {
     //Show initial stations
     override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
+
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
         cellWidth = gridCellWidth
 
         //Cleanup selected item on refresh of library
         itemsProperty
-                .onChangedObservable()
+                .toObservableChanges()
                 .subscribe {
                     selectionModel.clearSelection()
                     selectionModel.select(playerViewModel.stationProperty.value)
@@ -68,6 +62,7 @@ class StationsDataGridView : BaseView() {
 
         onUserSelect(1) {
             playerViewModel.stationProperty.value = it
+            stationInfoViewModel.item = StationInfo(it)
         }
 
         cellCache { station ->
@@ -76,21 +71,8 @@ class StationsDataGridView : BaseView() {
 
                 onHover { tooltip(station.name) }
                 contextmenu {
-                    item(messages["menu.station.info"]).action {
-                        Modal.StationInfo.new()
-                    }
-
-                    separator()
-
                     // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
-
-                    separator()
-                    item(messages["menu.station.vote"]) {
-                        actionEvents()
-                                .map { station }
-                                .subscribe(appEvent.addVote)
-                    }
                 }
 
                 vbox(alignment = Pos.CENTER) {

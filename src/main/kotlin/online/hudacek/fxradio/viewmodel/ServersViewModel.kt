@@ -47,7 +47,7 @@ class Servers(
 
 /**
  * Holds available and selected API servers
- * Item is set in [online.hudacek.fxradio.api.StationsApi.Companion]
+ * Item is set in [online.hudacek.fxradio.api.StationsApiProvider]
  *
  * Search for available servers is performed only on first start of the app or when opening
  * [online.hudacek.fxradio.ui.fragment.ServersFragment]

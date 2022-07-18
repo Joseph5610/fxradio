@@ -28,7 +28,7 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class ClickUseCase : BaseUseCase<Station, Single<ClickResult>>() {
 
-    override fun execute(input: Station): Single<ClickResult> = apiService
+    override fun execute(input: Station): Single<ClickResult> = stationsApi
             .click(input.stationuuid)
             .compose(applySchedulers())
             .onErrorResumeNext {

@@ -15,28 +15,26 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-package online.hudacek.fxradio.util
+package online.hudacek.fxradio.ui.view
 
 import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.Component
 import tornadofx.get
 import tornadofx.onChange
 import java.awt.MenuItem
-import java.awt.MenuShortcut
-import java.awt.event.KeyEvent
-
 
 /**
- * Adds system tray. Experimental, enabled under flag
+ * Adds system tray icon
  */
-class Tray : Component() {
+class TrayIcon : Component() {
 
     private val playerViewModel: PlayerViewModel by inject()
     private var stationItem: MenuItem? = null
+    private var playPauseItem: MenuItem? = null
 
     init {
         playerViewModel.stationObservable.subscribe {
@@ -44,10 +42,22 @@ class Tray : Component() {
                 mi.label = it.name
             }
         }
+
+        playerViewModel.stateProperty.onChange {
+            it?.let {
+                playPauseItem?.let { mi ->
+                    mi.label = if (it == PlayerState.Playing) {
+                        messages["menu.player.stop"]
+                    } else {
+                        messages["menu.player.start"]
+                    }
+                }
+            }
+        }
     }
 
     fun addIcon() = with(app) {
-        if (Config.Flags.useTrayIcon) {
+        if (Config.Flags.useTrayIcon && !FxRadio.isTestEnvironment) {
             trayicon(resources.stream("/" + Config.Resources.stageIcon)) {
                 setOnMouseClicked(fxThread = true) {
                     primaryStage.show()
@@ -66,7 +76,7 @@ class Tray : Component() {
                         isEnabled = false
                     }
 
-                    item("Play/Stop") {
+                    playPauseItem = item("Play/Stop") {
                         setOnAction(fxThread = true) {
                             if (playerViewModel.stationProperty.value.isValid()) {
                                 playerViewModel.togglePlayerState()

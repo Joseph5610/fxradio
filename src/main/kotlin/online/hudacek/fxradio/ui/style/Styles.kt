@@ -198,6 +198,7 @@ class Styles : Stylesheet() {
         }
 
         historyListView {
+            padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += Color.WHITE
             borderColor += box(Color.WHITE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
@@ -206,18 +207,18 @@ class Styles : Stylesheet() {
         historyListItem {
             fontSize = 12.px
             textFill = c(colors.label)
-            backgroundColor += Color.WHITE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            and(hover) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+            and(odd) {
+                backgroundColor += Color.WHITE
+            }
+            and(even) {
+                backgroundColor += Color.WHITESMOKE
             }
             and(selected) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
-            padding = box(5.px, 10.px, 5.px, 15.px)
+            padding = box(10.px, 10.px, 10.px, 10.px)
         }
 
         boldText {

@@ -19,8 +19,11 @@
 package online.hudacek.fxradio.util
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
+import javafx.scene.control.Alert
+import tornadofx.alert
 
 /**
  * Perform async calls on correct thread
@@ -29,3 +32,12 @@ internal fun <T> applySchedulers(): SingleTransformer<T, T> = SingleTransformer 
     it.subscribeOn(Schedulers.io())
             .observeOnFx()
 }
+
+internal fun <T> applySchedulersObservable(): ObservableTransformer<T, T> = ObservableTransformer {
+    it.subscribeOn(Schedulers.io())
+            .observeOnFx()
+}
+
+internal fun vlcAlert() = alert(Alert.AlertType.ERROR,
+        "VLC player was not found!",
+        "The app will try to use different player. For the best listening experience, we recommend that you install VLC player on your system!")

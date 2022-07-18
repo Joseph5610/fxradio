@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -27,7 +28,7 @@ import online.hudacek.fxradio.apiclient.stations.model.Station
 import tornadofx.observableListOf
 import tornadofx.property
 
-class StationInfo(station: Station) {
+class StationInfo(station: Station, showPanel: Boolean = false) {
     var station: Station by property(station)
     var name: String by property(station.name)
     var country: String by property(station.country)
@@ -42,9 +43,10 @@ class StationInfo(station: Station) {
                     .filter { tag -> tag.isNotEmpty() }
     ))
     var homePage: String by property(station.homepage)
+    var showPanel: Boolean by property(showPanel)
 }
 
-class StationInfoViewModel : BaseViewModel<StationInfo>() {
+class StationInfoViewModel : BaseViewModel<StationInfo>(StationInfo(Station.dummy)) {
     val stationProperty = bind(StationInfo::station) as ObjectProperty
     val tagsProperty = bind(StationInfo::tags) as ListProperty<String>
     val homePageProperty = bind(StationInfo::homePage) as StringProperty
@@ -54,4 +56,5 @@ class StationInfoViewModel : BaseViewModel<StationInfo>() {
     val languageProperty = bind(StationInfo::language) as StringProperty
     val countryProperty = bind(StationInfo::country) as StringProperty
     val votesProperty = bind(StationInfo::votes) as IntegerProperty
+    val showPanelProperty = bind(StationInfo::showPanel) as BooleanProperty
 }

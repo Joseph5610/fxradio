@@ -3,6 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="online.hudacek.fxradio.FxRadioKt" />
     <module name="fxradio.main" />
     <shortenClasspath name="NONE" />
+    <option name="VM_PARAMETERS" value="-Djavafx.pulseLogger=false" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

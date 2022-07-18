@@ -107,6 +107,10 @@ sourceSets {
     main.java.srcDirs += 'src/main/kotlin/'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 jfx {
     HashMap<String, String> attributes = new HashMap<String, String>()
     attributes.put('Implementation-Version', version.toString())

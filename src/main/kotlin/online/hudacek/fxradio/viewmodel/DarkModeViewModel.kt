@@ -20,12 +20,18 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.ui.style.Appearance
+import online.hudacek.fxradio.ui.style.DarkAppearance
+import online.hudacek.fxradio.ui.style.LightAppearance
+import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
-import tornadofx.cleanBind
+import tornadofx.FX
+import tornadofx.importStylesheet
+import tornadofx.objectBinding
 import tornadofx.property
+import tornadofx.removeStylesheet
 
 class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
     var darkMode: Boolean by property(darkMode)
@@ -33,17 +39,32 @@ class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModeP
 
 /**
  * Keeps information about current logging level chosen in UI
- * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
+ * Used in [online.hudacek.fxradio.ui.view.MenuBarView]
  */
 class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
-    val darkModeProperty = bind(DarkMode::darkMode) as BooleanProperty
 
+    val darkModeProperty by lazy { bind(DarkMode::darkMode) as BooleanProperty }
+
+    val appearanceProperty = darkModeProperty.objectBinding {
+        if (darkModeProperty.value) DarkAppearance() else LightAppearance()
+    }
 
     override fun onCommit() {
         // Save it
         Properties.DarkMode.save(darkModeProperty.value)
 
         // Live reload styles
-        Appearance.toggleAppearance(darkModeProperty.value)
+        toggleAppearance()
+    }
+
+    private fun toggleAppearance() {
+        removeStylesheet(Styles::class)
+        removeStylesheet(StylesDark::class)
+        if (darkModeProperty.value) {
+            importStylesheet(StylesDark::class)
+        } else {
+            importStylesheet(Styles::class)
+        }
+        FX.applyStylesheetsTo(FX.primaryStage.scene)
     }
 }

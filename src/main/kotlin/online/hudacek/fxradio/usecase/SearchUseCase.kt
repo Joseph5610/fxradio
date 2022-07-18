@@ -31,11 +31,11 @@ import online.hudacek.fxradio.util.applySchedulers
 class SearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Station>>>() {
 
     override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
-        apiService
+        stationsApi
                 .searchStationByTag(SearchByTagBody(input.second))
                 .compose(applySchedulers())
     } else {
-        apiService
+        stationsApi
                 .searchStationByName(SearchBody(input.second))
                 .compose(applySchedulers())
     }

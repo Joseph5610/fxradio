@@ -37,7 +37,7 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item? = 
             .map { it.newVal }
 
     init {
-        stateObservableChanges.subscribe(::onNewState)
+        stateObservableChanges.subscribe(::onNewState, ::onError)
     }
 
     /**
@@ -45,5 +45,13 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item? = 
      */
     protected open fun onNewState(newState: State) {
         logger.debug { "StateChange: $newState" }
+    }
+
+
+    /**
+     * Called on every new state
+     */
+    protected open fun onError(throwable: Throwable) {
+        logger.error(throwable) { "Exception when changing state" }
     }
 }

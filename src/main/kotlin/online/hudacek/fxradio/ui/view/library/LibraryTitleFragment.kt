@@ -26,6 +26,7 @@ import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.style.Appearance
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 
@@ -35,6 +36,8 @@ private const val arrowIconSize = 11.0
  * Custom title fragment with hide/unhide icons
  */
 class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : BaseFragment() {
+
+    private val darkModeViewModel: DarkModeViewModel by inject()
 
     override val root = hbox {
         smallLabel(title) {
@@ -56,11 +59,11 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                                 if (it)
                                     FontAwesome.Glyph.CHEVRON_DOWN.make(size = arrowIconSize,
                                             useStyle = false,
-                                            color = c(Appearance.currentAppearance.grayLabel))
+                                            color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
                                 else
                                     FontAwesome.Glyph.CHEVRON_RIGHT.make(size = arrowIconSize,
                                             useStyle = false,
-                                            color = c(Appearance.currentAppearance.grayLabel))
+                                            color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
                     }
 
             showWhen {

@@ -28,7 +28,7 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class VoteUseCase : BaseUseCase<Station, Single<VoteResult>>() {
 
-    override fun execute(input: Station): Single<VoteResult> = apiService
+    override fun execute(input: Station): Single<VoteResult> = stationsApi
             .addVote(input.stationuuid)
             .compose(applySchedulers())
             .onErrorResumeNext { Single.just(VoteResult(false, it.localizedMessage)) }

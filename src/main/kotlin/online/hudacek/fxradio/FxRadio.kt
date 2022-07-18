@@ -18,16 +18,17 @@
 
 package online.hudacek.fxradio
 
+import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
-import online.hudacek.fxradio.api.StationsProvider
+import online.hudacek.fxradio.api.StationsApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.Tray
+import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -36,6 +37,7 @@ import tornadofx.App
 import tornadofx.FX
 import tornadofx.Stylesheet
 import tornadofx.launch
+import tornadofx.setStageIcon
 import tornadofx.stylesheet
 import java.io.FileInputStream
 import java.nio.file.Path
@@ -65,6 +67,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
+    private val trayIcon: TrayIcon by lazy { TrayIcon() }
+
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
         with(stage) {
@@ -84,15 +88,16 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             config.double(Properties.WindowY.key)?.let {
                 y = it
             }
+            setStageIcon(Image(Config.Resources.stageIcon))
             super.start(this)
         }
-        Tray().addIcon()
+        trayIcon.addIcon()
     }
 
     override fun stop() {
         if (!isTestEnvironment) {
             playerViewModel.releasePlayer()
-            StationsProvider.serviceProvider.close()
+            StationsApiProvider.close()
             HttpClient.close()
             LogManager.shutdown()
         }

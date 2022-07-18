@@ -27,7 +27,7 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class GetTopVotedStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
-    override fun execute(input: Unit): Single<List<Station>> = apiService
+    override fun execute(input: Unit): Single<List<Station>> = stationsApi
             .getTopVotedStations()
             .compose(applySchedulers())
 }

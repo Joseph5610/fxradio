@@ -67,11 +67,9 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
 
     private var entry = TickerEntry<Node>(content = createText(content), reschedule = reschedule)
 
-    private val marqueeFragment by lazy { MarqueeFragment() }
-
-    init {
-        marqueeFragment.enqueueTickEntry(entry)
-    }
+    private val marqueeFragment by lazy { MarqueeFragment().apply {
+        enqueueTickEntry(entry)
+    } }
 
     override val root = pane {
         prefHeight = 12.0

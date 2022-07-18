@@ -126,6 +126,11 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         }
     }
 
+    override fun onError(throwable: Throwable) {
+        stateProperty.value = PlayerState.Error(throwable.localizedMessage)
+        super.onError(throwable)
+    }
+
     fun releasePlayer() = mediaPlayerProperty.value.release()
 
     fun togglePlayerState() {

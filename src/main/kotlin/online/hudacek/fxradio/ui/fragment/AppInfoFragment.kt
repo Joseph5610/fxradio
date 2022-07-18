@@ -43,7 +43,7 @@ import tornadofx.vbox
 /***
  * Simple Information about the app
  */
-class AboutFragment : BaseFragment(FxRadio.appName) {
+class AppInfoFragment : BaseFragment(FxRadio.appName) {
 
     override val root = vbox {
         requestFocusOnSceneAvailable()

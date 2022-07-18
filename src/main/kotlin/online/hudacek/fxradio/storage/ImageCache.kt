@@ -46,7 +46,7 @@ object ImageCache {
 
     //If the downloading failed, store the station uuid here and
     //don't download the file again until next run of the app
-    private val invalidStationUuids = observableListOf<String>()
+    private val invalidStationUuids = observableListOf(Station.dummy.stationuuid)
 
     init {
         //Prepare cache directory
