@@ -20,37 +20,15 @@ package online.hudacek.fxradio.ui.fragment
 
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
-import javafx.scene.control.TabPane
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.ServersState
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.bindSelected
-import tornadofx.booleanBinding
-import tornadofx.button
-import tornadofx.close
-import tornadofx.enableWhen
-import tornadofx.get
-import tornadofx.hbox
-import tornadofx.imageview
-import tornadofx.isDirty
-import tornadofx.label
-import tornadofx.listview
-import tornadofx.paddingAll
-import tornadofx.paddingLeft
-import tornadofx.radiobutton
-import tornadofx.stringBinding
-import tornadofx.tab
-import tornadofx.tabpane
-import tornadofx.text
-import tornadofx.vbox
+import tornadofx.*
 
 /**
  * Fragment that shows UI for selection of radio-browser API server
@@ -82,110 +60,103 @@ class ServersFragment : BaseFragment() {
         }
     }
 
-    override val root = tabpane {
-        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+    override val root = vbox {
         title = messages["menu.app.server"]
+        paddingAll = 10.0
         setPrefSize(350.0, 250.0)
 
-        tab(messages["servers.title"]) {
-            hbox {
-                radiobutton { }
-                radiobutton { }
-                radiobutton { }
-                radiobutton { }
+        vbox {
+            vbox(alignment = Pos.CENTER) {
+                label(messages["servers.title"]) {
+                    paddingBottom = 15.0
+                    addClass(Styles.header)
+                }
+
+                label(messages["servers.restartNeeded"]) {
+                    paddingAll = 5.0
+                    textAlignment = TextAlignment.CENTER
+                }
+            }
+
+            vbox {
+                prefHeight = 120.0
+                alignment = Pos.BASELINE_CENTER
+                text(labelTextProperty) {
+                    paddingAll = 5.0
+                    wrappingWidth = 270.0
+                    textAlignment = TextAlignment.CENTER
+                    addClass(Styles.defaultTextColor)
+                }
+
+                showWhen {
+                    viewModel.stateProperty.booleanBinding {
+                        when (it) {
+                            is ServersState.Fetched -> false
+                            else -> true
+                        }
+                    }
+                }
+            }
+
+            listview(viewModel.serversProperty) {
+                bindSelected(viewModel.selectedProperty)
+                cellFormat {
+                    graphic = hbox(5) {
+                        prefHeight = 19.0
+                        alignment = Pos.CENTER_LEFT
+
+                        imageview {
+                            image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull()
+                        }
+
+                        label(messages["servers.selected"]) {
+                            showWhen {
+                                //look for the value of backing field
+                                booleanBinding(viewModel.item.selected) {
+                                    this == it
+                                }
+                            }
+                            addClass(Styles.libraryListItemTag)
+                        }
+                    }
+                    text = it
+                    addClass(Styles.libraryListItem)
+                }
+
+                showWhen {
+                    viewModel.stateProperty.booleanBinding {
+                        when (it) {
+                            is ServersState.Fetched -> true
+                            else -> false
+                        }
+                    }
+                }
+
+                addClass(Styles.libraryListView)
             }
         }
-        tab(messages["servers.title"]) {
-            vbox {
-                smallLabel(messages["servers.available"]) {
-                    paddingLeft = 10.0
-                }
-                vbox {
-                    prefHeight = 120.0
-                    alignment = Pos.BASELINE_CENTER
-                    text(labelTextProperty) {
-                        paddingAll = 5.0
-                        wrappingWidth = 270.0
-                        textAlignment = TextAlignment.CENTER
-                        addClass(Styles.defaultTextColor)
-                    }
 
-                    showWhen {
-                        viewModel.stateProperty.booleanBinding {
-                            when (it) {
-                                is ServersState.Fetched -> false
-                                else -> true
-                            }
-                        }
+        hbox(10) {
+            alignment = Pos.CENTER_RIGHT
+            paddingAll = 10.0
+
+            button(messages["servers.reload"]) {
+                action {
+                    viewModel.fetchServers()
+                }
+            }
+            button(messages["save"]) {
+                enableWhen(viewModel.selectedProperty.isNotNull)
+                isDefaultButton = true
+                action {
+                    //Save the server in the app.config property file
+                    //Close the fragment after successful save
+                    viewModel.commit {
+                        appEvent.appNotification.onNext(AppNotification(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
+                        close()
                     }
                 }
-
-                listview(viewModel.serversProperty) {
-                    bindSelected(viewModel.selectedProperty)
-                    cellFormat {
-                        graphic = hbox(5) {
-                            prefHeight = 19.0
-                            alignment = Pos.CENTER_LEFT
-
-                            imageview {
-                                image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull()
-                            }
-
-                            label(messages["servers.selected"]) {
-                                showWhen {
-                                    //look for the value of backing field
-                                    booleanBinding(viewModel.item.selected) {
-                                        this == it
-                                    }
-                                }
-                                addClass(Styles.libraryListItemTag)
-                            }
-                        }
-                        text = it
-                        addClass(Styles.libraryListItem)
-                    }
-
-                    showWhen {
-                        viewModel.stateProperty.booleanBinding {
-                            when (it) {
-                                is ServersState.Fetched -> true
-                                else -> false
-                            }
-                        }
-                    }
-
-                    addClass(Styles.libraryListView)
-                }
-                vbox(alignment = Pos.CENTER) {
-                    label(messages["servers.restartNeeded"]) {
-                        paddingAll = 5.0
-                        textAlignment = TextAlignment.CENTER
-                    }
-                }
-
-                hbox(10) {
-                    alignment = Pos.CENTER_RIGHT
-                    paddingAll = 10.0
-
-                    button(messages["servers.reload"]) {
-                        action {
-                            viewModel.fetchServers()
-                        }
-                    }
-                    button(messages["save"]) {
-                        enableWhen(viewModel.selectedProperty.isNotNull)
-                        isDefaultButton = true
-                        action {
-                            //Save the server in the app.config property file
-                            //Close the fragment after successful save
-                            viewModel.commit {
-                                appEvent.appNotification.onNext(AppNotification(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
-                                close()
-                            }
-                        }
-                        addClass(Styles.primaryButton)
-                    }
-                }
+                addClass(Styles.primaryButton)
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
