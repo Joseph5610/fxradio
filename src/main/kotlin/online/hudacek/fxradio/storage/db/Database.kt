@@ -51,8 +51,9 @@ abstract class Database(open val tableName: String) {
                 /**
                  * Apply flyway db migrations
                  */
-                val flyway = Flyway.configure().dataSource(dbUrl, null, null).load()
-                flyway.migrate()
+                Flyway.configure().dataSource(dbUrl, null, null).load().also {
+                    it.migrate()
+                }
             }
         }
     }

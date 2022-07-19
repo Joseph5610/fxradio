@@ -44,12 +44,12 @@ object ImageCache {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
 
-    //If the downloading failed, store the station uuid here and
-    //don't download the file again until next run of the app
+    // If the downloading failed, store the station uuid here and
+    // don't download the file again until next run of the app
     private val invalidStationUuids = observableListOf(Station.dummy.stationuuid)
 
     init {
-        //Prepare cache directory
+        // Prepare cache directory
         if (!Files.isDirectory(cacheBasePath)) {
             Files.createDirectories(cacheBasePath)
         }
@@ -70,8 +70,7 @@ object ImageCache {
      * Check if station image is in cache
      */
     val Station.isCached: Boolean
-        get() = (Files.exists(cacheBasePath.resolve(stationuuid))
-                || stationuuid in invalidStationUuids)
+        get() = (stationuuid in invalidStationUuids || Files.exists(cacheBasePath.resolve(stationuuid)))
 
     /**
      * Gets image for [station] from local cache

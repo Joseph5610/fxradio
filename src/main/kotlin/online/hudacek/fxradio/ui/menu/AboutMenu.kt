@@ -28,6 +28,7 @@ import tornadofx.bind
 import tornadofx.get
 
 class AboutMenu : BaseMenu(FxRadio.appName) {
+
     private val darkModeViewModel: DarkModeViewModel by inject()
 
     val aboutMainItems: List<MenuItem>

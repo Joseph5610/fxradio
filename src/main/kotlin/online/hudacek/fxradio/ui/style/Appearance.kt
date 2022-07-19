@@ -17,6 +17,7 @@
  */
 
 package online.hudacek.fxradio.ui.style
+
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
