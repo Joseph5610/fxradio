@@ -57,6 +57,5 @@ object Config {
     object Flags {
         const val useTrayIcon = true
         const val enableDebugWindow = false
-        const val enableMap = true
     }
 }

@@ -145,7 +145,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
             val props = java.util.Properties()
             props.load(fis)
-            val darkModeProp = props.getProperty("app.darkmode")
+            val darkModeProp = props.getProperty(Properties.DarkMode.key)
             return darkModeProp?.toBoolean() ?: hasSystemDarkMode()
         }
     }

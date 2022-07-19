@@ -25,11 +25,11 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.Attributions
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
-import online.hudacek.fxradio.viewmodel.Attributions
 import tornadofx.*
 
 class AttributionsFragment : BaseFragment() {

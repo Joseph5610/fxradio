@@ -18,23 +18,36 @@
 
 package online.hudacek.fxradio.usecase
 
-import javafx.collections.ObservableList
-import javafx.concurrent.Task
+import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
+import online.hudacek.fxradio.viewmodel.ServersState
 import tornadofx.asObservable
+import tornadofx.fail
+import tornadofx.success
 
 /**
  * Retrieves valid list of radio-browser API urls
  */
-class GetServersUseCase : BaseUseCase<Unit, Task<ObservableList<String>>>() {
+class GetServersUseCase : BaseUseCase<ObjectProperty<ServersState>, Unit>() {
 
     private val lookupUrl = Config.API.dnsLookupURL
 
-    override fun execute(input: Unit): Task<ObservableList<String>> = runAsync(daemon = true) {
-        HttpClient.lookup(lookupUrl)
-                .map { it.canonicalHostName }
-                .distinct()
-                .asObservable()
+    override fun execute(input: ObjectProperty<ServersState>) {
+        input.value = ServersState.Loading
+        runAsync(daemon = true) {
+            HttpClient.lookup(lookupUrl)
+                    .map { it.canonicalHostName }
+                    .distinct()
+                    .asObservable()
+        } success {
+            if (it.isEmpty()) {
+                input.value = ServersState.NoServersAvailable
+            } else {
+                input.value = ServersState.Fetched(it)
+            }
+        } fail {
+            input.value = ServersState.Error(it.localizedMessage)
+        }
     }
 }

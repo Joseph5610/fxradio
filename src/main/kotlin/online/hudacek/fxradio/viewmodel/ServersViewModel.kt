@@ -25,10 +25,8 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.usecase.GetServersUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
-import tornadofx.fail
 import tornadofx.observableListOf
 import tornadofx.property
-import tornadofx.success
 
 sealed class ServersState(val key: String = "") {
     object Loading : ServersState("loading")
@@ -62,18 +60,7 @@ class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
     /**
      * Perform async DNS lookup to find working API servers
      */
-    fun fetchServers() {
-        stateProperty.value = ServersState.Loading
-        getServersUseCase.execute(Unit) success {
-            if (it.isEmpty()) {
-                stateProperty.value = ServersState.NoServersAvailable
-            } else {
-                stateProperty.value = ServersState.Fetched(it)
-            }
-        } fail {
-            stateProperty.value = ServersState.Error(it.localizedMessage)
-        }
-    }
+    fun fetchServers() = getServersUseCase.execute(stateProperty)
 
     override fun onNewState(newState: ServersState) {
         if (newState is ServersState.Fetched) {

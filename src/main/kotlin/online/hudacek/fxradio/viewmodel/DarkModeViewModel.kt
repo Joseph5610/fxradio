@@ -22,16 +22,12 @@ import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.style.DarkAppearance
 import online.hudacek.fxradio.ui.style.LightAppearance
-import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.style.StylesDark
+import online.hudacek.fxradio.usecase.SetDarkModeUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
-import tornadofx.FX
-import tornadofx.importStylesheet
 import tornadofx.objectBinding
 import tornadofx.property
-import tornadofx.removeStylesheet
 
 class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
     var darkMode: Boolean by property(darkMode)
@@ -42,6 +38,8 @@ class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModeP
  * Used in [online.hudacek.fxradio.ui.view.MenuBarView]
  */
 class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
+
+    private val setDarkModeUseCase: SetDarkModeUseCase by inject()
 
     val darkModeProperty by lazy { bind(DarkMode::darkMode) as BooleanProperty }
 
@@ -54,17 +52,6 @@ class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
         Properties.DarkMode.save(darkModeProperty.value)
 
         // Live reload styles
-        toggleAppearance()
-    }
-
-    private fun toggleAppearance() {
-        removeStylesheet(Styles::class)
-        removeStylesheet(StylesDark::class)
-        if (darkModeProperty.value) {
-            importStylesheet(StylesDark::class)
-        } else {
-            importStylesheet(Styles::class)
-        }
-        FX.applyStylesheetsTo(FX.primaryStage.scene)
+        setDarkModeUseCase.execute(darkModeProperty)
     }
 }

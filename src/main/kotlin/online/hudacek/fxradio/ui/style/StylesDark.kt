@@ -424,6 +424,10 @@ StylesDark : Stylesheet() {
             promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            and(focused) {
+                borderColor += box(c(colors.primary, 0.6))
+                faintFocusColor = c("${colors.primary}22")
+            }
         }
 
         noBorder {

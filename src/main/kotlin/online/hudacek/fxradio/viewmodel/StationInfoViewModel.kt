@@ -36,6 +36,8 @@ class StationInfo(station: Station, showPanel: Boolean = false) {
     var codec: String by property(station.codec)
     var bitrate: Int by property(station.bitrate)
     var votes: Int by property(station.votes)
+    var streamUrl: String by property(station.url_resolved)
+    var clickTrend: Int by property(station.clicktrend)
     var tags: ObservableList<String> by property(observableListOf(
             station.tags
                     .split(",")
@@ -57,4 +59,6 @@ class StationInfoViewModel : BaseViewModel<StationInfo>(StationInfo(Station.dumm
     val countryProperty = bind(StationInfo::country) as StringProperty
     val votesProperty = bind(StationInfo::votes) as IntegerProperty
     val showPanelProperty = bind(StationInfo::showPanel) as BooleanProperty
+    val streamUrlProperty = bind(StationInfo::streamUrl) as StringProperty
+    val clickTrendProperty = bind(StationInfo::clickTrend) as IntegerProperty
 }

@@ -73,16 +73,16 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
     }
 
     fun addStation() = addStationUseCase.execute(
-        StationBody(
-            nameProperty.value,
-            urlProperty.value,
-            homePageProperty.value,
-            faviconProperty.value,
-            countryCodeProperty.value,
-            countryProperty.value,
-            languageProperty.value,
-            tagsProperty.value
-    )
+            StationBody(
+                    nameProperty.value,
+                    urlProperty.value,
+                    homePageProperty.value,
+                    faviconProperty.value,
+                    countryCodeProperty.value,
+                    countryProperty.value,
+                    languageProperty.value,
+                    tagsProperty.value
+            )
     )
 
     override fun onCommit() {

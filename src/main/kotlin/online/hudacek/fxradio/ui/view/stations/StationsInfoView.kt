@@ -24,9 +24,11 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
@@ -44,6 +46,7 @@ import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
+import tornadofx.sizeProperty
 import tornadofx.stringBinding
 import tornadofx.top
 import tornadofx.vbox
@@ -115,32 +118,48 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }
+                    label(createInfoBinding("info.clicktrend", stationInfoViewModel.clickTrendProperty)) {
+                        addClass(Styles.grayLabel)
+                        addClass(Styles.tag)
+                    }
                 }
 
-                smallLabel("Tags")
-                flowpane {
-                    hgap = 5.0
-                    vgap = 5.0
-                    paddingAll = 5.0
-                    alignment = Pos.CENTER
-                    bindChildren(stationInfoViewModel.tagsProperty) {
-                        hyperlink(it) {
-                            addClass(Styles.tag)
-                            addClass(Styles.grayLabel)
+                vbox {
+                    smallLabel("Tags")
+                    flowpane {
+                        hgap = 5.0
+                        vgap = 5.0
+                        paddingAll = 5.0
+                        alignment = Pos.CENTER
+                        bindChildren(stationInfoViewModel.tagsProperty) {
+                            hyperlink(it) {
+                                addClass(Styles.tag)
+                                addClass(Styles.grayLabel)
 
-                            action {
-                                libraryViewModel.stateProperty.value = LibraryState.Search
-                                searchViewModel.bindQueryProperty.value = it
-                                searchViewModel.searchByTagProperty.value = true
+                                action {
+                                    libraryViewModel.stateProperty.value = LibraryState.Search
+                                    searchViewModel.bindQueryProperty.value = it
+                                    searchViewModel.searchByTagProperty.value = true
+                                }
                             }
                         }
+                    }
+                    showWhen {
+                        stationInfoViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
                     }
                 }
             }
         }
 
         bottom {
-            vbox(alignment = Pos.CENTER) {
+            vbox(spacing = 5.0, alignment = Pos.CENTER) {
+                button(messages["copy.stream.url"]) {
+                    maxWidth = Double.MAX_VALUE
+                    actionEvents().map { stationInfoViewModel.stationProperty.value }
+                            .subscribe {
+                                clipboard.update(it.url_resolved!!)
+                            }
+                }
                 button(messages["menu.station.vote"]) {
                     maxWidth = Double.MAX_VALUE
                     actionEvents().map { stationInfoViewModel.stationProperty.value }.subscribe(appEvent.addVote)
