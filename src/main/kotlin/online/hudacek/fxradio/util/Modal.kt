@@ -30,7 +30,7 @@ import kotlin.reflect.full.createInstance
  */
 sealed class Modal<out T : Fragment>(val style: StageStyle = StageStyle.UTILITY,
                                      val resizable: Boolean = false) {
-    object AddNewStation : Modal<AddStationFragment>()
+    object AddNewStation : Modal<AddStationFragment>(style = StageStyle.UNIFIED)
     object AppInfo : Modal<AppInfoFragment>()
     object Servers : Modal<ServersFragment>(resizable = true)
     object Stats : Modal<StatsFragment>()

@@ -46,7 +46,7 @@ class Styles : Stylesheet() {
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
-        val coloredButton by cssclass()
+        val segmentedButton by cssclass()
 
         val header by cssclass()
         val subheader by cssclass()
@@ -125,10 +125,6 @@ class Styles : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        coloredButton {
-
-        }
-
         playerControls {
             unsafe("-fx-padding", raw("0"))
             unsafe("-fx-background-insets", raw("0"))
@@ -143,22 +139,23 @@ class Styles : Stylesheet() {
         }
 
         button {
-            and(default) {
-                baseColor = c(colors.primary)
-                textFill = Color.WHITESMOKE
-            }
-
+            baseColor = c(colors.backgroundSelected)
             minWidth = 75.px
+            minHeight = 25.px
             fontSize = 12.px
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            padding = box(4.px, 10.px, 4.px, 10.px)
+            padding = box(5.px, 10.px, 5.px, 10.px)
             textFill = c(colors.label)
         }
 
         primaryButton {
             baseColor = c(colors.primary)
             textFill = Color.WHITESMOKE
+        }
+
+        segmentedButton {
+            minHeight = 20.px
         }
 
         hyperlink {

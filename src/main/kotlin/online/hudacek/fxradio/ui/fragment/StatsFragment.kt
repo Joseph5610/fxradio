@@ -73,11 +73,9 @@ class StatsFragment : BaseFragment() {
                 label(labelTextProperty) {
                     paddingAll = 20.0
                 }
-
-                viewModel.stateObservableChanges.subscribe {
-                    managedProperty().value = when (it) {
-                        is StatsState.Fetched -> false
-                        else -> true
+                showWhen {
+                    viewModel.stateProperty.booleanBinding {
+                        it !is StatsState.Fetched
                     }
                 }
             }

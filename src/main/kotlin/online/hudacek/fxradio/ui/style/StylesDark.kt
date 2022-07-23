@@ -21,13 +21,17 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.c
+import tornadofx.cssclass
+import tornadofx.em
+import tornadofx.px
 
 /**
  * Dark mode CSS classes used around the app
  */
-class
-StylesDark : Stylesheet() {
+class StylesDark : Stylesheet() {
 
     private val colors = DarkAppearance()
 
@@ -47,7 +51,7 @@ StylesDark : Stylesheet() {
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
-        val coloredButton by cssclass()
+        val segmentedButton by cssclass()
 
         val header by cssclass()
         val subheader by cssclass()
@@ -150,39 +154,25 @@ StylesDark : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        coloredButton {
-            backgroundColor += c(colors.background)
-            borderColor += box(c(colors.backgroundBorder))
-            textFill = Color.WHITESMOKE
-
-            and(hover) {
-                backgroundColor += c(colors.backgroundSelected)
-            }
-            and(focused) {
-                backgroundColor += c(colors.backgroundSelected)
-            }
-            and(selected) {
-                backgroundColor += c(colors.backgroundSelected)
-            }
-        }
-
         button {
-            and(default) {
-                baseColor = c(colors.primary)
-                textFill = Color.WHITESMOKE
-            }
             baseColor = c(colors.backgroundSelected)
             minWidth = 75.px
+            minHeight = 25.px
             fontSize = 12.px
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            padding = box(4.px, 10.px, 4.px, 10.px)
+            padding = box(5.px, 10.px, 5.px, 10.px)
             textFill = c(colors.label)
         }
 
         primaryButton {
-            backgroundColor += c(colors.primary)
+            baseColor = c(colors.primary)
             textFill = Color.WHITESMOKE
+        }
+
+        segmentedButton {
+            baseColor = c(colors.backgroundSelected)
+            minHeight = 20.px
         }
 
         libraryListView {

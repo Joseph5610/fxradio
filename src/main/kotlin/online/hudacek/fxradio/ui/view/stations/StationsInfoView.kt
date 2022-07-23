@@ -51,6 +51,8 @@ import tornadofx.stringBinding
 import tornadofx.top
 import tornadofx.vbox
 
+private const val logoWidth = 60.0
+
 class StationsInfoView : BaseView(FxRadio.appName) {
 
     private val stationInfoViewModel: StationInfoViewModel by inject()
@@ -59,8 +61,8 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
     private val stationLogo by lazy {
         imageview {
-            fitHeight = 60.0
-            fitHeight = 60.0
+            fitHeight = logoWidth
+            fitHeight = logoWidth
         }
     }
 
@@ -91,7 +93,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
         center {
             vbox {
-                smallLabel("Station Details")
+                smallLabel(messages["info.details"])
                 flowpane {
                     hgap = 5.0
                     vgap = 5.0
@@ -125,7 +127,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                 }
 
                 vbox {
-                    smallLabel("Tags")
+                    smallLabel(messages["info.tags"])
                     flowpane {
                         hgap = 5.0
                         vgap = 5.0

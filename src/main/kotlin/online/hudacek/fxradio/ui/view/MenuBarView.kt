@@ -67,13 +67,14 @@ class MenuBarView : BaseView() {
      */
     private fun platformMenuBar() = NSMenuBar()
             .menuBar.apply {
-                NSMenu().appMenu(aboutMenu.aboutMainItems)
+                val nsMenu = NSMenu()
+                nsMenu.appMenu(aboutMenu.aboutMainItems)
                 menus.addAll(
                         stationMenu.menu,
                         playerMenu.menu,
                         favouritesMenu.menu,
                         historyMenu.menu,
-                        NSMenu().windowMenu(messages["macos.menu.window"]),
+                        nsMenu.windowMenu(messages["macos.menu.window"]),
                         helpMenu.menu)
             }
 }

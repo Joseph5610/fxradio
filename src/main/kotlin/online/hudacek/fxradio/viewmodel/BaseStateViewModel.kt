@@ -29,16 +29,13 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item? = 
                                                            initialState: State? = null) :
         BaseViewModel<Item>(initialItem = initialItem) {
 
-    val stateProperty = objectProperty(initialState)
+    val stateProperty by lazy { objectProperty(initialState) }
 
     val stateObservableChanges: Observable<State> = stateProperty
             .toObservableChangesNonNull()
             .filter { it.newVal != null }
             .map { it.newVal }
-
-    init {
-        stateObservableChanges.subscribe(::onNewState, ::onError)
-    }
+            .also { it.subscribe(::onNewState, ::onError) }
 
     /**
      * Called on every new state

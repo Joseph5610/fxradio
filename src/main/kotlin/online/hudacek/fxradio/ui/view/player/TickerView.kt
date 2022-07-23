@@ -23,7 +23,6 @@ import io.reactivex.disposables.Disposable
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
-import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
@@ -32,8 +31,14 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.onChange
+import tornadofx.pane
+import tornadofx.plusAssign
+import tornadofx.removeFromParent
+import tornadofx.text
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.collections.set
 
 /**
  * TickerView shows ticker with currently playing song/radio name
@@ -67,12 +72,14 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
 
     private var entry = TickerEntry<Node>(content = createText(content), reschedule = reschedule)
 
-    private val marqueeFragment by lazy { MarqueeFragment().apply {
-        enqueueTickEntry(entry)
-    } }
+    private val marqueeFragment by lazy {
+        MarqueeFragment().apply {
+            enqueueTickEntry(entry)
+        }
+    }
 
     override val root = pane {
-        prefHeight = 12.0
+        prefHeight = 15.0
         marqueeFragment.inside(this)
         add(marqueeFragment)
     }
@@ -98,26 +105,22 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
         private val activeTicks = ConcurrentLinkedQueue<ActiveTick>() //This might not need to be threadsafe, only one thing is adding/removing it
         private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Node>>() //This one does, multiple threads!
 
-        private val timeline = Timeline() //Timeline is up here in case I need to pause, play the animation
+        private val timeline by lazy { Timeline() }  //Timeline is up here in case I need to pause, play the animation
 
-        override val root = pane()
+        override val root = pane().also {
+            it.clip = Rectangle(25.0, 25.0).apply {
+                //Bind the clipping to the size of the thing
+                widthProperty().bind(it.widthProperty())
+                heightProperty().bind(it.heightProperty())
+            }
+            startAnimation() //Fire up the animation process
+        }
 
         //This is needed to make sure the pane fills up the entire space of whatever we've been put in.
         fun inside(of: Pane) {
             //I need this guy to autofill to max size
             root.prefWidthProperty().bind(of.widthProperty())
             root.prefHeightProperty().bind(of.heightProperty())
-        }
-
-        init {
-            val rectangle = Rectangle(25.0, 25.0)
-
-            //Bind the clipping to the size of the thing
-            rectangle.widthProperty().bind(root.widthProperty())
-            rectangle.heightProperty().bind(root.heightProperty())
-            root.clip = rectangle
-
-            startAnimation() //Fire up the animation process
         }
 
         fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
@@ -139,11 +142,10 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
             }
 
             //Keep track of the things we've started, so we can dispose them
-            val subscriptions = HashMap<TickerEntry<Node>, Disposable>()
+            val subscriptions = hashMapOf<TickerEntry<Node>, Disposable>()
 
             //Could also update this things speed time so that stuff scrolls faster
-            val updateFrame = KeyFrame(Duration.millis(35.0), EventHandler {
-
+            KeyFrame(Duration.millis(35.0), {
                 //There's possible some thread bugs in there, but only on the very first creation
                 if (activeTicks.isEmpty() || lastOneCleared()) {
                     val newTickerEntry: TickerEntry<Node>? = queuedTicks.poll()
@@ -187,9 +189,8 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
                         }
                     }
                 }
-            })
+            }).also { timeline.keyFrames += it }
 
-            timeline.keyFrames += updateFrame
             timeline.cycleCount = Animation.INDEFINITE
             timeline.play()
         }

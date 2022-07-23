@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
-import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.BaseView
@@ -39,6 +38,7 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.booleanBinding
+import tornadofx.button
 import tornadofx.c
 import tornadofx.contextmenu
 import tornadofx.controlsfx.glyph
@@ -53,7 +53,6 @@ import tornadofx.paddingRight
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
-import tornadofx.togglebutton
 import tornadofx.vbox
 import tornadofx.vgrow
 
@@ -108,7 +107,7 @@ class PlayerView : BaseView() {
     }
 
     private val stationInfo by lazy {
-        togglebutton(group = ToggleGroup()) {
+        glyph {
             id = "stationInfo"
             graphic = infoGlyph
             disableWhen {
@@ -116,7 +115,7 @@ class PlayerView : BaseView() {
                     it == null || !it.isValid()
                 }
             }
-            action {
+            setOnMouseClicked {
                 stationInfoViewModel.stateProperty.apply {
                     value = if (value == InfoPanelState.Shown) {
                         InfoPanelState.Hidden
@@ -136,7 +135,6 @@ class PlayerView : BaseView() {
             maxWidth = 90.0
             majorTickUnit = 8.0
             isSnapToTicks = true
-            //isShowTickMarks = true
             paddingTop = 2.0
 
             //Save new value

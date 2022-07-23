@@ -43,6 +43,7 @@ class StationInfo(station: Station) {
     var votes: Int by property(station.votes)
     var streamUrl: String by property(station.url_resolved)
     var clickTrend: Int by property(station.clicktrend)
+    var favicon: String? by property(station.favicon)
     var tags: ObservableList<String> by property(observableListOf(
             station.tags
                     .split(",")
@@ -64,5 +65,6 @@ class StationInfoViewModel : BaseStateViewModel<StationInfo, InfoPanelState>(
     val countryProperty = bind(StationInfo::country) as StringProperty
     val votesProperty = bind(StationInfo::votes) as IntegerProperty
     val streamUrlProperty = bind(StationInfo::streamUrl) as StringProperty
+    val faviconProperty = bind(StationInfo::favicon) as StringProperty?
     val clickTrendProperty = bind(StationInfo::clickTrend) as IntegerProperty
 }

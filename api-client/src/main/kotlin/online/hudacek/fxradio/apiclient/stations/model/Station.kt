@@ -53,7 +53,7 @@ data class Station(
 
     companion object {
         val dummy by lazy {
-            Station("0", "Not playing", null, "http://hudacek.online", null)
+            Station("0", "Nothing playing", null, "http://hudacek.online", null)
         }
     }
 }

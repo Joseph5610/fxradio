@@ -76,22 +76,23 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
     val stationObservable: Observable<Station> = stationProperty
             .toObservableChangesNonNull()
             .map { it.newVal }
+            .filter { it.isValid() }
+            .doOnEach(appEvent.addToHistory) //Send the new history item event
+            .also {
+                it.flatMapSingle(clickUseCase::execute)
+                        .subscribe({ click ->
+                            //Update the name of the station
+                            trackNameProperty.value = click.name + " - " + messages["player.noMetaData"]
+
+                            //Restart playing status
+                            stateProperty.value = PlayerState.Stopped
+                            stateProperty.value = PlayerState.Playing
+                        }, { t ->
+                            stateProperty.value = PlayerState.Error(t.localizedMessage)
+                        })
+            }
 
     init {
-        stationObservable
-                .filter { it.isValid() }
-                .doOnEach(appEvent.addToHistory) //Send the new history item event
-                .flatMapSingle(clickUseCase::execute)
-                .subscribe({
-                    //Update the name of the station
-                    trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
-
-                    //Restart playing status
-                    stateProperty.value = PlayerState.Stopped
-                    stateProperty.value = PlayerState.Playing
-                }, {
-                    stateProperty.value = PlayerState.Error(it.localizedMessage)
-                })
 
         //Set volume for current player
         volumeProperty.onChange { mediaPlayerProperty.value?.changeVolume(it) }
@@ -115,8 +116,10 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         if (newState is PlayerState.Playing) {
             //Ignore stations with empty stream URL
             stationProperty.value.url_resolved?.let { url ->
-                mediaPlayerProperty.value?.changeVolume(volumeProperty.value)
-                mediaPlayerProperty.value?.play(url)
+                mediaPlayerProperty.value?.let {
+                    it.changeVolume(volumeProperty.value)
+                    it.play(url)
+                }
             }
         } else {
             if (newState is PlayerState.Error) {

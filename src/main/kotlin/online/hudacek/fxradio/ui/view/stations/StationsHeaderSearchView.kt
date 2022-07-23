@@ -52,12 +52,12 @@ class StationsHeaderSearchView : BaseView() {
                     isSelected = true
                     // Little hack that allows use to use togglegroup.bind() method
                     properties["tornadofx.toggleGroupValue"] = false
-                    addClass(Styles.coloredButton)
+                    addClass(Styles.segmentedButton)
                 }
 
                 button(messages["search.byTag"]) {
                     properties["tornadofx.toggleGroupValue"] = true
-                    addClass(Styles.coloredButton)
+                    addClass(Styles.segmentedButton)
                 }
                 toggleGroup.bind(viewModel.searchByTagProperty)
             }

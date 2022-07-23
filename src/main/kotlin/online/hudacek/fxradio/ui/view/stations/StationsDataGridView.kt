@@ -73,6 +73,11 @@ class StationsDataGridView : BaseView() {
                 contextmenu {
                     // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
+                    separator()
+                    item(messages["menu.station.info"]).action {
+                        stationInfoViewModel.item = StationInfo(station)
+                        stationInfoViewModel.stateProperty.value = InfoPanelState.Shown
+                    }
                 }
 
                 vbox(alignment = Pos.CENTER) {

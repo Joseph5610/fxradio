@@ -41,7 +41,7 @@ internal fun AccentColor.color() = when (this) {
     AccentColor.GRAPHITE -> "#8C8C8C"
     AccentColor.RED -> "#FF5258"
     AccentColor.ORANGE -> "#F8821B"
-    AccentColor.YELLOW -> "#FFC500"
+    AccentColor.YELLOW -> "#dda603"
     AccentColor.GREEN -> "#64B946"
     AccentColor.BLUE -> "#037AFF"
     AccentColor.PURPLE -> "#A550A6"
