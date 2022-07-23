@@ -55,6 +55,9 @@ class FxRadioDark : FxRadio(stylesheet = StylesDark::class)
  */
 class FxRadioLight : FxRadio(stylesheet = Styles::class)
 
+private const val WINDOW_MIN_WIDTH = 600.0
+private const val WINDOW_MAX_WIDTH = 400.0
+
 /**
  * Load the app with provided [stylesheet] class
  */
@@ -72,8 +75,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
         with(stage) {
-            minWidth = 600.0
-            minHeight = 400.0
+            minWidth = WINDOW_MIN_WIDTH
+            minHeight = WINDOW_MAX_WIDTH
 
             //Setup window location on screen
             with(config) {

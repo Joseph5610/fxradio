@@ -61,7 +61,7 @@ class StationsHistoryView : BaseView() {
 
         id = "stationsHistoryList"
         cellFormat {
-            graphic = hbox(10) {
+            graphic = hbox(spacing = 10) {
                 alignment = Pos.CENTER_LEFT
                 imageview {
                     it.stationImage(this)

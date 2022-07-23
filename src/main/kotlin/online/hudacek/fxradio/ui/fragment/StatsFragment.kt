@@ -78,8 +78,7 @@ class StatsFragment : BaseFragment() {
                 addClass(Styles.primaryTextColor)
             }
 
-            vbox {
-                alignment = Pos.BASELINE_CENTER
+            vbox(alignment = Pos.BASELINE_CENTER) {
                 label(labelTextProperty) {
                     paddingAll = 20.0
                 }
@@ -96,7 +95,7 @@ class StatsFragment : BaseFragment() {
             isMouseTransparent = true // Disable clicking into listview, as it is not needed for this listview
             cellFormat {
                 paddingAll = 0.0
-                graphic = hbox(5) {
+                graphic = hbox(spacing = 5) {
                     label(messages[item.first] + ":")
                     label(item.second)
                     addClass(Styles.libraryListItem)

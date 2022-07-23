@@ -94,9 +94,8 @@ class ServersFragment : BaseFragment() {
                 }
             }
 
-            vbox {
+            vbox(alignment = Pos.BASELINE_CENTER) {
                 prefHeight = 120.0
-                alignment = Pos.BASELINE_CENTER
                 text(labelTextProperty) {
                     paddingAll = 5.0
                     wrappingWidth = 270.0
@@ -117,7 +116,7 @@ class ServersFragment : BaseFragment() {
             listview(viewModel.serversProperty) {
                 bindSelected(viewModel.selectedProperty)
                 cellFormat {
-                    graphic = hbox(5) {
+                    graphic = hbox(spacing = 5) {
                         prefHeight = 19.0
                         alignment = Pos.CENTER_LEFT
 
@@ -152,7 +151,7 @@ class ServersFragment : BaseFragment() {
             }
         }
 
-        hbox(10) {
+        hbox(spacing = 10) {
             alignment = Pos.CENTER_RIGHT
             paddingAll = 10.0
 

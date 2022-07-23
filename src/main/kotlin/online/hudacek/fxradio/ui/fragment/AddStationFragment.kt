@@ -22,9 +22,9 @@ import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.customNotificationPane
 import online.hudacek.fxradio.ui.field
 import online.hudacek.fxradio.ui.set
-import online.hudacek.fxradio.ui.customNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
@@ -155,7 +155,7 @@ class AddStationFragment : BaseFragment() {
                     }
                 }
 
-                hbox(5) {
+                hbox(spacing = 5) {
                     button(messages["save"]) {
                         enableWhen(viewModel.valid)
                         isDefaultButton = true
