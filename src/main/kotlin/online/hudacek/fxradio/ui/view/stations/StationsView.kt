@@ -22,6 +22,7 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import tornadofx.addClass
 import tornadofx.booleanBinding
@@ -67,7 +68,9 @@ class StationsView : BaseView() {
             right.showWhen {
                 stationInfoViewModel.stationProperty.booleanBinding {
                     it?.isValid() == true
-                }.and(stationInfoViewModel.showPanelProperty)
+                }.and(stationInfoViewModel.stateProperty.booleanBinding {
+                    it is InfoPanelState.Shown
+                })
             }
         }
 

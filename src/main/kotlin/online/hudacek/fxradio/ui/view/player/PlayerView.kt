@@ -30,6 +30,7 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
+import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.StationInfoViewModel
@@ -108,12 +109,20 @@ class PlayerView : BaseView() {
 
     private val stationInfo by lazy {
         togglebutton(group = ToggleGroup()) {
-            selectedProperty().bindBidirectional(stationInfoViewModel.showPanelProperty)
             id = "stationInfo"
             graphic = infoGlyph
             disableWhen {
                 viewModel.stationProperty.booleanBinding {
                     it == null || !it.isValid()
+                }
+            }
+            action {
+                stationInfoViewModel.stateProperty.apply {
+                    value = if (value == InfoPanelState.Shown) {
+                        InfoPanelState.Hidden
+                    } else {
+                        InfoPanelState.Shown
+                    }
                 }
             }
             addClass(Styles.playerControls)

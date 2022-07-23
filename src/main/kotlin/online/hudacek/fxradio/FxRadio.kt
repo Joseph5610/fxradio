@@ -76,17 +76,19 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             minHeight = 400.0
 
             //Setup window location on screen
-            config.double(Properties.WindowWidth.key)?.let {
-                width = it
-            }
-            config.double(Properties.WindowHeight.key)?.let {
-                height = it
-            }
-            config.double(Properties.WindowX.key)?.let {
-                x = it
-            }
-            config.double(Properties.WindowY.key)?.let {
-                y = it
+            with(config) {
+                double(Properties.WindowWidth.key)?.let {
+                    width = it
+                }
+                double(Properties.WindowHeight.key)?.let {
+                    height = it
+                }
+                double(Properties.WindowX.key)?.let {
+                    x = it
+                }
+                double(Properties.WindowY.key)?.let {
+                    y = it
+                }
             }
             setStageIcon(Image(Config.Resources.stageIcon))
             super.start(this)
@@ -133,18 +135,13 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
         }
 
-        private fun hasSystemDarkMode() = if (MacUtils.isMac) {
-            MacUtils.isSystemDarkMode
-        } else {
-            false
-        }
+        private fun hasSystemDarkMode() = MacUtils.isMac && MacUtils.isSystemDarkMode
 
         fun isDarkModePreferred(): Boolean {
             //we have to use the ugly java way to access this property as we want to access it
             //in the time that the app is not yet instantiated
             val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
-            val props = java.util.Properties()
-            props.load(fis)
+            val props = java.util.Properties().also { it.load(fis) }
             val darkModeProp = props.getProperty(Properties.DarkMode.key)
             return darkModeProp?.toBoolean() ?: hasSystemDarkMode()
         }
