@@ -30,6 +30,8 @@ import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
 import tornadofx.property
 
+private const val maxQueryLength = 50
+
 class Search(query: String = Properties.SearchQuery.value(""),
              useTagSearch: Boolean = false) {
     var query: String by property(query)
@@ -58,8 +60,4 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
     fun search() = searchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 
     override fun onCommit() = Properties.SearchQuery.save(bindQueryProperty.value)
-
-    companion object {
-        private const val maxQueryLength = 50
-    }
 }

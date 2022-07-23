@@ -15,7 +15,7 @@ plugins {
 
 apply plugin: 'javafx-gradle-plugin'
 
-version "0.9.2"
+version "0.9.3"
 
 ext.versions = [
         kotlin             : "1.4.32",
@@ -35,8 +35,8 @@ ext.versions = [
         nsmenufx           : "2.1.7",
         semver             : "3.1.0",
         testfx             : "4.0.16-alpha",
-        junit              : "5.4.0",
-        flyway             : "8.5.4"
+        junit              : "5.8.2",
+        flyway             : "8.5.10"
 ]
 
 allprojects {
@@ -107,6 +107,10 @@ sourceSets {
     main.java.srcDirs += 'src/main/kotlin/'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 jfx {
     HashMap<String, String> attributes = new HashMap<String, String>()
     attributes.put('Implementation-Version', version.toString())
@@ -133,7 +137,7 @@ jfx {
     }
     logger.info('Runtime path is: {}', runtimePath)
     bundleArguments = [
-            licenseType: 'ASL 2.0',
+            licenseType: 'AGPLv3',
             licenseFile: 'LICENSE', //,
             runtime    : runtimePath
             //'signBundle': true,

@@ -24,7 +24,13 @@ import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.bind
+import tornadofx.confirm
+import tornadofx.disableWhen
+import tornadofx.get
+import tornadofx.imageview
+import tornadofx.item
 
 class HistoryMenu : BaseMenu("menu.history") {
 

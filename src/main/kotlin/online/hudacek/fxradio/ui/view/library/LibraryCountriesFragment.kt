@@ -28,23 +28,31 @@ import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.contextmenu
+import tornadofx.doubleBinding
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.item
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
+import tornadofx.visibleWhen
 
 /**
  * Custom listview fragment for countries
  */
-class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
-                               showProperty: BooleanProperty) : BaseFragment() {
+class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showProperty: BooleanProperty) : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 
     init {
-        viewModel
-                .stateObservableChanges
-                .filter { it !is LibraryState.SelectedCountry }
-                .subscribe {
-                    root.selectionModel.clearSelection()
-                }
+        viewModel.stateObservableChanges.filter { it !is LibraryState.SelectedCountry }.subscribe {
+            root.selectionModel.clearSelection()
+        }
     }
 
     override val root = listview(countriesProperty) {
@@ -58,7 +66,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
         })
 
         cellFormat {
-            graphic = hbox(5) {
+            graphic = hbox(spacing = 5) {
                 alignment = Pos.CENTER_LEFT
 
                 imageview {
@@ -67,7 +75,8 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
 
                 label(item.name.split("(")[0])
 
-                //Ignore it for pinned stations, they would always have 0 station count
+                // Do not show count of stations for pinned stations, they would always show 0
+                // as we do not store this in DB
                 if (it.stationcount > 0) {
                     label("${it.stationcount}") {
                         addClass(Styles.libraryListItemTag)
@@ -101,7 +110,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>,
             addClass(Styles.libraryListItem)
         }
 
-        onUserSelect(1) {
+        onUserSelect(clickCount = 1) {
             viewModel.stateProperty.value = LibraryState.SelectedCountry(it)
         }
 

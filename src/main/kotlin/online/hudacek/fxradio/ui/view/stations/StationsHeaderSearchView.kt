@@ -26,9 +26,17 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.booleanBinding
 import tornadofx.controlsfx.button
 import tornadofx.controlsfx.segmentedbutton
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.px
+import tornadofx.style
+import tornadofx.vbox
+import kotlin.collections.set
 
 class StationsHeaderSearchView : BaseView() {
 
@@ -36,10 +44,7 @@ class StationsHeaderSearchView : BaseView() {
     private val libraryViewModel: LibraryViewModel by inject()
 
     override fun onDock() {
-        viewModel.searchByTagProperty
-                .toObservableChangesNonNull()
-                .map { LibraryState.Search }
-                .subscribe(appEvent.refreshLibrary)
+        viewModel.searchByTagProperty.toObservableChangesNonNull().map { LibraryState.Search }.subscribe(appEvent.refreshLibrary)
     }
 
     override val root = vbox(alignment = Pos.CENTER) {
@@ -50,20 +55,20 @@ class StationsHeaderSearchView : BaseView() {
                 }
                 button(messages["search.byName"]) {
                     isSelected = true
-                    //Little hack that allows use to use togglegroup.bind() method
+                    // Little hack that allows use to use togglegroup.bind() method
                     properties["tornadofx.toggleGroupValue"] = false
-                    addClass(Styles.coloredButton)
+                    addClass(Styles.segmentedButton)
                 }
 
                 button(messages["search.byTag"]) {
                     properties["tornadofx.toggleGroupValue"] = true
-                    addClass(Styles.coloredButton)
+                    addClass(Styles.segmentedButton)
                 }
                 toggleGroup.bind(viewModel.searchByTagProperty)
             }
 
             showWhen {
-                //Show only while Search results are shown
+                // Show this view only while Search is current LibraryState
                 libraryViewModel.stateProperty.booleanBinding {
                     it is LibraryState.Search
                 }

@@ -19,8 +19,7 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
-import javafx.scene.effect.DropShadow
-import javafx.scene.paint.Color
+import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
@@ -31,24 +30,43 @@ import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.StationInfo
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
+import tornadofx.vbox
+
+private const val historyStationLogoSize = 30.0
 
 class StationsHistoryView : BaseView() {
 
     private val historyViewModel: HistoryViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
+    private val stationInfoViewModel: StationInfoViewModel by inject()
 
 
-    override val root = listview(historyViewModel.stationsProperty) {
+    override val root = listview<Station>(historyViewModel.stationsProperty) {
+
+        //Cleanup selected item on refresh of library
+        playerViewModel.stationObservable.subscribe {
+            selectionModel.clearSelection()
+            selectionModel.select(playerViewModel.stationProperty.value)
+        }
+
         id = "stationsHistoryList"
         cellFormat {
             graphic = hbox(10) {
                 alignment = Pos.CENTER_LEFT
                 imageview {
                     it.stationImage(this)
-                    fitHeight = 30.0
-                    fitWidth = 30.0
+                    fitHeight = historyStationLogoSize
+                    fitWidth = historyStationLogoSize
                 }
                 vbox {
                     label(it.name)
@@ -57,12 +75,13 @@ class StationsHistoryView : BaseView() {
             }
             onUserSelect(1) {
                 playerViewModel.stationProperty.value = it
+                stationInfoViewModel.item = StationInfo(it)
             }
             addClass(Styles.historyListItem)
         }
 
         showWhen {
-            //Show only while Search results are shown
+            // Show only while Library State is History
             libraryViewModel.stateProperty.booleanBinding {
                 it is LibraryState.History
             }

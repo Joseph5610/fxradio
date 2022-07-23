@@ -21,6 +21,8 @@ package online.hudacek.fxradio.storage.db
 import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersObservable
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
 
@@ -29,9 +31,9 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Co
                 //We do not store the count of stations for given pinned country
                 //so the returned object will have count set to 0 and the number is not displayed in UI
                 Country(it.getString("name"), it.getString("iso3"), 0)
-            }
+            }.compose(applySchedulersObservable())
 
-    override fun removeAll(): Single<Int> = removeAllQuery().toSingle()
+    override fun removeAll(): Single<Int> = removeAllQuery().toSingle().compose(applySchedulers())
 
     override fun insert(element: Country): Single<Country> = insertQuery("INSERT INTO $tableName (name, iso3)  " +
             "VALUES (:name, :iso3)")

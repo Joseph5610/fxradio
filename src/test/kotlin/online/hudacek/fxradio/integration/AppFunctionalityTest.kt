@@ -31,6 +31,7 @@ import online.hudacek.fxradio.apiclient.stations.StationsApi
 import online.hudacek.fxradio.apiclient.stations.model.Country
 import online.hudacek.fxradio.apiclient.stations.model.SearchBody
 import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.stations.model.isRussia
 import online.hudacek.fxradio.integration.Elements.libraryCountriesFragment
 import online.hudacek.fxradio.integration.Elements.libraryListView
 import online.hudacek.fxradio.integration.Elements.nowPlayingLabel
@@ -138,34 +139,33 @@ class AppFunctionalityTest {
     @Test
     fun `api should return same results as in app`() {
         val stations = service.getTopVotedStations().blockingGet()
+
         Assertions.assertEquals(50, stations.size)
 
         //Wait for stations to load
         val appStations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        stations.forEachIndexed { index, station ->
-            //top 50 stations should not have empty URL and have name
-            Assertions.assertTrue(station.name.isNotEmpty())
-            Assertions.assertTrue(station.url_resolved != null)
+        stations.forEachIndexed { index, _ ->
             Assertions.assertEquals(stations[index].name, appStations.items[index].name)
         }
     }
 
     @Test
     fun `history tab should show same stations as in database`() {
+        val historyItemIndex = 3
+
         //Verify app initial state
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
 
         //Wait for stations to load
         val libraries = robot.find(libraryListView) as ListView<LibraryItem>
-        waitFor(10) { libraries.items.size == 3 }
 
         //wait until loaded
         sleep(2)
 
         //Click on History in Library List Item
         val historyItem = robot.from(libraries)
-                .lookup(libraries.items[2].type.key.capitalize())
+                .lookup(libraries.items[historyItemIndex].type.key.capitalize())
                 .query<SmartListCell<LibraryItem>>()
         robot.clickOn(historyItem)
 

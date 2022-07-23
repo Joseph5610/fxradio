@@ -16,27 +16,25 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.ui.fragment
+package online.hudacek.fxradio.usecase
 
-import javafx.scene.layout.Priority
-import online.hudacek.fxradio.ui.BaseFragment
+import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.addClass
-import tornadofx.textarea
-import tornadofx.vbox
-import tornadofx.vgrow
+import online.hudacek.fxradio.ui.style.StylesDark
+import tornadofx.FX
+import tornadofx.importStylesheet
+import tornadofx.removeStylesheet
 
-class StationDebugFragment : BaseFragment("Station Debug Window") {
+class SetDarkModeUseCase : BaseUseCase<BooleanProperty, Unit>() {
 
-    private val viewModel: PlayerViewModel by inject()
-
-    override val root = vbox {
-        setPrefSize(600.0, 400.0)
-        textarea(viewModel.stationProperty.asString()) {
-            vgrow = Priority.ALWAYS
-            isWrapText = true
+    override fun execute(input: BooleanProperty) {
+        removeStylesheet(Styles::class)
+        removeStylesheet(StylesDark::class)
+        if (input.value) {
+            importStylesheet(StylesDark::class)
+        } else {
+            importStylesheet(Styles::class)
         }
-        addClass(Styles.backgroundWhiteSmoke)
+        FX.applyStylesheetsTo(FX.primaryStage.scene)
     }
 }

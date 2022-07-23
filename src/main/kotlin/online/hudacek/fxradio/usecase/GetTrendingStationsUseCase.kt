@@ -28,7 +28,7 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
-    override fun execute(input: Unit): Single<List<Station>> = apiService
+    override fun execute(input: Unit): Single<List<Station>> = stationsApi
             .getAllStations(AllStationsBody(order = "clicktrend"))
             .compose(applySchedulers())
 }

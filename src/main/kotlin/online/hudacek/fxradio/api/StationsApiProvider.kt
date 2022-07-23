@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.api
 
+import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.ApiServiceProvider
 import online.hudacek.fxradio.apiclient.stations.StationsApi
 import online.hudacek.fxradio.util.Properties
@@ -26,19 +27,23 @@ import online.hudacek.fxradio.viewmodel.Servers
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import tornadofx.Component
 
-object StationsProvider : Component() {
+private val logger = KotlinLogging.logger {}
+
+object StationsApiProvider : Component() {
 
     private val viewModel: ServersViewModel by inject()
 
-    private val apiServerProperty = Property(Properties.ApiServer)
+    private val apiServerProperty by lazy { Property(Properties.ApiServer) }
 
-    val serviceProvider: ApiServiceProvider by lazy {
+    private val serviceProvider: ApiServiceProvider by lazy {
+        logger.debug { "Initializing API provider" }
         if (apiServerProperty.isPresent) {
             viewModel.item = Servers(selectedServer = apiServerProperty.get())
         }
         ApiServiceProvider("https://${viewModel.selectedProperty.value}")
     }
 
-    val service = serviceProvider.get<StationsApi>()
+    fun provide(): StationsApi = serviceProvider.get()
 
+    fun close() = serviceProvider.close()
 }

@@ -20,9 +20,13 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.style.DarkAppearance
+import online.hudacek.fxradio.ui.style.LightAppearance
+import online.hudacek.fxradio.usecase.SetDarkModeUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
+import tornadofx.objectBinding
 import tornadofx.property
 
 class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
@@ -31,14 +35,23 @@ class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModeP
 
 /**
  * Keeps information about current logging level chosen in UI
- * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
+ * Used in [online.hudacek.fxradio.ui.view.MenuBarView]
  */
 class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
-    val darkModeProperty = bind(DarkMode::darkMode) as BooleanProperty
 
+    private val setDarkModeUseCase: SetDarkModeUseCase by inject()
+
+    val darkModeProperty by lazy { bind(DarkMode::darkMode) as BooleanProperty }
+
+    val appearanceProperty = darkModeProperty.objectBinding {
+        if (darkModeProperty.value) DarkAppearance() else LightAppearance()
+    }
 
     override fun onCommit() {
-        //Save it
+        // Save it
         Properties.DarkMode.save(darkModeProperty.value)
+
+        // Live reload styles
+        setDarkModeUseCase.execute(darkModeProperty)
     }
 }

@@ -24,7 +24,18 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.borderpane
+import tornadofx.box
+import tornadofx.center
+import tornadofx.get
+import tornadofx.hyperlink
+import tornadofx.paddingBottom
+import tornadofx.px
+import tornadofx.style
+import tornadofx.top
+import tornadofx.vbox
 
 class LibraryView : BaseView() {
 

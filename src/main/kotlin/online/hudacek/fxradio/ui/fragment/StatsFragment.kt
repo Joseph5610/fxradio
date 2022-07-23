@@ -27,10 +27,20 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import online.hudacek.fxradio.viewmodel.StatsState
 import online.hudacek.fxradio.viewmodel.StatsViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.hyperlink
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.paddingAll
+import tornadofx.stringBinding
+import tornadofx.vbox
 
 /**
- * Fragment shows stats of API server
+ * Fragment that presents stats of currently used API server
  */
 class StatsFragment : BaseFragment() {
 
@@ -65,6 +75,7 @@ class StatsFragment : BaseFragment() {
                     app.openUrl("http://${this.text}")
                 }
                 addClass(Styles.header)
+                addClass(Styles.primaryTextColor)
             }
 
             vbox {
@@ -72,19 +83,17 @@ class StatsFragment : BaseFragment() {
                 label(labelTextProperty) {
                     paddingAll = 20.0
                 }
-
-                viewModel.stateObservableChanges.subscribe {
-                    managedProperty().value = when (it) {
-                        is StatsState.Fetched -> false
-                        else -> true
+                showWhen {
+                    viewModel.stateProperty.booleanBinding {
+                        it !is StatsState.Fetched
                     }
                 }
             }
         }
 
         listview(viewModel.statsProperty) {
-            requestFocusOnSceneAvailable() //To get rid of the blue box around the hyperlink
-            isMouseTransparent = true //Disable clicking into listview, as it is not needed for this listview
+            requestFocusOnSceneAvailable() // To get rid of the blue box around the hyperlink
+            isMouseTransparent = true // Disable clicking into listview, as it is not needed for this listview
             cellFormat {
                 paddingAll = 0.0
                 graphic = hbox(5) {

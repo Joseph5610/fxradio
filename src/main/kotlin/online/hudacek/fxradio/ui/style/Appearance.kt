@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.style
 
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
@@ -37,13 +36,13 @@ class DarkAppearance : Appearance() {
     override val backgroundSelected = "#525356"
     override val label = "#dddddd"
     override val grayLabel = "#a0a1a2"
-    val playerBox = "#464646"
 }
 
 abstract class Appearance {
 
     val primary by lazy { getPrimaryColor() }
     val transparent = "transparent"
+    val playerBox = "#464646"
 
     abstract val background: String
     abstract val backgroundBorder: String
@@ -56,24 +55,22 @@ abstract class Appearance {
      */
     private fun getPrimaryColor(): String {
         val accentProperty = Property(Properties.AccentColor)
-        //Use accent color from app.property file
+        // Use accent color from app.property file
         val colorCode: Int = if (accentProperty.isPresent) {
             accentProperty.get()
         } else {
             if (MacUtils.isMac) {
-                //Use system accent color
+                // Use system accent color
                 MacUtils.systemAccentColor
             } else {
-                //Fallback
+                // Fallback primary color for non-mac OS
                 AccentColor.MULTICOLOR.colorCode
             }
         }
         return AccentColor.values().first { it.colorCode == colorCode }.color()
     }
 
-    companion object {
-        val currentAppearance by lazy {
-            if (FxRadio.isDarkModePreferred()) DarkAppearance() else LightAppearance()
-        }
+    override fun toString(): String {
+        return "Appearance(primary='$primary', transparent='$transparent', playerBox='$playerBox', background='$background', backgroundBorder='$backgroundBorder', backgroundSelected='$backgroundSelected', label='$label', grayLabel='$grayLabel')"
     }
 }

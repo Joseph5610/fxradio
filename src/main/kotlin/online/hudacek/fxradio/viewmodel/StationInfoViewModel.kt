@@ -27,6 +27,12 @@ import online.hudacek.fxradio.apiclient.stations.model.Station
 import tornadofx.observableListOf
 import tornadofx.property
 
+sealed class InfoPanelState {
+    object Hidden : InfoPanelState()
+
+    object Shown : InfoPanelState()
+}
+
 class StationInfo(station: Station) {
     var station: Station by property(station)
     var name: String by property(station.name)
@@ -35,6 +41,9 @@ class StationInfo(station: Station) {
     var codec: String by property(station.codec)
     var bitrate: Int by property(station.bitrate)
     var votes: Int by property(station.votes)
+    var streamUrl: String by property(station.url_resolved)
+    var clickTrend: Int by property(station.clicktrend)
+    var favicon: String? by property(station.favicon)
     var tags: ObservableList<String> by property(observableListOf(
             station.tags
                     .split(",")
@@ -44,7 +53,8 @@ class StationInfo(station: Station) {
     var homePage: String by property(station.homepage)
 }
 
-class StationInfoViewModel : BaseViewModel<StationInfo>() {
+class StationInfoViewModel : BaseStateViewModel<StationInfo, InfoPanelState>(
+        StationInfo(Station.dummy), InfoPanelState.Hidden) {
     val stationProperty = bind(StationInfo::station) as ObjectProperty
     val tagsProperty = bind(StationInfo::tags) as ListProperty<String>
     val homePageProperty = bind(StationInfo::homePage) as StringProperty
@@ -54,4 +64,7 @@ class StationInfoViewModel : BaseViewModel<StationInfo>() {
     val languageProperty = bind(StationInfo::language) as StringProperty
     val countryProperty = bind(StationInfo::country) as StringProperty
     val votesProperty = bind(StationInfo::votes) as IntegerProperty
+    val streamUrlProperty = bind(StationInfo::streamUrl) as StringProperty
+    val faviconProperty = bind(StationInfo::favicon) as StringProperty?
+    val clickTrendProperty = bind(StationInfo::clickTrend) as IntegerProperty
 }

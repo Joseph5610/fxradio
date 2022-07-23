@@ -20,8 +20,6 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.effect.DropShadow
-import javafx.scene.paint.Color
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.showWhen
@@ -29,7 +27,19 @@ import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.borderpane
+import tornadofx.bottom
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.label
+import tornadofx.onHover
+import tornadofx.separator
+import tornadofx.stringBinding
+import tornadofx.tooltip
+import tornadofx.top
+import tornadofx.vbox
 
 /**
  * Shows now playing song, radio logo, radio name
@@ -37,7 +47,7 @@ import tornadofx.*
 class PlayerStationView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val tickerView by lazy { TickerView() }
+    private val tickerView by lazy { PlayerTickerView() }
 
     private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {

@@ -18,23 +18,40 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
-import com.github.thomasnield.rxkotlinfx.onChangedObservable
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
-import javafx.scene.effect.DropShadow
-import javafx.scene.paint.Color
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.new
-import online.hudacek.fxradio.util.open
-import online.hudacek.fxradio.viewmodel.*
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.InfoPanelState
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationInfo
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.StationsState
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import tornadofx.action
+import tornadofx.booleanBinding
+import tornadofx.contextmenu
+import tornadofx.datagrid
+import tornadofx.get
+import tornadofx.imageview
+import tornadofx.item
+import tornadofx.label
+import tornadofx.onHover
+import tornadofx.paddingAll
+import tornadofx.px
+import tornadofx.separator
+import tornadofx.style
+import tornadofx.tooltip
+import tornadofx.vbox
+
+private const val gridCellWidth = 140.0
+private const val gridStationLogoSize = 100.0
 
 /**
  * Main view of stations
@@ -43,6 +60,7 @@ import tornadofx.*
 class StationsDataGridView : BaseView() {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val stationInfoViewModel: StationInfoViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
@@ -50,65 +68,54 @@ class StationsDataGridView : BaseView() {
     //Show initial stations
     override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
+
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
+        cellWidth = gridCellWidth
 
         //Cleanup selected item on refresh of library
-        itemsProperty
-                .onChangedObservable()
-                .subscribe {
+        itemsProperty.toObservableChanges().subscribe {
                     selectionModel.clearSelection()
+                    selectionModel.select(playerViewModel.stationProperty.value)
                 }
 
         onUserSelect(1) {
             playerViewModel.stationProperty.value = it
+            stationInfoViewModel.item = StationInfo(it)
         }
 
         cellCache { station ->
             vbox {
+                paddingAll = 5
+
+                onHover { tooltip(station.name) }
                 contextmenu {
-                    item(messages["menu.station.info"]).action {
-                        Modal.StationInfo.new()
-                    }
-
-                    separator()
-
-                    //Add Add/Remove from favourites menu items
+                    // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
-
                     separator()
-                    item(messages["menu.station.vote"]) {
-                        actionEvents()
-                                .map { station }
-                                .subscribe(appEvent.addVote)
-                    }
-
-                    if (Config.Flags.enableStationDebug) {
-                        separator()
-                        item("Station Debug Info").action {
-                            Modal.StationDebug.open()
-                        }
+                    item(messages["menu.station.info"]).action {
+                        stationInfoViewModel.item = StationInfo(station)
+                        stationInfoViewModel.stateProperty.value = InfoPanelState.Shown
                     }
                 }
 
-                paddingAll = 5
                 vbox(alignment = Pos.CENTER) {
-                    prefHeight = 120.0
                     paddingAll = 5
+                    prefHeight = 120.0
                     imageview {
                         station.stationImage(this)
-                        effect = DropShadow(10.0, Color.LIGHTGRAY)
-                        fitHeight = 100.0
-                        fitWidth = 100.0
+                        fitHeight = gridStationLogoSize
+                        fitWidth = gridStationLogoSize
                     }
                 }
-                label(station.name) {
-                    onHover { tooltip(station.name) }
-                    style {
-                        fontSize = 13.px
+                vbox(alignment = Pos.CENTER) {
+                    label(station.name) {
+                        style {
+                            fontSize = 13.px
+                        }
                     }
+                    smallLabel(station.tagsSplit)
                 }
-                smallLabel(station.tagsSplit)
             }
         }
 

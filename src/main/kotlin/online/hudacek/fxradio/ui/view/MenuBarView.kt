@@ -19,7 +19,12 @@
 package online.hudacek.fxradio.ui.view
 
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.menu.*
+import online.hudacek.fxradio.ui.menu.AboutMenu
+import online.hudacek.fxradio.ui.menu.FavouritesMenu
+import online.hudacek.fxradio.ui.menu.HelpMenu
+import online.hudacek.fxradio.ui.menu.HistoryMenu
+import online.hudacek.fxradio.ui.menu.PlayerMenu
+import online.hudacek.fxradio.ui.menu.StationMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.macos.NSMenu
 import online.hudacek.fxradio.util.macos.NSMenuBar
@@ -62,13 +67,14 @@ class MenuBarView : BaseView() {
      */
     private fun platformMenuBar() = NSMenuBar()
             .menuBar.apply {
-                NSMenu().appMenu(aboutMenu.aboutMainItems)
+                val nsMenu = NSMenu()
+                nsMenu.appMenu(aboutMenu.aboutMainItems)
                 menus.addAll(
                         stationMenu.menu,
                         playerMenu.menu,
                         favouritesMenu.menu,
                         historyMenu.menu,
-                        NSMenu().windowMenu(messages["macos.menu.window"]),
+                        nsMenu.windowMenu(messages["macos.menu.window"]),
                         helpMenu.menu)
             }
 }

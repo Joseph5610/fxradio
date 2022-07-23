@@ -43,7 +43,4 @@ object MacUtils : Component() {
 
     val systemAccentColor: Int
         get() = Command("defaults read -g AppleAccentColor").exec().toIntOrNull() ?: Int.MIN_VALUE
-
-    val osVersion: String
-        get() = System.getProperty("os.version")
 }

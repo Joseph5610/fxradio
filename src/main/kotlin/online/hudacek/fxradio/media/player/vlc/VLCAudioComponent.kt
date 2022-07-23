@@ -35,15 +35,9 @@ private val logger = KotlinLogging.logger {}
  */
 class VLCAudioComponent : AudioComponent {
 
-    private val player: AudioPlayerComponent? by lazy { runCatching { AudioPlayerComponent() }.getOrNull() }
+    private val player: AudioPlayerComponent? by lazy { run { AudioPlayerComponent() } }
 
     private lateinit var nativeLog: NativeLog
-
-    init {
-        if (player == null) {
-            throw RuntimeException("VLC player cannot be found on the system.")
-        }
-    }
 
     override fun play(streamUrl: String) {
         player?.mediaPlayer()?.media()?.play(streamUrl)

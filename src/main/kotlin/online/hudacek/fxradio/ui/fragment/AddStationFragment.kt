@@ -28,21 +28,39 @@ import online.hudacek.fxradio.ui.stylableNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.button
+import tornadofx.checkbox
 import tornadofx.controlsfx.content
+import tornadofx.enableWhen
+import tornadofx.field
+import tornadofx.fieldset
+import tornadofx.form
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.label
+import tornadofx.listProperty
+import tornadofx.observableListOf
+import tornadofx.onChange
+import tornadofx.validator
+import tornadofx.vbox
+import tornadofx.vgrow
 
 class AddStationFragment : BaseFragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+    private val darkModeViewModel: DarkModeViewModel by inject()
 
     //Autocomplete list of countries
-    private val countriesListProperty = listProperty(observableListOf<String>())
-
-    init {
-        countriesListProperty.bind(libraryViewModel.countriesProperty) { it.name }
+    private val countriesListProperty = listProperty(observableListOf<String>()).also {
+        it.bind(libraryViewModel.countriesProperty) { c -> c.name }
     }
 
     override fun onDock() {
@@ -53,6 +71,14 @@ class AddStationFragment : BaseFragment() {
     override val root = stylableNotificationPane {
         title = messages["add.title"]
         prefWidth = 400.0
+
+        darkModeViewModel.darkModeProperty.onChange {
+            if (!it) {
+                styleClass -= NotificationPane.STYLE_CLASS_DARK
+            } else {
+                styleClass += NotificationPane.STYLE_CLASS_DARK
+            }
+        }
 
         content {
             form {

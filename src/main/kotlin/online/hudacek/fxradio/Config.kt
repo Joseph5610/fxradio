@@ -24,15 +24,16 @@ package online.hudacek.fxradio
 object Config {
 
     object Resources {
-        const val appLogo = "appLogo.png"
-        const val stageIcon = "Industry-Radio-Tower-icon.png"
-        const val waveIcon = "Sound-Wave-icon.png"
+        const val appLogo = "radio-icon-applogo.png"
+        const val stageIcon = "radio-logo-stageicon.png"
+        const val waveIcon = "radio-logo-big.png"
     }
 
     object API {
         const val dnsLookupURL = "all.api.radio-browser.info"
         const val fallbackApiServerURL = "de1.api.radio-browser.info"
-        const val mapURL = "http://m2-multiplayer.eu/fxmap/"
+        const val repositoryURL = "https://github.com/Joseph5610/fxradio-main/"
+        const val radioBrowserUrl = "https://radio-browser.info"
     }
 
     /**
@@ -53,8 +54,7 @@ object Config {
      * Experimental features
      */
     object Flags {
-        const val useTrayIcon = false
-        const val enableStationDebug = false
-        const val enableMap = true
+        const val useTrayIcon = true
+        const val enableDebugWindow = false
     }
 }

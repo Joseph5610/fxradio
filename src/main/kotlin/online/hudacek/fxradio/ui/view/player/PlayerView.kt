@@ -20,18 +20,45 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
-import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.HistoryViewModel
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
+import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.booleanBinding
+import tornadofx.button
+import tornadofx.c
+import tornadofx.contextmenu
 import tornadofx.controlsfx.glyph
+import tornadofx.disableWhen
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.item
+import tornadofx.objectBinding
+import tornadofx.onChange
+import tornadofx.paddingLeft
+import tornadofx.paddingRight
+import tornadofx.paddingTop
+import tornadofx.region
+import tornadofx.slider
+import tornadofx.vbox
+import tornadofx.vgrow
+
+private const val controlsGlyphSize = 22.0
+private const val volumeGlyphSize = 14.0
+private const val infoGlyphSize = 14.0
 
 /**
  * Main player view above stations
@@ -40,17 +67,19 @@ import tornadofx.controlsfx.glyph
 class PlayerView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val historyViewModel: HistoryViewModel by inject()
+    private val darkModeViewModel: DarkModeViewModel by inject()
+    private val stationInfoViewModel: StationInfoViewModel by inject()
 
     private val playerStationView: PlayerStationView by inject()
 
-    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(size = 22.0, useStyle = false) }
-    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(size = 22.0, useStyle = false) }
-    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(size = 14.0, useStyle = false) }
-    private val randomStationGlyph by lazy {
-        FontAwesome.Glyph.RANDOM.make(size = 14.0, useStyle = false, color = c(Appearance.currentAppearance.primary))
+    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(controlsGlyphSize, useStyle = false) }
+    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(controlsGlyphSize, useStyle = false) }
+    private val infoGlyph by lazy {
+        FontAwesome.Glyph.INFO_CIRCLE.make(infoGlyphSize, useStyle = false,
+                color = c(darkModeViewModel.appearanceProperty.value!!.primary))
     }
-    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(size = 14.0, useStyle = false) }
+    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(volumeGlyphSize, useStyle = false) }
+    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(volumeGlyphSize, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
         if (it == PlayerState.Playing) {
@@ -77,6 +106,28 @@ class PlayerView : BaseView() {
         }
     }
 
+    private val stationInfo by lazy {
+        glyph {
+            id = "stationInfo"
+            graphic = infoGlyph
+            disableWhen {
+                viewModel.stationProperty.booleanBinding {
+                    it == null || !it.isValid()
+                }
+            }
+            setOnMouseClicked {
+                stationInfoViewModel.stateProperty.apply {
+                    value = if (value == InfoPanelState.Shown) {
+                        InfoPanelState.Hidden
+                    } else {
+                        InfoPanelState.Shown
+                    }
+                }
+            }
+            addClass(Styles.playerControls)
+        }
+    }
+
     private val volumeSlider by lazy {
         slider(-30..5) {
             bind(viewModel.volumeProperty)
@@ -84,7 +135,6 @@ class PlayerView : BaseView() {
             maxWidth = 90.0
             majorTickUnit = 8.0
             isSnapToTicks = true
-            //isShowTickMarks = true
             paddingTop = 2.0
 
             //Save new value
@@ -95,10 +145,18 @@ class PlayerView : BaseView() {
     }
 
     override val root = vbox {
-        hbox(12) {
+        hbox(spacing = 12) {
             vgrow = Priority.NEVER
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
+
+            if (Config.Flags.enableDebugWindow) {
+                contextmenu {
+                    item("Debug Window").action {
+                        Modal.Debug.open()
+                    }
+                }
+            }
 
             //Play/Pause buttons
             add(playerControls)
@@ -110,23 +168,8 @@ class PlayerView : BaseView() {
             //Station info box
             add(playerStationView)
 
-            glyph {
-                id = "playRandomStation"
-                graphic = randomStationGlyph
-                tooltip(messages["player.playRandomStation"])
-                onLeftClick {
-                    viewModel.stationProperty.value = historyViewModel.stationsProperty.filter {
-                        it != viewModel.stationProperty.value
-                    }.random()
-                }
-
-                enableWhen {
-                    historyViewModel.stationsProperty.emptyProperty().not()
-                            .and(historyViewModel.stationsProperty.sizeProperty().greaterThan(2))
-                }
-
-                addClass(Styles.playerControls)
-            }
+            // Show station details
+            add(stationInfo)
 
             region {
                 hgrow = Priority.ALWAYS

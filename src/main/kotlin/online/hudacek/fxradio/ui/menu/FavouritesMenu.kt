@@ -24,7 +24,16 @@ import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.bind
+import tornadofx.booleanBinding
+import tornadofx.confirm
+import tornadofx.disableWhen
+import tornadofx.enableWhen
+import tornadofx.get
+import tornadofx.imageview
+import tornadofx.item
+import tornadofx.visibleWhen
 
 class FavouritesMenu : BaseMenu("menu.favourites") {
 
@@ -45,72 +54,66 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
      * Items for add/remove favourite station reused in multiple menus around the app
      */
     val addRemoveFavouriteItems
-        get() =
-            mutableListOf(
-                    item(messages["menu.station.favourite"], KeyCodes.favourite) {
-                        enableWhen(playedStationNotInFavouritesProperty)
-                        visibleWhen(favouriteMenuItemVisibleProperty)
+        get() = mutableListOf(item(messages["menu.station.favourite"], KeyCodes.favourite) {
+            enableWhen(playedStationNotInFavouritesProperty)
+            visibleWhen(favouriteMenuItemVisibleProperty)
 
-                        action {
-                            appEvent.addFavourite.onNext(playerViewModel.stationProperty.value)
-                            appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                            playedStationNotInFavouritesProperty.invalidate()
-                        }
-                    },
-                    //Remove favourite
-                    item(messages["menu.station.favouriteRemove"]) {
-                        disableWhen(playedStationNotInFavouritesProperty)
-                        visibleWhen(favouriteMenuItemVisibleProperty)
+            action {
+                appEvent.addFavourite.onNext(playerViewModel.stationProperty.value)
+                appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                playedStationNotInFavouritesProperty.invalidate()
+            }
+        },
+                //Remove favourite
+                item(messages["menu.station.favouriteRemove"]) {
+                    disableWhen(playedStationNotInFavouritesProperty)
+                    visibleWhen(favouriteMenuItemVisibleProperty)
 
-                        action {
-                            appEvent.removeFavourite.onNext(playerViewModel.stationProperty.value)
-                            appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                            playedStationNotInFavouritesProperty.invalidate()
-                        }
+                    action {
+                        appEvent.removeFavourite.onNext(playerViewModel.stationProperty.value)
+                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                        playedStationNotInFavouritesProperty.invalidate()
                     }
-            )
+                })
 
     override val menuItems = mutableListOf<MenuItem>().apply {
-        addAll(listOf(
-                item(messages["menu.favourites.show"]) {
-                    action {
-                        libraryViewModel.stateProperty.value = LibraryState.Favourites
-                    }
-                },
-                menu(messages["menu.favourites.all"]) {
-                    disableWhen {
-                        favouritesViewModel.stationsProperty.emptyProperty()
-                    }
-                    items.bind(favouritesViewModel.stationsProperty) {
-                        item(it.name) {
-                            //for some reason macos native menu does not respect
-                            //width/height setting so it is disabled for now
-                            if (!appMenuViewModel.usePlatformProperty.value) {
-                                graphic = imageview {
-                                    it.stationImage(this)
-                                    fitHeight = 15.0
-                                    fitWidth = 15.0
-                                    isPreserveRatio = true
-                                }
-                            }
-                            action {
-                                playerViewModel.stationProperty.value = it
-                            }
+        addAll(listOf(item(messages["menu.favourites.show"]) {
+            action {
+                libraryViewModel.stateProperty.value = LibraryState.Favourites
+            }
+        }, menu(messages["menu.favourites.all"]) {
+            disableWhen {
+                favouritesViewModel.stationsProperty.emptyProperty()
+            }
+            items.bind(favouritesViewModel.stationsProperty) {
+                item(it.name) {
+                    //for some reason macos native menu does not respect
+                    //width/height setting so it is disabled for now
+                    if (!appMenuViewModel.usePlatformProperty.value) {
+                        graphic = imageview {
+                            it.stationImage(this)
+                            fitHeight = 15.0
+                            fitWidth = 15.0
+                            isPreserveRatio = true
                         }
                     }
-                }))
+                    action {
+                        playerViewModel.stationProperty.value = it
+                    }
+                }
+            }
+        }))
         addAll(addRemoveFavouriteItems)
-        addAll(listOf(separator(),
-                item(messages["menu.station.favourite.clear"]) {
-                    disableWhen {
-                        favouritesViewModel.stationsProperty.emptyProperty()
-                    }
-                    action {
-                        confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                            favouritesViewModel.cleanupFavourites()
-                            appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                        }
-                    }
-                }))
+        addAll(listOf(separator(), item(messages["menu.station.favourite.clear"]) {
+            disableWhen {
+                favouritesViewModel.stationsProperty.emptyProperty()
+            }
+            action {
+                confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
+                    favouritesViewModel.cleanupFavourites()
+                    appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                }
+            }
+        }))
     }
 }

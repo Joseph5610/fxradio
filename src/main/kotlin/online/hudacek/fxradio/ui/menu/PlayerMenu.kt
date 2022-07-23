@@ -20,16 +20,17 @@ package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
-import online.hudacek.fxradio.util.macos.MacUtils
-import online.hudacek.fxradio.viewmodel.OsNotificationViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
+import tornadofx.action
+import tornadofx.get
+import tornadofx.onChange
 
 class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val playerViewModel: PlayerViewModel by inject()
-    private val osNotificationViewModel: OsNotificationViewModel by inject()
+    private val streamTitleNotificationViewModel: StreamTitleNotificationViewModel by inject()
 
     private val playerTypeItem by lazy {
         checkMenuItem(messages["menu.player.switch"]) {
@@ -49,34 +50,27 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    override val menuItems = listOf(
-            item(messages["menu.player.start"], KeyCodes.play) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    playerViewModel.stateProperty.value = PlayerState.Playing
-                }
-            },
-            item(messages["menu.player.stop"], KeyCodes.stop) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    playerViewModel.stateProperty.value = PlayerState.Stopped
-                }
-            },
-            separator(),
-            playerTypeItem,
+    override val menuItems = listOf(item(messages["menu.player.start"], KeyCodes.play) {
+        disableWhenInvalidStation(playerViewModel.stationProperty)
+        action {
+            playerViewModel.stateProperty.value = PlayerState.Playing
+        }
+    }, item(messages["menu.player.stop"], KeyCodes.stop) {
+        disableWhenInvalidStation(playerViewModel.stationProperty)
+        action {
+            playerViewModel.stateProperty.value = PlayerState.Stopped
+        }
+    }, separator(), playerTypeItem,
 
-            checkMenuItem(messages["menu.player.animate"],
-                    bindProperty = playerViewModel.animateProperty) {
+            checkMenuItem(messages["menu.player.animate"], bindProperty = playerViewModel.animateProperty) {
                 action {
                     playerViewModel.commit()
                 }
             },
 
-            checkMenuItem(messages["menu.player.notifications"],
-                    bindProperty = osNotificationViewModel.showProperty) {
+            checkMenuItem(messages["menu.player.notifications"], bindProperty = streamTitleNotificationViewModel.showProperty) {
                 action {
-                    osNotificationViewModel.commit()
+                    streamTitleNotificationViewModel.commit()
                 }
-            }
-    )
+            })
 }

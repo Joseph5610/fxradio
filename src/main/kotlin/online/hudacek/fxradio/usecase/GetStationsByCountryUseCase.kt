@@ -29,7 +29,7 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class GetStationsByCountryUseCase : BaseUseCase<Country, Single<List<Station>>>() {
 
-    override fun execute(input: Country): Single<List<Station>> = apiService
+    override fun execute(input: Country): Single<List<Station>> = stationsApi
             .getStationsByCountry(CountriesBody(), input.name)
             .compose(applySchedulers())
 }

@@ -24,6 +24,7 @@ import javafx.scene.control.Alert.AlertType.ERROR
 import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
 import mu.KotlinLogging
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.style.Styles
 import tornadofx.FX
@@ -35,7 +36,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import java.net.URLEncoder
 
-private const val issueUrl = "https://github.com/Joseph5610/fxradio-main/issues/new?assignees=&labels=bug&template=bug_report.md&title="
+private const val ISSUE_URL = "${Config.API.repositoryURL}issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
 private val log = KotlinLogging.logger("ErrorHandler")
 
@@ -112,7 +113,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             if (result.get().buttonData == ButtonBar.ButtonData.HELP) {
                 val titleQuery = URLEncoder.encode("[${FxRadio.version}] $error", "UTF-8")
                 val bodyQuery = URLEncoder.encode(textarea.text, "UTF-8")
-                FX.application.hostServices.showDocument("$issueUrl$titleQuery&body=$bodyQuery")
+                FX.application.hostServices.showDocument("$ISSUE_URL$titleQuery&body=$bodyQuery")
             }
 
             if (result.get().buttonData == ButtonBar.ButtonData.HELP_2) {

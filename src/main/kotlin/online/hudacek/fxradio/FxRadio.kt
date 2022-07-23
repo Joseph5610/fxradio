@@ -18,16 +18,17 @@
 
 package online.hudacek.fxradio
 
+import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
-import online.hudacek.fxradio.api.StationsProvider
+import online.hudacek.fxradio.api.StationsApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.Tray
+import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -36,6 +37,7 @@ import tornadofx.App
 import tornadofx.FX
 import tornadofx.Stylesheet
 import tornadofx.launch
+import tornadofx.setStageIcon
 import tornadofx.stylesheet
 import java.io.FileInputStream
 import java.nio.file.Path
@@ -65,6 +67,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
+    private val trayIcon: TrayIcon by lazy { TrayIcon() }
+
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
         with(stage) {
@@ -72,27 +76,30 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             minHeight = 400.0
 
             //Setup window location on screen
-            config.double(Properties.WindowWidth.key)?.let {
-                width = it
+            with(config) {
+                double(Properties.WindowWidth.key)?.let {
+                    width = it
+                }
+                double(Properties.WindowHeight.key)?.let {
+                    height = it
+                }
+                double(Properties.WindowX.key)?.let {
+                    x = it
+                }
+                double(Properties.WindowY.key)?.let {
+                    y = it
+                }
             }
-            config.double(Properties.WindowHeight.key)?.let {
-                height = it
-            }
-            config.double(Properties.WindowX.key)?.let {
-                x = it
-            }
-            config.double(Properties.WindowY.key)?.let {
-                y = it
-            }
+            setStageIcon(Image(Config.Resources.stageIcon))
             super.start(this)
         }
-        Tray().addIcon()
+        trayIcon.addIcon()
     }
 
     override fun stop() {
         if (!isTestEnvironment) {
             playerViewModel.releasePlayer()
-            StationsProvider.serviceProvider.close()
+            StationsApiProvider.close()
             HttpClient.close()
             LogManager.shutdown()
         }
@@ -128,19 +135,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
         }
 
-        private fun hasSystemDarkMode() = if (MacUtils.isMac) {
-            MacUtils.isSystemDarkMode
-        } else {
-            false
-        }
+        private fun hasSystemDarkMode() = MacUtils.isMac && MacUtils.isSystemDarkMode
 
         fun isDarkModePreferred(): Boolean {
             //we have to use the ugly java way to access this property as we want to access it
             //in the time that the app is not yet instantiated
             val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
-            val props = java.util.Properties()
-            props.load(fis)
-            val darkModeProp = props.getProperty("app.darkmode")
+            val props = java.util.Properties().also { it.load(fis) }
+            val darkModeProp = props.getProperty(Properties.DarkMode.key)
             return darkModeProp?.toBoolean() ?: hasSystemDarkMode()
         }
     }

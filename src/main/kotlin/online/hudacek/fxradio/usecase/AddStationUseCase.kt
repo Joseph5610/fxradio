@@ -31,7 +31,7 @@ private val logger = KotlinLogging.logger {}
  */
 class AddStationUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
 
-    override fun execute(input: StationBody): Single<AddedStation> = apiService
+    override fun execute(input: StationBody): Single<AddedStation> = stationsApi
             .addStation(input)
             .compose(applySchedulers())
             .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, "0")) }

@@ -19,13 +19,12 @@
 package online.hudacek.fxradio.media
 
 import javafx.application.Platform
-import javafx.scene.control.Alert
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.player.humble.HumblePlayerImpl
 import online.hudacek.fxradio.media.player.vlc.VLCPlayerImpl
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.value
-import tornadofx.alert
+import online.hudacek.fxradio.util.vlcAlert
 
 private val logger = KotlinLogging.logger {}
 
@@ -66,7 +65,7 @@ object MediaPlayerFactory {
     }.onFailure {
         logger.error(it) { "Exception when initializing VLC Player!" }
         Platform.runLater {
-            alert(Alert.AlertType.WARNING, "VLC player not found!", "For the best experience, we recommend that you install VLC player on your system!")
+            vlcAlert()
         }
     }.getOrDefault(HumblePlayerImpl())
 

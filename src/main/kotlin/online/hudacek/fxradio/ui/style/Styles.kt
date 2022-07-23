@@ -28,7 +28,7 @@ import tornadofx.*
  */
 class Styles : Stylesheet() {
 
-    private val colors by lazy { Appearance.currentAppearance }
+    private val colors = LightAppearance()
 
     companion object {
 
@@ -46,7 +46,7 @@ class Styles : Stylesheet() {
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
-        val coloredButton by cssclass()
+        val segmentedButton by cssclass()
 
         val header by cssclass()
         val subheader by cssclass()
@@ -58,6 +58,7 @@ class Styles : Stylesheet() {
         val backgroundWhiteSmoke by cssclass()
 
         //For Text() elements
+        val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val grayTextColor by cssclass()
 
@@ -111,16 +112,17 @@ class Styles : Stylesheet() {
             fontSize = 14.px
         }
 
+        primaryTextColor {
+            fill = c(colors.primary)
+            textFill = c(colors.primary)
+        }
+
         defaultTextColor {
             fill = c(colors.label)
         }
 
         grayTextColor {
             textFill = c(colors.grayLabel)
-        }
-
-        coloredButton {
-
         }
 
         playerControls {
@@ -137,22 +139,23 @@ class Styles : Stylesheet() {
         }
 
         button {
-            and(default) {
-                baseColor = c(colors.primary)
-                textFill = Color.WHITESMOKE
-            }
-
+            baseColor = c(colors.backgroundSelected)
             minWidth = 75.px
+            minHeight = 25.px
             fontSize = 12.px
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            padding = box(4.px, 10.px, 4.px, 10.px)
+            padding = box(5.px, 10.px, 5.px, 10.px)
             textFill = c(colors.label)
         }
 
         primaryButton {
             baseColor = c(colors.primary)
             textFill = Color.WHITESMOKE
+        }
+
+        segmentedButton {
+            minHeight = 20.px
         }
 
         hyperlink {
@@ -192,6 +195,7 @@ class Styles : Stylesheet() {
         }
 
         historyListView {
+            padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += Color.WHITE
             borderColor += box(Color.WHITE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
@@ -200,18 +204,18 @@ class Styles : Stylesheet() {
         historyListItem {
             fontSize = 12.px
             textFill = c(colors.label)
-            backgroundColor += Color.WHITE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            and(hover) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+            and(odd) {
+                backgroundColor += Color.WHITE
+            }
+            and(even) {
+                backgroundColor += Color.WHITESMOKE
             }
             and(selected) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
-            padding = box(5.px, 10.px, 5.px, 15.px)
+            padding = box(10.px, 10.px, 10.px, 10.px)
         }
 
         boldText {
@@ -308,7 +312,6 @@ class Styles : Stylesheet() {
         }
 
         datagridCell {
-            padding = box(0.px, 5.px, 5.px, 5.px)
             backgroundColor += c(colors.transparent)
             borderColor += box(c(colors.transparent))
             backgroundRadius += box(6.px)
@@ -321,7 +324,7 @@ class Styles : Stylesheet() {
 
             and(selected) {
                 backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
         }
 

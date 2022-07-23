@@ -18,31 +18,14 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.action
 import tornadofx.get
 
 class StationMenu : BaseMenu("menu.station") {
 
-    private val playerViewModel: PlayerViewModel by inject()
-
     override val menuItems = listOf(
-            item(messages["menu.station.info"], KeyCodes.info) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    Modal.StationInfo.open()
-                }
-            },
-            item(messages["copy.stream.url"]) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    playerViewModel.stationProperty.value.url_resolved?.let { clipboard.update(it) }
-                }
-            },
-            separator(),
             item(messages["menu.station.add"], KeyCodes.add) {
                 action {
                     Modal.AddNewStation.open()

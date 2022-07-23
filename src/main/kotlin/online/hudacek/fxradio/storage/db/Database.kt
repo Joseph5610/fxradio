@@ -46,12 +46,15 @@ abstract class Database(open val tableName: String) {
          * Establishes connection to SQLite db with [dbUrl]
          * Performs create table operation for all tables in [Tables] object
          */
-        private val connection: Connection = DriverManager.getConnection(dbUrl).apply {
-            /**
-             * Apply flyway db migrations
-             */
-            val flyway = Flyway.configure().dataSource(dbUrl, null, null).load()
-            flyway.migrate()
+        private val connection: Connection by lazy {
+            DriverManager.getConnection(dbUrl).apply {
+                /**
+                 * Apply flyway db migrations
+                 */
+                Flyway.configure().dataSource(dbUrl, null, null).load().also {
+                    it.migrate()
+                }
+            }
         }
     }
 }

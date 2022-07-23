@@ -33,13 +33,12 @@ private val logger = KotlinLogging.logger {}
  */
 class GetCountriesUseCase : BaseUseCase<ListProperty<Country>, Disposable>() {
 
-    override fun execute(input: ListProperty<Country>): Disposable = apiService
+    override fun execute(input: ListProperty<Country>): Disposable = stationsApi
             .getCountries(CountriesBody())
+            .map { it.filter { c -> !c.isRussia } }
             .compose(applySchedulers())
-            .flattenAsObservable { it }
-            .filter { !it.isRussia }
             .subscribe({
-                input.add(it)
+                input.addAll(it)
             }, {
                 logger.error(it) { "Exception while getting Countries!" }
             })

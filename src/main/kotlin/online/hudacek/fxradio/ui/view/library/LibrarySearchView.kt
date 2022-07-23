@@ -30,6 +30,9 @@ import tornadofx.label
 import tornadofx.onChange
 import tornadofx.validator
 
+private const val searchGlyphSize = 14.0
+private const val searchMaxLength = 49.0
+
 /**
  * Search input field view
  */
@@ -41,7 +44,7 @@ class LibrarySearchView : BaseView() {
     override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = label(graphic = FontAwesome.Glyph.SEARCH.make(size = 14.0))
+        left = label(graphic = FontAwesome.Glyph.SEARCH.make(searchGlyphSize))
 
         setOnMouseClicked {
             libraryViewModel.stateProperty.value = LibraryState.Search
@@ -53,7 +56,7 @@ class LibrarySearchView : BaseView() {
 
         validator {
             when {
-                it != null && it.length >= 49 -> error(messages["field.max.length"])
+                it != null && it.length >= searchMaxLength -> error(messages["field.max.length"])
                 else -> null
             }
         }

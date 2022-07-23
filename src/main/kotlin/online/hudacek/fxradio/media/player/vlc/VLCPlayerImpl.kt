@@ -29,15 +29,13 @@ private val logger = KotlinLogging.logger {}
  */
 class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.VLC) : MediaPlayer {
 
-    private val vlcMediaAdapter = VLCMediaAdapter()
-    private val vlcAudioComponent = VLCAudioComponent()
-    private val vlcLogListener = VLCLogListener()
+    private val vlcMediaAdapter by lazy { VLCMediaAdapter() }
+    private val vlcLogListener by lazy { VLCLogListener() }
 
-    init {
-        vlcAudioComponent.attachLogListener(vlcLogListener)
-
+    private val vlcAudioComponent = VLCAudioComponent().apply {
+        attachLogListener(vlcLogListener)
         if (MediaPlayer.isMetaDataRefreshEnabled) {
-            vlcAudioComponent.attachMediaListener(vlcMediaAdapter)
+            attachMediaListener(vlcMediaAdapter)
         }
     }
 

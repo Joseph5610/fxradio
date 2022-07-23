@@ -21,14 +21,19 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.c
+import tornadofx.cssclass
+import tornadofx.em
+import tornadofx.px
 
 /**
  * Dark mode CSS classes used around the app
  */
 class StylesDark : Stylesheet() {
 
-    private val colors by lazy { Appearance.currentAppearance as DarkAppearance }
+    private val colors = DarkAppearance()
 
     companion object {
 
@@ -46,7 +51,7 @@ class StylesDark : Stylesheet() {
         val libraryListItemTag by cssclass()
 
         val primaryButton by cssclass()
-        val coloredButton by cssclass()
+        val segmentedButton by cssclass()
 
         val header by cssclass()
         val subheader by cssclass()
@@ -60,6 +65,7 @@ class StylesDark : Stylesheet() {
         val mainMenuBox by cssclass()
 
         //for Text()
+        val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
     }
@@ -130,6 +136,11 @@ class StylesDark : Stylesheet() {
             fill = Color.WHITESMOKE
         }
 
+        primaryTextColor {
+            fill = c(colors.primary)
+            textFill = c(colors.primary)
+        }
+
         playerControls {
             unsafe("-fx-padding", raw("0"))
             unsafe("-fx-background-insets", raw("0"))
@@ -143,39 +154,25 @@ class StylesDark : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        coloredButton {
-            backgroundColor += c(colors.background)
-            borderColor += box(c(colors.backgroundBorder))
-            textFill = Color.WHITESMOKE
-
-            and(hover) {
-                backgroundColor += c(colors.backgroundSelected)
-            }
-            and(focused) {
-                backgroundColor += c(colors.backgroundSelected)
-            }
-            and(selected) {
-                backgroundColor += c(colors.backgroundSelected)
-            }
-        }
-
         button {
-            and(default) {
-                baseColor = c(colors.primary)
-                textFill = Color.WHITESMOKE
-            }
             baseColor = c(colors.backgroundSelected)
             minWidth = 75.px
+            minHeight = 25.px
             fontSize = 12.px
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            padding = box(4.px, 10.px, 4.px, 10.px)
+            padding = box(5.px, 10.px, 5.px, 10.px)
             textFill = c(colors.label)
         }
 
         primaryButton {
-            backgroundColor += c(colors.primary)
+            baseColor = c(colors.primary)
             textFill = Color.WHITESMOKE
+        }
+
+        segmentedButton {
+            baseColor = c(colors.backgroundSelected)
+            minHeight = 20.px
         }
 
         libraryListView {
@@ -206,9 +203,11 @@ class StylesDark : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            backgroundColor += c(colors.playerBox)
         }
 
         historyListView {
+            padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += c(colors.transparent)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
@@ -216,18 +215,18 @@ class StylesDark : Stylesheet() {
         historyListItem {
             fontSize = 12.px
             textFill = c(colors.label)
-            backgroundColor += c(colors.transparent)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            and(hover) {
+            and(odd) {
                 backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+            }
+            and(even) {
+                backgroundColor += c(colors.transparent)
             }
             and(selected) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
-            padding = box(5.px, 10.px, 5.px, 15.px)
+            padding = box(10.px, 10.px, 10.px, 10.px)
         }
 
         boldText {
@@ -332,7 +331,7 @@ class StylesDark : Stylesheet() {
 
             and(selected) {
                 backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                borderColor += box(c(colors.primary))
             }
         }
 
@@ -415,6 +414,10 @@ class StylesDark : Stylesheet() {
             promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            and(focused) {
+                borderColor += box(c(colors.primary, 0.6))
+                faintFocusColor = c("${colors.primary}22")
+            }
         }
 
         noBorder {

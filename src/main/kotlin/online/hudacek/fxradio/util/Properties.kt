@@ -35,7 +35,7 @@ enum class Properties(val key: String) {
     PlayerMetaDataRefresh("player.refreshMeta"), //Not configurable in UI
     ApiServer("app.server"),
     SearchQuery("search.query"),
-    SendOsNotifications("notifications"),
+    SendStreamTitleNotification("notifications"),
     WindowDivider("windowDivider"),
     ShowLibrary("window.showLibrary"),
     ShowCountries("window.showCountries"),
@@ -55,7 +55,7 @@ enum class Properties(val key: String) {
 class Property(property: Properties) : Component() {
 
     //Extract value
-    val key = property.key
+    val key by lazy { property.key }
 
     val isPresent: Boolean
         //runCatching handles situations where config or key fields are throwing NPE
