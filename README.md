@@ -1,5 +1,7 @@
 # FXRadio
 
+[![Build](https://github.com/Joseph5610/fxradio-main/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Joseph5610/fxradio-main/actions/workflows/main.yml)
+
 Internet radio directory desktop app written in [tornadofx](https://tornadofx.io) framework.
 
 Play thousands of radio stations from around the world. Find out which stations are currently trending or find all radio stations broadcasting in your country. If you know the name of your favourite station, you can just search for it, and it will appear instantly if we have it in our database. If we don't, you can add it yourself - you just need to provide a couple of details about the station.
