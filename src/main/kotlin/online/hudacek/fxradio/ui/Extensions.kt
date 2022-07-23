@@ -69,6 +69,8 @@ import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
+private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
+
 /**
  * This is to overcome a bug that sometimes
  * scene is not available when requesting focus
@@ -198,7 +200,7 @@ internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit
  */
 internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
     if (isVisible) show(message, glyph.toGlyph())
-    val delay = PauseTransition(Duration.seconds(5.0))
+    val delay = PauseTransition(Duration.seconds(NOTIFICATION_TIME_ON_SCREEN))
     delay.onFinished = EventHandler { hide() }
     delay.play()
 }
