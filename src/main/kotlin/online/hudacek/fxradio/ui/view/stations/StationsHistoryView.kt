@@ -41,7 +41,7 @@ import tornadofx.listview
 import tornadofx.onUserSelect
 import tornadofx.vbox
 
-private const val historyStationLogoSize = 30.0
+private const val LOGO_SIZE = 30.0
 
 class StationsHistoryView : BaseView() {
 
@@ -65,8 +65,8 @@ class StationsHistoryView : BaseView() {
                 alignment = Pos.CENTER_LEFT
                 imageview {
                     it.stationImage(this)
-                    fitHeight = historyStationLogoSize
-                    fitWidth = historyStationLogoSize
+                    fitHeight = LOGO_SIZE
+                    fitWidth = LOGO_SIZE
                 }
                 vbox {
                     label(it.name)

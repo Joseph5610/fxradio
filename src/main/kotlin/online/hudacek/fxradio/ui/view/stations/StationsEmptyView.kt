@@ -40,7 +40,7 @@ import tornadofx.stringBinding
 import tornadofx.text
 import tornadofx.vbox
 
-private const val mainGlyphSize = 50.0
+private const val GLYPH_SIZE = 50.0
 
 /**
  * This is a view that shows different errors or info messages on stationsView
@@ -49,9 +49,9 @@ class StationsEmptyView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
 
-    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = mainGlyphSize) }
-    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = mainGlyphSize) }
-    private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = mainGlyphSize) }
+    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE) }
+    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE) }
+    private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = GLYPH_SIZE) }
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {

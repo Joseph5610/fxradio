@@ -24,12 +24,7 @@ import io.humble.video.MediaAudio
 import io.humble.video.MediaDescriptor
 import online.hudacek.fxradio.media.StreamUnavailableException
 
-internal fun Decoder.getMediaAudio() = MediaAudio.make(
-        frameSize,
-        sampleRate,
-        channels,
-        channelLayout,
-        sampleFormat)
+internal fun Decoder.getMediaAudio() = MediaAudio.make(frameSize, sampleRate, channels, channelLayout, sampleFormat)
 
 /**
  * Try to get basic stream information from [streamUrl]
@@ -37,8 +32,7 @@ internal fun Decoder.getMediaAudio() = MediaAudio.make(
  */
 internal fun Demuxer.getStreamInfo(streamUrl: String): HumbleStreamInfo? {
     try {
-        open(streamUrl, null, false, true,
-                null, null)
+        open(streamUrl, null, false, true, null, null)
         for (i in 0 until numStreams) {
             val stream = getStream(i)
             val decoder = stream.decoder

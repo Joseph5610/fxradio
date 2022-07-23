@@ -38,7 +38,6 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.booleanBinding
-import tornadofx.button
 import tornadofx.c
 import tornadofx.contextmenu
 import tornadofx.controlsfx.glyph
@@ -56,9 +55,9 @@ import tornadofx.slider
 import tornadofx.vbox
 import tornadofx.vgrow
 
-private const val controlsGlyphSize = 22.0
-private const val volumeGlyphSize = 14.0
-private const val infoGlyphSize = 14.0
+private const val CONTROLS_GLYPH_SIZE = 22.0
+private const val VOLUME_GLYPH_SIZE = 14.0
+private const val INFO_GLYPH_SIZE = 14.0
 
 /**
  * Main player view above stations
@@ -72,14 +71,14 @@ class PlayerView : BaseView() {
 
     private val playerStationView: PlayerStationView by inject()
 
-    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(controlsGlyphSize, useStyle = false) }
-    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(controlsGlyphSize, useStyle = false) }
+    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, useStyle = false) }
+    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(CONTROLS_GLYPH_SIZE, useStyle = false) }
     private val infoGlyph by lazy {
-        FontAwesome.Glyph.INFO_CIRCLE.make(infoGlyphSize, useStyle = false,
+        FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE, useStyle = false,
                 color = c(darkModeViewModel.appearanceProperty.value!!.primary))
     }
-    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(volumeGlyphSize, useStyle = false) }
-    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(volumeGlyphSize, useStyle = false) }
+    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(VOLUME_GLYPH_SIZE, useStyle = false) }
+    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
         if (it == PlayerState.Playing) {

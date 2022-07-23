@@ -50,8 +50,8 @@ import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.vbox
 
-private const val gridCellWidth = 140.0
-private const val gridStationLogoSize = 100.0
+private const val CELL_WIDTH = 140.0
+private const val LOGO_SIZE = 100.0
 
 /**
  * Main view of stations
@@ -71,7 +71,7 @@ class StationsDataGridView : BaseView() {
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
-        cellWidth = gridCellWidth
+        cellWidth = CELL_WIDTH
 
         //Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
@@ -104,8 +104,8 @@ class StationsDataGridView : BaseView() {
                     prefHeight = 120.0
                     imageview {
                         station.stationImage(this)
-                        fitHeight = gridStationLogoSize
-                        fitWidth = gridStationLogoSize
+                        fitHeight = LOGO_SIZE
+                        fitWidth = LOGO_SIZE
                     }
                 }
                 vbox(alignment = Pos.CENTER) {

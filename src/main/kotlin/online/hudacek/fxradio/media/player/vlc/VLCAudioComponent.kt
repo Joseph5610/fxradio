@@ -20,7 +20,6 @@ package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.AudioComponent
-import online.hudacek.fxradio.media.StreamUnavailableException
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog

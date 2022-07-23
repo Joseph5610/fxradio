@@ -51,7 +51,7 @@ import tornadofx.stringBinding
 import tornadofx.top
 import tornadofx.vbox
 
-private const val logoWidth = 60.0
+private const val LOGO_SIZE = 60.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
@@ -61,8 +61,8 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
     private val stationLogo by lazy {
         imageview {
-            fitHeight = logoWidth
-            fitHeight = logoWidth
+            fitHeight = LOGO_SIZE
+            fitHeight = LOGO_SIZE
         }
     }
 

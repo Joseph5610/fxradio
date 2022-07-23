@@ -32,7 +32,7 @@ import tornadofx.get
 import tornadofx.listview
 import tornadofx.onUserSelect
 
-private const val libraryGlyphSize = 14.0
+private const val GLYPH_SIZE = 14.0
 
 class LibraryListView : BaseView() {
 
@@ -60,7 +60,7 @@ class LibraryListView : BaseView() {
         })
 
         cellFormat {
-            graphic = item.glyph.make(libraryGlyphSize, false, c(darkModeViewModel.appearanceProperty.value!!.primary))
+            graphic = item.glyph.make(GLYPH_SIZE, false, c(darkModeViewModel.appearanceProperty.value!!.primary))
             text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }
