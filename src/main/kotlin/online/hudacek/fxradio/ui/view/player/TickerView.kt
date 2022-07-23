@@ -102,21 +102,25 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
         // Amount of space between entries
         private val offset = 10.0
 
-        private val activeTicks = ConcurrentLinkedQueue<ActiveTick>() //This might not need to be threadsafe, only one thing is adding/removing it
-        private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Node>>() //This one does, multiple threads!
+        // This might not need to be threadsafe, only one thing is adding/removing it
+        private val activeTicks = ConcurrentLinkedQueue<ActiveTick>()
 
-        private val timeline by lazy { Timeline() }  //Timeline is up here in case I need to pause, play the animation
+        // This one does, multiple threads!
+        private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Node>>()
+
+        // Timeline is up here in case we need to pause, play the animation
+        private val timeline by lazy { Timeline() }
 
         override val root = pane().also {
             it.clip = Rectangle(25.0, 25.0).apply {
-                //Bind the clipping to the size of the thing
+                // Bind the clipping to the size of the thing
                 widthProperty().bind(it.widthProperty())
                 heightProperty().bind(it.heightProperty())
             }
-            startAnimation() //Fire up the animation process
+            startAnimation() // Fire up the animation process
         }
 
-        //This is needed to make sure the pane fills up the entire space of whatever we've been put in.
+        // This is needed to make sure the pane fills up the entire space of whatever we've been put in.
         fun inside(of: Pane) {
             //I need this guy to autofill to max size
             root.prefWidthProperty().bind(of.widthProperty())

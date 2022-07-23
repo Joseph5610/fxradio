@@ -29,8 +29,8 @@ import online.hudacek.fxradio.util.value
 import tornadofx.objectBinding
 import tornadofx.property
 
-class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
-    var darkMode: Boolean by property(darkMode)
+class DarkMode(isDarkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
+    var isDarkMode: Boolean by property(isDarkMode)
 }
 
 /**
@@ -41,7 +41,7 @@ class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
 
     private val setDarkModeUseCase: SetDarkModeUseCase by inject()
 
-    val darkModeProperty by lazy { bind(DarkMode::darkMode) as BooleanProperty }
+    val darkModeProperty by lazy { bind(DarkMode::isDarkMode) as BooleanProperty }
 
     val appearanceProperty = darkModeProperty.objectBinding {
         if (darkModeProperty.value) DarkAppearance() else LightAppearance()

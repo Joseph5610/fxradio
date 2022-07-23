@@ -24,7 +24,7 @@ import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.field
 import online.hudacek.fxradio.ui.set
-import online.hudacek.fxradio.ui.stylableNotificationPane
+import online.hudacek.fxradio.ui.customNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
@@ -68,7 +68,7 @@ class AddStationFragment : BaseFragment() {
         viewModel.validate(focusFirstError = false)
     }
 
-    override val root = stylableNotificationPane {
+    override val root = customNotificationPane {
         title = messages["add.title"]
         prefWidth = 400.0
 
@@ -174,7 +174,7 @@ class AddStationFragment : BaseFragment() {
                                             viewModel.item = AddStationModel()
                                         }
                                     } else {
-                                        this@stylableNotificationPane[FontAwesome.Glyph.WARNING] = it.message
+                                        this@customNotificationPane[FontAwesome.Glyph.WARNING] = it.message
                                     }
                                 }
                         addClass(Styles.primaryButton)
