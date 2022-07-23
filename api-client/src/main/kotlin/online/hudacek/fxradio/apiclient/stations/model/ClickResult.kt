@@ -21,3 +21,4 @@ package online.hudacek.fxradio.apiclient.stations.model
 data class ClickResult(val ok: Boolean,
                        val message: String,
                        val name: String)
+

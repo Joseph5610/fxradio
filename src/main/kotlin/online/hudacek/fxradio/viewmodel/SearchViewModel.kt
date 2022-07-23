@@ -30,7 +30,7 @@ import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
 import tornadofx.property
 
-private const val maxQueryLength = 50
+private const val QUERY_LENGTH = 50
 
 class Search(query: String = Properties.SearchQuery.value(""),
              useTagSearch: Boolean = false) {
@@ -51,10 +51,10 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
     val queryChanges: Observable<String> = bindQueryProperty
             .toObservableChangesNonNull()
             .map { it.newVal }
-            .map { if (it.length > maxQueryLength) it.substring(0, maxQueryLength).trim() else it.trim() }
+            .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
 
     val queryBinding = bindQueryProperty.toObservable()
-            .map { if (it.length > maxQueryLength) it.substring(0, maxQueryLength).trim() else it.trim() }
+            .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
             .toBinding()
 
     fun search() = searchUseCase.execute(searchByTagProperty.value to queryBinding.value)

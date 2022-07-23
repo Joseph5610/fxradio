@@ -45,7 +45,8 @@ import tornadofx.visibleWhen
 /**
  * Custom listview fragment for countries
  */
-class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showProperty: BooleanProperty) : BaseFragment() {
+class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showProperty: BooleanProperty)
+    : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 

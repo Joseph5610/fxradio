@@ -22,3 +22,4 @@ data class AllStationsBody(val order: String = "name",
                            val limit: Int = 50,
                            val hidebroken: Boolean = true,
                            val reverse: Boolean = true)
+
