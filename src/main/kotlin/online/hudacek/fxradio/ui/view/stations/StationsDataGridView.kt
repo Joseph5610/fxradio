@@ -26,8 +26,29 @@ import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.viewmodel.*
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.InfoPanelState
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.StationInfo
+import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.StationsState
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import tornadofx.action
+import tornadofx.booleanBinding
+import tornadofx.contextmenu
+import tornadofx.datagrid
+import tornadofx.get
+import tornadofx.imageview
+import tornadofx.item
+import tornadofx.label
+import tornadofx.onHover
+import tornadofx.paddingAll
+import tornadofx.px
+import tornadofx.separator
+import tornadofx.style
+import tornadofx.tooltip
+import tornadofx.vbox
 
 private const val gridCellWidth = 140.0
 private const val gridStationLogoSize = 100.0
@@ -53,9 +74,7 @@ class StationsDataGridView : BaseView() {
         cellWidth = gridCellWidth
 
         //Cleanup selected item on refresh of library
-        itemsProperty
-                .toObservableChanges()
-                .subscribe {
+        itemsProperty.toObservableChanges().subscribe {
                     selectionModel.clearSelection()
                     selectionModel.select(playerViewModel.stationProperty.value)
                 }

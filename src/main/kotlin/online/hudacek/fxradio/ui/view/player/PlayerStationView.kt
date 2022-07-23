@@ -27,7 +27,19 @@ import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.borderpane
+import tornadofx.bottom
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.label
+import tornadofx.onHover
+import tornadofx.separator
+import tornadofx.stringBinding
+import tornadofx.tooltip
+import tornadofx.top
+import tornadofx.vbox
 
 /**
  * Shows now playing song, radio logo, radio name

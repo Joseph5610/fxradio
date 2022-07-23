@@ -20,10 +20,12 @@ package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
-import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
+import tornadofx.action
+import tornadofx.get
+import tornadofx.onChange
 
 class PlayerMenu : BaseMenu("menu.player.controls") {
 
@@ -48,34 +50,27 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    override val menuItems = listOf(
-            item(messages["menu.player.start"], KeyCodes.play) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    playerViewModel.stateProperty.value = PlayerState.Playing
-                }
-            },
-            item(messages["menu.player.stop"], KeyCodes.stop) {
-                disableWhenInvalidStation(playerViewModel.stationProperty)
-                action {
-                    playerViewModel.stateProperty.value = PlayerState.Stopped
-                }
-            },
-            separator(),
-            playerTypeItem,
+    override val menuItems = listOf(item(messages["menu.player.start"], KeyCodes.play) {
+        disableWhenInvalidStation(playerViewModel.stationProperty)
+        action {
+            playerViewModel.stateProperty.value = PlayerState.Playing
+        }
+    }, item(messages["menu.player.stop"], KeyCodes.stop) {
+        disableWhenInvalidStation(playerViewModel.stationProperty)
+        action {
+            playerViewModel.stateProperty.value = PlayerState.Stopped
+        }
+    }, separator(), playerTypeItem,
 
-            checkMenuItem(messages["menu.player.animate"],
-                    bindProperty = playerViewModel.animateProperty) {
+            checkMenuItem(messages["menu.player.animate"], bindProperty = playerViewModel.animateProperty) {
                 action {
                     playerViewModel.commit()
                 }
             },
 
-            checkMenuItem(messages["menu.player.notifications"],
-                    bindProperty = streamTitleNotificationViewModel.showProperty) {
+            checkMenuItem(messages["menu.player.notifications"], bindProperty = streamTitleNotificationViewModel.showProperty) {
                 action {
                     streamTitleNotificationViewModel.commit()
                 }
-            }
-    )
+            })
 }

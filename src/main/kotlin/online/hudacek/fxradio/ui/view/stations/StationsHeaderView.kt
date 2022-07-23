@@ -21,8 +21,23 @@ package online.hudacek.fxradio.ui.view.stations
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.*
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SearchViewModel
+import online.hudacek.fxradio.viewmodel.StationsState
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.borderpane
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.insets
+import tornadofx.label
+import tornadofx.left
+import tornadofx.paddingBottom
+import tornadofx.paddingTop
+import tornadofx.right
+import tornadofx.stringBinding
 
 /**
  * Bar with opened library name and action button within stationsView

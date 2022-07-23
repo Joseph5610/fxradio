@@ -27,7 +27,17 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import online.hudacek.fxradio.viewmodel.StatsState
 import online.hudacek.fxradio.viewmodel.StatsViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.hyperlink
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.paddingAll
+import tornadofx.stringBinding
+import tornadofx.vbox
 
 /**
  * Fragment that presents stats of currently used API server

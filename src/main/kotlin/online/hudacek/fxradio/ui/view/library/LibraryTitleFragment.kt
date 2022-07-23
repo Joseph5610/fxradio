@@ -25,10 +25,14 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.c
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.paddingLeft
+import tornadofx.paddingRight
+import tornadofx.region
 
 private const val arrowIconSize = 11.0
 

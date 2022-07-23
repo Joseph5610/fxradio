@@ -21,12 +21,16 @@ package online.hudacek.fxradio.ui.view.library
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.c
+import tornadofx.doubleBinding
+import tornadofx.get
+import tornadofx.listview
+import tornadofx.onUserSelect
 
 private const val libraryGlyphSize = 14.0
 
@@ -36,18 +40,16 @@ class LibraryListView : BaseView() {
     private val darkModeViewModel: DarkModeViewModel by inject()
     override fun onDock() {
         //React to changes of library not from by clicking on list item
-        viewModel
-                .stateObservableChanges
-                .subscribe {
-                    if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
-                        root.selectionModel.clearSelection()
-                    } else {
-                        val selectedListItem = root.items.find { list -> list.type == it }
-                        selectedListItem?.let { item ->
-                            root.selectionModel.select(item)
-                        }
-                    }
+        viewModel.stateObservableChanges.subscribe {
+            if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
+                root.selectionModel.clearSelection()
+            } else {
+                val selectedListItem = root.items.find { list -> list.type == it }
+                selectedListItem?.let { item ->
+                    root.selectionModel.select(item)
                 }
+            }
+        }
     }
 
     override val root = listview(viewModel.librariesProperty) {

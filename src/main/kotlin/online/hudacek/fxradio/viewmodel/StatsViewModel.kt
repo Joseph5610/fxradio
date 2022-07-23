@@ -67,5 +67,3 @@ class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats()) {
         }
     }
 }
-
-

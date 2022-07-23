@@ -129,4 +129,3 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         }
     }
 }
-

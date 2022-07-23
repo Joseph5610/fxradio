@@ -30,7 +30,23 @@ import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
-import tornadofx.*
+import tornadofx.Fragment
+import tornadofx.SmartResize
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.bindSelected
+import tornadofx.button
+import tornadofx.get
+import tornadofx.label
+import tornadofx.onUserSelect
+import tornadofx.paddingAll
+import tornadofx.prefWidth
+import tornadofx.readonlyColumn
+import tornadofx.remainingWidth
+import tornadofx.tableview
+import tornadofx.textarea
+import tornadofx.vbox
+import tornadofx.vgrow
 
 class AttributionsFragment : BaseFragment() {
 
