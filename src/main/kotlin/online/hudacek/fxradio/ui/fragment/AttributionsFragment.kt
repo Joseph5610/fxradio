@@ -30,23 +30,10 @@ import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
-import tornadofx.Fragment
-import tornadofx.SmartResize
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.bindSelected
-import tornadofx.button
-import tornadofx.get
-import tornadofx.label
-import tornadofx.onUserSelect
-import tornadofx.paddingAll
-import tornadofx.prefWidth
-import tornadofx.readonlyColumn
-import tornadofx.remainingWidth
-import tornadofx.tableview
-import tornadofx.textarea
-import tornadofx.vbox
-import tornadofx.vgrow
+import tornadofx.*
+
+private const val WINDOW_MIN_WIDTH = 600.0
+private const val WINDOW_MIN_HEIGHT = 400.0
 
 class AttributionsFragment : BaseFragment() {
 
@@ -93,7 +80,7 @@ class AttributionsFragment : BaseFragment() {
         private val viewModel: AttributionViewModel by inject()
 
         override val root = vbox {
-            setPrefSize(600.0, 400.0)
+            setPrefSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
             titleProperty.bind(viewModel.nameProperty)
 
             vbox(alignment = Pos.CENTER) {

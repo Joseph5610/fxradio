@@ -87,6 +87,9 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         addClass(Styles.subheader)
                         addClass(Styles.primaryTextColor)
                     }
+                    label(stationInfoViewModel.countryProperty) {
+                        addClass(Styles.grayLabel)
+                    }
                 }
             }
         }
@@ -113,10 +116,6 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         addClass(Styles.tag)
                     }
                     label(createInfoBinding("info.language", stationInfoViewModel.languageProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.country", stationInfoViewModel.countryProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }

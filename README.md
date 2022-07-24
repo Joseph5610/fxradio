@@ -27,7 +27,7 @@ Those builds have not been tested, but you can still try to build it yourself.
 Assuming you already downloaded the preferred distribution from [Releases](https://github.com/Joseph5610/fxradio-main/releases)
 page, there is just a few more steps to run the app.
 
-If you downloaded DMG archive **release_macOS.dmg**:
+If you downloaded DMG archive **fxradio_macOS.dmg**:
 1. Double click to open the downloaded file and move the FxRadio icon into "Applications" folder
 2. Find the FXRadio application in Launchpad or Applications folder in Finder
 

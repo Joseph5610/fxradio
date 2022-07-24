@@ -26,7 +26,7 @@ import online.hudacek.fxradio.apiclient.stations.model.StationBody
 import online.hudacek.fxradio.usecase.AddStationUseCase
 import tornadofx.property
 import tornadofx.stringBinding
-import java.util.*
+import java.util.Locale
 
 /**
  * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
@@ -64,7 +64,6 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
     val languageProperty = bind(AddStationModel::language) as StringProperty
     val tagsProperty = bind(AddStationModel::tags) as StringProperty
     val uuidProperty = bind(AddStationModel::uuid) as StringProperty
-
     val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
 
     //Find Country Code from countryProperty value

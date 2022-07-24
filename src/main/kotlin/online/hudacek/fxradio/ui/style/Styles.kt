@@ -17,6 +17,7 @@
  */
 
 @file:Suppress("MagicNumber")
+
 package online.hudacek.fxradio.ui.style
 
 import javafx.scene.paint.Color
@@ -86,7 +87,9 @@ class Styles : Stylesheet() {
 
         playerMainBox {
             padding = box(10.0.px, 0.0.px)
-            borderColor += box(c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent))
+            borderColor += box(c(colors.transparent), c(colors.transparent),
+                    c(colors.backgroundBorder),
+                    c(colors.transparent))
         }
 
         playerStationBox {

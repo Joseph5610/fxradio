@@ -26,10 +26,12 @@ import org.nield.rxkotlinjdbc.select
 import java.sql.Connection
 import java.sql.DriverManager
 
+private val DB_URL = "jdbc:sqlite:${Config.Paths.dbPath}"
+
 /**
  * Database helper class with useful methods to write/read from local sqlite.db
  */
-abstract class Database(open val tableName: String) {
+open class Database(private val tableName: String) {
 
     fun selectAllQuery() = connection.select("SELECT * FROM $tableName")
 
@@ -40,18 +42,16 @@ abstract class Database(open val tableName: String) {
     fun removeQuery(query: String) = connection.execute(query)
 
     private companion object {
-        private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
-
         /**
-         * Establishes connection to SQLite db with [dbUrl]
+         * Establishes connection to SQLite db with [DB_URL]
          * Performs create table operation for all tables in [Tables] object
          */
         private val connection: Connection by lazy {
-            DriverManager.getConnection(dbUrl).apply {
+            DriverManager.getConnection(DB_URL).apply {
                 /**
                  * Apply flyway db migrations
                  */
-                Flyway.configure().dataSource(dbUrl, null, null).load().also {
+                Flyway.configure().dataSource(DB_URL, null, null).load().also {
                     it.migrate()
                 }
             }

@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.util.macos
 
 import de.codecentric.centerdevice.MenuToolkit
-import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu

@@ -93,7 +93,6 @@ class AppInfoFragment : BaseFragment(FxRadio.appName) {
                 addClass(Styles.primaryButton)
             }
         }
-
         addClass(Styles.backgroundWhiteSmoke)
     }
 }

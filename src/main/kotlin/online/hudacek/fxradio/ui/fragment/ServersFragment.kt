@@ -164,8 +164,8 @@ class ServersFragment : BaseFragment() {
                 enableWhen(viewModel.selectedProperty.isNotNull)
                 isDefaultButton = true
                 action {
-                    //Save the server in the app.config property file
-                    //Close the fragment after successful save
+                    // Save the server in the app.config property file
+                    // Close the fragment after successful save
                     viewModel.commit {
                         appEvent.appNotification.onNext(AppNotification(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
                         close()
