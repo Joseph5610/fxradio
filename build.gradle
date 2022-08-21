@@ -120,6 +120,9 @@ jfx {
     manifestAttributes = attributes
     mainClass = 'online.hudacek.fxradio.FxRadioKt'
 
+    // Fix for https://github.com/FibreFoX/javafx-gradle-plugin/issues/146
+    usePatchedJFXAntLib = false
+
     // minimal requirement for jfxNative-task
     identifier = "FXRadio"
     vendor = 'FXRadio'
