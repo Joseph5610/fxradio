@@ -42,7 +42,9 @@ jobs:
               java-version: '8'
               java-package: jdk+fx
         - run: ./gradlew -i jfxNative
+          env:
+           FX_APPEND_PATH: /jre
         - name: test
           run: |
-              dir -s C:\hostedtoolcache\windows\Java_Zulu_jdk+fx\8.0.345-1\x64\
+              dir -s build/jfx/app/
   
