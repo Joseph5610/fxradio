@@ -31,4 +31,20 @@ jobs:
           path: releaseJar.zip
           if-no-files-found: error
           retention-days: 60
+  buildwin:
+    name: "Create Windows release"
+    runs-on: windows-latest
+    steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-java@v2
+          with:
+              distribution: 'zulu'
+              java-version: '8'
+              java-package: jdk+fx
+        - run: ./gradlew -i jfxNative
+          env:
+              FX_APPEND_PATH: /zulu-8.jdk/Contents/Home/jre
+        - name: test
+          run: |
+              ls -all build/jfx/app/
   
