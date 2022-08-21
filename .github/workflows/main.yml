@@ -44,5 +44,5 @@ jobs:
         - run: ./gradlew -i jfxNative
         - name: test
           run: |
-              dir build/jfx/app/
+              dir C:\hostedtoolcache\windows\Java_Zulu_jdk+fx\8.0.345-1\x64\ /s /b
   
