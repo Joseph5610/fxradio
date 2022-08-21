@@ -42,8 +42,6 @@ jobs:
               java-version: '8'
               java-package: jdk+fx
         - run: ./gradlew -i jfxNative
-          env:
-              FX_APPEND_PATH: /zulu-8.jdk/Contents/Home/jre
         - name: test
           run: |
               ls -all build/jfx/app/
