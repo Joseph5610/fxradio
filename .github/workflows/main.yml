@@ -47,5 +47,5 @@ jobs:
           continue-on-error: true
         - name: test
           run: |
-              dir -s build/jfx/app/
+              dir -s build/jfx/
   
