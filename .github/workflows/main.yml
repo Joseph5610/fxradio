@@ -44,5 +44,5 @@ jobs:
         - run: ./gradlew -i jfxNative
         - name: test
           run: |
-              ls -all build/jfx/app/
+              dir build/jfx/app/
   
