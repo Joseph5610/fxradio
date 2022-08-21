@@ -44,6 +44,7 @@ jobs:
         - run: ./gradlew -i jfxNative
           env:
            FX_APPEND_PATH: /jre
+          continue-on-error: true
         - name: test
           run: |
               dir -s build/jfx/app/
