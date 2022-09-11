@@ -86,9 +86,12 @@ jobs:
             - run: ./gradlew -i jfxNative
               env:
                   FX_APPEND_PATH: /jre
+            - name: Find MSI file on filesystem
+              id: find-msi
+              run: echo "MSI_PATH=$(Get-ChildItem -path D:\ -recurse -include "FXRadio-*.msi" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
             - name: Find EXE file on filesystem
               id: find-exe
-              run: echo "EXE_PATH=$(Get-ChildItem -path /tmp -recurse -include "*" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
+              run: echo "EXE_PATH=$(Get-ChildItem -path D:\ -recurse -include "FXRadio-*.exe" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
             - name: Upload Release EXE
               id: upload-release-exe
               uses: actions/upload-release-asset@v1
@@ -98,4 +101,14 @@ jobs:
                   upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
                   asset_path: ${{ env.EXE_PATH }}
                   asset_name: fxradio_windows.exe
+                  asset_content_type: application/octet-stream
+            - name: Upload Release MSI
+              id: upload-release-msi
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
+                  asset_path: ${{ env.MSI_PATH }}
+                  asset_name: fxradio_windows_msi.msi
                   asset_content_type: application/octet-stream
