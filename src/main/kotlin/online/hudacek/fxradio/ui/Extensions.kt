@@ -69,6 +69,8 @@ import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
+private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
+
 /**
  * This is to overcome a bug that sometimes
  * scene is not available when requesting focus
@@ -110,7 +112,9 @@ internal fun FontAwesome.Glyph.make(
     }
 }
 
-internal fun EventTarget.searchField(promptText: String, property: ObservableValue<String>, op: (CustomTextField.() -> Unit) = {}) = searchField {
+internal fun EventTarget.searchField(promptText: String,
+                                     property: ObservableValue<String>,
+                                     op: (CustomTextField.() -> Unit) = {}) = searchField {
     this.promptText = promptText
     bind(property)
     op(this)
@@ -179,7 +183,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
 /**
  * Notification UI helpers
  */
-internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
+internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
     //Show dark notifications
     if (FxRadio.isDarkModePreferred()) {
         styleClass += NotificationPane.STYLE_CLASS_DARK
@@ -196,7 +200,7 @@ internal fun EventTarget.stylableNotificationPane(op: (NotificationPane.() -> Un
  */
 internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
     if (isVisible) show(message, glyph.toGlyph())
-    val delay = PauseTransition(Duration.seconds(5.0))
+    val delay = PauseTransition(Duration.seconds(NOTIFICATION_TIME_ON_SCREEN))
     delay.onFinished = EventHandler { hide() }
     delay.play()
 }

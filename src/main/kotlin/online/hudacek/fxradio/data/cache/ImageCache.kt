@@ -16,7 +16,25 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.storage
+/*
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package online.hudacek.fxradio.data.cache
 
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
@@ -24,7 +42,6 @@ import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.stations.model.Station
-import org.apache.commons.io.FileUtils
 import tornadofx.observableListOf
 import java.io.InputStream
 import java.nio.file.Files
@@ -50,9 +67,7 @@ object ImageCache {
 
     init {
         // Prepare cache directory
-        if (!Files.isDirectory(cacheBasePath)) {
-            Files.createDirectories(cacheBasePath)
-        }
+        prepareCacheDirectory()
     }
 
     /**
@@ -64,7 +79,10 @@ object ImageCache {
                 .map { it.length() }
                 .sum() / 1e+6).roundToInt()
 
-    fun clear() = FileUtils.cleanDirectory(cacheBasePath.toFile())
+    /**
+     * Removes cache directory with all its contents and recreates it afterwards
+     */
+    fun clear(): Boolean = cacheBasePath.toFile().deleteRecursively().also { prepareCacheDirectory() }
 
     /**
      * Check if station image is in cache
@@ -105,6 +123,12 @@ object ImageCache {
         if (station.stationuuid !in invalidStationUuids) {
             logger.trace { "Image for ${station.name} is added as invalid!" }
             invalidStationUuids += station.stationuuid
+        }
+    }
+
+    private fun prepareCacheDirectory() {
+        if (!Files.isDirectory(cacheBasePath)) {
+            Files.createDirectories(cacheBasePath)
         }
     }
 }

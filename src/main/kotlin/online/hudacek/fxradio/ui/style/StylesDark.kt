@@ -16,6 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("MagicNumber")
 package online.hudacek.fxradio.ui.style
 
 import javafx.scene.paint.Color

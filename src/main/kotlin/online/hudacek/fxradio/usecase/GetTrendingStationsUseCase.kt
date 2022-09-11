@@ -23,12 +23,14 @@ import online.hudacek.fxradio.apiclient.stations.model.AllStationsBody
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.util.applySchedulers
 
+private const val ORDER_BY_TREND = "clicktrend"
+
 /**
  * Gets list of Top 50 clicked stations from radio-browser API
  */
 class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
     override fun execute(input: Unit): Single<List<Station>> = stationsApi
-            .getAllStations(AllStationsBody(order = "clicktrend"))
+            .getAllStations(AllStationsBody(order = ORDER_BY_TREND))
             .compose(applySchedulers())
 }

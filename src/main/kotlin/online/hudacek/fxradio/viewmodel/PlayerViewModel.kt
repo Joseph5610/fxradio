@@ -30,7 +30,7 @@ import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
-import online.hudacek.fxradio.usecase.ClickUseCase
+import online.hudacek.fxradio.usecase.StationClickUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
@@ -64,7 +64,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         initialState = PlayerState.Stopped,
         initialItem = Player()) {
 
-    private val clickUseCase: ClickUseCase by inject()
+    private val stationClickUseCase: StationClickUseCase by inject()
 
     val stationProperty = bind(Player::station) as ObjectProperty
     val animateProperty = bind(Player::animate) as BooleanProperty
@@ -79,7 +79,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
             .filter { it.isValid() }
             .doOnEach(appEvent.addToHistory) //Send the new history item event
             .also {
-                it.flatMapSingle(clickUseCase::execute)
+                it.flatMapSingle(stationClickUseCase::execute)
                         .subscribe({ click ->
                             //Update the name of the station
                             trackNameProperty.value = click.name + " - " + messages["player.noMetaData"]

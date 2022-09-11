@@ -23,10 +23,10 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.apiclient.stations.model.StationBody
-import online.hudacek.fxradio.usecase.AddStationUseCase
+import online.hudacek.fxradio.usecase.StationAddUseCase
 import tornadofx.property
 import tornadofx.stringBinding
-import java.util.*
+import java.util.Locale
 
 /**
  * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
@@ -54,7 +54,7 @@ class AddStationModel(name: String = "",
 
 class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
 
-    private val addStationUseCase: AddStationUseCase by inject()
+    private val stationAddUseCase: StationAddUseCase by inject()
 
     val nameProperty = bind(AddStationModel::name) as StringProperty
     val urlProperty = bind(AddStationModel::url) as StringProperty
@@ -64,7 +64,6 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
     val languageProperty = bind(AddStationModel::language) as StringProperty
     val tagsProperty = bind(AddStationModel::tags) as StringProperty
     val uuidProperty = bind(AddStationModel::uuid) as StringProperty
-
     val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
 
     //Find Country Code from countryProperty value
@@ -72,7 +71,7 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
         Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     }
 
-    fun addStation() = addStationUseCase.execute(
+    fun addStation() = stationAddUseCase.execute(
             StationBody(
                     nameProperty.value,
                     urlProperty.value,

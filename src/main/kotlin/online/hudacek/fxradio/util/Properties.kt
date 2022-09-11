@@ -28,11 +28,11 @@ private val logger = KotlinLogging.logger {}
  * Keys for values stored in app.properties
  */
 enum class Properties(val key: String) {
-    UseNativeMenuBar("menu.native"), //Not configurable in UI
+    UseNativeMenuBar("menu.native"), // Not configurable in UI
     Volume("player.volume"),
     Player("player.type"),
     PlayerAnimated("player.animate"),
-    PlayerMetaDataRefresh("player.refreshMeta"), //Not configurable in UI
+    PlayerMetaDataRefresh("player.refreshMeta"), // Not configurable in UI
     ApiServer("app.server"),
     SearchQuery("search.query"),
     SendStreamTitleNotification("notifications"),
@@ -44,7 +44,7 @@ enum class Properties(val key: String) {
     WindowHeight("window.height"),
     WindowX("window.x"),
     WindowY("window.y"),
-    AccentColor("app.accentColor"), //Not configurable in UI
+    AccentColor("app.accentColor"), // Not configurable in UI
     LogLevel("log.level"),
     DarkMode("app.darkmode");
 }
@@ -54,11 +54,11 @@ enum class Properties(val key: String) {
  */
 class Property(property: Properties) : Component() {
 
-    //Extract value
+    // Extracts value
     val key by lazy { property.key }
 
     val isPresent: Boolean
-        //runCatching handles situations where config or key fields are throwing NPE
+        // runCatching handles situations where config or key fields are throwing NPE
         get() = runCatching { app.config.keys.any { it == key } }.getOrDefault(false)
 
     inline fun <reified T> get(): T {

@@ -83,9 +83,8 @@ class AppInfoFragment : BaseFragment(FxRadio.appName) {
             }
         }
 
-        vbox {
+        vbox(alignment = Pos.CENTER_RIGHT) {
             paddingAll = 10.0
-            alignment = Pos.CENTER_RIGHT
 
             button(messages["menu.app.attributions"]) {
                 action {
@@ -94,7 +93,6 @@ class AppInfoFragment : BaseFragment(FxRadio.appName) {
                 addClass(Styles.primaryButton)
             }
         }
-
         addClass(Styles.backgroundWhiteSmoke)
     }
 }

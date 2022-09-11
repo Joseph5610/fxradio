@@ -48,10 +48,11 @@ import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
+import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
 
-private const val logoWidth = 60.0
+private const val LOGO_SIZE = 60.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
@@ -61,8 +62,8 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
     private val stationLogo by lazy {
         imageview {
-            fitHeight = logoWidth
-            fitHeight = logoWidth
+            fitHeight = LOGO_SIZE
+            fitHeight = LOGO_SIZE
         }
     }
 
@@ -86,6 +87,10 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         }
                         addClass(Styles.subheader)
                         addClass(Styles.primaryTextColor)
+                        tooltip(messages["info.visit.website"])
+                    }
+                    label(stationInfoViewModel.countryProperty) {
+                        addClass(Styles.grayLabel)
                     }
                 }
             }
@@ -113,10 +118,6 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         addClass(Styles.tag)
                     }
                     label(createInfoBinding("info.language", stationInfoViewModel.languageProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.country", stationInfoViewModel.countryProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }

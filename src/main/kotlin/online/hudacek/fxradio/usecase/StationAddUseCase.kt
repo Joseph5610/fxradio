@@ -18,15 +18,24 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.disposables.Disposable
-import javafx.beans.property.ListProperty
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.storage.db.Tables
+import io.reactivex.Single
+import mu.KotlinLogging
+import online.hudacek.fxradio.apiclient.stations.model.AddedStation
+import online.hudacek.fxradio.apiclient.stations.model.StationBody
+import online.hudacek.fxradio.util.applySchedulers
 
-class FavouriteSetUseCase : BaseUseCase<ListProperty<Station>, Disposable>() {
+private val logger = KotlinLogging.logger {}
 
-    override fun execute(input: ListProperty<Station>): Disposable = Tables.favourites.selectAll()
-            .subscribe {
-                input += it
-            }
+private const val INVALID_UUID = "0"
+
+/**
+ * Adds new station to radio-browser API
+ */
+class StationAddUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
+
+    override fun execute(input: StationBody): Single<AddedStation> = stationsApi
+            .addStation(input)
+            .compose(applySchedulers())
+            .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, INVALID_UUID)) }
+            .doOnError { logger.error(it) { "Exception while adding station $input" } }
 }

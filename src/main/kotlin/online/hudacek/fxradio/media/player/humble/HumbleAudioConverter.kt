@@ -24,15 +24,15 @@ import io.humble.video.MediaAudioResampler
 import io.humble.video.javaxsound.MediaAudioConverter
 import java.nio.ByteBuffer
 
+private const val JAVA_SAMPLE_RATE = 44100
+
 class HumbleAudioConverter(private val mMediaSampleRate: Int,
                            private val mMediaLayout: AudioChannel.Layout,
                            private val mMediaFormat: AudioFormat.Type) : MediaAudioConverter {
 
-    private val mJavaSampleRate = 44100
     private val mJavaChannels: Int
     private val mJavaLayout = AudioChannel.Layout.CH_LAYOUT_STEREO
     private val mJavaFormat = AudioFormat.Type.SAMPLE_FMT_S16
-
     private val mMediaChannels: Int
 
     private val mMediaAudioToJavaSoundResampler: MediaAudioResampler?
@@ -45,7 +45,7 @@ class HumbleAudioConverter(private val mMediaSampleRate: Int,
         mMediaChannels = AudioChannel.getNumChannelsInLayout(mMediaLayout)
         if (willResample()) {
             mMediaAudioToJavaSoundResampler = MediaAudioResampler.make(mJavaLayout,
-                    mJavaSampleRate, mJavaFormat, mMediaLayout, mMediaSampleRate, mMediaFormat)
+                    JAVA_SAMPLE_RATE, mJavaFormat, mMediaLayout, mMediaSampleRate, mMediaFormat)
             mMediaAudioToJavaSoundResampler.open()
         } else {
             mMediaAudioToJavaSoundResampler = null
@@ -53,7 +53,7 @@ class HumbleAudioConverter(private val mMediaSampleRate: Int,
     }
 
     override fun getJavaFormat(): javax.sound.sampled.AudioFormat {
-        return javax.sound.sampled.AudioFormat(mJavaSampleRate.toFloat(),
+        return javax.sound.sampled.AudioFormat(JAVA_SAMPLE_RATE.toFloat(),
                 AudioFormat.getBytesPerSample(mJavaFormat) * 8, mJavaChannels, true, false)
     }
 
@@ -65,7 +65,7 @@ class HumbleAudioConverter(private val mMediaSampleRate: Int,
 
     override fun getMediaFormat() = mMediaFormat
 
-    private fun willResample() = !(mMediaSampleRate == mJavaSampleRate && mMediaChannels == mJavaChannels && mMediaFormat == mJavaFormat)
+    private fun willResample() = !(mMediaSampleRate == JAVA_SAMPLE_RATE && mMediaChannels == mJavaChannels && mMediaFormat == mJavaFormat)
 
     private fun validateMediaAudio(audio: MediaAudio?) {
         requireNotNull(audio) { "must pass in audio" }
@@ -86,7 +86,7 @@ class HumbleAudioConverter(private val mMediaSampleRate: Int,
                     mResampledAudio!!.maxNumSamples < outputNumSamples) {
                 if (mResampledAudio != null) mResampledAudio!!.delete()
                 mResampledAudio = MediaAudio.make(outputNumSamples,
-                        mJavaSampleRate, mJavaChannels, mJavaLayout, mJavaFormat)
+                        JAVA_SAMPLE_RATE, mJavaChannels, mJavaLayout, mJavaFormat)
             }
             audio = mResampledAudio
         } else {

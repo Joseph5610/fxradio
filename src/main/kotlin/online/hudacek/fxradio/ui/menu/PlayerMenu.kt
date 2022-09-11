@@ -62,13 +62,15 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }, separator(), playerTypeItem,
 
-            checkMenuItem(messages["menu.player.animate"], bindProperty = playerViewModel.animateProperty) {
+            checkMenuItem(messages["menu.player.animate"],
+                    bindProperty = playerViewModel.animateProperty) {
                 action {
                     playerViewModel.commit()
                 }
             },
 
-            checkMenuItem(messages["menu.player.notifications"], bindProperty = streamTitleNotificationViewModel.showProperty) {
+            checkMenuItem(messages["menu.player.notifications"],
+                    bindProperty = streamTitleNotificationViewModel.showProperty) {
                 action {
                     streamTitleNotificationViewModel.commit()
                 }

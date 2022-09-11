@@ -41,6 +41,8 @@ import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
 
+private const val LOGO_SIZE = 30.0
+
 /**
  * Shows now playing song, radio logo, radio name
  */
@@ -59,23 +61,23 @@ class PlayerStationView : BaseView() {
 
     private val stationLogo by lazy {
         imageview {
-            //Subscribe to property changes
+            // Subscribe to property changes
             viewModel.stationProperty.stationImage(this)
-            fitWidth = 30.0
+            fitWidth = LOGO_SIZE
         }
     }
 
-    override val root = hbox(5) {
-        //Radio logo
+    override val root = hbox(spacing = 5) {
+        // Radio logo
         vbox(alignment = Pos.CENTER_LEFT) {
-            minHeight = 30.0
-            maxHeight = 30.0
+            minHeight = LOGO_SIZE
+            maxHeight = LOGO_SIZE
             add(stationLogo)
         }
 
         separator(Orientation.VERTICAL)
 
-        //Radio name and label
+        // Radio name and label
         borderpane {
             prefWidthProperty().bind(this@hbox.maxWidthProperty())
 

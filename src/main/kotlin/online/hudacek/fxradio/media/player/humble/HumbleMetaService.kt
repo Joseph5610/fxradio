@@ -61,8 +61,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
             if (streamUrl.isEmpty()) throw IllegalArgumentException("streamUrl should not be empty.")
 
             val deMuxer = Demuxer.make()
-            deMuxer.open(streamUrl, null, false,
-                    true, null, null)
+            deMuxer.open(streamUrl, null, false, true, null, null)
             val data = deMuxer.metaData
             deMuxer.close()
             logger.debug { "HumbleMetaService retrieved MetaData: $data" }
@@ -73,8 +72,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
          * Gets MetaData values from DeMuxer and fires event with the new data
          */
         override fun succeeded() {
-            if (value.getValue(streamStationName) != null
-                    && value.getValue(streamNowPlayingKey) != null) {
+            if (value.getValue(streamStationName) != null && value.getValue(streamNowPlayingKey) != null) {
                 //Send new MetaData event if stream metadata values are present
                 val mediaMeta = StreamMetaData(value.getValue(streamStationName), value.getValue(streamNowPlayingKey))
                 appEvent.streamMetaDataUpdated.onNext(mediaMeta)

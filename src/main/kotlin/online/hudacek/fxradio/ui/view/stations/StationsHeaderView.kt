@@ -65,7 +65,7 @@ class StationsHeaderView : BaseView() {
         maxHeight = 10.0
 
         left {
-            hbox(5) {
+            hbox(spacing = 5) {
                 label(libraryNameTextProperty) {
                     paddingTop = 8.0
                     paddingBottom = 8.0

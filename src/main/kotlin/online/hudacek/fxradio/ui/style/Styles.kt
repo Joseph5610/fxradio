@@ -16,12 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("MagicNumber")
+
 package online.hudacek.fxradio.ui.style
 
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.c
+import tornadofx.cssclass
+import tornadofx.em
+import tornadofx.px
 
 /**
  * Type-safe CSS classes used around the app
@@ -80,7 +87,9 @@ class Styles : Stylesheet() {
 
         playerMainBox {
             padding = box(10.0.px, 0.0.px)
-            borderColor += box(c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent))
+            borderColor += box(c(colors.transparent), c(colors.transparent),
+                    c(colors.backgroundBorder),
+                    c(colors.transparent))
         }
 
         playerStationBox {

@@ -26,13 +26,13 @@ import online.hudacek.fxradio.util.applySchedulers
 /**
  * Increases click count of the station
  */
-class ClickUseCase : BaseUseCase<Station, Single<ClickResult>>() {
+class StationClickUseCase : BaseUseCase<Station, Single<ClickResult>>() {
 
     override fun execute(input: Station): Single<ClickResult> = stationsApi
             .click(input.stationuuid)
             .compose(applySchedulers())
             .onErrorResumeNext {
-                //We do not care if this response fails
+                // We do not care if this response fails
                 Single.just(ClickResult(false, it.localizedMessage, input.name))
             }
 }

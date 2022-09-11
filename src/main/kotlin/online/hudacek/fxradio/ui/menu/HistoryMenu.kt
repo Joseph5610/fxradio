@@ -78,7 +78,8 @@ class HistoryMenu : BaseMenu("menu.history") {
 
             action {
                 confirm(messages["history.clear.confirm"],
-                        messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size), owner = primaryStage) {
+                        messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
+                        owner = primaryStage) {
                     historyViewModel.cleanupHistory()
                 }
             }

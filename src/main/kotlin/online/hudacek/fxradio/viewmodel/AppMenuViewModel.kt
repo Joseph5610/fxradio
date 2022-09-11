@@ -18,13 +18,17 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.usecase.ClearCacheUseCase
+import online.hudacek.fxradio.usecase.CacheClearUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.value
+import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.get
 import tornadofx.property
 
 class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuBar.value(true)) {
@@ -33,11 +37,18 @@ class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuB
 
 class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
 
-    private val clearCacheUseCase: ClearCacheUseCase by inject()
+    private val cacheClearUseCase: CacheClearUseCase by inject()
 
     val usePlatformProperty = bind(AppMenu::usePlatform) as BooleanProperty
 
-    fun clearCache() = clearCacheUseCase.execute(Unit)
+    fun clearCache(): Disposable = cacheClearUseCase.execute(Unit)
+            .subscribe({
+                appEvent.appNotification.onNext(
+                        AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+            }, {
+                appEvent.appNotification.onNext(
+                        AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
+            })
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

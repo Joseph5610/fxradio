@@ -23,9 +23,10 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
+import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
 import online.hudacek.fxradio.apiclient.stations.model.Country
 import online.hudacek.fxradio.usecase.CountryPinUseCase
-import online.hudacek.fxradio.usecase.CountryUnpinUseCase
+import online.hudacek.fxradio.usecase.CountryUnPinUseCase
 import online.hudacek.fxradio.usecase.GetCountriesUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
@@ -82,7 +83,7 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
     private val countryPinUseCase: CountryPinUseCase by inject()
-    private val countryUnpinUseCase: CountryUnpinUseCase by inject()
+    private val countryUnpinUseCase: CountryUnPinUseCase by inject()
 
     val countriesProperty = bind(Library::countries) as ListProperty
     val librariesProperty = bind(Library::libraries) as ListProperty
@@ -106,7 +107,9 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
                 logger.error(it) { "Exception when performing Unpinning!" }
             })
 
-    fun getCountries() = getCountriesUseCase.execute(countriesProperty)
+    fun getCountries(): Disposable = getCountriesUseCase.execute(CountriesBody()).subscribe {
+        countriesProperty.add(it)
+    }
 
     override fun onCommit() {
         app.saveProperties(mapOf(

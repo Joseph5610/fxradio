@@ -44,7 +44,9 @@ class StationsHeaderSearchView : BaseView() {
     private val libraryViewModel: LibraryViewModel by inject()
 
     override fun onDock() {
-        viewModel.searchByTagProperty.toObservableChangesNonNull().map { LibraryState.Search }.subscribe(appEvent.refreshLibrary)
+        viewModel.searchByTagProperty.toObservableChangesNonNull()
+                .map { LibraryState.Search }
+                .subscribe(appEvent.refreshLibrary)
     }
 
     override val root = vbox(alignment = Pos.CENTER) {

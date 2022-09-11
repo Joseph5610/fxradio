@@ -19,8 +19,12 @@
 package online.hudacek.fxradio.ui
 
 import javafx.application.Platform.runLater
-import javafx.scene.control.*
+import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType.ERROR
+import javafx.scene.control.ButtonBar
+import javafx.scene.control.ButtonType
+import javafx.scene.control.Label
+import javafx.scene.control.TextArea
 import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
 import mu.KotlinLogging
@@ -36,7 +40,8 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import java.net.URLEncoder
 
-private const val ISSUE_URL = "${Config.API.repositoryURL}issues/new?assignees=&labels=bug&template=bug_report.md&title="
+private const val ISSUE_URL = Config.API.repositoryURL +
+        "issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
 private val log = KotlinLogging.logger("ErrorHandler")
 

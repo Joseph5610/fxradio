@@ -18,28 +18,23 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.disposables.Disposable
-import javafx.beans.property.ListProperty
+import io.reactivex.Observable
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
 import online.hudacek.fxradio.apiclient.stations.model.Country
 import online.hudacek.fxradio.apiclient.stations.model.isRussia
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersObservable
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * Gets list of valid country names and count of stations in it
  */
-class GetCountriesUseCase : BaseUseCase<ListProperty<Country>, Disposable>() {
+class GetCountriesUseCase : BaseUseCase<CountriesBody, Observable<Country>>() {
 
-    override fun execute(input: ListProperty<Country>): Disposable = stationsApi
-            .getCountries(CountriesBody())
-            .map { it.filter { c -> !c.isRussia } }
-            .compose(applySchedulers())
-            .subscribe({
-                input.addAll(it)
-            }, {
-                logger.error(it) { "Exception while getting Countries!" }
-            })
+    override fun execute(input: CountriesBody): Observable<Country> = stationsApi
+            .getCountries(input)
+            .flattenAsObservable { it.filter { c -> !c.isRussia } }
+            .compose(applySchedulersObservable())
+            .doOnError { logger.error(it) { "Exception when downloading countries for $input" } }
 }

@@ -22,15 +22,15 @@ import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.style.DarkAppearance
 import online.hudacek.fxradio.ui.style.LightAppearance
-import online.hudacek.fxradio.usecase.SetDarkModeUseCase
 import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.reloadStylesheets
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
 import tornadofx.objectBinding
 import tornadofx.property
 
-class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
-    var darkMode: Boolean by property(darkMode)
+class DarkMode(isDarkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
+    var isDarkMode: Boolean by property(isDarkMode)
 }
 
 /**
@@ -39,19 +39,15 @@ class DarkMode(darkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModeP
  */
 class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
 
-    private val setDarkModeUseCase: SetDarkModeUseCase by inject()
-
-    val darkModeProperty by lazy { bind(DarkMode::darkMode) as BooleanProperty }
+    val darkModeProperty by lazy { bind(DarkMode::isDarkMode) as BooleanProperty }
 
     val appearanceProperty = darkModeProperty.objectBinding {
         if (darkModeProperty.value) DarkAppearance() else LightAppearance()
     }
 
-    override fun onCommit() {
-        // Save it
-        Properties.DarkMode.save(darkModeProperty.value)
-
-        // Live reload styles
-        setDarkModeUseCase.execute(darkModeProperty)
+    // Save and Live reload styles
+    override fun onCommit() = darkModeProperty.value.let {
+        Properties.DarkMode.save(it)
+        reloadStylesheets(it)
     }
 }

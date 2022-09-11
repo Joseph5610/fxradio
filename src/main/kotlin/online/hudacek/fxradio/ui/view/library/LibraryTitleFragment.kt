@@ -34,7 +34,7 @@ import tornadofx.paddingLeft
 import tornadofx.paddingRight
 import tornadofx.region
 
-private const val arrowIconSize = 11.0
+private const val ICON_SIZE = 11.0
 
 /**
  * Custom title fragment with hide/unhide icons
@@ -61,11 +61,11 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                     .subscribe {
                         graphicProperty().value =
                                 if (it)
-                                    FontAwesome.Glyph.CHEVRON_DOWN.make(size = arrowIconSize,
+                                    FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE,
                                             useStyle = false,
                                             color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
                                 else
-                                    FontAwesome.Glyph.CHEVRON_RIGHT.make(size = arrowIconSize,
+                                    FontAwesome.Glyph.CHEVRON_RIGHT.make(size = ICON_SIZE,
                                             useStyle = false,
                                             color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
                     }

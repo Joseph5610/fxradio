@@ -69,8 +69,4 @@ abstract class Appearance {
         }
         return AccentColor.values().first { it.colorCode == colorCode }.color()
     }
-
-    override fun toString(): String {
-        return "Appearance(primary='$primary', transparent='$transparent', playerBox='$playerBox', background='$background', backgroundBorder='$backgroundBorder', backgroundSelected='$backgroundSelected', label='$label', grayLabel='$grayLabel')"
-    }
 }

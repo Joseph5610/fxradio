@@ -21,7 +21,11 @@ package online.hudacek.fxradio.media.player.humble
 import io.humble.video.Demuxer
 import io.humble.video.MediaPacket
 import io.humble.video.javaxsound.AudioFrame
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.AudioComponent
 import online.hudacek.fxradio.media.StreamUnavailableException

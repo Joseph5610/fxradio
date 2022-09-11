@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.api
+package online.hudacek.fxradio.data
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.ApiServiceProvider
