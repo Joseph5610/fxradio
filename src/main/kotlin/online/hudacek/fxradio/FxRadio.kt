@@ -21,25 +21,20 @@ package online.hudacek.fxradio
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
-import online.hudacek.fxradio.data.StationsApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
+import online.hudacek.fxradio.data.StationsApiProvider
 import online.hudacek.fxradio.data.db.Database
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
-import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.ui.view.TrayIcon
+import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.App
-import tornadofx.FX
-import tornadofx.Stylesheet
-import tornadofx.launch
-import tornadofx.setStageIcon
-import tornadofx.stylesheet
+import tornadofx.*
 import java.io.FileInputStream
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -143,12 +138,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         private fun hasSystemDarkMode() = MacUtils.isMac && MacUtils.isSystemDarkMode
 
         fun isDarkModePreferred(): Boolean {
-            //we have to use the ugly java way to access this property as we want to access it
-            //in the time that the app is not yet instantiated
-            val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
-            val props = java.util.Properties().also { it.load(fis) }
-            val darkModeProp = props.getProperty(Properties.DarkMode.key)
-            return darkModeProp?.toBoolean() ?: hasSystemDarkMode()
+            return runCatching {
+                //we have to use the ugly java way to access this property as we want to access it
+                //in the time that the app is not yet instantiated
+                val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
+                val props = java.util.Properties().also { it.load(fis) }
+                val darkModeProp = props.getProperty(Properties.DarkMode.key)
+                darkModeProp?.toBoolean() ?: hasSystemDarkMode()
+            }.getOrDefault(hasSystemDarkMode())
         }
     }
 }

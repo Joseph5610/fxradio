@@ -27,8 +27,12 @@ import javafx.scene.control.ButtonType
 import javafx.stage.Window
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
-import tornadofx.*
+import tornadofx.FX
 import tornadofx.FX.Companion.messages
+import tornadofx.alert
+import tornadofx.get
+import tornadofx.importStylesheet
+import tornadofx.removeStylesheet
 
 /**
  * Perform async calls on correct thread

@@ -128,6 +128,7 @@ jfx {
     nativeReleaseVersion = version
     needShortcut = true
     bundler = "ALL"
+    skipJNLP = true
 
     additionalAppResources = 'src/main/deploy/additional'
     String runtimePath = System.getenv('JAVA_HOME')

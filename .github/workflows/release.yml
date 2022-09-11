@@ -8,94 +8,106 @@ on:
     # Allows to run this workflow manually from the Actions tab
     workflow_dispatch:
 jobs:
-  prepareRelease:
-      name: Prepare Release
-      runs-on: macos-11
-      # Map a step output to a job output
-      outputs:
-          uploadUrl: ${{ steps.create_release.outputs.upload_url }}
-      steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
-            body: |
-                Latest release.
-            draft: false
-            prerelease: false
-  build:
-    name: Create Release
-    runs-on: macos-11
-    needs:
-        - prepareRelease
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '8'
-          java-package: jdk+fx
-      - run: ./gradlew -i jfxNative
-        env:
-          FX_APPEND_PATH: /zulu-8.jdk/Contents/Home/jre
-      - name: Prepare JAR
-        run: |
-         zip -r releaseJar.zip build/jfx/app/
-      - name: Find DMG file on filesystem
-        id: find-dmg
-        run: echo "DMG_PATH=$(find . -name "*.dmg")" >> $GITHUB_ENV
-      - name: Upload Release JAR
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-            upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
-            asset_path: ./releaseJar.zip
-            asset_name: fxradio_jar.zip
-            asset_content_type: application/zip
-      - name: Upload Release DMG
-        id: upload-release-dmg
-        uses: actions/upload-release-asset@v1
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-            upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
-            asset_path: ${{ env.DMG_PATH }}
-            asset_name: fxradio_macOS.dmg
-            asset_content_type: application/octet-stream
-  buildwin:
-      name: "Create Windows release"
-      runs-on: windows-latest
-      needs:
-          - prepareRelease
-      steps:
-          - uses: actions/checkout@v2
-          - run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
-            shell: bash
-          - uses: actions/setup-java@v2
-            with:
-                distribution: 'zulu'
-                java-version: '8'
-                java-package: jdk+fx
-          - run: ./gradlew -i jfxNative
-            env:
-                FX_APPEND_PATH: /jre
-          - name: Find EXE file on filesystem
-            id: find-exe
-            run: echo "EXE_PATH=$(Get-ChildItem -path /tmp -recurse -include "*" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
-          - name: Upload Release EXE
-            id: upload-release-exe
-            uses: actions/upload-release-asset@v1
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            with:
-                upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
-                asset_path: ${{ env.EXE_PATH }}
-                asset_name: fxradio_windows.exe
-                asset_content_type: application/octet-stream
-
+    prepareRelease:
+        name: Prepare Release
+        runs-on: macos-11
+        # Map a step output to a job output
+        outputs:
+            uploadUrl: ${{ steps.create_release.outputs.upload_url }}
+        steps:
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: Release ${{ github.ref }}
+                  body: |
+                      Latest release.
+                  draft: false
+                  prerelease: false
+    build:
+        name: Create Release
+        runs-on: macos-11
+        needs:
+            - prepareRelease
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-java@v2
+              with:
+                  distribution: 'zulu'
+                  java-version: '8'
+                  java-package: jdk+fx
+            - run: ./gradlew -i jfxNative
+              env:
+                  FX_APPEND_PATH: /zulu-8.jdk/Contents/Home/jre
+            - name: Prepare JAR
+              run: |
+                  zip -r releaseJar.zip build/jfx/app/
+            - name: Find DMG file on filesystem
+              id: find-dmg
+              run: echo "DMG_PATH=$(find . -name "*.dmg")" >> $GITHUB_ENV
+            - name: Upload Release JAR
+              id: upload-release-asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
+                  asset_path: ./releaseJar.zip
+                  asset_name: fxradio_jar.zip
+                  asset_content_type: application/zip
+            - name: Upload Release DMG
+              id: upload-release-dmg
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
+                  asset_path: ${{ env.DMG_PATH }}
+                  asset_name: fxradio_macOS.dmg
+                  asset_content_type: application/octet-stream
+    buildwin:
+        name: "Create Windows release"
+        runs-on: windows-latest
+        needs:
+            - prepareRelease
+        steps:
+            - uses: actions/checkout@v2
+            - run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
+              shell: bash
+            - uses: actions/setup-java@v2
+              with:
+                  distribution: 'zulu'
+                  java-version: '8'
+                  java-package: jdk+fx
+            - run: ./gradlew -i jfxNative
+              env:
+                  FX_APPEND_PATH: /jre
+            - name: Find MSI file on filesystem
+              id: find-msi
+              run: echo "MSI_PATH=$(Get-ChildItem -path D:\ -recurse -include "FXRadio-*.msi" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
+            - name: Find EXE file on filesystem
+              id: find-exe
+              run: echo "EXE_PATH=$(Get-ChildItem -path D:\ -recurse -include "FXRadio-*.exe" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
+            - name: Upload Release EXE
+              id: upload-release-exe
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
+                  asset_path: ${{ env.EXE_PATH }}
+                  asset_name: fxradio_windows.exe
+                  asset_content_type: application/octet-stream
+            - name: Upload Release MSI
+              id: upload-release-msi
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
+                  asset_path: ${{ env.MSI_PATH }}
+                  asset_name: fxradio_windows_msi.msi
+                  asset_content_type: application/octet-stream
