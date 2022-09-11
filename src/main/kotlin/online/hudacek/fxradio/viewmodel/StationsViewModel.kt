@@ -26,7 +26,7 @@ import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.usecase.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.GetTrendingStationsUseCase
 import online.hudacek.fxradio.usecase.GetTopVotedStationsUseCase
-import online.hudacek.fxradio.usecase.VoteUseCase
+import online.hudacek.fxradio.usecase.StationVoteUseCase
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.asObservable
 import tornadofx.get
@@ -57,7 +57,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     private val getTopVotedStationsUseCase: GetTopVotedStationsUseCase by inject()
     private val getTrendingStationsUseCase: GetTrendingStationsUseCase by inject()
     private val getStationsByCountryUseCase: GetStationsByCountryUseCase by inject()
-    private val voteUseCase: VoteUseCase by inject()
+    private val stationVoteUseCase: StationVoteUseCase by inject()
 
     val stationsProperty = bind(Stations::stations) as ListProperty
 
@@ -76,7 +76,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
 
         //Increase vote count on the server
         appEvent.addVote
-                .flatMapSingle(voteUseCase::execute)
+                .flatMapSingle(stationVoteUseCase::execute)
                 .flatMapSingle {
                     Single.just(if (it.ok) {
                         AppNotification(messages["vote.ok"], FontAwesome.Glyph.CHECK)

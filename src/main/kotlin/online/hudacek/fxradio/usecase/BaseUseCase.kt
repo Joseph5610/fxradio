@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.usecase
 
-import online.hudacek.fxradio.api.StationsApiProvider
+import online.hudacek.fxradio.data.StationsApiProvider
 import online.hudacek.fxradio.apiclient.stations.StationsApi
 import online.hudacek.fxradio.event.AppEvent
 import tornadofx.Controller

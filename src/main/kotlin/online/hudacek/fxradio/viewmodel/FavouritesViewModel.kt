@@ -52,7 +52,7 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
     val stationsProperty = bind(Favourites::stations) as ListProperty
 
     init {
-        favouriteSetUseCase.execute(stationsProperty)
+        favouriteSetUseCase.execute(Unit).subscribe { stationsProperty.add(it) }
 
         appEvent.addFavourite
                 .filter { it.isValid() && it !in stationsProperty }
@@ -72,5 +72,10 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
                 }.subscribe(appEvent.appNotification)
     }
 
-    fun cleanupFavourites(): Disposable = cleanFavouritesClearUseCase.execute(this)
+    fun cleanupFavourites(): Disposable = cleanFavouritesClearUseCase.execute(Unit)
+            .subscribe({
+                item = Favourites()
+            }, {
+
+            })
 }

@@ -48,6 +48,7 @@ import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
+import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
 
@@ -86,6 +87,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         }
                         addClass(Styles.subheader)
                         addClass(Styles.primaryTextColor)
+                        tooltip(messages["info.visit.website"])
                     }
                     label(stationInfoViewModel.countryProperty) {
                         addClass(Styles.grayLabel)

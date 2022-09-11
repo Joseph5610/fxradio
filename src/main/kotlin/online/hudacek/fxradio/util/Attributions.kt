@@ -36,7 +36,6 @@ object Attributions {
                 Attribution("kotlin-logging", "1.12.5", Licenses.apache20),
                 Attribution("FlagIcon", "1.1.0", Licenses.apache20),
                 Attribution("nsmenufx", "2.1.7", license = Licenses.nsMenuFx),
-                Attribution("commons-io", "2.11.0", license = Licenses.apache20),
                 Attribution("rxkotlinfx", "2.2.2", license = Licenses.apache20),
                 Attribution("sqliteJdbc", "3.36.0.3", license = Licenses.apache20),
                 Attribution("rxkotlin-jdbc", "0.4.1", license = Licenses.apache20),

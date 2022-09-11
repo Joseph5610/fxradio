@@ -22,7 +22,7 @@ DefaultGroupName=APPLICATION_GROUP
 ;Optional License
 LicenseFile=APPLICATION_LICENSE_FILE
 ;WinXP or above
-MinVersion=0,6.0
+MinVersion=0,6.1
 OutputBaseFilename=INSTALLER_FILE_NAME
 Compression=lzma
 SolidCompression=yes

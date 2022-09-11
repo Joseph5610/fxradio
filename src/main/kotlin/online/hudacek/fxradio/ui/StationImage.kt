@@ -26,8 +26,8 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.storage.ImageCache
-import online.hudacek.fxradio.storage.ImageCache.isCached
+import online.hudacek.fxradio.data.cache.ImageCache
+import online.hudacek.fxradio.data.cache.ImageCache.isCached
 import online.hudacek.fxradio.util.applySchedulers
 import tornadofx.onChange
 

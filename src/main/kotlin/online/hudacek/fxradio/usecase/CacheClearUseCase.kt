@@ -18,22 +18,30 @@
 
 package online.hudacek.fxradio.usecase
 
+import com.github.thomasnield.rxkotlinfx.toMaybe
+import io.reactivex.Maybe
 import io.reactivex.Single
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.stations.model.AddedStation
-import online.hudacek.fxradio.apiclient.stations.model.StationBody
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.data.cache.ImageCache
+import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.util.confirmDialog
+import tornadofx.get
 
 private val logger = KotlinLogging.logger {}
 
 /**
- * Adds new station to radio-browser API
+ * Clears image cache directory
  */
-class AddStationUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
+class CacheClearUseCase : BaseUseCase<Unit, Maybe<Boolean>>() {
 
-    override fun execute(input: StationBody): Single<AddedStation> = stationsApi
-            .addStation(input)
-            .compose(applySchedulers())
-            .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, "0")) }
-            .doOnError { logger.error { "Error while adding station: ${it.message}" } }
+    private val alert: Alert = confirmDialog(messages["cache.clear.confirm"],
+            messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage)
+
+    override fun execute(input: Unit): Maybe<Boolean> = alert.toMaybe()
+            .defaultIfEmpty(ButtonType.CANCEL)
+            .filter { it == ButtonType.OK }
+            .flatMapSingleElement { Single.just(ImageCache.clear()) }
+            .doOnError { logger.error(it) { "Exception when deleting cache!" } }
 }

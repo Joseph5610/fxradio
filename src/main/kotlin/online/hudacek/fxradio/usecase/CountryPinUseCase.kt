@@ -19,10 +19,14 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
+import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.data.db.Tables
+
+private val logger = KotlinLogging.logger {}
 
 class CountryPinUseCase : BaseUseCase<Country, Single<Country>>() {
 
-    override fun execute(input: Country) = Tables.pinnedCountries.insert(input)
+    override fun execute(input: Country): Single<Country> = Tables.pinnedCountries.insert(input)
+            .doOnError { logger.error(it) { "Exception when pinning $input!" } }
 }

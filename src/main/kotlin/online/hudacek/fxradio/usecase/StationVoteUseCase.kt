@@ -20,9 +20,16 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.storage.db.Tables
+import online.hudacek.fxradio.apiclient.stations.model.VoteResult
+import online.hudacek.fxradio.util.applySchedulers
 
-class FavouriteAddUseCase : BaseUseCase<Station, Single<Station>>() {
+/**
+ * Increases vote count of the station
+ */
+class StationVoteUseCase : BaseUseCase<Station, Single<VoteResult>>() {
 
-    override fun execute(input: Station) = Tables.favourites.insert(input)
+    override fun execute(input: Station): Single<VoteResult> = stationsApi
+            .addVote(input.stationuuid)
+            .compose(applySchedulers())
+            .onErrorResumeNext { Single.just(VoteResult(false, it.localizedMessage)) }
 }

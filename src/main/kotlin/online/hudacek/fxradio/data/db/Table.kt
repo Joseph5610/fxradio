@@ -16,13 +16,25 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.data.db
 
+import io.reactivex.Observable
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.storage.db.Tables
 
-class FavouriteRemoveUseCase : BaseUseCase<Station, Single<Station>>() {
+/**
+ * Basic interface for common table operations
+ */
+interface Table<T> {
+    /**
+     *  Name of the table in SQLite DB
+     */
+    val tableName: String
 
-    override fun execute(input: Station) = Tables.favourites.remove(input)
+    fun selectAll(): Observable<T>
+    fun removeAll(): Single<Int>
+    fun insert(element: T): Single<T>
+    fun remove(element: T): Single<T>
 }
+
+
+

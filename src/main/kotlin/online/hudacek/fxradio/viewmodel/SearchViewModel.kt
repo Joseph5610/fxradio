@@ -24,7 +24,7 @@ import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.usecase.SearchUseCase
+import online.hudacek.fxradio.usecase.StationSearchUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
@@ -40,7 +40,7 @@ class Search(query: String = Properties.SearchQuery.value(""),
 
 class SearchViewModel : BaseViewModel<Search>(Search()) {
 
-    private val searchUseCase: SearchUseCase by inject()
+    private val stationSearchUseCase: StationSearchUseCase by inject()
 
     val searchByTagProperty = bind(Search::searchByTag) as BooleanProperty
 
@@ -57,7 +57,7 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
             .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
             .toBinding()
 
-    fun search() = searchUseCase.execute(searchByTagProperty.value to queryBinding.value)
+    fun search() = stationSearchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 
     override fun onCommit() = Properties.SearchQuery.save(bindQueryProperty.value)
 }

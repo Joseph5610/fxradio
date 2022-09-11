@@ -30,7 +30,7 @@ import tornadofx.property
 
 sealed class ServersState(val key: String = "") {
     object Loading : ServersState("loading")
-    data class Fetched(val servers: ObservableList<String>) : ServersState()
+    data class Fetched(val servers: List<String>) : ServersState()
     object NoServersAvailable : ServersState("servers.notAvailable")
     data class Error(val cause: String) : ServersState("servers.error")
 }
@@ -60,11 +60,22 @@ class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
     /**
      * Perform async DNS lookup to find working API servers
      */
-    fun fetchServers() = getServersUseCase.execute(stateProperty)
+    fun fetchServers() {
+        stateProperty.value = ServersState.Loading
+        getServersUseCase.execute(Unit).subscribe({
+            if (it.isEmpty()) {
+                stateProperty.value = ServersState.NoServersAvailable
+            } else {
+                stateProperty.value = ServersState.Fetched(it)
+            }
+        }, {
+            stateProperty.value = ServersState.Error(it.localizedMessage)
+        })
+    }
 
     override fun onNewState(newState: ServersState) {
         if (newState is ServersState.Fetched) {
-            item = Servers(selectedServer = selectedProperty.value, availableServers = newState.servers)
+            item = Servers(selectedServer = selectedProperty.value, availableServers = observableListOf(newState.servers))
         }
     }
 

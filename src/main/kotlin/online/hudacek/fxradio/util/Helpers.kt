@@ -23,9 +23,12 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
 import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
+import javafx.stage.Window
+import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.style.StylesDark
+import tornadofx.*
 import tornadofx.FX.Companion.messages
-import tornadofx.alert
-import tornadofx.get
 
 /**
  * Perform async calls on correct thread
@@ -42,3 +45,25 @@ internal fun <T> applySchedulersObservable(): ObservableTransformer<T, T> = Obse
 
 internal fun vlcAlert() = alert(Alert.AlertType.ERROR,
         messages["player.vlc.missing"], messages["player.vlc.missing.description"])
+
+internal fun confirmDialog(header: String, content: String = "",
+                           confirmButton: ButtonType = ButtonType.OK,
+                           cancelButton: ButtonType = ButtonType.CANCEL,
+                           owner: Window? = null, title: String? = null): Alert {
+    val alert = Alert(Alert.AlertType.CONFIRMATION, content, confirmButton, cancelButton)
+    title?.let { alert.title = it }
+    alert.headerText = header
+    owner?.also { alert.initOwner(it) }
+    return alert
+}
+
+internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
+    removeStylesheet(Styles::class)
+    removeStylesheet(StylesDark::class)
+    if (isDarkModeProperty) {
+        importStylesheet(StylesDark::class)
+    } else {
+        importStylesheet(Styles::class)
+    }
+    FX.applyStylesheetsTo(FX.primaryStage.scene)
+}
