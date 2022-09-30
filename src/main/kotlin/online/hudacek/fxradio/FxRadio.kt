@@ -22,8 +22,8 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
 import online.hudacek.fxradio.apiclient.http.HttpClient
-import online.hudacek.fxradio.data.StationsApiProvider
-import online.hudacek.fxradio.data.db.Database
+import online.hudacek.fxradio.api.StationsApiProvider
+import online.hudacek.fxradio.persistence.database.Database
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark

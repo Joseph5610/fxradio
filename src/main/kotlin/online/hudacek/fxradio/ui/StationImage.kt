@@ -24,16 +24,16 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.data.cache.ImageCache
-import online.hudacek.fxradio.data.cache.ImageCache.isCached
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.persistence.cache.StationImageLoader
 import tornadofx.onChange
 
 private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
 
 private val logger = KotlinLogging.logger {}
+
+private val loader = StationImageLoader()
+
 
 /**
  * This method is used for custom downloading of station's logo
@@ -49,6 +49,9 @@ internal fun Property<Station>.stationImage(view: ImageView) {
     }
 }
 
+/**
+ * Loads image of [Station] from cache into [view] asynchronously
+ */
 internal fun Station.stationImage(view: ImageView) {
     // Set basic image properties
     view.image = defaultRadioLogo
@@ -56,46 +59,15 @@ internal fun Station.stationImage(view: ImageView) {
     view.cacheHint = CacheHint.SPEED
     view.isPreserveRatio = true
 
-    // If the image is in the cache, just load it into view
-    if (isCached) {
-        loadImage(view)
-    } else {
-        if (favicon.isNullOrEmpty()) {
-            // Ignore invalid image and add it to list of invalid stations to not load it again
-            ImageCache.addInvalid(this)
-            return
-        }
-
-        // Download the image with OkHttp client
-        favicon?.let { url ->
-            HttpClient.request(url,
-                    {
-                        ImageCache.save(this, it)
-                        loadImage(view)
-                    },
-                    {
-                        ImageCache.addInvalid(this)
-                    })
-        }
-    }
-}
-
-/**
- * Loads image of [Station] from cache into [view] asynchronously
- */
-private fun Station.loadImage(view: ImageView) {
-    ImageCache
-            .get(this)
-            .compose(applySchedulers())
+    loader.load(this)
             .subscribe({
                 view.image = it
-                it.errorProperty().onChange { isError ->
+                it?.errorProperty()?.onChange { isError ->
                     if (isError) {
                         view.image = defaultRadioLogo
-                        ImageCache.addInvalid(this)
                     }
                 }
             }, {
-                logger.error(it) { "Exception when retrieving image from cache!" }
+                logger.trace { "Failed to load image: ${it.message}" }
             })
 }

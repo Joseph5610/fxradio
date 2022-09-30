@@ -43,7 +43,7 @@ import online.hudacek.fxradio.integration.Elements.stationsHistory
 import online.hudacek.fxradio.integration.Elements.volumeMaxIcon
 import online.hudacek.fxradio.integration.Elements.volumeMinIcon
 import online.hudacek.fxradio.integration.Elements.volumeSlider
-import online.hudacek.fxradio.data.db.Tables
+import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.Glyph

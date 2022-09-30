@@ -24,7 +24,7 @@ import io.reactivex.Single
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import mu.KotlinLogging
-import online.hudacek.fxradio.data.cache.ImageCache
+import online.hudacek.fxradio.persistence.cache.ImageCache
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.util.confirmDialog
 import tornadofx.get

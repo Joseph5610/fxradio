@@ -56,7 +56,7 @@ abstract class Appearance {
     private fun getPrimaryColor(): String {
         val accentProperty = Property(Properties.AccentColor)
         // Use accent color from app.property file
-        val colorCode: Int = if (accentProperty.isPresent) {
+        val systemColorCode: Int = if (accentProperty.isPresent) {
             accentProperty.get()
         } else {
             if (MacUtils.isMac) {
@@ -67,6 +67,6 @@ abstract class Appearance {
                 AccentColor.MULTICOLOR.colorCode
             }
         }
-        return AccentColor.values().first { it.colorCode == colorCode }.color()
+        return AccentColor.values().first { it.colorCode == systemColorCode }.convertToHex()
     }
 }

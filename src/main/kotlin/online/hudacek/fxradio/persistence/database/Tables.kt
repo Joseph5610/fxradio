@@ -34,7 +34,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.data.db
+package online.hudacek.fxradio.persistence.database
 
 /**
  * Object that holds kotlin classes representing SQLite tables

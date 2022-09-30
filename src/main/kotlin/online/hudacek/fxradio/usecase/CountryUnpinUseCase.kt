@@ -21,7 +21,7 @@ package online.hudacek.fxradio.usecase
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.data.db.Tables
+import online.hudacek.fxradio.persistence.database.Tables
 
 private val logger = KotlinLogging.logger {}
 

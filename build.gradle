@@ -51,8 +51,6 @@ allprojects {
 
         // Use the Kotlin JDK 8 standard library
         compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        compile("org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin")
-        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines")
 
         compile("io.github.microutils:kotlin-logging:$versions.kotlinLogging")
         compile("org.slf4j:slf4j-api:$versions.slf4j")
@@ -76,6 +74,9 @@ dependencies {
 
     // Local JAR files
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile("org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin")
+    compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines")
 
     compile("no.tornado:tornadofx:$versions.tornadofx")
     compile("org.controlsfx:controlsfx:$versions.controlsfx")

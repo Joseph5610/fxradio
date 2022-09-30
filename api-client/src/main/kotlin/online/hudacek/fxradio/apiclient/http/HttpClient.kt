@@ -19,12 +19,8 @@
 package online.hudacek.fxradio.apiclient.http
 
 import mu.KotlinLogging
-import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.Response
 import online.hudacek.fxradio.apiclient.http.provider.BasicClientProvider
-import java.io.IOException
-import java.io.InputStream
 import java.net.InetAddress
 
 private val logger = KotlinLogging.logger {}
@@ -50,28 +46,10 @@ object HttpClient {
     /**
      * Performs HTTP request for [url]
      */
-    fun request(
-            url: String,
-            success: (InputStream) -> Unit,
-            fail: (Throwable) -> Unit
-    ) = runCatching {
-        clientProvider.request(url).enqueue(
-                object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
-                        response.body()?.let { success(it.byteStream()) }
-                        response.close()
-                    }
-
-                    override fun onFailure(call: Call, e: IOException) {
-                        logger.error { "Request to $url failed." }
-                        logger.trace(e) { "Request to $url failed." }
-                        fail(e)
-                    }
-                })
-    }.onFailure {
-        logger.trace(it) { "Call failed." }
-        fail(it)
-    }.isSuccess
+    fun request(url: String): Response {
+        logger.debug { "Performing request to $url" }
+        return clientProvider.request(url).execute()
+    }
 
     fun close() = clientProvider.close()
 }

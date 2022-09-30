@@ -19,7 +19,7 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.data.db.Tables
+import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles

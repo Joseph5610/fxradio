@@ -34,20 +34,15 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.data.cache
+package online.hudacek.fxradio.persistence.cache
 
-import io.reactivex.Single
-import io.reactivex.disposables.Disposable
-import javafx.scene.image.Image
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import tornadofx.observableListOf
-import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 import kotlin.math.roundToInt
 
 private val logger = KotlinLogging.logger {}
@@ -61,13 +56,9 @@ object ImageCache {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
 
-    // If the downloading failed, store the station uuid here and
-    // don't download the file again until next run of the app
-    private val invalidStationUuids = observableListOf(Station.dummy.stationuuid)
-
     init {
         // Prepare cache directory
-        prepareCacheDirectory()
+        createDirectory()
     }
 
     /**
@@ -82,51 +73,9 @@ object ImageCache {
     /**
      * Removes cache directory with all its contents and recreates it afterwards
      */
-    fun clear(): Boolean = cacheBasePath.toFile().deleteRecursively().also { prepareCacheDirectory() }
+    fun clear(): Boolean = cacheBasePath.toFile().deleteRecursively().also { createDirectory() }
 
-    /**
-     * Check if station image is in cache
-     */
-    val Station.isCached: Boolean
-        get() = (stationuuid in invalidStationUuids || Files.exists(cacheBasePath.resolve(stationuuid)))
-
-    /**
-     * Gets image for [station] from local cache
-     */
-    fun get(station: Station): Single<Image> = Single
-            .just(cacheBasePath.resolve(station.stationuuid))
-            .flatMap {
-                Single.just(Image("file:" + it.toFile().absolutePath, true))
-            }
-            .doOnError { logger.error(it) { "Exception when getting station image from file!" } }
-
-    /**
-     * Saves [inputStream] containing logo of [station] into local cache dir
-     */
-    fun save(station: Station, inputStream: InputStream): Disposable = Single.just(station)
-            .filter { !it.isCached }
-            .map { cacheBasePath.resolve(it.stationuuid) }
-            .subscribe({
-                Files.copy(
-                        inputStream,
-                        it,
-                        StandardCopyOption.REPLACE_EXISTING)
-            }, {
-                logger.error(it) { "Exception when saving downloaded image!" }
-            })
-
-    /**
-     * Adds [station] into list of invalid stations
-     * Means that image for given station is invalid / not supported by renderer or URL is invalid
-     */
-    fun addInvalid(station: Station) {
-        if (station.stationuuid !in invalidStationUuids) {
-            logger.trace { "Image for ${station.name} is added as invalid!" }
-            invalidStationUuids += station.stationuuid
-        }
-    }
-
-    private fun prepareCacheDirectory() {
+    private fun createDirectory() {
         if (!Files.isDirectory(cacheBasePath)) {
             Files.createDirectories(cacheBasePath)
         }

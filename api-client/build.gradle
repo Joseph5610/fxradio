@@ -5,10 +5,10 @@ ext.versions = [
 ]
 
 dependencies {
-    implementation("com.squareup.retrofit2:retrofit:$versions.retrofit")
-    implementation("com.squareup.retrofit2:adapter-rxjava2:$versions.retrofitAdapters")
-    implementation("com.squareup.retrofit2:converter-gson:$versions.retrofitAdapters")
-    implementation("com.squareup.okhttp3:logging-interceptor:$versions.retrofitLogger")
+    api("com.squareup.retrofit2:retrofit:$versions.retrofit")
+    api("com.squareup.retrofit2:adapter-rxjava2:$versions.retrofitAdapters")
+    api("com.squareup.retrofit2:converter-gson:$versions.retrofitAdapters")
+    api("com.squareup.okhttp3:logging-interceptor:$versions.retrofitLogger")
 }
 
 version "0.0.4"
