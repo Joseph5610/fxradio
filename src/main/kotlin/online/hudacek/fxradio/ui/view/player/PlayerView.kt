@@ -27,7 +27,9 @@ import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
@@ -149,7 +151,7 @@ class PlayerView : BaseView() {
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
 
-            if (Config.Flags.enableDebugWindow) {
+            if (Properties.EnableDebugView.value(false)) {
                 contextmenu {
                     item("Debug Window").action {
                         Modal.Debug.open()

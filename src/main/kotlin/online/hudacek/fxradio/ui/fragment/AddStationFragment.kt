@@ -43,7 +43,7 @@ class AddStationFragment : BaseFragment() {
     private val darkModeViewModel: DarkModeViewModel by inject()
 
     // List of Countries for autocomplete
-    private val countriesListProperty = listProperty<String>().apply {
+    private val countriesListProperty = listProperty<String>(observableListOf()).apply {
         bind(libraryViewModel.countriesProperty) { c -> c.name }
     }
 

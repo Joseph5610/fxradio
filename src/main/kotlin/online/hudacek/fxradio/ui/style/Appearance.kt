@@ -49,7 +49,7 @@ abstract class Appearance {
     abstract val backgroundSelected: String
     abstract val label: String
     abstract val grayLabel: String
-    
+
     /**
      * Detects primary color from system accept color
      */

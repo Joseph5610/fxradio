@@ -20,6 +20,8 @@ package online.hudacek.fxradio.ui.view
 import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -60,7 +62,7 @@ class TrayIcon : Component() {
     }
 
     fun addIcon() = with(app) {
-        if (Config.Flags.useTrayIcon && !FxRadio.isTestEnvironment) {
+        if (Properties.UseTrayIcon.value(true) && !FxRadio.isTestEnvironment) {
             trayicon(resources.stream("/" + Config.Resources.stageIcon)) {
                 setOnMouseClicked(fxThread = true) {
                     primaryStage.show()

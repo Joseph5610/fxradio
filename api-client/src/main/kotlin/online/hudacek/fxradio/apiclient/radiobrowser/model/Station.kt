@@ -18,27 +18,29 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
+import java.util.*
+
 /**
  * Station data class
  */
 data class Station(
-    val stationuuid: String,
-    val name: String,
-    val url_resolved: String?,
-    val homepage: String,
-    var favicon: String?,
-    val tags: String = "",
-    val country: String = "",
-    val countrycode: String = "",
-    val state: String = "",
-    val language: String = "",
-    val codec: String = "",
-    val bitrate: Int = 0,
-    var votes: Int = 0,
-    val geo_lat: Double = 0.0,
-    val geo_long: Double = 0.0,
-    val clicktrend: Int = 0,
-    val languagecodes: String = "",
+        val stationuuid: String,
+        val name: String,
+        val url_resolved: String?,
+        val homepage: String,
+        var favicon: String?,
+        val tags: String = "",
+        val country: String = "",
+        val countrycode: String = "",
+        val state: String = "",
+        val language: String = "",
+        val codec: String = "",
+        val bitrate: Int = 0,
+        var votes: Int = 0,
+        val geo_lat: Double = 0.0,
+        val geo_long: Double = 0.0,
+        val clicktrend: Int = 0,
+        val languagecodes: String = "",
 ) {
 
     fun isValid() = stationuuid != "0"

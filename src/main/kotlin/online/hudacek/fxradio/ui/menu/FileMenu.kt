@@ -24,12 +24,18 @@ import online.hudacek.fxradio.util.openInternalWindow
 import tornadofx.action
 import tornadofx.get
 
-class StationMenu : BaseMenu("menu.station") {
+class FileMenu : BaseMenu("menu.file") {
 
     override val menuItems = listOf(
             item(messages["menu.station.add"], KeyCodes.add) {
                 action {
                     Modal.AddNewStation.openInternalWindow()
+                }
+            },
+            separator(),
+            item(messages["menu.stream"], KeyCodes.openStream) {
+                action {
+                    Modal.OpenStream.open()
                 }
             }
     )

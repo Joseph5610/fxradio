@@ -54,7 +54,6 @@ object Config {
      * Experimental features
      */
     object Flags {
-        const val useTrayIcon = true
-        const val enableDebugWindow = false
+
     }
 }

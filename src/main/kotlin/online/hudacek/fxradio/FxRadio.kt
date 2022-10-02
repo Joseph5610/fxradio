@@ -139,8 +139,8 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
         fun isDarkModePreferred(): Boolean {
             return runCatching {
-                //we have to use the ugly java way to access this property as we want to access it
-                //in the time that the app is not yet instantiated
+                // We have to use the ugly java way to access this property as we want to access it
+                // in the time that the app is not yet instantiated
                 val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
                 val props = java.util.Properties().also { it.load(fis) }
                 val darkModeProp = props.getProperty(Properties.DarkMode.key)

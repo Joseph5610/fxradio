@@ -19,7 +19,13 @@
 package online.hudacek.fxradio.util
 
 import javafx.stage.StageStyle
-import online.hudacek.fxradio.ui.fragment.*
+import online.hudacek.fxradio.ui.fragment.AddStationFragment
+import online.hudacek.fxradio.ui.fragment.AppInfoFragment
+import online.hudacek.fxradio.ui.fragment.AttributionsFragment
+import online.hudacek.fxradio.ui.fragment.DebugFragment
+import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
+import online.hudacek.fxradio.ui.fragment.ServersFragment
+import online.hudacek.fxradio.ui.fragment.StatsFragment
 import tornadofx.FX
 import tornadofx.Fragment
 import tornadofx.find
@@ -38,6 +44,7 @@ sealed class Modal<out T : Fragment>(val style: StageStyle = StageStyle.UTILITY,
     object Attributions : Modal<AttributionsFragment>()
     object Debug : Modal<DebugFragment>()
     object License : Modal<AttributionsFragment.LicenseFragment>()
+    object OpenStream: Modal<OpenStreamFragment>(style = StageStyle.UNIFIED)
 }
 
 /**
@@ -50,4 +57,4 @@ internal inline fun <reified T : Fragment> Modal<T>.new() = T::class.createInsta
         stageStyle = style, resizable = resizable)
 
 internal inline fun <reified T : Fragment> Modal<T>.openInternalWindow() = find<T>().openInternalWindow<T>(
-        owner = FX.primaryStage.scene.root, movable = false)
+        owner = FX.primaryStage.scene.root, movable = resizable)

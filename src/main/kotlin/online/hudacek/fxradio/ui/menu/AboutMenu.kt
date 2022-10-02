@@ -37,11 +37,6 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
                     Modal.AppInfo.open()
                 }
             },
-            item(messages["menu.app.attributions"]) {
-                action {
-                    Modal.Attributions.open()
-                }
-            },
             item(messages["menu.app.server"]) {
                 action {
                     Modal.Servers.open()

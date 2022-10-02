@@ -32,6 +32,11 @@ class HelpMenu : BaseMenu("menu.help") {
     private val logsFolderPath = "file://${Config.Paths.baseAppPath}"
 
     override val menuItems = listOf(
+            item(messages["menu.app.attributions"]) {
+                action {
+                    Modal.Attributions.open()
+                }
+            },
             item(messages["menu.help.openhomepage"], KeyCodes.website) {
                 action {
                     appMenuViewModel.openWebsite()
