@@ -20,9 +20,9 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Observable
 import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
-import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.isRussia
+import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
 import online.hudacek.fxradio.util.applySchedulersObservable
 
 private val logger = KotlinLogging.logger {}
@@ -32,7 +32,7 @@ private val logger = KotlinLogging.logger {}
  */
 class GetCountriesUseCase : BaseUseCase<CountriesBody, Observable<Country>>() {
 
-    override fun execute(input: CountriesBody): Observable<Country> = stationsApi
+    override fun execute(input: CountriesBody): Observable<Country> = radioBrowserApi
             .getCountries(input)
             .flattenAsObservable { it.filter { c -> !c.isRussia } }
             .compose(applySchedulersObservable())

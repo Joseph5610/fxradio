@@ -26,11 +26,11 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.FxRadioLight
-import online.hudacek.fxradio.apiclient.ApiServiceProvider
-import online.hudacek.fxradio.apiclient.stations.StationsApi
-import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.SearchBody
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.ServiceProvider
+import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.integration.Elements.libraryCountriesFragment
 import online.hudacek.fxradio.integration.Elements.libraryListView
 import online.hudacek.fxradio.integration.Elements.nowPlayingLabel
@@ -77,7 +77,7 @@ class AppFunctionalityTest {
     private lateinit var app: FxRadio
 
     // Stations service, init needed only once
-    private val service = ApiServiceProvider("https://${Config.API.fallbackApiServerURL}").get<StationsApi>()
+    private val service = ServiceProvider("https://${Config.API.fallbackApiServerURL}").get<RadioBrowserApi>()
 
     @Init
     fun init() {

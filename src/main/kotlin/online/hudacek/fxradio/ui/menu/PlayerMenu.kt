@@ -34,14 +34,53 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val streamTitleNotificationViewModel: StreamTitleNotificationViewModel by inject()
 
+    private val startItem by lazy {
+        item(messages["menu.player.start"], KeyCodes.play) {
+            disableWhenInvalidStation(selectedStationViewModel.stationProperty)
+            action {
+                playerViewModel.stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved?.let {
+                    PlayerState.Playing(it)
+                }
+            }
+        }
+    }
+
+    private val stopItem by lazy {
+        item(messages["menu.player.stop"], KeyCodes.stop) {
+            disableWhenInvalidStation(selectedStationViewModel.stationProperty)
+            action {
+                playerViewModel.stateProperty.value = PlayerState.Stopped
+            }
+        }
+    }
+
     private val playerTypeItem by lazy {
         checkMenuItem(messages["menu.player.switch"]) {
             isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == MediaPlayer.Type.Humble
             action {
-                playerViewModel.stateProperty.value = PlayerState.Stopped
-                playerViewModel.mediaPlayerProperty.value?.release()
-                playerViewModel.mediaPlayerProperty.value = MediaPlayerFactory.toggle()
+                with(playerViewModel) {
+                    stateProperty.value = PlayerState.Stopped
+                    mediaPlayerProperty.value?.release()
+                    mediaPlayerProperty.value = MediaPlayerFactory.toggle()
+                    commit()
+                }
+            }
+        }
+    }
+
+    private val animateItem by lazy {
+        checkMenuItem(messages["menu.player.animate"], bindProperty = playerViewModel.animateProperty) {
+            action {
                 playerViewModel.commit()
+            }
+        }
+    }
+
+    private val notificationsItem by lazy {
+        checkMenuItem(messages["menu.player.notifications"],
+                bindProperty = streamTitleNotificationViewModel.showProperty) {
+            action {
+                streamTitleNotificationViewModel.commit()
             }
         }
     }
@@ -52,31 +91,6 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    override val menuItems = listOf(item(messages["menu.player.start"], KeyCodes.play) {
-        disableWhenInvalidStation(selectedStationViewModel.stationProperty)
-        action {
-            playerViewModel.stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved?.let {
-                PlayerState.Playing(it)
-            }
-        }
-    }, item(messages["menu.player.stop"], KeyCodes.stop) {
-        disableWhenInvalidStation(selectedStationViewModel.stationProperty)
-        action {
-            playerViewModel.stateProperty.value = PlayerState.Stopped
-        }
-    }, separator(), playerTypeItem,
-
-            checkMenuItem(messages["menu.player.animate"],
-                    bindProperty = playerViewModel.animateProperty) {
-                action {
-                    playerViewModel.commit()
-                }
-            },
-
-            checkMenuItem(messages["menu.player.notifications"],
-                    bindProperty = streamTitleNotificationViewModel.showProperty) {
-                action {
-                    streamTitleNotificationViewModel.commit()
-                }
-            })
+    override val menuItems = listOf(startItem, stopItem,
+            separator(), playerTypeItem, animateItem, notificationsItem)
 }

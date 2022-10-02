@@ -19,8 +19,8 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
@@ -29,7 +29,6 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass

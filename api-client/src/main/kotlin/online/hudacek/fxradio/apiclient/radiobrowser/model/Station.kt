@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations.model
+package online.hudacek.fxradio.apiclient.radiobrowser.model
 
 /**
  * Station data class

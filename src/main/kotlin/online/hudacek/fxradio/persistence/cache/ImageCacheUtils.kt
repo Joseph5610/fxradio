@@ -47,13 +47,13 @@ import kotlin.math.roundToInt
  * Images are saved to files with /.fxradio/cache directory
  * File name is the station UUID
  */
-object ImageCache {
+object ImageCacheUtils {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
 
     init {
         // Prepare cache directory
-        createDirectory()
+        createCacheDirectory()
     }
 
     /**
@@ -68,9 +68,9 @@ object ImageCache {
     /**
      * Removes cache directory with all its contents and recreates it afterwards
      */
-    fun clear(): Boolean = cacheBasePath.toFile().deleteRecursively().also { createDirectory() }
+    fun clear(): Boolean = cacheBasePath.toFile().deleteRecursively().also { createCacheDirectory() }
 
-    private fun createDirectory() {
+    private fun createCacheDirectory() {
         if (!Files.isDirectory(cacheBasePath)) {
             Files.createDirectories(cacheBasePath)
         }

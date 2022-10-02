@@ -38,7 +38,7 @@ package online.hudacek.fxradio.persistence.database
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.util.applySchedulers
 import online.hudacek.fxradio.util.applySchedulersObservable
 

@@ -21,7 +21,7 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
-import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.flagIcon
 import online.hudacek.fxradio.ui.showWhen

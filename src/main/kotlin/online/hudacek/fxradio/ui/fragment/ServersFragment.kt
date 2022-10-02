@@ -146,7 +146,6 @@ class ServersFragment : BaseFragment() {
                         }
                     }
                 }
-
                 addClass(Styles.libraryListView)
             }
         }

@@ -23,8 +23,8 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
-import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.usecase.CountryPinUseCase
 import online.hudacek.fxradio.usecase.CountryUnPinUseCase
 import online.hudacek.fxradio.usecase.GetCountriesUseCase

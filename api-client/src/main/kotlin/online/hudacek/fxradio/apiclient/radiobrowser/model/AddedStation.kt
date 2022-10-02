@@ -16,13 +16,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations.model
+package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class StationBody(val name: String = "",
-                       val url: String = "",
-                       val homepage: String = "",
-                       val favicon: String = "",
-                       val countrycode: String = "",
-                       val country: String = "",
-                       val language: String = "",
-                       val tags: String = "")
+data class AddedStation(val ok: Boolean,
+                        val message: String,
+                        val uuid: String)

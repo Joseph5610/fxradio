@@ -16,20 +16,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations
+package online.hudacek.fxradio.apiclient.radiobrowser
 
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.AddedStation
-import online.hudacek.fxradio.apiclient.stations.model.AllStationsBody
-import online.hudacek.fxradio.apiclient.stations.model.ClickResult
-import online.hudacek.fxradio.apiclient.stations.model.CountriesBody
-import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.SearchBody
-import online.hudacek.fxradio.apiclient.stations.model.SearchByTagBody
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.apiclient.stations.model.StationBody
-import online.hudacek.fxradio.apiclient.stations.model.StatsResult
-import online.hudacek.fxradio.apiclient.stations.model.VoteResult
+import online.hudacek.fxradio.apiclient.ApiDefinition
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AddedStation
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResult
+import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.StationBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResult
+import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResult
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -39,10 +40,11 @@ import retrofit2.http.Query
 /**
  * Provides HTTP endpoints for radio-browser.info API
  */
-interface StationsApi : ApiDefinition {
+interface RadioBrowserApi : ApiDefinition {
 
     @POST("json/stations/bycountryexact/{countryName}")
-    fun getStationsByCountry(@Body countriesBody: CountriesBody, @Path("countryName") countryName: String): Single<List<Station>>
+    fun getStationsByCountry(@Body countriesBody: CountriesBody,
+                             @Path("countryName") countryName: String): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>

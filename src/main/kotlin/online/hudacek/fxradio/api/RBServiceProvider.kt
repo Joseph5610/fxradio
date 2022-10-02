@@ -16,24 +16,30 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations.model
+package online.hudacek.fxradio.api
 
-data class Country(val name: String,
-                   val iso_3166_1: String,
-                   val stationcount: Int,
-                   var isUserCountry : Boolean = false) {
+import mu.KotlinLogging
+import online.hudacek.fxradio.apiclient.ServiceProvider
+import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
+import online.hudacek.fxradio.viewmodel.ServersViewModel
+import tornadofx.Component
 
-    //Don't use stationCount when comparing this data class
-    override fun equals(other: Any?) = if (other is Country) {
-        this.name == other.name
-    } else {
-        super.equals(other)
+private val logger = KotlinLogging.logger {}
+
+object RBServiceProvider : Component() {
+
+    private val viewModel: ServersViewModel by inject()
+
+    private val serviceProvider: ServiceProvider by lazy {
+        ServiceProvider("https://${viewModel.selectedProperty.value}").also {
+            logger.debug { "Initialized Stations API provider" }
+        }
     }
 
-    override fun hashCode() = name.hashCode()
+    /**
+     * Get the radio-browser API service instance
+     */
+    fun provide(): RadioBrowserApi = serviceProvider.get()
+
+    fun close() = serviceProvider.close()
 }
-
-data class CountriesBody(val hidebroken: Boolean = true)
-
-val Country.isRussia: Boolean
-    get() = iso_3166_1 == "RU"

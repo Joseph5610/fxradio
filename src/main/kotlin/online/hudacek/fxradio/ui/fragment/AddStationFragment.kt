@@ -33,25 +33,8 @@ import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.bind
-import tornadofx.button
-import tornadofx.checkbox
+import tornadofx.*
 import tornadofx.controlsfx.content
-import tornadofx.enableWhen
-import tornadofx.field
-import tornadofx.fieldset
-import tornadofx.form
-import tornadofx.get
-import tornadofx.hbox
-import tornadofx.label
-import tornadofx.listProperty
-import tornadofx.observableListOf
-import tornadofx.onChange
-import tornadofx.validator
-import tornadofx.vbox
-import tornadofx.vgrow
 
 class AddStationFragment : BaseFragment() {
 
@@ -59,13 +42,13 @@ class AddStationFragment : BaseFragment() {
     private val libraryViewModel: LibraryViewModel by inject()
     private val darkModeViewModel: DarkModeViewModel by inject()
 
-    //Autocomplete list of countries
-    private val countriesListProperty = listProperty(observableListOf<String>()).also {
-        it.bind(libraryViewModel.countriesProperty) { c -> c.name }
+    // List of Countries for autocomplete
+    private val countriesListProperty = listProperty<String>().apply {
+        bind(libraryViewModel.countriesProperty) { c -> c.name }
     }
 
     override fun onDock() {
-        //Recheck viewmodel validity when reopening fragment
+        // Recheck ViewModel validity when reopening fragment
         viewModel.validate(focusFirstError = false)
     }
 

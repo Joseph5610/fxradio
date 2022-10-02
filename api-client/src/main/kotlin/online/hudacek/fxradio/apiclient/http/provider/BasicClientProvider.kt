@@ -29,9 +29,10 @@ import java.util.concurrent.TimeUnit
 private val logger = KotlinLogging.logger {}
 
 /**
- * Defines Connection timeout for the duration og w in seconds
+ * Defines Connection timeout for the duration of call in seconds
  */
 private const val TIMEOUT_SECS: Long = 20
+private const val MAX_IDLE_CONNECTIONS: Int = 5
 
 /**
  * Base OkHttpClient implementation
@@ -41,7 +42,7 @@ class BasicClientProvider : HttpClientProvider() {
     /**
      * Defines the limits for the active connections
      */
-    private val connectionPool = ConnectionPool(5, TIMEOUT_SECS, TimeUnit.SECONDS)
+    private val connectionPool = ConnectionPool(MAX_IDLE_CONNECTIONS, TIMEOUT_SECS, TimeUnit.SECONDS)
 
     /**
      * Enables Logging of http requests in app logger on trace level
@@ -64,7 +65,7 @@ class BasicClientProvider : HttpClientProvider() {
      */
     override val client: OkHttpClient =
             OkHttpClient.Builder()
-                    //The whole call should not take longer than 20 secs
+                    // The whole call should not take longer than 20 seconds
                     .callTimeout(TIMEOUT_SECS, TimeUnit.SECONDS)
                     .addNetworkInterceptor(UserAgentInterceptor())
                     .connectionPool(connectionPool)
@@ -73,5 +74,4 @@ class BasicClientProvider : HttpClientProvider() {
                             addInterceptor(it)
                         }
                     }.build()
-
 }

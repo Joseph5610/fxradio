@@ -19,8 +19,8 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.apiclient.stations.model.VoteResult
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResult
 import online.hudacek.fxradio.util.applySchedulers
 
 /**
@@ -28,7 +28,7 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class StationVoteUseCase : BaseUseCase<Station, Single<VoteResult>>() {
 
-    override fun execute(input: Station): Single<VoteResult> = stationsApi
+    override fun execute(input: Station): Single<VoteResult> = radioBrowserApi
             .addVote(input.stationuuid)
             .compose(applySchedulers())
             .onErrorResumeNext { Single.just(VoteResult(false, it.localizedMessage)) }

@@ -20,7 +20,7 @@ package online.hudacek.fxradio.ui.view.stations
 
 import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
-import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
+import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
@@ -29,7 +29,6 @@ import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState

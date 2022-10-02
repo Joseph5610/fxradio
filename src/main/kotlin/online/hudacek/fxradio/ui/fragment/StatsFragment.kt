@@ -72,7 +72,7 @@ class StatsFragment : BaseFragment() {
 
             hyperlink(serversViewModel.selectedProperty) {
                 action {
-                    app.openUrl("https://${this.text}")
+                    app.openUrl("https://$text")
                 }
                 addClass(Styles.header)
                 addClass(Styles.primaryTextColor)

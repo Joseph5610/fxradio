@@ -20,8 +20,10 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
@@ -56,6 +58,15 @@ class AttributionsFragment : BaseFragment() {
                 onUserSelect {
                     Modal.License.open()
                 }
+            }
+        }
+
+        vbox(alignment = Pos.CENTER) {
+            hyperlink(messages["about.datasource"]) {
+                action {
+                    app.openUrl(Config.API.radioBrowserUrl)
+                }
+                addClass(Styles.grayLabel)
             }
         }
 

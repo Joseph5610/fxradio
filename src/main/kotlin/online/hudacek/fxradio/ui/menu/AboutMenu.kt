@@ -31,30 +31,29 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
 
     private val darkModeViewModel: DarkModeViewModel by inject()
 
-    val aboutMainItems: List<MenuItem>
-        get() = listOf(
-                item(messages["menu.app.about"] + " " + FxRadio.appName) {
-                    action {
-                        Modal.AppInfo.open()
-                    }
-                },
-                item(messages["menu.app.attributions"]) {
-                    action {
-                        Modal.Attributions.open()
-                    }
-                },
-                item(messages["menu.app.server"]) {
-                    action {
-                        Modal.Servers.open()
-                    }
-                },
-                checkMenuItem(messages["menu.app.darkmode"]) {
-                    bind(darkModeViewModel.darkModeProperty)
-                    action {
-                        darkModeViewModel.commit()
-                    }
+    val aboutMainItems: List<MenuItem> = listOf(
+            item(messages["menu.app.about"] + " " + FxRadio.appName) {
+                action {
+                    Modal.AppInfo.open()
                 }
-        )
+            },
+            item(messages["menu.app.attributions"]) {
+                action {
+                    Modal.Attributions.open()
+                }
+            },
+            item(messages["menu.app.server"]) {
+                action {
+                    Modal.Servers.open()
+                }
+            },
+            checkMenuItem(messages["menu.app.darkmode"]) {
+                bind(darkModeViewModel.darkModeProperty)
+                action {
+                    darkModeViewModel.commit()
+                }
+            }
+    )
 
     override val menuItems = mutableListOf<MenuItem>().apply {
         addAll(aboutMainItems)

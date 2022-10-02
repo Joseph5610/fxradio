@@ -16,17 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient
+package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import okhttp3.HttpUrl
-
-object ApiUtils {
-
-    const val userAgent = "FxRadio"
-
-    val version: String by lazy {
-        ApiUtils::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
-    }
-
-    fun isValidUrl(url: String) = HttpUrl.parse(url) != null
-}
+data class VoteResult(val ok: Boolean,
+                      val message: String)

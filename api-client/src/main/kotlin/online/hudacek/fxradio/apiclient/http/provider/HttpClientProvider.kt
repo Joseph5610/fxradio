@@ -22,6 +22,7 @@ import okhttp3.Call
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.net.InetAddress
 
 abstract class HttpClientProvider {
@@ -40,7 +41,7 @@ abstract class HttpClientProvider {
 
     fun dns(hostname: String): MutableList<InetAddress> = client.dns().lookup(hostname)
 
-    fun request(url: String): Call = client.newCall(buildRequest(url))
+    fun request(url: String): Response = client.newCall(buildRequest(url)).execute()
 
     /**
      * Constructs [Request] object for given [url] address

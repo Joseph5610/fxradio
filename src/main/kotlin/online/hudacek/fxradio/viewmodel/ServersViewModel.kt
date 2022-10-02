@@ -25,6 +25,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.usecase.GetServersUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.value
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -36,7 +37,7 @@ sealed class ServersState(val key: String = "") {
 }
 
 class Servers(
-        selectedServer: String = Config.API.fallbackApiServerURL,
+        selectedServer: String = Properties.ApiServer.value(Config.API.fallbackApiServerURL),
         availableServers: ObservableList<String> = observableListOf()
 ) {
     var selected: String by property(selectedServer)
@@ -45,7 +46,7 @@ class Servers(
 
 /**
  * Holds available and selected API servers
- * Item is set in [online.hudacek.fxradio.api.StationsApiProvider]
+ * Item is set in [online.hudacek.fxradio.api.RBServiceProvider]
  *
  * Search for available servers is performed only on first start of the app or when opening
  * [online.hudacek.fxradio.ui.fragment.ServersFragment]

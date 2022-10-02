@@ -16,7 +16,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.stations.model
+package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class VoteResult(val ok: Boolean,
-                      val message: String)
+data class StatsResult(val supported_version: String,
+                       val software_version: String,
+                       val status: String,
+                       val stations: String,
+                       val stations_broken: String,
+                       val tags: String,
+                       val clicks_last_hour: Int,
+                       val clicks_last_day: Int,
+                       val languages: Int,
+                       val countries: Int
+)

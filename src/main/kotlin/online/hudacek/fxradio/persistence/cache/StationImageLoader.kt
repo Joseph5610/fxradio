@@ -23,7 +23,7 @@ import io.reactivex.Single
 import javafx.scene.image.Image
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulers
 import java.io.InputStream
 import java.nio.file.Files

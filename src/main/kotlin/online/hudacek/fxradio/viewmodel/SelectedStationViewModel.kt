@@ -25,7 +25,7 @@ import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.StationClickUseCase
 import tornadofx.observableListOf
 import tornadofx.property
@@ -59,6 +59,7 @@ class SelectedStation(station: Station) {
 
 class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelState>(
         SelectedStation(Station.dummy), InfoPanelState.Hidden) {
+
     val stationProperty = bind(SelectedStation::station) as ObjectProperty
     val tagsProperty = bind(SelectedStation::tags) as ListProperty<String>
     val homePageProperty = bind(SelectedStation::homePage) as StringProperty
@@ -85,6 +86,3 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
         stationObservable.subscribe(stationClickUseCase::execute)
     }
 }
-/*
-
- */

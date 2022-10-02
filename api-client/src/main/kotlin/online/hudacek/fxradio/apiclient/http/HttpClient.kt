@@ -31,15 +31,15 @@ private val logger = KotlinLogging.logger {}
  */
 object HttpClient {
 
-    //Uses default HTTP client
+    // Uses default HTTP client
     private val clientProvider by lazy { BasicClientProvider() }
 
     /**
      * Performs DNS lookup for [address]
      */
     fun lookup(address: String): MutableList<InetAddress> {
-        return clientProvider.dns(address).apply {
-            logger.debug { "DNS lookup for $address returned $this" }
+        return clientProvider.dns(address).also {
+            logger.trace { "DNS lookup for $address returned $it" }
         }
     }
 
@@ -47,8 +47,8 @@ object HttpClient {
      * Performs HTTP request for [url]
      */
     fun request(url: String): Response {
-        logger.debug { "Performing request to $url" }
-        return clientProvider.request(url).execute()
+        logger.trace { "Performing request to $url" }
+        return clientProvider.request(url)
     }
 
     fun close() = clientProvider.close()

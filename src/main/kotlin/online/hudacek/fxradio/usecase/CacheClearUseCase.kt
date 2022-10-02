@@ -24,7 +24,7 @@ import io.reactivex.Single
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import mu.KotlinLogging
-import online.hudacek.fxradio.persistence.cache.ImageCache
+import online.hudacek.fxradio.persistence.cache.ImageCacheUtils
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.util.confirmDialog
 import tornadofx.get
@@ -37,11 +37,11 @@ private val logger = KotlinLogging.logger {}
 class CacheClearUseCase : BaseUseCase<Unit, Maybe<Boolean>>() {
 
     private val alert: Alert = confirmDialog(messages["cache.clear.confirm"],
-            messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage)
+            messages["cache.clear.text"].formatted(ImageCacheUtils.totalSize), owner = primaryStage)
 
     override fun execute(input: Unit): Maybe<Boolean> = alert.toMaybe()
             .defaultIfEmpty(ButtonType.CANCEL)
             .filter { it == ButtonType.OK }
-            .flatMapSingleElement { Single.just(ImageCache.clear()) }
+            .flatMapSingleElement { Single.just(ImageCacheUtils.clear()) }
             .doOnError { logger.error(it) { "Exception when deleting cache!" } }
 }

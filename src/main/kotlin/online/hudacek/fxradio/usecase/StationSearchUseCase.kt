@@ -19,9 +19,9 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.stations.model.SearchBody
-import online.hudacek.fxradio.apiclient.stations.model.SearchByTagBody
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulers
 
 /**
@@ -31,11 +31,11 @@ import online.hudacek.fxradio.util.applySchedulers
 class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Station>>>() {
 
     override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
-        stationsApi
+        radioBrowserApi
                 .searchStationByTag(SearchByTagBody(input.second))
                 .compose(applySchedulers())
     } else {
-        stationsApi
+        radioBrowserApi
                 .searchStationByName(SearchBody(input.second))
                 .compose(applySchedulers())
     }
