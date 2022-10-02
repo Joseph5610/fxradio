@@ -32,7 +32,7 @@ import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
@@ -67,7 +67,7 @@ class PlayerView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
     private val darkModeViewModel: DarkModeViewModel by inject()
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     private val playerStationView: PlayerStationView by inject()
 
@@ -81,7 +81,7 @@ class PlayerView : BaseView() {
     private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE, useStyle = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
-        if (it == PlayerState.Playing) {
+        if (it is PlayerState.Playing) {
             stopGlyph
         } else {
             playGlyph
@@ -94,7 +94,7 @@ class PlayerView : BaseView() {
             graphicProperty().bind(playerControlsBinding)
             requestFocusOnSceneAvailable()
             disableWhen {
-                viewModel.stationProperty.booleanBinding {
+                selectedStationViewModel.stationProperty.booleanBinding {
                     it == null || !it.isValid()
                 }
             }
@@ -110,12 +110,12 @@ class PlayerView : BaseView() {
             id = "stationInfo"
             graphic = infoGlyph
             disableWhen {
-                viewModel.stationProperty.booleanBinding {
+                selectedStationViewModel.stationProperty.booleanBinding {
                     it == null || !it.isValid()
                 }
             }
             setOnMouseClicked {
-                stationInfoViewModel.stateProperty.apply {
+                selectedStationViewModel.stateProperty.apply {
                     value = if (value == InfoPanelState.Shown) {
                         InfoPanelState.Hidden
                     } else {

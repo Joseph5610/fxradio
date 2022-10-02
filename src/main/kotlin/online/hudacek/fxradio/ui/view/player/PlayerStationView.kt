@@ -27,6 +27,7 @@ import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.borderpane
 import tornadofx.bottom
@@ -49,20 +50,21 @@ private const val LOGO_SIZE = 30.0
 class PlayerStationView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val tickerView by lazy { PlayerTickerView() }
 
     private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {
             is PlayerState.Stopped -> messages["player.streamingStopped"]
             is PlayerState.Error -> messages["player.streamingError"]
-            else -> viewModel.stationProperty.value.name
+            else -> selectedStationViewModel.stationProperty.value.name
         }
     }
 
     private val stationLogo by lazy {
         imageview {
             // Subscribe to property changes
-            viewModel.stationProperty.stationImage(this)
+            selectedStationViewModel.stationProperty.stationImage(this)
             fitWidth = LOGO_SIZE
         }
     }

@@ -32,7 +32,7 @@ import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -56,7 +56,7 @@ private const val LOGO_SIZE = 60.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
@@ -68,7 +68,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     }
 
     override fun onDock() {
-        stationInfoViewModel.stationProperty.stationImage(stationLogo)
+        selectedStationViewModel.stationProperty.stationImage(stationLogo)
     }
 
     override val root = borderpane {
@@ -81,15 +81,15 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     paddingAll = 10.0
                     add(stationLogo)
 
-                    hyperlink(stationInfoViewModel.nameProperty) {
+                    hyperlink(selectedStationViewModel.nameProperty) {
                         action {
-                            app.openUrl(stationInfoViewModel.homePageProperty.value)
+                            app.openUrl(selectedStationViewModel.homePageProperty.value)
                         }
                         addClass(Styles.subheader)
                         addClass(Styles.primaryTextColor)
                         tooltip(messages["info.visit.website"])
                     }
-                    label(stationInfoViewModel.countryProperty) {
+                    label(selectedStationViewModel.countryProperty) {
                         addClass(Styles.grayLabel)
                     }
                 }
@@ -105,23 +105,23 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     alignment = Pos.CENTER
                     paddingAll = 5.0
 
-                    label(createInfoBinding("info.bitrate", stationInfoViewModel.bitrateProperty)) {
+                    label(createInfoBinding("info.bitrate", selectedStationViewModel.bitrateProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }
-                    label(createInfoBinding("info.codec", stationInfoViewModel.codecProperty)) {
+                    label(createInfoBinding("info.codec", selectedStationViewModel.codecProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }
-                    label(createInfoBinding("info.votes", stationInfoViewModel.votesProperty)) {
+                    label(createInfoBinding("info.votes", selectedStationViewModel.votesProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }
-                    label(createInfoBinding("info.language", stationInfoViewModel.languageProperty)) {
+                    label(createInfoBinding("info.language", selectedStationViewModel.languageProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }
-                    label(createInfoBinding("info.clicktrend", stationInfoViewModel.clickTrendProperty)) {
+                    label(createInfoBinding("info.clicktrend", selectedStationViewModel.clickTrendProperty)) {
                         addClass(Styles.grayLabel)
                         addClass(Styles.tag)
                     }
@@ -134,7 +134,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         vgap = 5.0
                         paddingAll = 5.0
                         alignment = Pos.CENTER
-                        bindChildren(stationInfoViewModel.tagsProperty) {
+                        bindChildren(selectedStationViewModel.tagsProperty) {
                             hyperlink(it) {
                                 addClass(Styles.tag)
                                 addClass(Styles.grayLabel)
@@ -148,7 +148,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         }
                     }
                     showWhen {
-                        stationInfoViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
+                        selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
                     }
                 }
             }
@@ -158,14 +158,14 @@ class StationsInfoView : BaseView(FxRadio.appName) {
             vbox(spacing = 5.0, alignment = Pos.CENTER) {
                 button(messages["copy.stream.url"]) {
                     maxWidth = Double.MAX_VALUE
-                    actionEvents().map { stationInfoViewModel.stationProperty.value }
+                    actionEvents().map { selectedStationViewModel.stationProperty.value }
                             .subscribe {
                                 clipboard.update(it.url_resolved!!)
                             }
                 }
                 button(messages["menu.station.vote"]) {
                     maxWidth = Double.MAX_VALUE
-                    actionEvents().map { stationInfoViewModel.stationProperty.value }.subscribe(appEvent.addVote)
+                    actionEvents().map { selectedStationViewModel.stationProperty.value }.subscribe(appEvent.addVote)
 
                     addClass(Styles.primaryButton)
                 }

@@ -111,6 +111,7 @@ class AppFunctionalityTest {
 
         // Get Instance of player
         val player = find<PlayerViewModel>()
+        val selectedStationViewModel = find<SelectedStationViewModel>()
 
         // Wait for stations to load
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
@@ -120,7 +121,7 @@ class AppFunctionalityTest {
         //Avoid station names that start with # as it is query locator for ID
         val stationToClick = stations.items
                 .filter { !it.name.startsWith("#") }
-                .filter { it.name != player.stationProperty.value.name }
+                .filter { it.name != selectedStationViewModel.stationProperty.value.name }
                 .take(5)
                 .random()
         robot.doubleClickOn(stationToClick.name)
@@ -128,7 +129,7 @@ class AppFunctionalityTest {
         WaitForAsyncUtils.waitForFxEvents()
 
         // Wait for stream start
-        waitFor(5) { player.stateProperty.value == PlayerState.Playing }
+        waitFor(5) { player.stateProperty.value is PlayerState.Playing }
 
         // Check that player has text with name of the station
         verifyThat(nowPlayingLabel, hasLabel(stationToClick.name))

@@ -19,18 +19,14 @@
 package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
-import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
-import online.hudacek.fxradio.usecase.StationClickUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
@@ -40,18 +36,16 @@ import tornadofx.onChange
 import tornadofx.property
 
 sealed class PlayerState {
-    object Playing : PlayerState()
+    data class Playing(val url: String) : PlayerState()
     object Stopped : PlayerState()
     data class Error(val cause: String) : PlayerState()
 }
 
-class Player(station: Station = Station.dummy,
-             animate: Boolean = Properties.PlayerAnimated.value(true),
+class Player(animate: Boolean = Properties.PlayerAnimated.value(true),
              volume: Double = Properties.Volume.value(0.0),
              trackName: String = "",
              mediaPlayer: MediaPlayer = MediaPlayerFactory.create()) {
     var animate: Boolean by property(animate)
-    var station: Station by property(station)
     var volume: Double by property(volume)
     var trackName: String by property(trackName)
     var mediaPlayer: MediaPlayer by property(mediaPlayer)
@@ -64,33 +58,12 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         initialState = PlayerState.Stopped,
         initialItem = Player()) {
 
-    private val stationClickUseCase: StationClickUseCase by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
 
-    val stationProperty = bind(Player::station) as ObjectProperty
     val animateProperty = bind(Player::animate) as BooleanProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
     val trackNameProperty = bind(Player::trackName) as StringProperty
-
     val mediaPlayerProperty = bind(Player::mediaPlayer) as ObjectProperty
-
-    val stationObservable: Observable<Station> = stationProperty
-            .toObservableChangesNonNull()
-            .map { it.newVal }
-            .filter { it.isValid() }
-            .doOnEach(appEvent.addToHistory) //Send the new history item event
-            .also {
-                it.flatMapSingle(stationClickUseCase::execute)
-                        .subscribe({ click ->
-                            //Update the name of the station
-                            trackNameProperty.value = click.name + " - " + messages["player.noMetaData"]
-
-                            //Restart playing status
-                            stateProperty.value = PlayerState.Stopped
-                            stateProperty.value = PlayerState.Playing
-                        }, { t ->
-                            stateProperty.value = PlayerState.Error(t.localizedMessage)
-                        })
-            }
 
     init {
 
@@ -107,6 +80,18 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
                 .subscribe {
                     trackNameProperty.value = it.nowPlaying
                 }
+
+        selectedStationViewModel.stationObservable
+                .subscribe({
+                    //Update the name of the station
+                    trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
+
+                    //Restart playing status
+                    stateProperty.value = PlayerState.Stopped
+                    stateProperty.value = it.url_resolved?.let { it1 -> PlayerState.Playing(it1) }
+                }, { t ->
+                    stateProperty.value = PlayerState.Error(t.localizedMessage)
+                })
     }
 
     /**
@@ -114,12 +99,9 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
      */
     override fun onNewState(newState: PlayerState) {
         if (newState is PlayerState.Playing) {
-            //Ignore stations with empty stream URL
-            stationProperty.value.url_resolved?.let { url ->
-                mediaPlayerProperty.value?.let {
-                    it.changeVolume(volumeProperty.value)
-                    it.play(url)
-                }
+            mediaPlayerProperty.value?.let {
+                it.changeVolume(volumeProperty.value)
+                it.play(newState.url)
             }
         } else {
             if (newState is PlayerState.Error) {
@@ -137,10 +119,12 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
     fun releasePlayer() = mediaPlayerProperty.value.release()
 
     fun togglePlayerState() {
-        if (stateProperty.value == PlayerState.Playing) {
+        if (stateProperty.value is PlayerState.Playing) {
             stateProperty.value = PlayerState.Stopped
         } else {
-            stateProperty.value = PlayerState.Playing
+            stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved?.let {
+                PlayerState.Playing(it)
+            }
         }
     }
 

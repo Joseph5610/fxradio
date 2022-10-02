@@ -22,6 +22,7 @@ import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
 import tornadofx.action
 import tornadofx.get
@@ -30,6 +31,7 @@ import tornadofx.onChange
 class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val streamTitleNotificationViewModel: StreamTitleNotificationViewModel by inject()
 
     private val playerTypeItem by lazy {
@@ -51,12 +53,14 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
     }
 
     override val menuItems = listOf(item(messages["menu.player.start"], KeyCodes.play) {
-        disableWhenInvalidStation(playerViewModel.stationProperty)
+        disableWhenInvalidStation(selectedStationViewModel.stationProperty)
         action {
-            playerViewModel.stateProperty.value = PlayerState.Playing
+            playerViewModel.stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved?.let {
+                PlayerState.Playing(it)
+            }
         }
     }, item(messages["menu.player.stop"], KeyCodes.stop) {
-        disableWhenInvalidStation(playerViewModel.stationProperty)
+        disableWhenInvalidStation(selectedStationViewModel.stationProperty)
         action {
             playerViewModel.stateProperty.value = PlayerState.Stopped
         }

@@ -22,6 +22,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Component
 import tornadofx.get
 import tornadofx.onChange
@@ -33,11 +34,13 @@ import java.awt.MenuItem
 class TrayIcon : Component() {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
+
     private var stationItem: MenuItem? = null
     private var playPauseItem: MenuItem? = null
 
     init {
-        playerViewModel.stationObservable.subscribe {
+        selectedStationViewModel.stationObservable.subscribe {
             stationItem?.let { mi ->
                 mi.label = it.name
             }
@@ -46,7 +49,7 @@ class TrayIcon : Component() {
         playerViewModel.stateProperty.onChange {
             it?.let {
                 playPauseItem?.let { mi ->
-                    mi.label = if (it == PlayerState.Playing) {
+                    mi.label = if (it is PlayerState.Playing) {
                         messages["menu.player.stop"]
                     } else {
                         messages["menu.player.start"]
@@ -78,7 +81,7 @@ class TrayIcon : Component() {
 
                     playPauseItem = item("Play/Stop") {
                         setOnAction(fxThread = true) {
-                            if (playerViewModel.stationProperty.value.isValid()) {
+                            if (selectedStationViewModel.stationProperty.value.isValid()) {
                                 playerViewModel.togglePlayerState()
                             }
                         }

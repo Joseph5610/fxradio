@@ -24,6 +24,7 @@ import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
 import tornadofx.booleanBinding
@@ -37,16 +38,16 @@ import tornadofx.visibleWhen
 
 class FavouritesMenu : BaseMenu("menu.favourites") {
 
-    private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val playedStationNotInFavouritesProperty = playerViewModel.stationProperty.booleanBinding {
+    private val playedStationNotInFavouritesProperty = selectedStationViewModel.stationProperty.booleanBinding {
         //User should be able to add favourite station only when it is not already present
         it != null && it !in favouritesViewModel.stationsProperty
     }
 
-    private val favouriteMenuItemVisibleProperty = playerViewModel.stationProperty.booleanBinding {
+    private val favouriteMenuItemVisibleProperty = selectedStationViewModel.stationProperty.booleanBinding {
         it != null && it.isValid()
     }
 
@@ -59,7 +60,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
             visibleWhen(favouriteMenuItemVisibleProperty)
 
             action {
-                appEvent.addFavourite.onNext(playerViewModel.stationProperty.value)
+                appEvent.addFavourite.onNext(selectedStationViewModel.stationProperty.value)
                 appEvent.refreshLibrary.onNext(LibraryState.Favourites)
                 playedStationNotInFavouritesProperty.invalidate()
             }
@@ -70,7 +71,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     visibleWhen(favouriteMenuItemVisibleProperty)
 
                     action {
-                        appEvent.removeFavourite.onNext(playerViewModel.stationProperty.value)
+                        appEvent.removeFavourite.onNext(selectedStationViewModel.stationProperty.value)
                         appEvent.refreshLibrary.onNext(LibraryState.Favourites)
                         playedStationNotInFavouritesProperty.invalidate()
                     }
@@ -98,7 +99,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                         }
                     }
                     action {
-                        playerViewModel.stationProperty.value = it
+                        selectedStationViewModel.stationProperty.value = it
                     }
                 }
             }

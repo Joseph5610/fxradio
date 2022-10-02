@@ -30,8 +30,8 @@ import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationInfo
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import tornadofx.action
@@ -59,8 +59,7 @@ private const val LOGO_SIZE = 100.0
  */
 class StationsDataGridView : BaseView() {
 
-    private val playerViewModel: PlayerViewModel by inject()
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
@@ -76,12 +75,11 @@ class StationsDataGridView : BaseView() {
         //Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
                     selectionModel.clearSelection()
-                    selectionModel.select(playerViewModel.stationProperty.value)
+                    selectionModel.select(selectedStationViewModel.stationProperty.value)
                 }
 
         onUserSelect(1) {
-            playerViewModel.stationProperty.value = it
-            stationInfoViewModel.item = StationInfo(it)
+            selectedStationViewModel.item = SelectedStation(it)
         }
 
         cellCache { station ->
@@ -94,8 +92,8 @@ class StationsDataGridView : BaseView() {
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
                     separator()
                     item(messages["menu.station.info"]).action {
-                        stationInfoViewModel.item = StationInfo(station)
-                        stationInfoViewModel.stateProperty.value = InfoPanelState.Shown
+                        selectedStationViewModel.item = SelectedStation(station)
+                        selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
                     }
                 }
 

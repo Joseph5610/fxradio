@@ -23,7 +23,7 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.InfoPanelState
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.booleanBinding
 import tornadofx.borderpane
@@ -46,7 +46,7 @@ class StationsView : BaseView() {
     private val historyView: StationsHistoryView by inject()
     private val stationsInfoView: StationsInfoView by inject()
 
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     override val root = borderpane {
         vgrow = Priority.ALWAYS
@@ -66,9 +66,9 @@ class StationsView : BaseView() {
             add(stationsInfoView)
 
             right.showWhen {
-                stationInfoViewModel.stationProperty.booleanBinding {
+                selectedStationViewModel.stationProperty.booleanBinding {
                     it?.isValid() == true
-                }.and(stationInfoViewModel.stateProperty.booleanBinding {
+                }.and(selectedStationViewModel.stateProperty.booleanBinding {
                     it is InfoPanelState.Shown
                 })
             }

@@ -22,6 +22,7 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.fieldset
 import tornadofx.form
@@ -32,7 +33,7 @@ import tornadofx.vgrow
 
 class DebugFragment : BaseFragment("Debug Window") {
 
-    private val viewModel: PlayerViewModel by inject()
+    private val viewModel: SelectedStationViewModel by inject()
 
     override val root = vbox {
         setPrefSize(600.0, 400.0)
@@ -42,11 +43,6 @@ class DebugFragment : BaseFragment("Debug Window") {
                     vgrow = Priority.ALWAYS
                     isWrapText = true
                 }
-            }
-            fieldset("Player values") {
-                textfield(viewModel.trackNameProperty.value)
-                textfield(viewModel.mediaPlayerProperty.value.toString())
-                textfield(viewModel.volumeProperty.value.toString())
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

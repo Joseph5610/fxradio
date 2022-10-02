@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import javafx.beans.property.SimpleListProperty
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
@@ -31,11 +30,9 @@ import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationInfo
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
-import tornadofx.bindChildren
-import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.hbox
 import tornadofx.imageview
@@ -50,15 +47,14 @@ class StationsHistoryView : BaseView() {
 
     private val historyViewModel: HistoryViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val playerViewModel: PlayerViewModel by inject()
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     override val root = listview<Station>(historyViewModel.stationsProperty) {
 
         //Cleanup selected item on refresh of library
-        playerViewModel.stationObservable.subscribe {
+        selectedStationViewModel.stationObservable.subscribe {
             selectionModel.clearSelection()
-            selectionModel.select(playerViewModel.stationProperty.value)
+            selectionModel.select(selectedStationViewModel.stationProperty.value)
         }
 
         id = "stationsHistoryList"
@@ -76,8 +72,7 @@ class StationsHistoryView : BaseView() {
                 }
             }
             onUserSelect(1) {
-                playerViewModel.stationProperty.value = it
-                stationInfoViewModel.item = StationInfo(it)
+                selectedStationViewModel.item = SelectedStation(it)
             }
             addClass(Styles.historyListItem)
         }

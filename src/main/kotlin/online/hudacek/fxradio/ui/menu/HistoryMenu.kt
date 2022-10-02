@@ -24,6 +24,7 @@ import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
 import tornadofx.confirm
@@ -36,7 +37,7 @@ class HistoryMenu : BaseMenu("menu.history") {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
-    private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     private val showHistoryItem by lazy {
         item(messages["menu.history.show"], KeyCodes.history) {
@@ -63,7 +64,7 @@ class HistoryMenu : BaseMenu("menu.history") {
                         }
                     }
                     action {
-                        playerViewModel.stationProperty.value = it
+                        selectedStationViewModel.stationProperty.value = it
                     }
                 }
             }
