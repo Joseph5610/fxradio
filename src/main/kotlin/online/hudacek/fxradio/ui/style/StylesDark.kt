@@ -22,6 +22,9 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
+import okhttp3.internal.Internal
+import tornadofx.FXVisibility
+import tornadofx.InternalWindow
 import tornadofx.Stylesheet
 import tornadofx.box
 import tornadofx.c
@@ -69,6 +72,7 @@ class StylesDark : Stylesheet() {
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
+
     }
 
     init {
@@ -339,9 +343,12 @@ class StylesDark : Stylesheet() {
         textArea {
             fontFamily = "monospace"
             textFill = Color.WHITESMOKE
+            accentColor = c(colors.primary, 0.2)
             backgroundColor += c(colors.background)
+            borderColor += box(c(colors.background))
             content {
                 backgroundColor += c(colors.background)
+                borderColor += box(c(colors.background))
             }
         }
 
@@ -415,6 +422,7 @@ class StylesDark : Stylesheet() {
             promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            accentColor = c(colors.primary, 0.2)
             and(focused) {
                 borderColor += box(c(colors.primary, 0.6))
                 faintFocusColor = c("${colors.primary}22")
@@ -434,6 +442,21 @@ class StylesDark : Stylesheet() {
             baseColor = c(colors.transparent)
             line {
                 maxWidth = 1.px
+            }
+        }
+
+        InternalWindow.Styles.floatingWindowWrapper {
+
+            InternalWindow.Styles.top {
+                backgroundColor += c(colors.background)
+            }
+
+            InternalWindow.Styles.closebutton {
+                visibility = FXVisibility.HIDDEN
+            }
+
+            InternalWindow.Styles.floatingWindowContent {
+                backgroundColor += c(colors.background)
             }
         }
     }

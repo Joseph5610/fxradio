@@ -20,6 +20,7 @@ package online.hudacek.fxradio.util
 
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.ui.fragment.*
+import tornadofx.FX
 import tornadofx.Fragment
 import tornadofx.find
 import kotlin.reflect.full.createInstance
@@ -47,3 +48,6 @@ internal inline fun <reified T : Fragment> Modal<T>.open() = find<T>().openModal
 
 internal inline fun <reified T : Fragment> Modal<T>.new() = T::class.createInstance().openModal(
         stageStyle = style, resizable = resizable)
+
+internal inline fun <reified T : Fragment> Modal<T>.openInternalWindow() = find<T>().openInternalWindow<T>(
+        owner = FX.primaryStage.scene.root, movable = false)

@@ -36,16 +36,11 @@
 
 package online.hudacek.fxradio.persistence.cache
 
-import mu.KotlinLogging
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import tornadofx.observableListOf
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.math.roundToInt
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * Simple image cache used for station images

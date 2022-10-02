@@ -61,7 +61,7 @@ class StationsHeaderView : BaseView() {
     }
 
     override val root = borderpane {
-        padding = insets(horizontal = 10.0, vertical = 0.0)
+        padding = insets(horizontal = 20.0, vertical = 2.0)
         maxHeight = 10.0
 
         left {

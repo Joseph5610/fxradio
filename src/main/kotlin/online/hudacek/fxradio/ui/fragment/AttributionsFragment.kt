@@ -85,17 +85,27 @@ class AttributionsFragment : BaseFragment() {
 
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10
-                label(viewModel.licenseNameProperty)
+                label(viewModel.licenseNameProperty) {
+                    addClass(Styles.subheader)
+                }
                 showWhen {
                     viewModel.licenseNameProperty.isNotEmpty
                 }
-                addClass(Styles.backgroundWhiteSmoke)
             }
 
-            textarea(viewModel.licenseContentProperty) {
+            vbox(alignment = Pos.TOP_LEFT) {
+                paddingAll = 5
                 vgrow = Priority.ALWAYS
+
+                textarea(viewModel.licenseContentProperty) {
+                    paddingAll = 3
+                    isEditable = false
+                    vgrow = Priority.ALWAYS
+                    addClass(Styles.backgroundWhiteSmoke)
+                }
             }
-            addClass(Styles.backgroundWhiteSmoke)
+
+            addClass(Styles.backgroundWhite)
         }
     }
 }

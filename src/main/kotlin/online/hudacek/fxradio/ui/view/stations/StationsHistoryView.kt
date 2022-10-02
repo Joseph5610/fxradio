@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import javafx.beans.property.SimpleListProperty
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
@@ -33,6 +34,8 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.StationInfo
 import online.hudacek.fxradio.viewmodel.StationInfoViewModel
 import tornadofx.addClass
+import tornadofx.bindChildren
+import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.hbox
 import tornadofx.imageview
@@ -49,7 +52,6 @@ class StationsHistoryView : BaseView() {
     private val libraryViewModel: LibraryViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
     private val stationInfoViewModel: StationInfoViewModel by inject()
-
 
     override val root = listview<Station>(historyViewModel.stationsProperty) {
 

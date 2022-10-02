@@ -24,6 +24,7 @@ import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.customNotificationPane
 import online.hudacek.fxradio.ui.field
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
@@ -82,7 +83,9 @@ class AddStationFragment : BaseFragment() {
 
         content {
             form {
-                fieldset(messages["add.title"]) {
+                fieldset {
+                    requestFocusOnSceneAvailable()
+
                     vbox {
                         prefHeight = 50.0
                         vgrow = Priority.ALWAYS
@@ -92,15 +95,15 @@ class AddStationFragment : BaseFragment() {
                     }
 
                     field(messages["add.name"], "My Radio Station",
-                            viewModel.nameProperty, true) { field ->
+                            viewModel.nameProperty, isRequired = true) { field ->
                         field.validator {
                             if (!validate(it, 400)) error(messages["field.invalid.length"])
                             else null
                         }
                     }
 
-                    field(messages["add.site"], "https://example.com/",
-                            viewModel.homePageProperty) { field ->
+                    field(messages["add.url"], "https://example.com/stream.m3u",
+                            viewModel.urlProperty, isRequired = true) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -110,8 +113,8 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.url"], "https://example.com/stream.m3u",
-                            viewModel.urlProperty) { field ->
+                    field(messages["add.site"], "https://example.com/",
+                            viewModel.homePageProperty, isRequired = false) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -122,7 +125,7 @@ class AddStationFragment : BaseFragment() {
                     }
 
                     field(messages["add.icon"], "https://example.com/favicon.ico",
-                            viewModel.faviconProperty) { field ->
+                            viewModel.faviconProperty, isRequired = false) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -133,7 +136,7 @@ class AddStationFragment : BaseFragment() {
                     }
 
                     field(messages["add.language"], messages["add.language.prompt"],
-                            viewModel.languageProperty, true) { field ->
+                            viewModel.languageProperty, isRequired = true, countriesListProperty) { field ->
                         field.validator {
                             if (!validate(it, 150)) error(messages["field.invalid.length"])
                             else null
@@ -141,7 +144,7 @@ class AddStationFragment : BaseFragment() {
                     }
 
                     field(messages["add.country"], messages["add.country.prompt"],
-                            viewModel.countryProperty, true, countriesListProperty) { field ->
+                            viewModel.countryProperty, isRequired = true, countriesListProperty) { field ->
                         field.validator {
                             if (it !in countriesListProperty)
                                 error(messages["field.invalid.country"])

@@ -23,8 +23,7 @@ import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.stations.model.Station
 import online.hudacek.fxradio.persistence.database.Tables
-import tornadofx.observableListOf
-import tornadofx.property
+import tornadofx.*
 
 private val logger = KotlinLogging.logger {}
 

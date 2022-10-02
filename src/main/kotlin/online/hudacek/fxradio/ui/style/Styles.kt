@@ -23,6 +23,8 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
+import tornadofx.FXVisibility
+import tornadofx.InternalWindow
 import tornadofx.Stylesheet
 import tornadofx.box
 import tornadofx.c
@@ -339,6 +341,7 @@ class Styles : Stylesheet() {
 
         textArea {
             fontFamily = "monospace"
+            accentColor = c(colors.primary, 0.6)
             backgroundColor += c(colors.background)
             content {
                 backgroundColor += c(colors.background)
@@ -415,11 +418,18 @@ class Styles : Stylesheet() {
         textField {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            accentColor = c(colors.primary, 0.6)
         }
 
         noBorder {
             backgroundInsets += box(0.px)
             padding = box(0.px)
+        }
+
+        InternalWindow.Styles.floatingWindowWrapper {
+            InternalWindow.Styles.closebutton {
+                visibility = FXVisibility.HIDDEN
+            }
         }
     }
 }

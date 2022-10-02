@@ -20,6 +20,7 @@ package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.openInternalWindow
 import tornadofx.action
 import tornadofx.get
 
@@ -28,7 +29,7 @@ class StationMenu : BaseMenu("menu.station") {
     override val menuItems = listOf(
             item(messages["menu.station.add"], KeyCodes.add) {
                 action {
-                    Modal.AddNewStation.open()
+                    Modal.AddNewStation.openInternalWindow()
                 }
             }
     )
