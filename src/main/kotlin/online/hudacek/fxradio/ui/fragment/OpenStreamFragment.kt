@@ -23,7 +23,6 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -31,6 +30,9 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.button
+import tornadofx.field
+import tornadofx.fieldset
+import tornadofx.form
 import tornadofx.get
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
@@ -54,11 +56,14 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
         title = messages["menu.stream.title"]
 
         vbox(alignment = Pos.CENTER) {
-            paddingBottom = 10.0
-            smallLabel(messages["menu.stream.url"])
-            textfield {
-                requestFocusOnSceneAvailable()
-                bind(streamUrlProperty)
+            form {
+                fieldset {
+                    field(messages["menu.stream.url"]){
+                        textfield(streamUrlProperty) {
+                            requestFocusOnSceneAvailable()
+                        }
+                    }
+                }
             }
         }
 
