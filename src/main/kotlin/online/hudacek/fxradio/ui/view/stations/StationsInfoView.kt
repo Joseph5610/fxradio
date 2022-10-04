@@ -46,6 +46,7 @@ import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
+import tornadofx.paddingBottom
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
 import tornadofx.tooltip
@@ -79,7 +80,11 @@ class StationsInfoView : BaseView(FxRadio.appName) {
             vbox {
                 vbox(alignment = Pos.CENTER) {
                     paddingAll = 10.0
-                    add(stationLogo)
+
+                    vbox(alignment = Pos.CENTER) {
+                        paddingBottom = 5.0
+                        add(stationLogo)
+                    }
 
                     hyperlink(selectedStationViewModel.nameProperty) {
                         action {

@@ -22,22 +22,29 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
+import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
+import tornadofx.action
 import tornadofx.addClass
 import tornadofx.booleanBinding
+import tornadofx.contextmenu
+import tornadofx.get
 import tornadofx.hbox
 import tornadofx.imageview
+import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.onUserSelect
+import tornadofx.separator
 import tornadofx.vbox
 
 private const val LOGO_SIZE = 30.0
@@ -47,6 +54,7 @@ class StationsHistoryView : BaseView() {
     private val historyViewModel: HistoryViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
+    private val favouritesMenu: FavouritesMenu by inject()
 
     override val root = listview<Station>(historyViewModel.stationsProperty) {
 
@@ -68,6 +76,16 @@ class StationsHistoryView : BaseView() {
                 vbox {
                     label(it.name)
                     smallLabel(it.tagsSplit)
+                }
+
+                contextmenu {
+                    // Add Add or Remove from favourites menu items
+                    items.addAll(favouritesMenu.addRemoveFavouriteItems)
+                    separator()
+                    item(messages["menu.station.info"]).action {
+                        selectedStationViewModel.item = SelectedStation(it)
+                        selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
+                    }
                 }
             }
             onUserSelect(1) {
