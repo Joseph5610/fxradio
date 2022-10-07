@@ -26,7 +26,7 @@ import online.hudacek.fxradio.ui.menu.separator
 import tornadofx.FX
 
 /**
- * NSMenu helper for MacOS only
+ * NSMenu helper for macOS only
  */
 open class NSMenu {
 

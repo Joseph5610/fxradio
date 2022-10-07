@@ -24,7 +24,7 @@ import javafx.scene.image.Image
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -43,7 +43,7 @@ class StationImageLoader {
             maybeOfNullable(station.favicon)
                     .flatMapSingle {
                         if (it.isNotEmpty()) {
-                            Single.fromCallable { HttpClient.request(it) }.compose(applySchedulers())
+                            Single.fromCallable { HttpClient.request(it) }.compose(applySchedulersSingle())
                         } else {
                             Single.error(IllegalArgumentException(
                                     "Station ${station.stationuuid} does not have valid icon URL"))

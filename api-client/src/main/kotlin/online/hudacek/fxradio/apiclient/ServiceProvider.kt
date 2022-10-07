@@ -46,7 +46,7 @@ class ServiceProvider(
     /**
      * Constructs Retrofit service class of type [T]
      */
-    inline fun <reified T : ApiDefinition> get(): T = retrofit.create(T::class.java)
+    inline fun <reified T : ApiDefinition> create(): T = retrofit.create(T::class.java)
 
     fun close() = httpClientProvider.close()
 }

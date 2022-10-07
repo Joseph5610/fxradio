@@ -37,12 +37,12 @@ import tornadofx.removeStylesheet
 /**
  * Perform async calls on correct thread
  */
-internal fun <T> applySchedulers(): SingleTransformer<T, T> = SingleTransformer {
+internal fun <T> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransformer {
     it.subscribeOn(Schedulers.io())
             .observeOnFx()
 }
 
-internal fun <T> applySchedulersObservable(): ObservableTransformer<T, T> = ObservableTransformer {
+internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
     it.subscribeOn(Schedulers.io())
             .observeOnFx()
 }

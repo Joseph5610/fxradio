@@ -18,9 +18,11 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class Country(val name: String,
-                   val iso_3166_1: String,
-                   val stationcount: Int) {
+data class Country(
+    val name: String,
+    val iso_3166_1: String,
+    val stationcount: Int
+) {
 
     //Don't use stationCount when comparing this data class
     override fun equals(other: Any?) = if (other is Country) {

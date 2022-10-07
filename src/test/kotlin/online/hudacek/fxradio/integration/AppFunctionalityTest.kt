@@ -77,7 +77,7 @@ class AppFunctionalityTest {
     private lateinit var app: FxRadio
 
     // Stations service, init needed only once
-    private val service = ServiceProvider("https://${Config.API.fallbackApiServerURL}").get<RadioBrowserApi>()
+    private val service = ServiceProvider("https://${Config.API.fallbackApiServerURL}").create<RadioBrowserApi>()
 
     @Init
     fun init() {

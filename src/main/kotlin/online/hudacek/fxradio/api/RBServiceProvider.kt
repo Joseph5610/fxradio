@@ -39,7 +39,7 @@ object RBServiceProvider : Component() {
     /**
      * Get the radio-browser API service instance
      */
-    fun provide(): RadioBrowserApi = serviceProvider.get()
+    fun provide(): RadioBrowserApi = serviceProvider.create()
 
     fun close() = serviceProvider.close()
 }

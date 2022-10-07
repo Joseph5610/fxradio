@@ -19,5 +19,3 @@
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
 data class SearchBody(val name: String, val limit: Int = 200, val hidebroken: Boolean = true)
-
-data class SearchByTagBody(val tag: String, val limit: Int = 200, val hidebroken: Boolean = true)

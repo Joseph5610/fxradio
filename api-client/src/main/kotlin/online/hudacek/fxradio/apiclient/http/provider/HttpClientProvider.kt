@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.apiclient.http.provider
 
-import okhttp3.Call
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request

@@ -22,7 +22,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
-import online.hudacek.fxradio.util.applySchedulersObservable
+import online.hudacek.fxradio.util.applySchedulers
 
 /**
  * Retrieves valid list of radio-browser API urls
@@ -32,7 +32,7 @@ class GetServersUseCase : BaseUseCase<Unit, Single<List<String>>>() {
     private val lookupUrl = Config.API.dnsLookupURL
 
     override fun execute(input: Unit): Single<List<String>> = Observable.fromIterable(HttpClient.lookup(lookupUrl))
-            .compose(applySchedulersObservable())
+            .compose(applySchedulers())
             .map { it.canonicalHostName }
             .distinct()
             .toList()

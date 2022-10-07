@@ -32,12 +32,10 @@ class Command(private val command: String) {
      * Parse result of command to string
      */
     private val Process.result: String
-        get() {
-            val sb = StringBuilder()
+        get() = StringBuilder().apply {
             val reader = BufferedReader(InputStreamReader(inputStream))
             reader.forEachLine {
-                sb.append(it)
+                append(it)
             }
-            return sb.toString()
-        }
+        }.toString()
 }

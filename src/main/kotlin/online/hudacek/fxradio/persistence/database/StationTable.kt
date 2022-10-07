@@ -39,8 +39,8 @@ package online.hudacek.fxradio.persistence.database
 import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.util.applySchedulersSingle
 import online.hudacek.fxradio.util.applySchedulers
-import online.hudacek.fxradio.util.applySchedulersObservable
 
 /**
  * Common operations on database of stations with different tables (e.g History, Favourites ..)
@@ -61,9 +61,9 @@ class StationTable(override val tableName: String) : Table<Station>, Database(ta
                         it.getString("language"),
                         it.getString("codec"),
                         it.getInt("bitrate"))
-            }.compose(applySchedulersObservable())
+            }.compose(applySchedulers())
 
-    override fun removeAll(): Single<Int> = removeAllQuery().toSingle().compose(applySchedulers())
+    override fun removeAll(): Single<Int> = removeAllQuery().toSingle().compose(applySchedulersSingle())
 
     override fun insert(element: Station): Single<Station> = insertQuery("INSERT INTO $tableName (name, stationuuid, url_resolved, " +
             "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +

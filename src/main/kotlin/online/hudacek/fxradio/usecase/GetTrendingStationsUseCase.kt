@@ -21,7 +21,7 @@ package online.hudacek.fxradio.usecase
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 
 private const val ORDER_BY_TREND = "clicktrend"
 
@@ -32,5 +32,5 @@ class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
     override fun execute(input: Unit): Single<List<Station>> = radioBrowserApi
             .getAllStations(AllStationsBody(order = ORDER_BY_TREND))
-            .compose(applySchedulers())
+            .compose(applySchedulersSingle())
 }

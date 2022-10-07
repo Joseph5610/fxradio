@@ -22,7 +22,7 @@ import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.AddedStation
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StationBody
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 
 private val logger = KotlinLogging.logger {}
 
@@ -35,7 +35,7 @@ class StationAddUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
 
     override fun execute(input: StationBody): Single<AddedStation> = radioBrowserApi
             .addStation(input)
-            .compose(applySchedulers())
+            .compose(applySchedulersSingle())
             .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, INVALID_UUID)) }
             .doOnError { logger.error(it) { "Exception while adding station $input" } }
 }

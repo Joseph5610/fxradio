@@ -18,6 +18,8 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class AddedStation(val ok: Boolean,
-                        val message: String,
-                        val uuid: String)
+data class AddedStation(
+    val ok: Boolean,
+    val message: String,
+    val uuid: String
+)

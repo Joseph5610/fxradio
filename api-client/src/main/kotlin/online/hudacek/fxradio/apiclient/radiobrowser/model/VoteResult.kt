@@ -18,5 +18,7 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class VoteResult(val ok: Boolean,
-                      val message: String)
+data class VoteResult(
+    val ok: Boolean,
+    val message: String
+)

@@ -20,7 +20,7 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
  * Gets list of Top 50 stations from radio-browser API
@@ -29,5 +29,5 @@ class GetTopVotedStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
     override fun execute(input: Unit): Single<List<Station>> = radioBrowserApi
             .getTopVotedStations()
-            .compose(applySchedulers())
+            .compose(applySchedulersSingle())
 }

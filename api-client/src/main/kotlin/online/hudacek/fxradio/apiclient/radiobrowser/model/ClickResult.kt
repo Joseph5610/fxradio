@@ -18,7 +18,9 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class ClickResult(val ok: Boolean,
-                       val message: String,
-                       val name: String)
+data class ClickResult(
+    val ok: Boolean,
+    val message: String,
+    val name: String
+)
 

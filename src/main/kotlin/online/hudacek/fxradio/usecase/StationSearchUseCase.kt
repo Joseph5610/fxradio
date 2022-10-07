@@ -22,7 +22,7 @@ import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
  * Searches for all stations that contains provided tag
@@ -33,10 +33,10 @@ class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Stat
     override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
         radioBrowserApi
                 .searchStationByTag(SearchByTagBody(input.second))
-                .compose(applySchedulers())
+                .compose(applySchedulersSingle())
     } else {
         radioBrowserApi
                 .searchStationByName(SearchBody(input.second))
-                .compose(applySchedulers())
+                .compose(applySchedulersSingle())
     }
 }

@@ -28,18 +28,16 @@ import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.addClass
-import tornadofx.bind
 import tornadofx.button
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.get
 import tornadofx.paddingAll
-import tornadofx.paddingBottom
 import tornadofx.stringProperty
 import tornadofx.textfield
 import tornadofx.vbox
-import java.util.*
+import java.util.UUID
 
 /***
  * Simple Information about the app
