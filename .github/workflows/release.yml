@@ -38,11 +38,9 @@ jobs:
                   java-version: '8'
                   java-package: jdk+fx
             - run: ./gradlew -i jfxNative
-              env:
-                  FX_APPEND_PATH: /zulu-8.jdk/Contents/Home/jre
             - name: Prepare JAR
               run: |
-                  zip -r releaseJar.zip build/jfx/app/
+                  zip -r releaseJar.zip build/jfx/native/*.jar
             - name: Find DMG file on filesystem
               id: find-dmg
               run: echo "DMG_PATH=$(find . -name "*.dmg")" >> $GITHUB_ENV
@@ -81,8 +79,6 @@ jobs:
                   java-version: '8'
                   java-package: jdk+fx
             - run: ./gradlew -i jfxNative
-              env:
-                  FX_APPEND_PATH: /jre
             - name: Find MSI file on filesystem
               id: find-msi
               run: echo "MSI_PATH=$(Get-ChildItem -path D:\ -recurse -include "FXRadio-*.msi" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV

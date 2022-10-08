@@ -1,38 +1,41 @@
-import de.dynamicfiles.projects.gradle.plugins.javafx.JavaFXGradlePluginExtension
+import io.github.fvarrui.javapackager.model.MacConfig
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    dependencies {
-        classpath("de.dynamicfiles.projects.gradle.plugins:javafx-gradle-plugin:8.8.2")
-    }
-
     repositories {
         mavenCentral()
     }
+    dependencies {
+        classpath("io.github.fvarrui:javapackager:1.6.7")
+    }
 }
+
 
 plugins {
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.7.20"
 }
 
-apply(plugin = "javafx-gradle-plugin")
-
-version = "0.9.6"
-
-val kotlinVersion = "1.4.2"
-val kotlinCoroutinesVersion = "1.3.4"
+val kotlinVersion = "1.7.20"
+val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "1.7.20"
 val log4jVersion = "2.18.0"
 val slf4jVersion = "1.7.36"
 val kotlinLoggingVersion = "1.12.5"
 val testFxVersion = "4.0.16-alpha"
-val junitVersion = "5.8.2"
+val junitVersion = "5.9.0"
 val vlcjVersion = "4.7.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "8.5.10"
+val flywayVersion = "9.4.0"
 val controlsFxVersion = "8.40.18"
 
+version = "0.9.6"
+
+val appVersion: String = version as String
+
+apply(plugin = "io.github.fvarrui.javapackager.plugin")
+
 allprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "kotlin")
 
     repositories {
         mavenCentral()
@@ -41,20 +44,21 @@ allprojects {
 
     dependencies {
         // Align versions of all Kotlin components
-        compile(platform("org.jetbrains.kotlin:kotlin-bom"))
 
-        // Use the Kotlin JDK 8 standard library
-        compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+        implementation(platform(kotlin("bom")))
 
-        compile("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
-        compile("org.slf4j:slf4j-api:$slf4jVersion")
-        compile("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-        compile("org.apache.logging.log4j:log4j-api:$log4jVersion")
-        compile("org.apache.logging.log4j:log4j-core:$log4jVersion")
+        // Use the Kotlin JDK 8 standard library.
+        implementation(kotlin("stdlib-jdk8"))
+
+        implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
+        implementation("org.slf4j:slf4j-api:$slf4jVersion")
+        implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
+        implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
+        implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -65,27 +69,27 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    compile(project(":api-client"))
+    implementation(project(":api-client"))
 
     // Local JAR files
-    compile(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    compile("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
 
-    compile("no.tornado:tornadofx:$tornadoFxVersion")
-    compile("org.controlsfx:controlsfx:$controlsFxVersion")
-    compile("no.tornado:tornadofx-controlsfx:0.1.1")
+    implementation("no.tornado:tornadofx:$tornadoFxVersion")
+    implementation("org.controlsfx:controlsfx:$controlsFxVersion")
+    implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
-    compile("com.github.thomasnield:rxkotlinfx:2.2.2")
-    compile("org.xerial:sqlite-jdbc:3.36.0.3")
-    compile("org.nield:rxkotlin-jdbc:0.4.1")
-    compile("de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.7")
-    compile("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("com.github.thomasnield:rxkotlinfx:2.2.2")
+    implementation("org.xerial:sqlite-jdbc:3.39.3.0")
+    implementation("org.nield:rxkotlin-jdbc:0.4.1")
+    implementation("de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.7")
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
 
     // Players
-    compile("io.humble:humble-video-all:$humbleVersion")
-    compile("uk.co.caprica:vlcj:$vlcjVersion")
+    implementation("io.humble:humble-video-all:$humbleVersion")
+    implementation("uk.co.caprica:vlcj:$vlcjVersion")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
@@ -95,34 +99,34 @@ dependencies {
     testImplementation("org.testfx:openjfx-monocle:8u76-b04")
 }
 
-configure<JavaFXGradlePluginExtension> {
-    val attributes = hashMapOf<String, String>()
-    attributes.put("Implementation-Version", version.toString())
-    setVerbose(true)
-    setAppName("FXRadio")
-    // minimal requirement for jfxJar-task
-    setManifestAttributes(attributes)
-    setMainClass("online.hudacek.fxradio.FxRadioKt")
 
-    // Fix for https://github.com/FibreFoX/javafx-gradle-plugin/issues/146
-    setUsePatchedJFXAntLib(false)
+task<io.github.fvarrui.javapackager.gradle.PackageTask>("jfxNative") {
+    mainClass = "online.hudacek.fxradio.FxRadioKt"
+    appName = "FXRadio"
+    appDescription = "Internet Radio Directory"
+    assetsDir = File("src/main/deploy/package")
+    outputDirectory = File("build/jfx/native")
+    displayName = "FXRadio"
+    version = appVersion
+    url = "https://hudacek.online/fxradio"
+    isBundleJre = true
+    isCustomizedJre = false
+    jrePath = File(System.getProperty("java.home"))
+    organizationName = "FXRadio"
+    organizationUrl = "https://hudacek.online/fxradio"
+    organizationEmail = "fxradio@hudacek.online"
 
-    // minimal requirement for jfxNative-task
-    setIdentifier("FXRadio")
-    setVendor("FXRadio")
-    setJfxMainAppJarName("fxRadio.jar")
-    setDeployDir("src/main/deploy")
-    setNativeOutputDir("build/jfx/native")
-    setNativeReleaseVersion(version as String)
-    setNeedShortcut(true)
-    setBundler("ALL")
-    setSkipJNLP(true)
+    manifest(closureOf<io.github.fvarrui.javapackager.model.Manifest> {
+        additionalEntries = mapOf(
+            "Implementation-Version" to appVersion
+        )
+    } as groovy.lang.Closure<io.github.fvarrui.javapackager.model.Manifest>)
 
-    additionalAppResources = "src/main/deploy/additional"
-    var runtimePath = System.getenv("JAVA_HOME")
-    if (runtimePath != null && System.getenv("FX_APPEND_PATH") != null) {
-        runtimePath = runtimePath + System.getenv("FX_APPEND_PATH")
-    }
-    logger.info("Runtime path is: $runtimePath")
-    bundleArguments = mapOf("licenseType" to "AGPLv3", "licenseFile" to "LICENSE", "runtime" to runtimePath)
+    macConfig(closureOf<MacConfig> {
+        macStartup = io.github.fvarrui.javapackager.model.MacStartup.UNIVERSAL
+        isGeneratePkg = false
+        isCodesignApp = false
+        backgroundImage = File("src/main/deploy/package/mac/background.png")
+    } as groovy.lang.Closure<MacConfig>)
+    dependsOn("jar")
 }

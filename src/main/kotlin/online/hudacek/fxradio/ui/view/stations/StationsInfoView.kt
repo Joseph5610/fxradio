@@ -165,7 +165,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     maxWidth = Double.MAX_VALUE
                     actionEvents().map { selectedStationViewModel.stationProperty.value }
                             .subscribe {
-                                clipboard.update(it.url_resolved!!)
+                                clipboard.update(it.url_resolved)
                             }
                 }
                 button(messages["menu.station.vote"]) {

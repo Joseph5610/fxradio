@@ -88,7 +88,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
 
                     //Restart playing status
                     stateProperty.value = PlayerState.Stopped
-                    stateProperty.value = it.url_resolved?.let { it1 -> PlayerState.Playing(it1) }
+                    stateProperty.value = it.url_resolved.let { it1 -> PlayerState.Playing(it1) }
                 }, { t ->
                     stateProperty.value = PlayerState.Error(t.localizedMessage)
                 })
@@ -122,7 +122,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         if (stateProperty.value is PlayerState.Playing) {
             stateProperty.value = PlayerState.Stopped
         } else {
-            stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved?.let {
+            stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved.let {
                 PlayerState.Playing(it)
             }
         }

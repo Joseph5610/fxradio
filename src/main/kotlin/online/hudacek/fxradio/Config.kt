@@ -41,7 +41,7 @@ object Config {
      * All user files should be stored in $USER_HOME/.fxradio/ directory
      */
     object Paths {
-        private val appName = FxRadio.appName.toLowerCase()
+        private val appName = FxRadio.appName.lowercase()
 
         val baseAppPath = System.getProperty("user.home") + "/.$appName"
         val confDirPath = "$baseAppPath/conf"
