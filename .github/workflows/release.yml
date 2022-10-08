@@ -38,22 +38,9 @@ jobs:
                   java-version: '8'
                   java-package: jdk+fx
             - run: ./gradlew -i jfxNative
-            - name: Prepare JAR
-              run: |
-                  zip -r releaseJar.zip build/jfx/native/*.jar
             - name: Find DMG file on filesystem
               id: find-dmg
               run: echo "DMG_PATH=$(find . -name "*.dmg")" >> $GITHUB_ENV
-            - name: Upload Release JAR
-              id: upload-release-asset
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{needs.prepareRelease.outputs.uploadUrl}}
-                  asset_path: ./releaseJar.zip
-                  asset_name: fxradio_jar.zip
-                  asset_content_type: application/zip
             - name: Upload Release DMG
               id: upload-release-dmg
               uses: actions/upload-release-asset@v1

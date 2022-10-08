@@ -17,7 +17,6 @@ This app is using http://radio-browser.info public API
 
 Download the latest release from [Releases](https://github.com/Joseph5610/fxradio-main/releases) page in this repository.
 Currently, we provide several release files:
-- Plain JAR file with dependencies
 - .dmg installer for macOS
 - .msi installer for Windows
 
@@ -42,17 +41,6 @@ There is a workaround that requires some basic Terminal skills. After installati
 ```bash
 sudo xattr -r -d com.apple.quarantine /Applications/FXRadio.app/
 ```
-
-### Plain JAR file
-
-Beware, this distribution is not officially supported but allows you to run the app on any system that has Java 1.8 with JavaFX installed.
-1. Ensure that you have Java 1.8 installed, as this is only supported Java version
-2. Locate the downloaded fxRadio.jar file on your file system and navigate to this directory using command line.
-3. Check that java command points to JRE 1.8 installation - run the command  **java -version**
-3. If java version command returns 1.8.0_xyz, you can run the command **java -jar fxRadio.jar** and app should now start. 
-
-As we didn't test the jar files on every OS, we cannot guarantee that app will run smoothly. You should expect bugs.
-
 # Build
 
 > We recommend using IntelliJ IDEA as IDE for this project. 
