@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    name: "Build and create JAR artifact"
+    name: "Build and create APP file"
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
@@ -20,13 +20,13 @@ jobs:
           java-version: '8'
           java-package: jdk+fx
       - run: ./gradlew -i jfxNative
-      - name: Prepare JAR
-        run: |
-         zip -r releaseJar.zip build/jfx/native/*.jar
+      - name: Find zipball on filesystem
+        id: find-zipball
+        run: echo "ZIPBALL_PATH=$(find . -name "FXRadio-*.zip")" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v2
         with:
-          name: fxradio-jar.zip
-          path: releaseJar.zip
+          name: FXRadio.zip
+          path: ${{ env.ZIPBALL_PATH }}
           if-no-files-found: error
           retention-days: 60
 

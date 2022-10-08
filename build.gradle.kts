@@ -115,7 +115,7 @@ task<io.github.fvarrui.javapackager.gradle.PackageTask>("jfxNative") {
     organizationName = "FXRadio"
     organizationUrl = "https://hudacek.online/fxradio"
     organizationEmail = "fxradio@hudacek.online"
-
+    isCreateZipball = true
     manifest(closureOf<io.github.fvarrui.javapackager.model.Manifest> {
         additionalEntries = mapOf(
             "Implementation-Version" to appVersion
