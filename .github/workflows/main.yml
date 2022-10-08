@@ -19,7 +19,7 @@ jobs:
           distribution: 'zulu'
           java-version: '8'
           java-package: jdk+fx
-      - run: ./gradlew -i jfxJar
+      - run: ./gradlew -i jfxNative
       - name: Prepare JAR
         run: |
          zip -r releaseJar.zip build/jfx/native/*.jar
