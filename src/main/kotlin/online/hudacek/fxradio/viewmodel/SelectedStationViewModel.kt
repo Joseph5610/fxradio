@@ -20,15 +20,20 @@ package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
+import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.StationClickUseCase
+import online.hudacek.fxradio.usecase.StationSearchUUIDUseCase
 import tornadofx.observableListOf
 import tornadofx.property
+
+private val logger = KotlinLogging.logger {}
 
 sealed class InfoPanelState {
     object Hidden : InfoPanelState()
@@ -38,6 +43,7 @@ sealed class InfoPanelState {
 
 class SelectedStation(station: Station) {
     var station: Station by property(station)
+    var uuid: String by property(station.stationuuid)
     var name: String by property(station.name)
     var country: String by property(station.country)
     var language: String by property(station.language)
@@ -49,19 +55,21 @@ class SelectedStation(station: Station) {
     var favicon: String? by property(station.favicon)
     var countryState: String? by property(station.state)
     var tags: ObservableList<String> by property(observableListOf(
-            station.tags
-                    .split(",")
-                    .map { tag -> tag.trim() }
-                    .filter { tag -> tag.isNotEmpty() }
+        station.tags
+            .split(",")
+            .map { tag -> tag.trim() }
+            .filter { tag -> tag.isNotEmpty() }
     ))
     var homePage: String by property(station.homepage)
 }
 
 class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelState>(
-        SelectedStation(Station.dummy), InfoPanelState.Hidden) {
+    SelectedStation(Station.dummy), InfoPanelState.Hidden
+) {
 
     val stationProperty = bind(SelectedStation::station) as ObjectProperty
     val tagsProperty = bind(SelectedStation::tags) as ListProperty<String>
+    val uuidProperty = bind(SelectedStation::uuid) as StringProperty
     val homePageProperty = bind(SelectedStation::homePage) as StringProperty
     val nameProperty = bind(SelectedStation::name) as StringProperty
     val codecProperty = bind(SelectedStation::codec) as StringProperty
@@ -75,14 +83,28 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val clickTrendProperty = bind(SelectedStation::clickTrend) as IntegerProperty
 
     private val stationClickUseCase: StationClickUseCase by inject()
+    private val stationSearchUUIDUseCase: StationSearchUUIDUseCase by inject()
 
     val stationObservable: Observable<Station> = stationProperty
-            .toObservableChangesNonNull()
-            .map { it.newVal }
-            .filter { it.isValid() }
-            .doOnEach(appEvent.addToHistory) //Send the new history item event
+        .toObservableChangesNonNull()
+        .map { it.newVal }
+        .filter { it.isValid() }
+        .doOnEach(appEvent.addToHistory) //Send the new history item event
 
     init {
         stationObservable.subscribe(stationClickUseCase::execute)
     }
+
+    /**
+     * Retrieve additional station data as some of them might not be known at all times
+     */
+    fun retrieveAdditionalData(): Disposable = stationSearchUUIDUseCase.execute(uuidProperty.value)
+        .subscribe({
+            it.firstOrNull()?.let { s ->
+                votesProperty.value = s.votes
+                clickTrendProperty.value = s.clicktrend
+            }
+        }, {
+            logger.debug(it) { "Retrieving additional station data unsuccessful." }
+        })
 }

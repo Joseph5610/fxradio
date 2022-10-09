@@ -22,8 +22,8 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
+import online.hudacek.fxradio.ui.bindStation
 import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -64,7 +64,7 @@ class PlayerStationView : BaseView() {
     private val stationLogo by lazy {
         imageview {
             // Subscribe to property changes
-            selectedStationViewModel.stationProperty.stationImage(this)
+            bindStation(selectedStationViewModel.stationProperty)
             fitWidth = LOGO_SIZE
         }
     }

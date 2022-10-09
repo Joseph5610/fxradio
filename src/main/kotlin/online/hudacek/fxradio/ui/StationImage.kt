@@ -41,11 +41,10 @@ private val loader = StationImageLoader()
  *
  * In case of error defaultRadioLogo static png file is used as station logo
  */
-internal fun Property<Station>.stationImage(view: ImageView) {
-    value.stationImage(view)
-
-    onChange {
-        it?.stationImage(view)
+internal fun ImageView.bindStation(stationProperty: Property<Station>) {
+    stationProperty.value.stationImage(this)
+    stationProperty.onChange {
+        it?.stationImage(this)
     }
 }
 
@@ -60,14 +59,14 @@ internal fun Station.stationImage(view: ImageView) {
     view.isPreserveRatio = true
 
     loader.load(this)
-            .subscribe({
-                view.image = it
-                it?.errorProperty()?.onChange { isError ->
-                    if (isError) {
-                        view.image = defaultRadioLogo
-                    }
+        .subscribe({
+            view.image = it
+            it?.errorProperty()?.onChange { isError ->
+                if (isError) {
+                    view.image = defaultRadioLogo
                 }
-            }, {
-                logger.trace { "Failed to load image: ${it.message}" }
-            })
+            }
+        }, {
+            logger.trace { "Failed to load image: ${it.message}" }
+        })
 }

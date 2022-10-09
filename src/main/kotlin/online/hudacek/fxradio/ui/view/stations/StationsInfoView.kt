@@ -23,11 +23,11 @@ import javafx.beans.property.Property
 import javafx.geometry.Pos
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.bindStation
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationImage
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.LibraryState
@@ -46,6 +46,7 @@ import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.label
+import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
 import tornadofx.sizeProperty
@@ -70,7 +71,10 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     }
 
     override fun onDock() {
-        selectedStationViewModel.stationProperty.stationImage(stationLogo)
+        stationLogo.bindStation(selectedStationViewModel.stationProperty)
+        selectedStationViewModel.stationProperty.onChange {
+            selectedStationViewModel.retrieveAdditionalData()
+        }
     }
 
     override val root = borderpane {
@@ -165,9 +169,9 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                 button(messages["copy.stream.url"]) {
                     maxWidth = Double.MAX_VALUE
                     actionEvents().map { selectedStationViewModel.stationProperty.value }
-                            .subscribe {
-                                clipboard.update(it.url_resolved)
-                            }
+                        .subscribe {
+                            clipboard.update(it.url_resolved)
+                        }
                 }
                 button(messages["menu.station.vote"]) {
                     requestFocusOnSceneAvailable()
@@ -186,8 +190,9 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         val value = if (it is String) {
             it.ifEmpty { messages["unknown"] }
         } else if (it is Int) {
-            if (it == 0) messages["unknown"]
-            else it
+            if (it == 0) {
+                messages["unknown"]
+            } else it
         } else it
         messages[key] + ": " + value
     }

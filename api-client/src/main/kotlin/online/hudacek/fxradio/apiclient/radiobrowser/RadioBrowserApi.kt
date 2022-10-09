@@ -27,6 +27,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StationBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResult
@@ -43,14 +44,19 @@ import retrofit2.http.Query
 interface RadioBrowserApi : ApiDefinition {
 
     @POST("json/stations/bycountryexact/{countryName}")
-    fun getStationsByCountry(@Body countriesBody: CountriesBody,
-                             @Path("countryName") countryName: String): Single<List<Station>>
+    fun getStationsByCountry(
+        @Body countriesBody: CountriesBody,
+        @Path("countryName") countryName: String
+    ): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
+
+    @POST("json/stations/byuuid")
+    fun searchStationByUUID(@Body searchBody: SearchByUUIDBody): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
     fun getTopVotedStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
