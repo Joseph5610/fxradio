@@ -169,11 +169,6 @@ class Styles : Stylesheet() {
             minHeight = 20.px
         }
 
-        hyperlink {
-            textFill = c(colors.primary)
-            borderColor += box(c(colors.primary))
-        }
-
         libraryListView {
             backgroundColor += Color.WHITESMOKE
             borderColor += box(Color.WHITESMOKE)

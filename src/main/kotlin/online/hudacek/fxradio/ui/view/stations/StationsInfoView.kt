@@ -24,6 +24,7 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationImage
@@ -169,6 +170,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                             }
                 }
                 button(messages["menu.station.vote"]) {
+                    requestFocusOnSceneAvailable()
                     maxWidth = Double.MAX_VALUE
                     actionEvents().map { selectedStationViewModel.stationProperty.value }.subscribe(appEvent.addVote)
 
