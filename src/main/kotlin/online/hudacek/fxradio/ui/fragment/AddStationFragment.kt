@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.ui.fragment
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
+import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.ui.BaseFragment
@@ -142,6 +143,19 @@ class AddStationFragment : BaseFragment() {
                 }
 
                 hbox(spacing = 5) {
+                    alignment = Pos.CENTER_RIGHT
+                    button(messages["add.cleanupForm"]) {
+                        action {
+                            viewModel.item = AddStationModel()
+                        }
+                    }
+
+                    button(messages["cancel"]) {
+                        isCancelButton = true
+                        action {
+                            close()
+                        }
+                    }
                     button(messages["save"]) {
                         enableWhen(viewModel.valid)
                         isDefaultButton = true
@@ -164,19 +178,6 @@ class AddStationFragment : BaseFragment() {
                                     }
                                 }
                         addClass(Styles.primaryButton)
-                    }
-
-                    button(messages["add.cleanupForm"]) {
-                        action {
-                            viewModel.item = AddStationModel()
-                        }
-                    }
-
-                    button(messages["cancel"]) {
-                        isCancelButton = true
-                        action {
-                            close()
-                        }
                     }
                 }
             }

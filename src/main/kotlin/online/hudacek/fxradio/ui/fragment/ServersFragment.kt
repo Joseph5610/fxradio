@@ -23,6 +23,7 @@ import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.ServersState
@@ -62,6 +63,7 @@ class ServersFragment : BaseFragment() {
             is ServersState.Error -> {
                 messages[it.key] + it.cause
             }
+
             else -> {
                 messages[it?.key ?: ""]
             }
@@ -114,6 +116,7 @@ class ServersFragment : BaseFragment() {
             }
 
             listview(viewModel.serversProperty) {
+                requestFocusOnSceneAvailable()
                 bindSelected(viewModel.selectedProperty)
                 cellFormat {
                     graphic = hbox(spacing = 5) {
@@ -157,7 +160,12 @@ class ServersFragment : BaseFragment() {
                     // Save the server in the app.config property file
                     // Close the fragment after successful save
                     viewModel.commit {
-                        appEvent.appNotification.onNext(AppNotification(messages["server.save.ok"], FontAwesome.Glyph.CHECK))
+                        appEvent.appNotification.onNext(
+                            AppNotification(
+                                messages["server.save.ok"],
+                                FontAwesome.Glyph.CHECK
+                            )
+                        )
                         close()
                     }
                 }
