@@ -22,7 +22,7 @@ import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
 
 /**
- * NSMenu helper for MacOS only
+ * NSMenu helper for macOS only
  */
 class NSMenuBar : NSMenu() {
 

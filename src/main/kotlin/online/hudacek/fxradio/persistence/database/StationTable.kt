@@ -43,7 +43,7 @@ import online.hudacek.fxradio.util.applySchedulersSingle
 import online.hudacek.fxradio.util.applySchedulers
 
 /**
- * Common operations on database of stations with different tables (e.g History, Favourites ..)
+ * Common operations on database of stations with different tables (e.g. History, Favourites ..)
  */
 class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
 

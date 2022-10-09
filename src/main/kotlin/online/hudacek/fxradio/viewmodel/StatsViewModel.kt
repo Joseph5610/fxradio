@@ -57,13 +57,17 @@ class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats()) {
     override fun onNewState(newState: StatsState) {
         if (newState is StatsState.Fetched) {
             item = Stats(
-                    observableListOf(
-                            Pair("stats.status", newState.stats.status),
-                            Pair("stats.software_version", newState.stats.software_version),
-                            Pair("stats.stations", newState.stats.stations),
-                            Pair("stats.stations_broken", newState.stats.stations_broken),
-                            Pair("stats.tags", newState.stats.tags)
-                    ))
+                observableListOf(
+                    Pair("stats.status", newState.stats.status),
+                    Pair("stats.software_version", newState.stats.software_version),
+                    Pair("stats.stations", newState.stats.stations),
+                    Pair("stats.stations_broken", newState.stats.stations_broken),
+                    Pair("stats.tags", newState.stats.tags),
+                    Pair("stats.countries", newState.stats.countries.toString()),
+                    Pair("stats.languages", newState.stats.languages.toString())
+
+                )
+            )
         }
     }
 }

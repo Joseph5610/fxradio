@@ -21,13 +21,11 @@ package online.hudacek.fxradio.ui.fragment
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.textarea
-import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.vgrow
 

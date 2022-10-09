@@ -79,7 +79,7 @@ class ServersFragment : BaseFragment() {
     override val root = vbox {
         title = messages["menu.app.server"]
         paddingAll = 10.0
-        setPrefSize(350.0, 250.0)
+        setPrefSize(350.0, 270.0)
 
         vbox {
             vbox(alignment = Pos.CENTER) {
@@ -117,25 +117,16 @@ class ServersFragment : BaseFragment() {
                 bindSelected(viewModel.selectedProperty)
                 cellFormat {
                     graphic = hbox(spacing = 5) {
-                        prefHeight = 19.0
                         alignment = Pos.CENTER_LEFT
 
                         imageview {
                             image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull()
                         }
 
-                        label(messages["servers.selected"]) {
-                            showWhen {
-                                //look for the value of backing field
-                                booleanBinding(viewModel.item.selected) {
-                                    this == it
-                                }
-                            }
-                            addClass(Styles.libraryListItemTag)
-                        }
+                        selectionModel.select(viewModel.selectedProperty.value)
                     }
                     text = it
-                    addClass(Styles.libraryListItem)
+                    addClass(Styles.decoratedListItem)
                 }
 
                 showWhen {
@@ -146,7 +137,7 @@ class ServersFragment : BaseFragment() {
                         }
                     }
                 }
-                addClass(Styles.libraryListView)
+                addClass(Styles.decoratedListView)
             }
         }
 
@@ -173,6 +164,6 @@ class ServersFragment : BaseFragment() {
                 addClass(Styles.primaryButton)
             }
         }
-        addClass(Styles.backgroundWhiteSmoke)
+        addClass(Styles.backgroundWhite)
     }
 }

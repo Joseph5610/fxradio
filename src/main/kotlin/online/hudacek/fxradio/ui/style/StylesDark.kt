@@ -22,7 +22,6 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import okhttp3.internal.Internal
 import tornadofx.FXVisibility
 import tornadofx.InternalWindow
 import tornadofx.Stylesheet
@@ -50,9 +49,9 @@ class StylesDark : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
-        val historyListView by cssclass()
-        val historyListItem by cssclass()
-        val libraryListItemTag by cssclass()
+        val decoratedListView by cssclass()
+        val decoratedListItem by cssclass()
+        val listItemTag by cssclass()
 
         val primaryButton by cssclass()
         val segmentedButton by cssclass()
@@ -202,7 +201,7 @@ class StylesDark : Stylesheet() {
             padding = box(6.px, 10.px, 6.px, 15.px)
         }
 
-        libraryListItemTag {
+        listItemTag {
             padding = box(2.px)
             textFill = Color.WHITESMOKE
             borderColor += box(c(colors.backgroundBorder))
@@ -211,22 +210,22 @@ class StylesDark : Stylesheet() {
             backgroundColor += c(colors.playerBox)
         }
 
-        historyListView {
+        decoratedListView {
             padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += c(colors.transparent)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
-        historyListItem {
+        decoratedListItem {
             fontSize = 12.px
             textFill = c(colors.label)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(odd) {
-                backgroundColor += c(colors.background)
+                backgroundColor += c(colors.transparent)
             }
             and(even) {
-                backgroundColor += c(colors.transparent)
+                backgroundColor += c(colors.background)
             }
             and(selected) {
                 borderColor += box(c(colors.primary))

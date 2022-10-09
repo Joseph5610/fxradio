@@ -17,6 +17,12 @@
  */
 package online.hudacek.fxradio.media.player.humble
 
+import com.sun.jna.NativeLibrary
+import io.humble.ferry.JNIEnv
+import io.humble.ferry.JNILibrary
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
 
@@ -27,6 +33,8 @@ private val logger = KotlinLogging.logger {}
  */
 class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.Humble) : MediaPlayer {
 
+    private val scope = MainScope()
+
     private val audioComponent by lazy { HumbleAudioComponent() }
     private val metaDataService = HumbleMetaDataService()
 
@@ -36,7 +44,9 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
         if (MediaPlayer.isMetaDataRefreshEnabled) {
             metaDataService.restartFor(streamUrl)
         }
-        audioComponent.play(streamUrl)
+        scope.launch {
+            audioComponent.play(streamUrl)
+        }
     }
 
     override fun changeVolume(newVolume: Double) {
@@ -51,8 +61,11 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
         if (MediaPlayer.isMetaDataRefreshEnabled) {
             metaDataService.cancel()
         }
-        audioComponent.cancel()
+        audioComponent.stop()
     }
 
-    override fun release() = stop() //Release is in fact same as stopping the playing in this player
+    override fun release() {
+        stop()
+        scope.cancel()
+    }
 }

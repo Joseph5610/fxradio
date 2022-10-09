@@ -91,7 +91,7 @@ class StationsHistoryView : BaseView() {
             onUserSelect(1) {
                 selectedStationViewModel.item = SelectedStation(it)
             }
-            addClass(Styles.historyListItem)
+            addClass(Styles.decoratedListItem)
         }
 
         showWhen {
@@ -100,6 +100,6 @@ class StationsHistoryView : BaseView() {
                 it is LibraryState.History
             }
         }
-        addClass(Styles.historyListView)
+        addClass(Styles.decoratedListView)
     }
 }

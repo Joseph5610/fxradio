@@ -25,11 +25,13 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
- * Searches for all stations that contains provided tag
- * if input.first is set to true, search is performed by tag, otherwise by name
+ * Searches for all stations that contains provided tag/name
  */
 class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Station>>>() {
 
+    /**
+     * If [input.first] is set to true, search is performed by tag, otherwise by name
+     */
     override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
         radioBrowserApi
                 .searchStationByTag(SearchByTagBody(input.second))

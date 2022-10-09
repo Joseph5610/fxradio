@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
-import online.hudacek.fxradio.media.AudioComponent
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
@@ -32,24 +31,24 @@ private val logger = KotlinLogging.logger {}
  * VLC Player Audio Component
  * Implements playing logic using VLC player
  */
-class VLCAudioComponent : AudioComponent {
+class VLCAudioComponent {
 
     private val player: AudioPlayerComponent? by lazy { run { AudioPlayerComponent() } }
 
     private lateinit var nativeLog: NativeLog
 
-    override fun play(streamUrl: String) {
+    fun play(streamUrl: String) {
         player?.mediaPlayer()?.media()?.play(streamUrl)
     }
 
-    override fun setVolume(newVolume: Double) {
+    fun setVolume(newVolume: Double) {
         player?.mediaPlayer()?.audio()?.setVolume(newVolume.toInt())
     }
 
-    override fun cancel() {
+    fun cancel() {
         runCatching {
             player?.let {
-                // Its not allowed to call back into LibVLC from an event handling thread,
+                // It is not allowed to call back into LibVLC from an event handling thread,
                 // so submit() is used
                 it.mediaPlayer().submit {
                     it.mediaPlayer().controls().stop()

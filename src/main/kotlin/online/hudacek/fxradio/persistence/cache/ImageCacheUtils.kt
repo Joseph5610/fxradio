@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
 
 /**
  * Simple image cache used for station images
- * Images are saved to files with /.fxradio/cache directory
+ * Files are saved to /.fxradio/cache/ directory
  * File name is the station UUID
  */
 object ImageCacheUtils {

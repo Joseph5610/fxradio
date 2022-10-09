@@ -21,8 +21,8 @@ package online.hudacek.fxradio
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
-import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.api.RBServiceProvider
+import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.persistence.database.Database
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
@@ -34,7 +34,12 @@ import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.*
+import tornadofx.App
+import tornadofx.FX
+import tornadofx.Stylesheet
+import tornadofx.launch
+import tornadofx.setStageIcon
+import tornadofx.stylesheet
 import java.io.FileInputStream
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -62,7 +67,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
     private val playerViewModel: PlayerViewModel by inject()
 
     /**
-     * override app.config path to $user.home/fxradio
+     * override app.config path to ${user.home}/fxradio
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
@@ -105,12 +110,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         }
 
         //Save last used window width/height on close of the app to use it on next start
-        saveProperties(mapOf(
+        saveProperties(
+            mapOf(
                 Properties.WindowWidth to FX.primaryStage.width,
                 Properties.WindowHeight to FX.primaryStage.height,
                 Properties.WindowX to FX.primaryStage.x,
                 Properties.WindowY to FX.primaryStage.y
-        ))
+            )
+        )
         super.stop()
     }
 
@@ -129,7 +136,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
         /**
          * Gets version from jar MANIFEST.MF file
-         * On failure (e.g if app is not run from the jar file), returns the "0.0-DEVELOPMENT" value
+         * On failure (e.g. if app is not run from the jar file), returns the "0.0-DEVELOPMENT" value
          */
         val version: String by lazy {
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"

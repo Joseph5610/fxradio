@@ -58,12 +58,12 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
     protected companion object KeyCodes {
         val favourite = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
         val history = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
-        val play = KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN)
-        val stop = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
+        val play = KeyCodeCombination(KeyCode.P, KeyCombination.META_DOWN)
+        val stop = KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN)
         val info = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
-        val add = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
+        val add = KeyCodeCombination(KeyCode.N, KeyCombination.META_DOWN)
         val open = KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN)
         val website = KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
-        val openStream = KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN)
+        val openStream = KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN)
     }
 }

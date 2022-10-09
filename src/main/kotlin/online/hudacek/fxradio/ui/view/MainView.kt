@@ -35,6 +35,7 @@ import org.controlsfx.control.NotificationPane
 import tornadofx.addClass
 import tornadofx.controlsfx.content
 import tornadofx.hgrow
+import tornadofx.hide
 import tornadofx.onChange
 import tornadofx.splitpane
 import tornadofx.vbox
@@ -54,7 +55,7 @@ class MainView : BaseView(FxRadio.appName) {
     private val darkModeViewModel: DarkModeViewModel by inject()
 
     override fun onDock() {
-        with(leftPane) {
+        with(splitPane) {
             // Workaround for setting correct position of divider after restart of app
             setDividerPositions(windowDividerProperty.get(0.30))
         }
@@ -62,7 +63,7 @@ class MainView : BaseView(FxRadio.appName) {
 
     override fun onUndock() {
         // Save divider position before closing the app
-        windowDividerProperty.save(leftPane.dividers[0].position)
+        windowDividerProperty.save(splitPane.dividers[0].position)
     }
 
     // Right pane of the app (Player + Stations)
@@ -74,7 +75,7 @@ class MainView : BaseView(FxRadio.appName) {
         }
     }
 
-    private val leftPane by lazy {
+    private val splitPane by lazy {
         splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
 
             // Constrains width of left pane
@@ -103,8 +104,8 @@ class MainView : BaseView(FxRadio.appName) {
             }
 
             content {
-                add(leftPane)
-                with(leftPane) {
+                add(splitPane)
+                with(splitPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
                 }

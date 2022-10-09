@@ -20,6 +20,7 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.NoSelectionModel
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
@@ -36,8 +37,10 @@ import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.paddingAll
+import tornadofx.paddingBottom
 import tornadofx.stringBinding
 import tornadofx.vbox
+
 
 /**
  * Fragment that presents stats of currently used API server
@@ -54,9 +57,11 @@ class StatsFragment : BaseFragment() {
             is StatsState.Loading -> {
                 messages["loading"]
             }
+
             is StatsState.Error -> {
                 messages["stats.statsUnavailable"]
             }
+
             else -> {
                 ""
             }
@@ -64,8 +69,9 @@ class StatsFragment : BaseFragment() {
     }
 
     override val root = vbox {
+        paddingBottom = 10.0
         title = messages["stats.title"]
-        setPrefSize(300.0, 230.0)
+        setPrefSize(300.0, 260.0)
 
         vbox(alignment = Pos.CENTER) {
             paddingAll = 10.0
@@ -91,15 +97,14 @@ class StatsFragment : BaseFragment() {
         }
 
         listview(viewModel.statsProperty) {
+            selectionModel = NoSelectionModel()
             requestFocusOnSceneAvailable() // To get rid of the blue box around the hyperlink
-            isMouseTransparent = true // Disable clicking into listview, as it is not needed for this listview
             cellFormat {
-                paddingAll = 0.0
                 graphic = hbox(spacing = 5) {
                     label(messages[item.first] + ":")
                     label(item.second)
-                    addClass(Styles.libraryListItem)
                 }
+                addClass(Styles.decoratedListItem)
             }
 
             showWhen {
@@ -110,8 +115,8 @@ class StatsFragment : BaseFragment() {
                     }
                 }
             }
-            addClass(Styles.libraryListView)
+            addClass(Styles.decoratedListView)
         }
-        addClass(Styles.backgroundWhiteSmoke)
+        addClass(Styles.backgroundWhite)
     }
 }

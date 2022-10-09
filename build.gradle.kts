@@ -15,7 +15,6 @@ plugins {
     kotlin("jvm") version "1.7.20"
 }
 
-val kotlinVersion = "1.7.20"
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "1.7.20"
 val log4jVersion = "2.18.0"
@@ -44,7 +43,6 @@ allprojects {
 
     dependencies {
         // Align versions of all Kotlin components
-
         implementation(platform(kotlin("bom")))
 
         // Use the Kotlin JDK 8 standard library.
@@ -74,8 +72,8 @@ dependencies {
     // Local JAR files
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
 
     implementation("no.tornado:tornadofx:$tornadoFxVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")

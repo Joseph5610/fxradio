@@ -50,9 +50,9 @@ class Styles : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
-        val historyListView by cssclass()
-        val historyListItem by cssclass()
-        val libraryListItemTag by cssclass()
+        val decoratedListView by cssclass()
+        val decoratedListItem by cssclass()
+        val listItemTag by cssclass()
 
         val primaryButton by cssclass()
         val segmentedButton by cssclass()
@@ -196,7 +196,7 @@ class Styles : Stylesheet() {
             padding = box(6.px, 10.px, 6.px, 15.px)
         }
 
-        libraryListItemTag {
+        listItemTag {
             padding = box(2.px)
             textFill = c(colors.label)
             backgroundRadius += box(6.px)
@@ -205,14 +205,14 @@ class Styles : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
         }
 
-        historyListView {
+        decoratedListView {
             padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += Color.WHITE
             borderColor += box(Color.WHITE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
-        historyListItem {
+        decoratedListItem {
             fontSize = 12.px
             textFill = c(colors.label)
             backgroundRadius += box(6.px)

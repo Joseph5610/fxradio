@@ -25,11 +25,13 @@ import javafx.beans.property.Property
 import javafx.beans.property.StringProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
+import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Label
+import javafx.scene.control.MultipleSelectionModel
 import javafx.scene.control.TextField
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
@@ -68,6 +70,7 @@ import tornadofx.textfield
 import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
+
 
 private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
 

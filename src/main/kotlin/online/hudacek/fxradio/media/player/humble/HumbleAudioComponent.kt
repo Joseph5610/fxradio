@@ -21,13 +21,12 @@ package online.hudacek.fxradio.media.player.humble
 import io.humble.video.Demuxer
 import io.humble.video.MediaPacket
 import io.humble.video.javaxsound.AudioFrame
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
-import online.hudacek.fxradio.media.AudioComponent
 import online.hudacek.fxradio.media.StreamUnavailableException
 import java.nio.ByteBuffer
 import javax.sound.sampled.FloatControl
@@ -40,15 +39,15 @@ private val logger = KotlinLogging.logger {}
 /**
  * Play/stop logic of Humble player
  */
-class HumbleAudioComponent : AudioComponent {
+class HumbleAudioComponent {
 
     private var lastTriedVolumeChange = 0.0
 
     private var audioFrame: AudioFrame? = null
     private var job: Job? = null
 
-    override fun play(streamUrl: String) {
-        job = GlobalScope.launch(coroutineExceptionHandler) {
+    suspend fun play(streamUrl: String) = withContext(Dispatchers.IO) {
+        job = launch {
             val deMuxer = Demuxer.make()
             try {
                 val streamInfo = deMuxer.getStreamInfo(streamUrl)
@@ -56,7 +55,7 @@ class HumbleAudioComponent : AudioComponent {
                     val samples = it.getMediaAudio()
                     val converter = HumbleAudioConverter(samples.sampleRate, samples.channelLayout, samples.format)
                     audioFrame = AudioFrame.make(converter.javaFormat)
-                            ?: throw StreamUnavailableException("No output device available!")
+                        ?: throw StreamUnavailableException("No output device available!")
 
                     var rawAudio: ByteBuffer? = null
 
@@ -89,20 +88,22 @@ class HumbleAudioComponent : AudioComponent {
                         }
                     } while (samples.isComplete)
                 }
+            } catch (e: Exception) {
+                deMuxer.correctlyClose()
             } finally {
-                deMuxer.close()
+                deMuxer.correctlyClose()
                 audioFrame?.dispose()
             }
         }
     }
 
-    override fun setVolume(newVolume: Double) {
+    fun setVolume(newVolume: Double) {
         lastTriedVolumeChange = newVolume
 
         //Dirty hack, since the api does not provide direct access to field,
         //we use reflection to get access to line field to change volume
         AudioFrame::class.memberProperties
-                .filter { it.name == "mLine" }[0].apply {
+            .filter { it.name == "mLine" }[0].apply {
             isAccessible = true
             val lineValue = getter.call(audioFrame) as SourceDataLine
             val gainControl = lineValue.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
@@ -110,21 +111,12 @@ class HumbleAudioComponent : AudioComponent {
         }
     }
 
-    override fun cancel() {
+    fun stop() {
         job?.let {
             if (it.isActive) {
                 logger.debug { "Cancelling current playback..." }
                 it.cancel()
             }
-        }
-    }
-
-    companion object {
-        /**
-         * Handler for unexpected exception inside [job]
-         */
-        private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            logger.error(throwable) { "Exception when playing stream!" }
         }
     }
 }

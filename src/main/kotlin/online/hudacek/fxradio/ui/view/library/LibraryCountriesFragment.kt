@@ -80,7 +80,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
                 // as we do not store this in DB
                 if (it.stationcount > 0) {
                     label("${it.stationcount}") {
-                        addClass(Styles.libraryListItemTag)
+                        addClass(Styles.listItemTag)
                     }
                 }
 
