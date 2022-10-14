@@ -22,9 +22,10 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
-import online.hudacek.fxradio.ui.bindStation
 import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.view.StationImageView
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -33,7 +34,6 @@ import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.get
 import tornadofx.hbox
-import tornadofx.imageview
 import tornadofx.label
 import tornadofx.onHover
 import tornadofx.separator
@@ -62,9 +62,7 @@ class PlayerStationView : BaseView() {
     }
 
     private val stationLogo by lazy {
-        imageview {
-            // Subscribe to property changes
-            bindStation(selectedStationViewModel.stationProperty)
+        stationView(selectedStationViewModel.stationProperty) {
             fitWidth = LOGO_SIZE
         }
     }

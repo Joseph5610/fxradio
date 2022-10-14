@@ -25,7 +25,7 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -38,7 +38,6 @@ import tornadofx.booleanBinding
 import tornadofx.contextmenu
 import tornadofx.datagrid
 import tornadofx.get
-import tornadofx.imageview
 import tornadofx.item
 import tornadofx.label
 import tornadofx.onHover
@@ -73,12 +72,14 @@ class StationsDataGridView : BaseView() {
 
         //Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
-                    selectionModel.clearSelection()
-                    selectionModel.select(selectedStationViewModel.stationProperty.value)
-                }
+            selectionModel.clearSelection()
+            selectionModel.select(selectedStationViewModel.stationProperty.value)
+        }
 
         onUserSelect(1) {
-            selectedStationViewModel.item = SelectedStation(it)
+            if (selectedStationViewModel.item.station != it) {
+                selectedStationViewModel.item = SelectedStation(it)
+            }
         }
 
         cellCache { station ->
@@ -91,7 +92,6 @@ class StationsDataGridView : BaseView() {
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
                     separator()
                     item(messages["menu.station.info"]).action {
-                        selectedStationViewModel.item = SelectedStation(station)
                         selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
                     }
                 }
@@ -99,8 +99,7 @@ class StationsDataGridView : BaseView() {
                 vbox(alignment = Pos.CENTER) {
                     paddingAll = 5
                     prefHeight = 120.0
-                    imageview {
-                        station.stationImage(this)
+                    stationView(station) {
                         fitHeight = LOGO_SIZE
                         fitWidth = LOGO_SIZE
                     }

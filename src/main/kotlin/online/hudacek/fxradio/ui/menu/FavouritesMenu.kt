@@ -19,7 +19,8 @@
 package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.view.StationImageView
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -31,8 +32,8 @@ import tornadofx.confirm
 import tornadofx.disableWhen
 import tornadofx.enableWhen
 import tornadofx.get
-import tornadofx.imageview
 import tornadofx.item
+import tornadofx.objectProperty
 import tornadofx.visibleWhen
 
 class FavouritesMenu : BaseMenu("menu.favourites") {
@@ -90,11 +91,9 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     // For some reason macOS native menu does not respect
                     // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = imageview {
-                            it.stationImage(this)
+                        graphic = stationView(it) {
                             fitHeight = 15.0
                             fitWidth = 15.0
-                            isPreserveRatio = true
                         }
                     }
                     action {

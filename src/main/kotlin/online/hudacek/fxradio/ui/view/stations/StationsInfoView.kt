@@ -23,11 +23,11 @@ import javafx.beans.property.Property
 import javafx.geometry.Pos
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.bindStation
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
+import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.LibraryState
@@ -44,7 +44,6 @@ import tornadofx.center
 import tornadofx.flowpane
 import tornadofx.get
 import tornadofx.hyperlink
-import tornadofx.imageview
 import tornadofx.label
 import tornadofx.onChange
 import tornadofx.paddingAll
@@ -64,14 +63,13 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private val libraryViewModel: LibraryViewModel by inject()
 
     private val stationLogo by lazy {
-        imageview {
+        stationView(selectedStationViewModel.stationProperty) {
             fitHeight = LOGO_SIZE
             fitHeight = LOGO_SIZE
         }
     }
 
     override fun onDock() {
-        stationLogo.bindStation(selectedStationViewModel.stationProperty)
         selectedStationViewModel.stationProperty.onChange {
             selectedStationViewModel.retrieveAdditionalData()
         }
@@ -189,10 +187,6 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private fun createInfoBinding(key: String, valueProperty: Property<*>) = valueProperty.stringBinding {
         val value = if (it is String) {
             it.ifEmpty { messages["unknown"] }
-        } else if (it is Int) {
-            if (it == 0) {
-                messages["unknown"]
-            } else it
         } else it
         messages[key] + ": " + value
     }

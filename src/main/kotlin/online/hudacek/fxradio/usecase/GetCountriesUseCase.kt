@@ -23,7 +23,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 
 private val logger = KotlinLogging.logger {}
 
@@ -33,8 +33,9 @@ private val logger = KotlinLogging.logger {}
 class GetCountriesUseCase : BaseUseCase<CountriesBody, Observable<Country>>() {
 
     override fun execute(input: CountriesBody): Observable<Country> = radioBrowserApi
-            .getCountries(input)
-            .flattenAsObservable { it.filter { c -> !c.isRussia } }
-            .compose(applySchedulers())
-            .doOnError { logger.error(it) { "Exception when downloading countries for $input" } }
+        .getCountries(input)
+        .compose(applySchedulersSingle())
+        .flattenAsObservable { it.filter { c -> !c.isRussia } }
+        .distinct()
+        .doOnError { logger.error(it) { "Exception when downloading countries for $input" } }
 }

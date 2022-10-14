@@ -19,7 +19,8 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.view.StationImageView
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -29,8 +30,8 @@ import tornadofx.bind
 import tornadofx.confirm
 import tornadofx.disableWhen
 import tornadofx.get
-import tornadofx.imageview
 import tornadofx.item
+import tornadofx.objectProperty
 
 class HistoryMenu : BaseMenu("menu.history") {
 
@@ -56,8 +57,7 @@ class HistoryMenu : BaseMenu("menu.history") {
                     // For some reason macOS native menu does not respect
                     // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = imageview {
-                            it.stationImage(this)
+                        graphic = stationView(it) {
                             fitHeight = 15.0
                             fitWidth = 15.0
                         }

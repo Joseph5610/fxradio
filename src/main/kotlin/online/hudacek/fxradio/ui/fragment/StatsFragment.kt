@@ -20,7 +20,7 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.NoSelectionModel
+import online.hudacek.fxradio.ui.util.NoSelectionModel
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen

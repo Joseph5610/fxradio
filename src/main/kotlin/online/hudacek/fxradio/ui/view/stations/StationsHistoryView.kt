@@ -25,7 +25,7 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.InfoPanelState
@@ -39,7 +39,6 @@ import tornadofx.booleanBinding
 import tornadofx.contextmenu
 import tornadofx.get
 import tornadofx.hbox
-import tornadofx.imageview
 import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
@@ -68,8 +67,7 @@ class StationsHistoryView : BaseView() {
         cellFormat {
             graphic = hbox(spacing = 10) {
                 alignment = Pos.CENTER_LEFT
-                imageview {
-                    it.stationImage(this)
+                stationView(it) {
                     fitHeight = LOGO_SIZE
                     fitWidth = LOGO_SIZE
                 }

@@ -35,25 +35,32 @@ class StationImageLoader {
 
     private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
 
+    /**
+     * Retrieves the station image either from local cache or remote url
+     */
     fun load(station: Station): Maybe<Image?> = maybeOfNullable(getLocalPath(station))
-            .onErrorResumeNext(getRemote(station))
-            .switchIfEmpty(getRemote(station))
+        .onErrorResumeNext(getRemote(station))
+        .switchIfEmpty(getRemote(station))
 
+    /**
+     * Downloads and stores remote image file into local cache
+     */
     private fun getRemote(station: Station): Maybe<Image> =
-            maybeOfNullable(station.favicon)
-                    .flatMapSingle {
-                        if (it.isNotEmpty()) {
-                            Single.fromCallable { HttpClient.request(it) }.compose(applySchedulersSingle())
-                        } else {
-                            Single.error(IllegalArgumentException(
-                                    "Station ${station.stationuuid} does not have valid icon URL"))
-                        }
-                    }.flatMapMaybe { response ->
-                        maybeOfNullable(response.body())
-                                .map { copyInputStreamIntoFile(it.byteStream(), station.stationuuid) }
-                    }.flatMap {
-                        maybeOfNullable(getLocalPath(station))
-                    }
+        maybeOfNullable(station.favicon)
+            .flatMapSingle {
+                if (it.isNotEmpty()) {
+                    Single.fromCallable { HttpClient.request(it) }.compose(applySchedulersSingle())
+                } else {
+                    Single.error(
+                        IllegalArgumentException("Station ${station.stationuuid} does not have valid icon URL")
+                    )
+                }
+            }.flatMapMaybe { response ->
+                maybeOfNullable(response.body())
+                    .map { copyInputStreamIntoFile(it.byteStream(), station.stationuuid) }
+            }.flatMap {
+                maybeOfNullable(getLocalPath(station))
+            }
 
     /**
      * Gets Image for [station] from local cache
@@ -64,17 +71,20 @@ class StationImageLoader {
         null
     }
 
-    private fun <T> maybeOfNullable(value: T?): Maybe<T> {
-        return if (value == null) Maybe.empty() else Maybe.just(value)
-    }
-
     private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) {
         Files.copy(
-                ips,
-                cacheBasePath.resolve(fileName),
-                StandardCopyOption.REPLACE_EXISTING)
+            ips,
+            cacheBasePath.resolve(fileName),
+            StandardCopyOption.REPLACE_EXISTING
+        )
     }
 
     private val Station.isCached: Boolean
         get() = Files.exists(cacheBasePath.resolve(stationuuid))
+
+    companion object {
+        private fun <T> maybeOfNullable(value: T?): Maybe<T> {
+            return if (value == null) Maybe.empty() else Maybe.just(value)
+        }
+    }
 }
