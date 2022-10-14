@@ -26,38 +26,36 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.flagIcon
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.booleanBinding
-import tornadofx.contextmenu
-import tornadofx.doubleBinding
-import tornadofx.get
-import tornadofx.hbox
-import tornadofx.imageview
-import tornadofx.item
-import tornadofx.label
-import tornadofx.listview
-import tornadofx.onUserSelect
-import tornadofx.visibleWhen
+import tornadofx.*
 
 /**
  * Custom listview fragment for countries
  */
-class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showProperty: BooleanProperty)
-    : BaseFragment() {
+class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showProperty: BooleanProperty) :
+    BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 
     init {
-        viewModel.stateObservableChanges.filter { it !is LibraryState.SelectedCountry }.subscribe {
-            root.selectionModel.clearSelection()
+        viewModel.stateObservableChanges.subscribe {
+            if (it !is LibraryState.SelectedCountry) {
+                root.selectionModel.clearSelection()
+            } else {
+                if (it.country.iso_3166_1 != root.selectedItem?.iso_3166_1) {
+                    root.selectionModel.clearSelection()
+                }
+            }
         }
     }
 
     override val root = listview(countriesProperty) {
         id = "libraryCountriesFragment"
+
+        val handler = ListViewHandler(this)
+        setOnKeyPressed(handler::handle)
 
         /**
          * Set min/max size of listview based on its items size

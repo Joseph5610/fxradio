@@ -41,7 +41,6 @@ import tornadofx.paddingBottom
 import tornadofx.stringBinding
 import tornadofx.vbox
 
-
 /**
  * Fragment that presents stats of currently used API server
  */
@@ -74,6 +73,7 @@ class StatsFragment : BaseFragment() {
         setPrefSize(300.0, 260.0)
 
         vbox(alignment = Pos.CENTER) {
+            requestFocusOnSceneAvailable()
             paddingAll = 10.0
 
             hyperlink(serversViewModel.selectedProperty) {
@@ -98,7 +98,6 @@ class StatsFragment : BaseFragment() {
 
         listview(viewModel.statsProperty) {
             selectionModel = NoSelectionModel()
-            requestFocusOnSceneAvailable() // To get rid of the blue box around the hyperlink
             cellFormat {
                 graphic = hbox(spacing = 5) {
                     label(messages[item.first] + ":")

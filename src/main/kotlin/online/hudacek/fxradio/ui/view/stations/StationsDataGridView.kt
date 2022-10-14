@@ -26,27 +26,9 @@ import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationView
-import online.hudacek.fxradio.viewmodel.InfoPanelState
-import online.hudacek.fxradio.viewmodel.LibraryState
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.SelectedStation
-import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import online.hudacek.fxradio.viewmodel.StationsState
-import online.hudacek.fxradio.viewmodel.StationsViewModel
-import tornadofx.action
-import tornadofx.booleanBinding
-import tornadofx.contextmenu
-import tornadofx.datagrid
-import tornadofx.get
-import tornadofx.item
-import tornadofx.label
-import tornadofx.onHover
-import tornadofx.paddingAll
-import tornadofx.px
-import tornadofx.separator
-import tornadofx.style
-import tornadofx.tooltip
-import tornadofx.vbox
+import online.hudacek.fxradio.ui.util.DataGridHandler
+import online.hudacek.fxradio.viewmodel.*
+import tornadofx.*
 
 private const val CELL_WIDTH = 140.0
 private const val LOGO_SIZE = 100.0
@@ -67,10 +49,13 @@ class StationsDataGridView : BaseView() {
 
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
+        val handler = DataGridHandler(this)
+        setOnKeyPressed(handler::handle)
+
         id = "stations"
         cellWidth = CELL_WIDTH
 
-        //Cleanup selected item on refresh of library
+        // Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
             selectionModel.clearSelection()
             selectionModel.select(selectedStationViewModel.stationProperty.value)

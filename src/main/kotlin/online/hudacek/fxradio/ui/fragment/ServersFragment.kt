@@ -35,6 +35,7 @@ import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.button
 import tornadofx.enableWhen
+import tornadofx.form
 import tornadofx.get
 import tornadofx.hbox
 import tornadofx.imageview
@@ -42,7 +43,6 @@ import tornadofx.isDirty
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.paddingAll
-import tornadofx.paddingBottom
 import tornadofx.stringBinding
 import tornadofx.text
 import tornadofx.vbox
@@ -80,43 +80,40 @@ class ServersFragment : BaseFragment() {
 
     override val root = vbox {
         title = messages["menu.app.server"]
-        paddingAll = 10.0
         setPrefSize(350.0, 270.0)
 
-        vbox {
-            vbox(alignment = Pos.CENTER) {
-                label(messages["servers.title"]) {
-                    paddingBottom = 15.0
-                    addClass(Styles.header)
-                }
-
-                label(messages["servers.restartNeeded"]) {
-                    paddingAll = 5.0
-                    textAlignment = TextAlignment.CENTER
-                }
+        vbox(alignment = Pos.CENTER) {
+            paddingAll = 10.0
+            label(messages["servers.title"]) {
+                addClass(Styles.header)
             }
 
-            vbox(alignment = Pos.BASELINE_CENTER) {
-                prefHeight = 120.0
-                text(labelTextProperty) {
-                    paddingAll = 5.0
-                    wrappingWidth = 270.0
-                    textAlignment = TextAlignment.CENTER
-                    addClass(Styles.defaultTextColor)
-                }
+            label(messages["servers.restartNeeded"]) {
+                textAlignment = TextAlignment.CENTER
+            }
+        }
 
-                showWhen {
-                    viewModel.stateProperty.booleanBinding {
-                        when (it) {
-                            is ServersState.Fetched -> false
-                            else -> true
-                        }
+        vbox(alignment = Pos.CENTER) {
+            prefHeight = 120.0
+            text(labelTextProperty) {
+                paddingAll = 5.0
+                wrappingWidth = 270.0
+                textAlignment = TextAlignment.CENTER
+                addClass(Styles.defaultTextColor)
+            }
+
+            showWhen {
+                viewModel.stateProperty.booleanBinding {
+                    when (it) {
+                        is ServersState.Fetched -> false
+                        else -> true
                     }
                 }
             }
+        }
 
+        form {
             listview(viewModel.serversProperty) {
-                requestFocusOnSceneAvailable()
                 bindSelected(viewModel.selectedProperty)
                 cellFormat {
                     graphic = hbox(spacing = 5) {
@@ -142,34 +139,35 @@ class ServersFragment : BaseFragment() {
                 }
                 addClass(Styles.decoratedListView)
             }
-        }
 
-        hbox(spacing = 10) {
-            alignment = Pos.CENTER_RIGHT
-            paddingAll = 10.0
+            hbox(spacing = 5) {
+                alignment = Pos.CENTER_RIGHT
 
-            button(messages["servers.reload"]) {
-                action {
-                    viewModel.fetchServers()
-                }
-            }
-            button(messages["save"]) {
-                enableWhen(viewModel.selectedProperty.isNotNull)
-                isDefaultButton = true
-                action {
-                    // Save the server in the app.config property file
-                    // Close the fragment after successful save
-                    viewModel.commit {
-                        appEvent.appNotification.onNext(
-                            AppNotification(
-                                messages["server.save.ok"],
-                                FontAwesome.Glyph.CHECK
-                            )
-                        )
-                        close()
+                button(messages["servers.reload"]) {
+                    action {
+                        viewModel.fetchServers()
                     }
                 }
-                addClass(Styles.primaryButton)
+
+                button(messages["save"]) {
+                    enableWhen(viewModel.selectedProperty.isNotNull)
+                    isDefaultButton = true
+                    requestFocusOnSceneAvailable()
+                    action {
+                        // Save the server in the app.config property file
+                        // Close the fragment after successful save
+                        viewModel.commit {
+                            appEvent.appNotification.onNext(
+                                AppNotification(
+                                    messages["server.save.ok"],
+                                    FontAwesome.Glyph.CHECK
+                                )
+                            )
+                            close()
+                        }
+                    }
+                    addClass(Styles.primaryButton)
+                }
             }
         }
         addClass(Styles.backgroundWhite)

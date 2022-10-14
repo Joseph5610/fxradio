@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
+import javafx.scene.input.KeyCode
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
@@ -27,6 +28,7 @@ import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.keyCombination
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
@@ -75,8 +77,10 @@ class PlayerView : BaseView() {
     private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, useStyle = false) }
     private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(CONTROLS_GLYPH_SIZE, useStyle = false) }
     private val infoGlyph by lazy {
-        FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE, useStyle = false,
-                color = c(darkModeViewModel.appearanceProperty.value!!.primary))
+        FontAwesome.Glyph.INFO_CIRCLE.make(
+            INFO_GLYPH_SIZE, useStyle = false,
+            color = c(darkModeViewModel.appearanceProperty.value!!.primary)
+        )
     }
     private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(VOLUME_GLYPH_SIZE, useStyle = false) }
     private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE, useStyle = false) }
@@ -115,15 +119,15 @@ class PlayerView : BaseView() {
                     it == null || !it.isValid()
                 }
             }
+
             setOnMouseClicked {
-                selectedStationViewModel.stateProperty.apply {
-                    value = if (value == InfoPanelState.Shown) {
-                        InfoPanelState.Hidden
-                    } else {
-                        InfoPanelState.Shown
-                    }
-                }
+                toggleInfoPanelState()
             }
+
+            shortcut(keyCombination(KeyCode.I)) {
+                toggleInfoPanelState()
+            }
+
             addClass(Styles.playerControls)
         }
     }
@@ -206,6 +210,16 @@ class PlayerView : BaseView() {
     override fun onDock() {
         currentWindow?.setOnSpacePressed {
             viewModel.togglePlayerState()
+        }
+    }
+
+    private fun toggleInfoPanelState() {
+        selectedStationViewModel.stateProperty.apply {
+            value = if (value == InfoPanelState.Shown) {
+                InfoPanelState.Hidden
+            } else {
+                InfoPanelState.Shown
+            }
         }
     }
 }

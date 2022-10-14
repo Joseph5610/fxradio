@@ -21,9 +21,8 @@ package online.hudacek.fxradio.ui.menu
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.event.AppEvent
+import online.hudacek.fxradio.util.keyCombination
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
 import tornadofx.Controller
 import tornadofx.get
@@ -56,14 +55,14 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
      * Defines keyboard shortcuts for menu actions
      */
     protected companion object KeyCodes {
-        val favourite = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
-        val history = KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN)
-        val play = KeyCodeCombination(KeyCode.P, KeyCombination.META_DOWN)
-        val stop = KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN)
-        val info = KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN)
-        val add = KeyCodeCombination(KeyCode.N, KeyCombination.META_DOWN)
-        val open = KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN)
-        val website = KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
-        val openStream = KeyCodeCombination(KeyCode.U, KeyCombination.META_DOWN)
+        val favouriteAdd = keyCombination(KeyCode.L)
+        val favouriteView = keyCombination(KeyCode.DIGIT1)
+        val history = keyCombination(KeyCode.DIGIT2)
+        val play = keyCombination(KeyCode.P)
+        val stop = keyCombination(KeyCode.S)
+        val add = keyCombination(KeyCode.N)
+        val open = keyCombination(KeyCode.O)
+        val website = keyCombination(KeyCode.W)
+        val openStream = keyCombination(KeyCode.U)
     }
 }

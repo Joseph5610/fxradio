@@ -41,10 +41,12 @@ sealed class PlayerState {
     data class Error(val cause: String) : PlayerState()
 }
 
-class Player(animate: Boolean = Properties.PlayerAnimated.value(true),
-             volume: Double = Properties.Volume.value(0.0),
-             trackName: String = "",
-             mediaPlayer: MediaPlayer = MediaPlayerFactory.create()) {
+class Player(
+    animate: Boolean = Properties.PlayerAnimated.value(true),
+    volume: Double = Properties.Volume.value(0.0),
+    trackName: String = "",
+    mediaPlayer: MediaPlayer = MediaPlayerFactory.create()
+) {
     var animate: Boolean by property(animate)
     var volume: Double by property(volume)
     var trackName: String by property(trackName)
@@ -55,8 +57,9 @@ class Player(animate: Boolean = Properties.PlayerAnimated.value(true),
  * Handles station playing logic
  */
 class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
-        initialState = PlayerState.Stopped,
-        initialItem = Player()) {
+    initialState = PlayerState.Stopped,
+    initialItem = Player()
+) {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 
@@ -74,24 +77,24 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
          * Emitted when new song starts playing or other metadata of stream changes
          */
         appEvent.streamMetaDataUpdated
-                .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
-                .filter { it.nowPlaying.length > 1 }
-                .observeOnFx()
-                .subscribe {
-                    trackNameProperty.value = it.nowPlaying
-                }
+            .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
+            .filter { it.nowPlaying.length > 1 }
+            .observeOnFx()
+            .subscribe {
+                trackNameProperty.value = it.nowPlaying
+            }
 
         selectedStationViewModel.stationObservable
-                .subscribe({
-                    //Update the name of the station
-                    trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
+            .subscribe({
+                //Update the name of the station
+                trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
 
-                    //Restart playing status
-                    stateProperty.value = PlayerState.Stopped
-                    stateProperty.value = it.url_resolved.let { it1 -> PlayerState.Playing(it1) }
-                }, { t ->
-                    stateProperty.value = PlayerState.Error(t.localizedMessage)
-                })
+                //Restart playing status
+                stateProperty.value = PlayerState.Stopped
+                stateProperty.value = it.url_resolved.let { it1 -> PlayerState.Playing(it1) }
+            }, { t ->
+                stateProperty.value = PlayerState.Error(t.localizedMessage)
+            })
     }
 
     /**
@@ -119,11 +122,13 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
     fun releasePlayer() = mediaPlayerProperty.value.release()
 
     fun togglePlayerState() {
-        if (stateProperty.value is PlayerState.Playing) {
-            stateProperty.value = PlayerState.Stopped
-        } else {
-            stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved.let {
-                PlayerState.Playing(it)
+        if (selectedStationViewModel.stationProperty.value.isValid()) {
+            if (stateProperty.value is PlayerState.Playing) {
+                stateProperty.value = PlayerState.Stopped
+            } else {
+                stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved.let {
+                    PlayerState.Playing(it)
+                }
             }
         }
     }
@@ -132,11 +137,13 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
      * Save player related key/values to app.properties file
      */
     override fun onCommit() {
-        app.saveProperties(mapOf(
+        app.saveProperties(
+            mapOf(
                 Properties.Player to mediaPlayerProperty.value.playerType,
                 Properties.PlayerAnimated to animateProperty.value,
                 Properties.Volume to volumeProperty.value
-        ))
+            )
+        )
     }
 }
 

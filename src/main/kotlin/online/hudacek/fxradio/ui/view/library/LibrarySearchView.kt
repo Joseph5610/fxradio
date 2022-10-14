@@ -18,9 +18,13 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import javafx.scene.input.KeyCode
+
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.searchField
+import online.hudacek.fxradio.util.keyCombination
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
@@ -47,11 +51,17 @@ class LibrarySearchView : BaseView() {
         left = label(graphic = FontAwesome.Glyph.SEARCH.make(searchGlyphSize))
 
         setOnMouseClicked {
-            libraryViewModel.stateProperty.value = LibraryState.Search
+            setSearchState()
         }
 
         textProperty().onChange {
+            setSearchState()
             viewModel.commit()
+        }
+
+        shortcut(keyCombination(KeyCode.F)) {
+            requestFocusOnSceneAvailable()
+            setSearchState()
         }
 
         validator {
@@ -60,5 +70,9 @@ class LibrarySearchView : BaseView() {
                 else -> null
             }
         }
+    }
+
+    private fun setSearchState() {
+        libraryViewModel.stateProperty.value = LibraryState.Search
     }
 }

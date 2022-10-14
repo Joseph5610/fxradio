@@ -20,7 +20,6 @@ package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.ui.stationView
-import online.hudacek.fxradio.ui.view.StationImageView
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -33,7 +32,6 @@ import tornadofx.disableWhen
 import tornadofx.enableWhen
 import tornadofx.get
 import tornadofx.item
-import tornadofx.objectProperty
 import tornadofx.visibleWhen
 
 class FavouritesMenu : BaseMenu("menu.favourites") {
@@ -55,7 +53,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
      * Items for add/remove favourite station reused in multiple menus around the app
      */
     val addRemoveFavouriteItems
-        get() = mutableListOf(item(messages["menu.station.favourite"], KeyCodes.favourite) {
+        get() = mutableListOf(item(messages["menu.station.favourite"], KeyCodes.favouriteAdd) {
             enableWhen(playedStationNotInFavouritesProperty)
             visibleWhen(favouriteMenuItemVisibleProperty)
 
@@ -78,7 +76,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                 })
 
     override val menuItems = mutableListOf<MenuItem>().apply {
-        addAll(listOf(item(messages["menu.favourites.show"]) {
+        addAll(listOf(item(messages["menu.favourites.show"], KeyCodes.favouriteView) {
             action {
                 libraryViewModel.stateProperty.value = LibraryState.Favourites
             }
