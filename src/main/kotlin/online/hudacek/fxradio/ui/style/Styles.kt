@@ -428,7 +428,6 @@ class Styles : Stylesheet() {
                 borderRadius += box(6.px, 6.px, 0.px, 0.px)
             }
 
-
             InternalWindow.Styles.closebutton {
                 visibility = FXVisibility.HIDDEN
             }

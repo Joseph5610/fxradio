@@ -50,7 +50,7 @@ class StationsEmptyView : BaseView() {
     private val viewModel: StationsViewModel by inject()
 
     private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE) }
-    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE) }
+    private val errorGlyph by lazy { FontAwesome.Glyph.WARNING.make(size = GLYPH_SIZE) }
     private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = GLYPH_SIZE) }
 
     private val headerProperty = viewModel.stateProperty.stringBinding {

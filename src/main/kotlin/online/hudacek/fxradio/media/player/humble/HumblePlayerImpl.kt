@@ -17,9 +17,6 @@
  */
 package online.hudacek.fxradio.media.player.humble
 
-import com.sun.jna.NativeLibrary
-import io.humble.ferry.JNIEnv
-import io.humble.ferry.JNILibrary
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch

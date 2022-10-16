@@ -25,17 +25,15 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
 import online.hudacek.fxradio.util.applySchedulersSingle
 
-private val logger = KotlinLogging.logger {}
 
 /**
  * Gets list of valid country names and count of stations in it
  */
 class GetCountriesUseCase : BaseUseCase<CountriesBody, Observable<Country>>() {
 
-    override fun execute(input: CountriesBody): Observable<Country> = radioBrowserApi
+    override fun execute(input: CountriesBody ): Observable<Country> = radioBrowserApi
         .getCountries(input)
         .compose(applySchedulersSingle())
         .flattenAsObservable { it.filter { c -> !c.isRussia } }
         .distinct()
-        .doOnError { logger.error(it) { "Exception when downloading countries for $input" } }
 }

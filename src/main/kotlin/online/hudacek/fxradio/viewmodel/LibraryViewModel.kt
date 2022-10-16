@@ -48,11 +48,13 @@ sealed class LibraryState(val key: String) {
 
 data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
 
-class Library(countries: ObservableList<Country> = observableListOf(),
-              pinned: ObservableList<Country> = observableListOf(),
-              showLibrary: Boolean = Properties.ShowLibrary.value(true),
-              showCountries: Boolean = Properties.ShowCountries.value(true),
-              showPinned: Boolean = Properties.ShowPinnedCountries.value(true)) {
+class Library(
+    countries: ObservableList<Country> = observableListOf(),
+    pinned: ObservableList<Country> = observableListOf(),
+    showLibrary: Boolean = Properties.ShowLibrary.value(true),
+    showCountries: Boolean = Properties.ShowCountries.value(true),
+    showPinned: Boolean = Properties.ShowPinnedCountries.value(true)
+) {
 
     // Countries shown in Countries ListView
     var countries: ObservableList<Country> by property(countries)
@@ -61,12 +63,14 @@ class Library(countries: ObservableList<Country> = observableListOf(),
     var pinned: ObservableList<Country> by property(pinned)
 
     // Default items shown in library ListView
-    var libraries: ObservableList<LibraryItem> by property(observableListOf(
+    var libraries: ObservableList<LibraryItem> by property(
+        observableListOf(
             LibraryItem(LibraryState.TopVotedStations, FontAwesome.Glyph.TROPHY),
             LibraryItem(LibraryState.TrendingStations, FontAwesome.Glyph.ARROW_CIRCLE_UP),
             LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.STAR),
             LibraryItem(LibraryState.History, FontAwesome.Glyph.HISTORY)
-    ))
+        )
+    )
 
     var showLibrary: Boolean by property(showLibrary)
     var showCountries: Boolean by property(showCountries)
@@ -94,28 +98,32 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
-            .subscribe({
-                pinnedProperty.add(it)
-            }, {
-                logger.error(it) { "Exception when performing Pinning!" }
-            })
+        .subscribe({
+            pinnedProperty.add(it)
+        }, {
+            logger.error(it) { "Exception when performing Pinning!" }
+        })
 
     fun unpinCountry(country: Country): Disposable = countryUnpinUseCase.execute(country)
-            .subscribe({
-                pinnedProperty -= it
-            }, {
-                logger.error(it) { "Exception when performing Unpinning!" }
-            })
+        .subscribe({
+            pinnedProperty -= it
+        }, {
+            logger.error(it) { "Exception when performing Unpinning!" }
+        })
 
-    fun getCountries(): Disposable = getCountriesUseCase.execute(CountriesBody()).subscribe {
+    fun getCountries(): Disposable = getCountriesUseCase.execute(CountriesBody()).subscribe({
         countriesProperty.add(it)
-    }
+    }, {
+        logger.error(it) { "Exception when downloading countries" }
+    })
 
     override fun onCommit() {
-        app.saveProperties(mapOf(
+        app.saveProperties(
+            mapOf(
                 Properties.ShowCountries to showCountriesProperty.value,
                 Properties.ShowLibrary to showLibraryProperty.value,
                 Properties.ShowPinnedCountries to showPinnedProperty.value
-        ))
+            )
+        )
     }
 }
