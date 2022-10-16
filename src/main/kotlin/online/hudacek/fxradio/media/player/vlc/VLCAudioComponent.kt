@@ -39,6 +39,7 @@ class VLCAudioComponent {
 
     fun play(streamUrl: String) {
         player?.mediaPlayer()?.media()?.play(streamUrl)
+        logger.trace { "Playing on device: " + player?.mediaPlayer()?.audio()?.outputDevice() }
     }
 
     fun setVolume(newVolume: Double) {
@@ -57,9 +58,11 @@ class VLCAudioComponent {
         }.onFailure { logger.error(it) { "Can't cancel playing..." } }
     }
 
-    fun attachMediaListener(listener: MediaEventListener) = player?.mediaPlayer()?.events()?.addMediaEventListener(listener)
+    fun attachMediaListener(listener: MediaEventListener) =
+        player?.mediaPlayer()?.events()?.addMediaEventListener(listener)
 
-    fun removeMediaListener(listener: MediaEventListener) = player?.mediaPlayer()?.events()?.removeMediaEventListener(listener)
+    fun removeMediaListener(listener: MediaEventListener) =
+        player?.mediaPlayer()?.events()?.removeMediaEventListener(listener)
 
     fun attachLogListener(listener: LogEventListener, level: LogLevel = LogLevel.NOTICE) = player?.let {
         nativeLog = it.mediaPlayerFactory().application().newLog().apply {

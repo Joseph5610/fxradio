@@ -81,7 +81,6 @@ class StationsHistoryView : BaseView() {
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
                     separator()
                     item(messages["menu.station.info"]).action {
-                        selectedStationViewModel.item = SelectedStation(it)
                         selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
                     }
                 }

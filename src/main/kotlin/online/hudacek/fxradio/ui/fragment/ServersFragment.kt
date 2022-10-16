@@ -80,7 +80,7 @@ class ServersFragment : BaseFragment() {
 
     override val root = vbox {
         title = messages["menu.app.server"]
-        setPrefSize(350.0, 270.0)
+        setPrefSize(330.0, 260.0)
 
         vbox(alignment = Pos.CENTER) {
             paddingAll = 10.0

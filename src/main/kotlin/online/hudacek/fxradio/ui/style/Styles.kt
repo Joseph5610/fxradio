@@ -422,8 +422,20 @@ class Styles : Stylesheet() {
         }
 
         InternalWindow.Styles.floatingWindowWrapper {
+
+            InternalWindow.Styles.top {
+                backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
+                borderRadius += box(6.px, 6.px, 0.px, 0.px)
+            }
+
+
             InternalWindow.Styles.closebutton {
                 visibility = FXVisibility.HIDDEN
+            }
+
+            InternalWindow.Styles.floatingWindowContent {
+                backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
+                borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }
         }
     }
