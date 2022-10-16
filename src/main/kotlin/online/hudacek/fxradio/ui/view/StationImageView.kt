@@ -48,7 +48,9 @@ class StationImageView(private val stationProperty: Property<Station>) : ImageVi
         // Subscribe to property changes
         stationProperty.toObservable().subscribe {
             // Ignore images previously marked as invalid
-            if (!it.hasInvalidLogo()) {
+            if (it.hasInvalidLogo()) {
+                image = defaultRadioLogo
+            } else {
                 getStationImage()
             }
         }

@@ -20,6 +20,7 @@ package online.hudacek.fxradio.ui.view.stations
 
 import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
+import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
@@ -67,11 +68,23 @@ class StationsDataGridView : BaseView() {
             }
         }
 
+        cellFormat {
+            onHover {
+                if (it) {
+                    scale(Duration.seconds(0.07), point(1.05, 1.05), play = false).playFromStart()
+                } else {
+                    scale(Duration.seconds(0.07), point(1.0, 1.0), play = false).playFromStart()
+                }
+            }
+        }
+
         cellCache { station ->
             vbox {
                 paddingAll = 5
 
-                onHover { tooltip(station.name) }
+                onHover {
+                    tooltip(station.name)
+                }
                 contextmenu {
                     // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)

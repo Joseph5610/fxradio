@@ -68,6 +68,7 @@ class LibraryListView : BaseView() {
         onUserSelect(1) {
             viewModel.stateProperty.value = it.type
         }
+
         addClass(Styles.libraryListView)
     }
 }

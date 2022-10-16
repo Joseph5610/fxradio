@@ -21,6 +21,7 @@ package online.hudacek.fxradio.ui.view.library
 import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
+import javafx.util.Duration
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
@@ -32,7 +33,9 @@ import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.paddingLeft
 import tornadofx.paddingRight
+import tornadofx.point
 import tornadofx.region
+import tornadofx.transform
 
 private const val ICON_SIZE = 11.0
 
@@ -56,18 +59,26 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                 op()
             }
 
+            graphic = FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE,
+                useStyle = false,
+                color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
+
             showProperty
                     .toObservable()
                     .subscribe {
-                        graphicProperty().value =
-                                if (it)
-                                    FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE,
-                                            useStyle = false,
-                                            color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
-                                else
-                                    FontAwesome.Glyph.CHEVRON_RIGHT.make(size = ICON_SIZE,
-                                            useStyle = false,
-                                            color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
+                        if (it)
+                            graphic.transform(Duration.seconds(0.2), point(0.0, 0.0),
+                                angle = 0.0,
+                                scale = point(1.0, 1.0),
+                                opacity = 1.0
+                            )
+                        else {
+                            graphic.transform(Duration.seconds(0.2), point(0.0, 0.0),
+                                angle = -90.0,
+                                scale = point(1.0, 1.0),
+                                opacity = 1.0
+                            )
+                        }
                     }
 
             showWhen {
