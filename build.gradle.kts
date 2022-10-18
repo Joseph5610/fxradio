@@ -17,9 +17,9 @@ plugins {
 
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "1.7.20"
-val log4jVersion = "2.18.0"
-val slf4jVersion = "1.7.36"
-val kotlinLoggingVersion = "1.12.5"
+val log4jVersion = "2.19.0"
+val slf4jVersion = "2.0.3"
+val kotlinLoggingVersion = "3.0.0"
 val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.0"
 val vlcjVersion = "4.7.2"
@@ -50,7 +50,7 @@ allprojects {
 
         implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
         implementation("org.slf4j:slf4j-api:$slf4jVersion")
-        implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
+        implementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion")
         implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
         implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     }

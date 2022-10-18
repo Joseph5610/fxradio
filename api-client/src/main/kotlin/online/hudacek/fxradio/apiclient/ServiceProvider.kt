@@ -28,8 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Provides Retrofit instance for [baseUrl]
  */
 class ServiceProvider(
-        private val baseUrl: String,
-        private val httpClientProvider: HttpClientProvider = BasicClientProvider()
+    private val baseUrl: String,
+    private val httpClientProvider: HttpClientProvider = BasicClientProvider()
 ) {
 
     /**
@@ -37,11 +37,11 @@ class ServiceProvider(
      */
     val retrofit: Retrofit
         get() = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(baseUrl)
-                .client(httpClientProvider.client)
-                .build()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(baseUrl)
+            .client(httpClientProvider.client)
+            .build()
 
     /**
      * Constructs Retrofit service class of type [T]

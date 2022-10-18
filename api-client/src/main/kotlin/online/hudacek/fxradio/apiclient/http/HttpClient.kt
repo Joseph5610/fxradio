@@ -37,11 +37,7 @@ object HttpClient {
     /**
      * Performs DNS lookup for [address]
      */
-    fun lookup(address: String): MutableList<InetAddress> {
-        return clientProvider.dns(address).also {
-            logger.trace { "DNS lookup for $address returned $it" }
-        }
-    }
+    fun lookup(address: String): List<InetAddress> = clientProvider.dns(address)
 
     /**
      * Performs HTTP request for [url]

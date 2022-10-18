@@ -35,6 +35,7 @@ import tornadofx.controlsfx.glyph
 import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
+import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.stringBinding
 import tornadofx.text
@@ -100,6 +101,7 @@ class StationsEmptyView : BaseView() {
 
     private val graphic by lazy {
         glyph {
+            paddingAll = 10.0
             viewModel.stateObservableChanges
                     .subscribe {
                         graphicProperty().value = when (it) {

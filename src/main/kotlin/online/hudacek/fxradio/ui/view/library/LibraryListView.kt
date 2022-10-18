@@ -59,7 +59,7 @@ class LibraryListView : BaseView() {
         })
 
         cellFormat {
-            graphic = item.glyph.make(GLYPH_SIZE, false, c(darkModeViewModel.appearanceProperty.value!!.primary))
+            graphic = item.glyph.make(GLYPH_SIZE, c(darkModeViewModel.appearanceProperty.value!!.primary))
             text = messages[item.type.key]
             addClass(Styles.libraryListItem)
         }

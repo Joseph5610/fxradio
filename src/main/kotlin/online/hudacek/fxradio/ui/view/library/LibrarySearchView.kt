@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.scene.input.KeyCode
-
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
@@ -29,10 +28,7 @@ import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.get
-import tornadofx.label
-import tornadofx.onChange
-import tornadofx.validator
+import tornadofx.*
 
 private const val searchGlyphSize = 14.0
 private const val searchMaxLength = 49.0
@@ -48,7 +44,9 @@ class LibrarySearchView : BaseView() {
     override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = label(graphic = FontAwesome.Glyph.SEARCH.make(searchGlyphSize))
+        left = FontAwesome.Glyph.SEARCH.make(searchGlyphSize) {
+            padding = box(10.px, 5.px)
+        }
 
         setOnMouseClicked {
             setSearchState()

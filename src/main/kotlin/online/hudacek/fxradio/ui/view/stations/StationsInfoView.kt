@@ -21,8 +21,10 @@ package online.hudacek.fxradio.ui.view.stations
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.beans.property.Property
 import javafx.geometry.Pos
+import javafx.scene.paint.Color
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
@@ -30,16 +32,19 @@ import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.update
+import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
 import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.button
+import tornadofx.c
 import tornadofx.center
 import tornadofx.flowpane
 import tornadofx.get
@@ -58,9 +63,20 @@ private const val LOGO_SIZE = 60.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
+    private val darkModeViewModel: DarkModeViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+
+    private val likeIcon by lazy {
+        FontAwesome.Glyph.THUMBS_UP.make(12.0, Color.WHITESMOKE)
+    }
+
+    private val copyIcon by lazy {
+        FontAwesome.Glyph.COPY.make(12.0) {
+            darkModeViewModel.appearanceProperty.onChange { textFill = c(it!!.label) }
+        }
+    }
 
     private val stationLogo by lazy {
         stationView(selectedStationViewModel.stationProperty) {
@@ -164,7 +180,9 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
         bottom {
             vbox(spacing = 5.0, alignment = Pos.CENTER) {
+                paddingAll = 5.0
                 button(messages["copy.stream.url"]) {
+                    graphic = copyIcon
                     maxWidth = Double.MAX_VALUE
                     actionEvents().map { selectedStationViewModel.stationProperty.value }
                         .subscribe {
@@ -172,6 +190,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         }
                 }
                 button(messages["menu.station.vote"]) {
+                    graphic = likeIcon
                     requestFocusOnSceneAvailable()
                     maxWidth = Double.MAX_VALUE
                     actionEvents().map { selectedStationViewModel.stationProperty.value }.subscribe(appEvent.addVote)

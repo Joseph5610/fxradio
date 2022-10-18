@@ -59,9 +59,10 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                 op()
             }
 
-            graphic = FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE,
-                useStyle = false,
-                color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel))
+            graphic = FontAwesome.Glyph.CHEVRON_DOWN.make(
+                size = ICON_SIZE,
+                color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel)
+            )
 
             showProperty
                     .toObservable()

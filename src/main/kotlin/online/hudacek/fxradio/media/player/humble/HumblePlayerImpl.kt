@@ -47,11 +47,9 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     }
 
     override fun changeVolume(newVolume: Double) {
-        return try {
+        runCatching {
             audioComponent.setVolume(newVolume)
-        } catch (e: Exception) {
-            logger.debug { "Can't change volume to: $newVolume" }
-        }
+        }.onFailure { logger.debug { "Can't change volume to: $newVolume" } }
     }
 
     override fun stop() {

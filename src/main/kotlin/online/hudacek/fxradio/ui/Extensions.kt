@@ -48,11 +48,11 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.App
+import tornadofx.InlineCss
 import tornadofx.action
 import tornadofx.add
 import tornadofx.addClass
 import tornadofx.bind
-import tornadofx.box
 import tornadofx.contextmenu
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.notificationPane
@@ -63,7 +63,6 @@ import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.onChange
 import tornadofx.opcr
-import tornadofx.px
 import tornadofx.required
 import tornadofx.setContent
 import tornadofx.style
@@ -100,19 +99,15 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
 
 internal fun FontAwesome.Glyph.make(
     size: Double,
-    useStyle: Boolean = true,
-    color: Color? = null
+    color: Color? = null,
+    op: InlineCss.() -> Unit = {}
 ) = toGlyph {
     size(size)
-    if (color != null) {
-        style {
+    style {
+        if (color != null) {
             textFill = color
         }
-    }
-    if (useStyle) {
-        style {
-            padding = box(10.px, 5.px)
-        }
+        op(this)
     }
 }
 
