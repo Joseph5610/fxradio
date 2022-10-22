@@ -26,7 +26,13 @@ import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.c
+import tornadofx.doubleBinding
+import tornadofx.get
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
 
 private const val GLYPH_SIZE = 14.0
 
@@ -59,9 +65,13 @@ class LibraryListView : BaseView() {
         })
 
         cellFormat {
-            graphic = item.glyph.make(GLYPH_SIZE, c(darkModeViewModel.appearanceProperty.value!!.primary))
-            text = messages[item.type.key]
             addClass(Styles.libraryListItem)
+        }
+
+        cellCache {
+            label(messages[it.type.key]) {
+                graphic = it.glyph.make(GLYPH_SIZE, c(darkModeViewModel.appearanceProperty.value!!.primary))
+            }
         }
 
         showWhen { viewModel.showLibraryProperty }

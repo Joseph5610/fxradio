@@ -50,10 +50,11 @@ class StationsDataGridView : BaseView() {
 
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
+        id = "stations"
+
         val handler = DataGridHandler(this)
         setOnKeyPressed(handler::handle)
 
-        id = "stations"
         cellWidth = CELL_WIDTH
 
         // Cleanup selected item on refresh of library

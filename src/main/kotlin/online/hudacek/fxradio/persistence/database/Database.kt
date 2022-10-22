@@ -47,7 +47,7 @@ open class Database(private val tableName: String) {
          * Establishes connection to SQLite db with [DB_URL]
          * Performs create table operation for all tables in [Tables] object
          */
-        private val connection: Connection by lazy {
+        internal val connection: Connection by lazy {
             DriverManager.getConnection(DB_URL).apply {
                 /**
                  * Apply flyway db migrations

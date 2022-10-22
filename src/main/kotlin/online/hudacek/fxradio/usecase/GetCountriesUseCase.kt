@@ -19,11 +19,11 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.Observable
-import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
 import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.getCountryNameFromISO
 
 
 /**
@@ -31,9 +31,10 @@ import online.hudacek.fxradio.util.applySchedulersSingle
  */
 class GetCountriesUseCase : BaseUseCase<CountriesBody, Observable<Country>>() {
 
-    override fun execute(input: CountriesBody ): Observable<Country> = radioBrowserApi
+    override fun execute(input: CountriesBody): Observable<Country> = radioBrowserApi
         .getCountries(input)
         .compose(applySchedulersSingle())
-        .flattenAsObservable { it.filter { c -> !c.isRussia } }
+        .flattenAsObservable { it.filter { c -> !c.isRussia }.sortedBy { c -> c.name } }
+        .map { Country(getCountryNameFromISO(it.iso_3166_1) ?: it.name, it.iso_3166_1, it.stationcount) }
         .distinct()
 }

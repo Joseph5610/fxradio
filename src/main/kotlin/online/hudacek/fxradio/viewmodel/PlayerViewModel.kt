@@ -87,7 +87,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         selectedStationViewModel.stationObservable
             .subscribe({
                 //Update the name of the station
-                trackNameProperty.value = it.name + " - " + messages["player.noMetaData"]
+                trackNameProperty.value = messages["player.noMetaData"]
 
                 //Restart playing status
                 stateProperty.value = PlayerState.Stopped

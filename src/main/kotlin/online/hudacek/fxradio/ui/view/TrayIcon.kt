@@ -63,7 +63,7 @@ class TrayIcon : Component() {
 
     fun addIcon() = with(app) {
         if (Properties.UseTrayIcon.value(true) && !FxRadio.isTestEnvironment) {
-            trayicon(resources.stream("/" + Config.Resources.stageIcon)) {
+            trayicon(resources.stream("/" + Config.Resources.stageIcon), tooltip = FxRadio.appName) {
                 setOnMouseClicked(fxThread = true) {
                     primaryStage.show()
                     primaryStage.toFront()

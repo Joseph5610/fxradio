@@ -18,12 +18,17 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.persistence.database.Tables
-import tornadofx.*
+import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
+import tornadofx.move
+import tornadofx.observableListOf
+import tornadofx.property
 
 private val logger = KotlinLogging.logger {}
 
@@ -41,27 +46,35 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
 
     init {
         Tables.history
-                .selectAll()
-                .subscribe {
-                    stationsProperty += it
-                }
+            .selectAll()
+            .subscribe {
+                stationsProperty += it
+            }
 
-        //Add currently listened station to history
+        // Add currently listened station to history
         appEvent.addToHistory
-                //Add only valid stations not already present in history
-                .filter { it.isValid() && it !in stationsProperty }
-                .doOnError { logger.error(it) { "Exception when adding station to history!" } }
-                .flatMapSingle { Tables.history.insert(it) }
-                .subscribe {
-                    stationsProperty += it
+            .compose(applySchedulers())
+            // Add only valid stations
+            .filter { it.isValid() }
+            .doOnError { logger.error(it) { "Exception when adding station to history!" } }
+            .flatMapSingle {
+                if (it in stationsProperty) {
+                    stationsProperty.move(it, 0)
+                    Tables.history.remove(it).subscribe()
+                } else {
+                    stationsProperty.add(0, it)
                 }
+                Tables.history.insert(it)
+            }.subscribe(appEvent.historyUpdated)
     }
 
-    fun cleanupHistory() = Tables.history
-            .removeAll()
-            .toObservable()
-            .doOnError { logger.error(it) { "Exception when performing DB cleanup!" } }
-            .doOnEach { item = History() }
-            .map { LibraryState.History }
-            .subscribe(appEvent.refreshLibrary)
+    fun cleanupHistory(): Disposable = Tables.history
+        .removeAll()
+        .compose(applySchedulersSingle())
+        .subscribe({
+            item = History()
+            commit()
+        }, {
+            logger.error(it) { "Failed to remove history" }
+        })
 }

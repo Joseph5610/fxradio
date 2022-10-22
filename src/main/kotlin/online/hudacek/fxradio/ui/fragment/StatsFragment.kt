@@ -98,12 +98,16 @@ class StatsFragment : BaseFragment() {
 
         listview(viewModel.statsProperty) {
             selectionModel = NoSelectionModel()
+
             cellFormat {
-                graphic = hbox(spacing = 5) {
-                    label(messages[item.first] + ":")
-                    label(item.second)
-                }
                 addClass(Styles.decoratedListItem)
+            }
+
+            cellCache {
+                hbox(spacing = 5) {
+                    label(messages[it.first] + ":")
+                    label(it.second)
+                }
             }
 
             showWhen {

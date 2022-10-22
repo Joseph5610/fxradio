@@ -37,6 +37,7 @@ class AppEvent : Controller() {
     val removeFavourite = BehaviorSubject.create<Station>()
 
     val addToHistory = BehaviorSubject.create<Station>()
+    val historyUpdated = BehaviorSubject.create<Station>()
     val addVote = BehaviorSubject.create<Station>()
     val refreshLibrary = BehaviorSubject.create<LibraryState>()
 }

@@ -43,10 +43,10 @@ import retrofit2.http.Query
  */
 interface RadioBrowserApi : ApiDefinition {
 
-    @POST("json/stations/bycountryexact/{countryName}")
-    fun getStationsByCountry(
+    @POST("json/stations/bycountrycodeexact/{countryCode}")
+    fun getStationsByCountryCode(
         @Body countriesBody: CountriesBody,
-        @Path("countryName") countryName: String
+        @Path("countryCode") countryCode: String
     ): Single<List<Station>>
 
     @POST("json/stations/search")

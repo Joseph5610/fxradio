@@ -31,8 +31,13 @@ import javafx.stage.Window
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.util.macos.MacUtils
-import tornadofx.*
+import tornadofx.FX
 import tornadofx.FX.Companion.messages
+import tornadofx.alert
+import tornadofx.get
+import tornadofx.importStylesheet
+import tornadofx.removeStylesheet
+import java.util.*
 
 /**
  * Perform async calls on correct thread
@@ -78,3 +83,16 @@ internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
 
 internal fun keyCombination(keyCode: KeyCode) =
     KeyCodeCombination(keyCode, if (MacUtils.isMac) KeyCombination.META_DOWN else KeyCombination.CONTROL_DOWN)
+
+internal fun getCountryNameFromISO(iso3166: String?): String? {
+    val countryCode: String? = Locale.getISOCountries().firstOrNull { it == iso3166 }
+    return if (countryCode != null) {
+        val locale = Locale("", countryCode)
+        locale.displayName
+    } else {
+        null
+    }
+}
+
+
+

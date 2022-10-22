@@ -31,7 +31,7 @@ object Tables {
     /**
      * Table for history of played stations
      */
-    val history by lazy { StationTable("HISTORY") }
+    val history by lazy { HistoryTable() }
 
     /**
      * Table for pinned Countries

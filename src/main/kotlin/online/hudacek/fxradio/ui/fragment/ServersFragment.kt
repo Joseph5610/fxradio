@@ -115,18 +115,23 @@ class ServersFragment : BaseFragment() {
         form {
             listview(viewModel.serversProperty) {
                 bindSelected(viewModel.selectedProperty)
+
                 cellFormat {
-                    graphic = hbox(spacing = 5) {
+                    addClass(Styles.decoratedListItem)
+                }
+
+                cellCache {
+                    hbox(spacing = 5) {
                         alignment = Pos.CENTER_LEFT
 
                         imageview {
                             image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull()
                         }
 
+                        label(it)
+
                         selectionModel.select(viewModel.selectedProperty.value)
                     }
-                    text = it
-                    addClass(Styles.decoratedListItem)
                 }
 
                 showWhen {

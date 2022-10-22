@@ -18,6 +18,8 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import com.github.thomasnield.rxkotlinfx.toObservable
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
@@ -35,6 +37,7 @@ import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.addClass
+import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.contextmenu
 import tornadofx.get
@@ -56,16 +59,25 @@ class StationsHistoryView : BaseView() {
     private val favouritesMenu: FavouritesMenu by inject()
 
     override val root = listview<Station>(historyViewModel.stationsProperty) {
+        id = "stationsHistoryList"
 
-        //Cleanup selected item on refresh of library
-        selectedStationViewModel.stationObservable.subscribe {
-            selectionModel.clearSelection()
-            selectionModel.select(selectedStationViewModel.stationProperty.value)
+        // Cleanup selected item on refresh of library
+        appEvent.historyUpdated.subscribe {
+           selectionModel.select(0)
         }
 
-        id = "stationsHistoryList"
+        onUserSelect(1) {
+            if (selectedStationViewModel.item.station != it) {
+                selectedStationViewModel.item = SelectedStation(it)
+            }
+        }
+
         cellFormat {
-            graphic = hbox(spacing = 10) {
+            addClass(Styles.decoratedListItem)
+        }
+
+        cellCache {
+            hbox(spacing = 10) {
                 alignment = Pos.CENTER_LEFT
                 stationView(it) {
                     fitHeight = LOGO_SIZE
@@ -85,10 +97,6 @@ class StationsHistoryView : BaseView() {
                     }
                 }
             }
-            onUserSelect(1) {
-                selectedStationViewModel.item = SelectedStation(it)
-            }
-            addClass(Styles.decoratedListItem)
         }
 
         showWhen {

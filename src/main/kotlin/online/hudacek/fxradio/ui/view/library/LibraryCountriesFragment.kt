@@ -64,15 +64,15 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
             if (it != null) it.size * 30.0 + 10.0 else 30.0
         })
 
-        cellFormat {
-            graphic = hbox(spacing = 5) {
+        cellCache {
+            hbox(spacing = 5) {
                 alignment = Pos.CENTER_LEFT
 
                 imageview {
                     image = it.flagIcon
                 }
 
-                label(item.name.split("(")[0])
+                label(it.name.split("(")[0])
 
                 // Do not show count of stations for pinned stations, they would always show 0
                 // as we do not store this in DB
@@ -106,6 +106,8 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
                     }
                 }
             }
+        }
+        cellFormat {
             addClass(Styles.libraryListItem)
         }
 
