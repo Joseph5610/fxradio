@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.apiclient
 
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 object ApiUtils {

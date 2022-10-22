@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
 import uk.co.caprica.vlcj.log.NativeLog
@@ -33,7 +34,20 @@ private val logger = KotlinLogging.logger {}
  */
 class VLCAudioComponent {
 
-    private val player: AudioPlayerComponent? by lazy { run { AudioPlayerComponent() } }
+    /**
+     * Init VLC player with no-video argument since we do not have video player view in the app
+     */
+    private val playerArgs = listOf(
+        "--quiet",
+        "--intf=dummy",
+        "--no-video"
+    )
+
+    private val player: AudioPlayerComponent? by lazy {
+        run {
+            AudioPlayerComponent(MediaPlayerFactory(playerArgs))
+        }
+    }
 
     private lateinit var nativeLog: NativeLog
 
