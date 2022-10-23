@@ -21,7 +21,7 @@ package online.hudacek.fxradio.util
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.ui.fragment.AddStationFragment
 import online.hudacek.fxradio.ui.fragment.AppInfoFragment
-import online.hudacek.fxradio.ui.fragment.AppearanceFragment
+import online.hudacek.fxradio.ui.fragment.PreferencesFragment
 import online.hudacek.fxradio.ui.fragment.AttributionsFragment
 import online.hudacek.fxradio.ui.fragment.DebugFragment
 import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
@@ -36,19 +36,18 @@ import tornadofx.find
  * Type parameter should represent the fragment class loaded into the modal window
  */
 sealed class Modal<out T : Fragment>(
-    val style: StageStyle = StageStyle.UTILITY,
+    val style: StageStyle = StageStyle.UNIFIED,
     val resizable: Boolean = false
 ) {
-    object AddNewStation : Modal<AddStationFragment>(style = StageStyle.UNIFIED)
+    object AddNewStation : Modal<AddStationFragment>()
     object AppInfo : Modal<AppInfoFragment>()
-    object Servers : Modal<ServersFragment>(resizable = true)
+    object Servers : Modal<ServersFragment>()
     object Stats : Modal<StatsFragment>()
     object Attributions : Modal<AttributionsFragment>()
     object Debug : Modal<DebugFragment>()
     object License : Modal<AttributionsFragment.LicenseFragment>()
-    object Appearance : Modal<AppearanceFragment>()
-
-    object OpenStream : Modal<OpenStreamFragment>(style = StageStyle.UNIFIED)
+    object Preferences : Modal<PreferencesFragment>()
+    object OpenStream : Modal<OpenStreamFragment>()
 }
 
 /**

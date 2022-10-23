@@ -38,9 +38,9 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
                 Modal.Servers.open()
             }
         },
-        item(messages["app.appearance"]) {
+        item(messages["menu.preferences"], KeyCodes.openPreferences) {
             action {
-                Modal.Appearance.open()
+                Modal.Preferences.open()
             }
         }
     )

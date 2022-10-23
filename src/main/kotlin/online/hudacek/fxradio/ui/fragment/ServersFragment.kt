@@ -25,6 +25,7 @@ import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.ServersState
 import online.hudacek.fxradio.viewmodel.ServersViewModel
@@ -35,6 +36,7 @@ import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.button
 import tornadofx.enableWhen
+import tornadofx.fitToParentHeight
 import tornadofx.form
 import tornadofx.get
 import tornadofx.hbox
@@ -43,6 +45,7 @@ import tornadofx.isDirty
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.paddingAll
+import tornadofx.paddingTop
 import tornadofx.stringBinding
 import tornadofx.text
 import tornadofx.vbox
@@ -80,33 +83,23 @@ class ServersFragment : BaseFragment() {
 
     override val root = vbox {
         title = messages["menu.app.server"]
-        setPrefSize(330.0, 260.0)
+        prefHeight = 220.0
 
         vbox(alignment = Pos.CENTER) {
-            paddingAll = 10.0
-            label(messages["servers.title"]) {
-                addClass(Styles.header)
-            }
+            paddingTop = 20.0
 
-            label(messages["servers.restartNeeded"]) {
-                textAlignment = TextAlignment.CENTER
-            }
-        }
-
-        vbox(alignment = Pos.CENTER) {
-            prefHeight = 120.0
             text(labelTextProperty) {
-                paddingAll = 5.0
+                fitToParentHeight()
                 wrappingWidth = 270.0
                 textAlignment = TextAlignment.CENTER
                 addClass(Styles.defaultTextColor)
-            }
 
-            showWhen {
-                viewModel.stateProperty.booleanBinding {
-                    when (it) {
-                        is ServersState.Fetched -> false
-                        else -> true
+                showWhen {
+                    viewModel.stateProperty.booleanBinding {
+                        when (it) {
+                            is ServersState.Fetched -> false
+                            else -> true
+                        }
                     }
                 }
             }
@@ -143,6 +136,11 @@ class ServersFragment : BaseFragment() {
                     }
                 }
                 addClass(Styles.decoratedListView)
+            }
+
+            vbox(alignment = Pos.CENTER) {
+                paddingAll = 10.0
+                smallLabel(messages["servers.restartNeeded"])
             }
 
             hbox(spacing = 5) {

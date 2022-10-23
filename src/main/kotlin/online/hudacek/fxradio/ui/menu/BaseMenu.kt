@@ -64,5 +64,6 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
         val open = keyCombination(KeyCode.O)
         val website = keyCombination(KeyCode.W)
         val openStream = keyCombination(KeyCode.U)
+        val openPreferences = keyCombination(KeyCode.COMMA)
     }
 }

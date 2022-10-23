@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.fragment
 
-import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.AccentColor
@@ -30,6 +29,7 @@ import tornadofx.bind
 import tornadofx.button
 import tornadofx.c
 import tornadofx.checkbox
+import tornadofx.disableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
@@ -39,21 +39,22 @@ import tornadofx.paddingAll
 import tornadofx.radiobutton
 import tornadofx.style
 import tornadofx.togglegroup
+import tornadofx.tooltip
 import tornadofx.vbox
 
 /**
  * Set app appearance
  */
-class AppearanceFragment : BaseFragment() {
+class PreferencesFragment : BaseFragment() {
 
     private val appAppearanceViewModel: AppAppearanceViewModel by inject()
 
     override val root = vbox {
         paddingAll = 5.0
-        title = messages["app.appearance"]
+        title = messages["app.preferences"]
 
         form {
-            fieldset(messages["app.appearance"], labelPosition = Orientation.VERTICAL) {
+            fieldset(messages["app.appearance"]) {
                 field(messages["app.accentColor"]) {
                     togglegroup {
                         AccentColor.values().forEach {
@@ -65,9 +66,20 @@ class AppearanceFragment : BaseFragment() {
                                 action {
                                     appAppearanceViewModel.commit()
                                 }
+                                tooltip(it.humanName)
                             }
                         }
                         bind(appAppearanceViewModel.accentColorProperty)
+
+                        disableWhen(appAppearanceViewModel.useSystemColorProperty)
+                    }
+                }
+                field(messages["app.useSystemColor"]) {
+                    checkbox {
+                        bind(appAppearanceViewModel.useSystemColorProperty)
+                        action {
+                            appAppearanceViewModel.commit()
+                        }
                     }
                 }
             }

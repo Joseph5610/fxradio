@@ -24,9 +24,12 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.style.AccentColor
 import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.Property
+import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.reloadStylesheets
-import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
+import tornadofx.booleanProperty
 import tornadofx.property
 
 class AppAppearance(
@@ -44,15 +47,21 @@ class AppAppearanceViewModel : BaseViewModel<AppAppearance>(AppAppearance()) {
 
     val darkModeProperty by lazy { bind(AppAppearance::isDarkMode) as BooleanProperty }
     val accentColorProperty by lazy { bind(AppAppearance::accentColor) as ObjectProperty }
+    val useSystemColorProperty = booleanProperty(!Property(Properties.AccentColor).isPresent && MacUtils.isMac)
+
 
     // Save and Live reload styles
     override fun onCommit() {
-        darkModeProperty.value.let {
-            Properties.DarkMode.save(it)
-        }
-
-        accentColorProperty.value.let {
-            Properties.AccentColor.save(it.colorCode)
+        if (useSystemColorProperty.value) {
+            Property(Properties.AccentColor).remove()
+            accentColorProperty.value = Appearance.getAccentColor()
+        } else {
+            app.saveProperties(
+                mapOf(
+                    Properties.DarkMode to darkModeProperty.value,
+                    Properties.AccentColor to accentColorProperty.value.colorCode,
+                )
+            )
         }
         reloadStylesheets(darkModeProperty.value)
     }

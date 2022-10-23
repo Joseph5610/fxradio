@@ -17,6 +17,7 @@
  */
 
 @file:Suppress("MagicNumber")
+
 package online.hudacek.fxradio.ui.style
 
 import javafx.scene.paint.Color
@@ -100,7 +101,7 @@ class StylesDark : Stylesheet() {
         playerMainBox {
             padding = box(10.0.px, 0.0.px)
             borderColor += box(
-                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+                c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
             )
         }
 
@@ -249,7 +250,7 @@ class StylesDark : Stylesheet() {
 
         mainMenuBox {
             borderColor += box(
-                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+                c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
             )
         }
 
@@ -452,6 +453,18 @@ class StylesDark : Stylesheet() {
 
         glyphIcon {
             textFill = c(colors.label)
+        }
+
+        radioButton {
+            and(selected) {
+                radio {
+                    dot {
+                        backgroundColor += Color.WHITESMOKE
+                        backgroundInsets += box(0.px)
+                        backgroundRadius += box(0.3.em)
+                    }
+                }
+            }
         }
 
         InternalWindow.Styles.floatingWindowWrapper {

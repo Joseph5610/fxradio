@@ -18,24 +18,29 @@
 
 package online.hudacek.fxradio.ui.style
 
+import online.hudacek.fxradio.util.macos.MacUtils
+
 /**
  * Accent Color definitions
  */
-enum class AccentColor(val colorCode: Int) {
-    MULTICOLOR(Int.MIN_VALUE),
-    GRAPHITE(-1),
-    RED(0),
-    ORANGE(1),
-    YELLOW(2),
-    GREEN(3),
-    BLUE(4),
-    PURPLE(5),
-    PINK(6);
+enum class AccentColor(
+    val colorCode: Int,
+    val humanName: String,
+) {
+    MULTICOLOR(Int.MIN_VALUE, "App Default"),
+    GRAPHITE(-1, "Graphite"),
+    RED(0, "Red"),
+    ORANGE(1, "Orange"),
+    YELLOW(2, "Yellow"),
+    GREEN(3, "Green"),
+    BLUE(4, "Blue"),
+    PURPLE(5, "Purple"),
+    PINK(6, "Pink");
 
     /**
      * Convert internal representation of accent color into hex
      */
-    fun convertToHex() = when (this) {
+    fun convertToHex() : String = when (this) {
         MULTICOLOR -> "#d65458"
         GRAPHITE -> "#8C8C8C"
         RED -> "#FF5258"
