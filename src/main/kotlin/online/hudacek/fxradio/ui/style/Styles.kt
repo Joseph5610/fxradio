@@ -74,6 +74,9 @@ class Styles : Stylesheet() {
         val noBorder by cssclass()
 
         val mainMenuBox by cssclass()
+
+        val glyphIconPrimary by cssclass()
+        val glyphIcon by cssclass()
     }
 
     init {
@@ -419,6 +422,14 @@ class Styles : Stylesheet() {
         noBorder {
             backgroundInsets += box(0.px)
             padding = box(0.px)
+        }
+
+        glyphIconPrimary {
+            textFill = c(colors.primary)
+        }
+
+        glyphIcon {
+            textFill = c(colors.label)
         }
 
         InternalWindow.Styles.floatingWindowWrapper {

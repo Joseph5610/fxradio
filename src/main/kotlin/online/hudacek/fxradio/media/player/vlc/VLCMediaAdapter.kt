@@ -20,6 +20,7 @@ package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.event.AppEvent
+import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
 import online.hudacek.fxradio.ui.formatted
@@ -42,20 +43,27 @@ class VLCMediaAdapter : MediaEventAdapter() {
 
     override fun mediaStateChanged(media: Media?, newState: State) {
         media?.let {
-            if (newState == State.ERROR || newState == State.ENDED) throw StreamUnavailableException(messages["player.streamError"].formatted(it.info().mrl()))
+            if (newState == State.ERROR || newState == State.ENDED) throw StreamUnavailableException(
+                messages["player.streamError"].formatted(it.info().mrl())
+            )
         }
     }
 
     override fun mediaMetaChanged(media: Media?, metaType: Meta?) {
-        media?.meta()?.let {
-            logger.debug { "VLCMetaService retrieved MetaData: ${it.asMetaData()}" }
-            if (it[Meta.NOW_PLAYING] != null
-                    && it[Meta.TITLE] != null) {
-                val metaData = StreamMetaData(it[Meta.TITLE],
+        if (MediaPlayer.isMetaDataRefreshEnabled) {
+            media?.meta()?.let {
+                logger.debug { "VLCMetaService retrieved MetaData: ${it.asMetaData()}" }
+                if (it[Meta.NOW_PLAYING] != null
+                    && it[Meta.TITLE] != null
+                ) {
+                    val metaData = StreamMetaData(
+                        it[Meta.TITLE],
                         it[Meta.NOW_PLAYING]
-                                .replace("\r", "")
-                                .replace("\n", ""))
-                appEvent.streamMetaDataUpdated.onNext(metaData)
+                            .replace("\r", "")
+                            .replace("\n", "")
+                    )
+                    appEvent.streamMetaDataUpdated.onNext(metaData)
+                }
             }
         }
     }

@@ -26,9 +26,7 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.c
 import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.paddingLeft
@@ -44,8 +42,6 @@ private const val ICON_SIZE = 11.0
  */
 class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : BaseFragment() {
 
-    private val darkModeViewModel: DarkModeViewModel by inject()
-
     override val root = hbox {
         smallLabel(title) {
             paddingLeft = 10.0
@@ -59,28 +55,27 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                 op()
             }
 
-            graphic = FontAwesome.Glyph.CHEVRON_DOWN.make(
-                size = ICON_SIZE,
-                color = c(darkModeViewModel.appearanceProperty.value!!.grayLabel)
-            )
+            graphic = FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE, isPrimary = false)
 
             showProperty
-                    .toObservable()
-                    .subscribe {
-                        if (it)
-                            graphic.transform(Duration.seconds(0.2), point(0.0, 0.0),
-                                angle = 0.0,
-                                scale = point(1.0, 1.0),
-                                opacity = 1.0
-                            )
-                        else {
-                            graphic.transform(Duration.seconds(0.2), point(0.0, 0.0),
-                                angle = -90.0,
-                                scale = point(1.0, 1.0),
-                                opacity = 1.0
-                            )
-                        }
+                .toObservable()
+                .subscribe {
+                    if (it)
+                        graphic.transform(
+                            Duration.seconds(0.2), point(0.0, 0.0),
+                            angle = 0.0,
+                            scale = point(1.0, 1.0),
+                            opacity = 1.0
+                        )
+                    else {
+                        graphic.transform(
+                            Duration.seconds(0.2), point(0.0, 0.0),
+                            angle = -90.0,
+                            scale = point(1.0, 1.0),
+                            opacity = 1.0
+                        )
                     }
+                }
 
             showWhen {
                 this@hbox.hoverProperty()

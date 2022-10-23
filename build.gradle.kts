@@ -1,4 +1,8 @@
+import groovy.lang.Closure
+import io.github.fvarrui.javapackager.gradle.PackageTask
 import io.github.fvarrui.javapackager.model.MacConfig
+import io.github.fvarrui.javapackager.model.MacStartup
+import io.github.fvarrui.javapackager.model.Manifest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -98,7 +102,7 @@ dependencies {
 }
 
 
-task<io.github.fvarrui.javapackager.gradle.PackageTask>("jfxNative") {
+task<PackageTask>("jfxNative") {
     mainClass = "online.hudacek.fxradio.FxRadioKt"
     appName = "FXRadio"
     appDescription = "Internet Radio Directory"
@@ -114,17 +118,17 @@ task<io.github.fvarrui.javapackager.gradle.PackageTask>("jfxNative") {
     organizationUrl = "https://hudacek.online/fxradio"
     organizationEmail = "fxradio@hudacek.online"
     isCreateZipball = true
-    manifest(closureOf<io.github.fvarrui.javapackager.model.Manifest> {
+    manifest(closureOf<Manifest> {
         additionalEntries = mapOf(
             "Implementation-Version" to appVersion
         )
-    } as groovy.lang.Closure<io.github.fvarrui.javapackager.model.Manifest>)
+    } as Closure<Manifest>)
 
     macConfig(closureOf<MacConfig> {
-        macStartup = io.github.fvarrui.javapackager.model.MacStartup.UNIVERSAL
+        macStartup = MacStartup.UNIVERSAL
         isGeneratePkg = false
         isCodesignApp = false
         backgroundImage = File("src/main/deploy/package/mac/background.png")
-    } as groovy.lang.Closure<MacConfig>)
+    } as Closure<MacConfig>)
     dependsOn("jar")
 }

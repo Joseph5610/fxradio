@@ -44,7 +44,7 @@ enum class Properties(val key: String) {
     WindowHeight("window.height"),
     WindowX("window.x"),
     WindowY("window.y"),
-    AccentColor("app.accentColor"), // Not configurable in UI
+    AccentColor("app.accentColor"),
     LogLevel("log.level"),
     DarkMode("app.darkmode"),
     UseTrayIcon("app.trayicon"), // Not configurable in UI

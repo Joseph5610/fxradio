@@ -34,9 +34,7 @@ class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type
 
     private val vlcAudioComponent = VLCAudioComponent().apply {
         attachLogListener(vlcLogListener)
-        if (MediaPlayer.isMetaDataRefreshEnabled) {
-            attachMediaListener(vlcMediaAdapter)
-        }
+        attachMediaListener(vlcMediaAdapter)
     }
 
     override fun play(streamUrl: String) = vlcAudioComponent.play(streamUrl)
@@ -56,10 +54,7 @@ class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type
     override fun release() {
         logger.info { "Releasing VLC player..." }
         vlcAudioComponent.releaseLogListener(vlcLogListener)
-
-        if (MediaPlayer.isMetaDataRefreshEnabled) {
-            vlcAudioComponent.removeMediaListener(vlcMediaAdapter)
-        }
+        vlcAudioComponent.removeMediaListener(vlcMediaAdapter)
         vlcAudioComponent.release()
     }
 }

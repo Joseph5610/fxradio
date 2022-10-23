@@ -41,7 +41,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
     private val libraryViewModel: LibraryViewModel by inject()
 
     private val playedStationNotInFavouritesProperty = selectedStationViewModel.stationProperty.booleanBinding {
-        //User should be able to add favourite station only when it is not already present
+        // User should be able to add favourite station only when it is not already present
         it != null && it !in favouritesViewModel.stationsProperty
     }
 
@@ -63,17 +63,17 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                 playedStationNotInFavouritesProperty.invalidate()
             }
         },
-                //Remove favourite
-                item(messages["menu.station.favouriteRemove"]) {
-                    disableWhen(playedStationNotInFavouritesProperty)
-                    visibleWhen(favouriteMenuItemVisibleProperty)
+            //Remove favourite
+            item(messages["menu.station.favouriteRemove"]) {
+                disableWhen(playedStationNotInFavouritesProperty)
+                visibleWhen(favouriteMenuItemVisibleProperty)
 
-                    action {
-                        appEvent.removeFavourite.onNext(selectedStationViewModel.stationProperty.value)
-                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                        playedStationNotInFavouritesProperty.invalidate()
-                    }
-                })
+                action {
+                    appEvent.removeFavourite.onNext(selectedStationViewModel.stationProperty.value)
+                    appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                    playedStationNotInFavouritesProperty.invalidate()
+                }
+            })
 
     override val menuItems = mutableListOf<MenuItem>().apply {
         addAll(listOf(item(messages["menu.favourites.show"], KeyCodes.favouriteView) {
@@ -99,7 +99,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     }
                 }
             }
-        }))
+        }, separator()))
         addAll(addRemoveFavouriteItems)
         addAll(listOf(separator(), item(messages["menu.station.favourite.clear"]) {
             disableWhen {

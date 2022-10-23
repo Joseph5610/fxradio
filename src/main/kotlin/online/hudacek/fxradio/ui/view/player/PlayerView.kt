@@ -31,7 +31,6 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.keyCombination
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.util.value
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -41,7 +40,6 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.booleanBinding
-import tornadofx.c
 import tornadofx.contextmenu
 import tornadofx.controlsfx.glyph
 import tornadofx.disableWhen
@@ -69,20 +67,16 @@ private const val INFO_GLYPH_SIZE = 14.0
 class PlayerView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val darkModeViewModel: DarkModeViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     private val playerStationView: PlayerStationView by inject()
 
-    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE) }
-    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(CONTROLS_GLYPH_SIZE) }
-    private val infoGlyph by lazy {
-        FontAwesome.Glyph.INFO_CIRCLE.make(
-            INFO_GLYPH_SIZE, color = c(darkModeViewModel.appearanceProperty.value!!.primary)
-        )
-    }
-    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(VOLUME_GLYPH_SIZE) }
-    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE) }
+    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, isPrimary = false) }
+    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(CONTROLS_GLYPH_SIZE, isPrimary = false) }
+    private val infoGlyph by lazy { FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) }
+
+    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(VOLUME_GLYPH_SIZE, isPrimary = false) }
+    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE, isPrimary = false) }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
         if (it is PlayerState.Playing) {

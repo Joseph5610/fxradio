@@ -30,7 +30,7 @@ import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
+import online.hudacek.fxradio.viewmodel.AppAppearanceViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
@@ -41,7 +41,7 @@ class AddStationFragment : BaseFragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val darkModeViewModel: DarkModeViewModel by inject()
+    private val appAppearanceViewModel: AppAppearanceViewModel by inject()
 
     // List of Countries for autocomplete
     private val countriesListProperty = listProperty<String>(observableListOf()).apply {
@@ -57,7 +57,7 @@ class AddStationFragment : BaseFragment() {
         title = messages["add.title"]
         prefWidth = 400.0
 
-        darkModeViewModel.darkModeProperty.onChange {
+        appAppearanceViewModel.darkModeProperty.onChange {
             if (!it) {
                 styleClass -= NotificationPane.STYLE_CLASS_DARK
             } else {
@@ -142,8 +142,7 @@ class AddStationFragment : BaseFragment() {
                     }
                 }
 
-                hbox(spacing = 5) {
-                    alignment = Pos.CENTER_RIGHT
+                hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
                     button(messages["add.cleanupForm"]) {
                         action {
                             viewModel.item = AddStationModel()

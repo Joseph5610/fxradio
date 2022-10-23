@@ -43,11 +43,7 @@ class VLCAudioComponent {
         "--no-video"
     )
 
-    private val player: AudioPlayerComponent? by lazy {
-        run {
-            AudioPlayerComponent(MediaPlayerFactory(playerArgs))
-        }
-    }
+    private val player: AudioPlayerComponent? by lazy { AudioPlayerComponent(MediaPlayerFactory(playerArgs)) }
 
     private lateinit var nativeLog: NativeLog
 

@@ -35,7 +35,6 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import javafx.scene.paint.Color
 import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.FxRadio
@@ -47,8 +46,8 @@ import org.controlsfx.control.NotificationPane
 import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.glyphfont.Glyph
 import tornadofx.App
-import tornadofx.InlineCss
 import tornadofx.action
 import tornadofx.add
 import tornadofx.addClass
@@ -65,7 +64,6 @@ import tornadofx.onChange
 import tornadofx.opcr
 import tornadofx.required
 import tornadofx.setContent
-import tornadofx.style
 import tornadofx.textfield
 import tornadofx.visibleWhen
 import java.net.URLEncoder
@@ -99,16 +97,16 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
 
 internal fun FontAwesome.Glyph.make(
     size: Double,
-    color: Color? = null,
-    op: InlineCss.() -> Unit = {}
+    isPrimary: Boolean = true,
+    op: Glyph.() -> Unit = {}
 ) = toGlyph {
     size(size)
-    style {
-        if (color != null) {
-            textFill = color
-        }
-        op(this)
+    if (isPrimary) {
+        addClass(Styles.glyphIconPrimary)
+    } else {
+        addClass(Styles.glyphIcon)
     }
+    op(this)
 }
 
 internal fun EventTarget.searchField(

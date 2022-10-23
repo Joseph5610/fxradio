@@ -30,12 +30,11 @@ import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
+import online.hudacek.fxradio.viewmodel.AppAppearanceViewModel
 import org.controlsfx.control.NotificationPane
 import tornadofx.addClass
 import tornadofx.controlsfx.content
 import tornadofx.hgrow
-import tornadofx.hide
 import tornadofx.onChange
 import tornadofx.splitpane
 import tornadofx.vbox
@@ -52,7 +51,7 @@ class MainView : BaseView(FxRadio.appName) {
     private val stationsView: StationsView by inject()
     private val menuBarView: MenuBarView by inject()
     private val libraryView: LibraryView by inject()
-    private val darkModeViewModel: DarkModeViewModel by inject()
+    private val appAppearanceViewModel: AppAppearanceViewModel by inject()
 
     override fun onDock() {
         with(splitPane) {
@@ -95,7 +94,7 @@ class MainView : BaseView(FxRadio.appName) {
             appEvent.appNotification
                     .subscribe { this[it.glyph] = it.title }
 
-            darkModeViewModel.darkModeProperty.onChange {
+            appAppearanceViewModel.darkModeProperty.onChange {
                 if (!it) {
                     styleClass -= NotificationPane.STYLE_CLASS_DARK
                 } else {

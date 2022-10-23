@@ -23,23 +23,15 @@ import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.ListViewHandler
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.addClass
-import tornadofx.c
-import tornadofx.doubleBinding
-import tornadofx.get
-import tornadofx.label
-import tornadofx.listview
-import tornadofx.onUserSelect
+import tornadofx.*
 
 private const val GLYPH_SIZE = 14.0
 
 class LibraryListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
-    private val darkModeViewModel: DarkModeViewModel by inject()
     override fun onDock() {
         // React to changes of library not from by clicking on list item
         viewModel.stateObservableChanges.subscribe {
@@ -70,7 +62,7 @@ class LibraryListView : BaseView() {
 
         cellCache {
             label(messages[it.type.key]) {
-                graphic = it.glyph.make(GLYPH_SIZE, c(darkModeViewModel.appearanceProperty.value!!.primary))
+                graphic = it.glyph.make(GLYPH_SIZE)
             }
         }
 

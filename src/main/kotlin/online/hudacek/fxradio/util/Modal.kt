@@ -21,6 +21,7 @@ package online.hudacek.fxradio.util
 import javafx.stage.StageStyle
 import online.hudacek.fxradio.ui.fragment.AddStationFragment
 import online.hudacek.fxradio.ui.fragment.AppInfoFragment
+import online.hudacek.fxradio.ui.fragment.AppearanceFragment
 import online.hudacek.fxradio.ui.fragment.AttributionsFragment
 import online.hudacek.fxradio.ui.fragment.DebugFragment
 import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
@@ -45,6 +46,8 @@ sealed class Modal<out T : Fragment>(
     object Attributions : Modal<AttributionsFragment>()
     object Debug : Modal<DebugFragment>()
     object License : Modal<AttributionsFragment.LicenseFragment>()
+    object Appearance : Modal<AppearanceFragment>()
+
     object OpenStream : Modal<OpenStreamFragment>(style = StageStyle.UNIFIED)
 }
 

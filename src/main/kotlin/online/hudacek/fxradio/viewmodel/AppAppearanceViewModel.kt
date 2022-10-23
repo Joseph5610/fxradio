@@ -19,35 +19,41 @@
 package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
+import javafx.beans.property.ObjectProperty
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.ui.style.DarkAppearance
-import online.hudacek.fxradio.ui.style.LightAppearance
+import online.hudacek.fxradio.ui.style.AccentColor
+import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.reloadStylesheets
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
-import tornadofx.objectBinding
 import tornadofx.property
 
-class DarkMode(isDarkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred())) {
+class AppAppearance(
+    isDarkMode: Boolean = Properties.DarkMode.value(FxRadio.isDarkModePreferred()),
+    accentColor: AccentColor = Appearance.getAccentColor()
+) {
     var isDarkMode: Boolean by property(isDarkMode)
+    var accentColor: AccentColor by property(accentColor)
 }
 
 /**
- * Keeps information about current logging level chosen in UI
- * Used in [online.hudacek.fxradio.ui.view.MenuBarView]
+ * Keeps information about current app appearance
  */
-class DarkModeViewModel : BaseViewModel<DarkMode>(DarkMode()) {
+class AppAppearanceViewModel : BaseViewModel<AppAppearance>(AppAppearance()) {
 
-    val darkModeProperty by lazy { bind(DarkMode::isDarkMode) as BooleanProperty }
-
-    val appearanceProperty = darkModeProperty.objectBinding {
-        if (darkModeProperty.value) DarkAppearance() else LightAppearance()
-    }
+    val darkModeProperty by lazy { bind(AppAppearance::isDarkMode) as BooleanProperty }
+    val accentColorProperty by lazy { bind(AppAppearance::accentColor) as ObjectProperty }
 
     // Save and Live reload styles
-    override fun onCommit() = darkModeProperty.value.let {
-        Properties.DarkMode.save(it)
-        reloadStylesheets(it)
+    override fun onCommit() {
+        darkModeProperty.value.let {
+            Properties.DarkMode.save(it)
+        }
+
+        accentColorProperty.value.let {
+            Properties.AccentColor.save(it.colorCode)
+        }
+        reloadStylesheets(darkModeProperty.value)
     }
 }

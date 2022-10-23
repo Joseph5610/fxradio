@@ -72,6 +72,8 @@ class StylesDark : Stylesheet() {
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
 
+        val glyphIconPrimary by cssclass()
+        val glyphIcon by cssclass()
     }
 
     init {
@@ -442,6 +444,14 @@ class StylesDark : Stylesheet() {
             line {
                 maxWidth = 1.px
             }
+        }
+
+        glyphIconPrimary {
+            textFill = c(colors.primary)
+        }
+
+        glyphIcon {
+            textFill = c(colors.label)
         }
 
         InternalWindow.Styles.floatingWindowWrapper {

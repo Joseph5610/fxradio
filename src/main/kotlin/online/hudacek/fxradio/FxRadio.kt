@@ -32,6 +32,7 @@ import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
+import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.apache.logging.log4j.LogManager
 import tornadofx.App
@@ -97,7 +98,10 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             setStageIcon(Image(Config.Resources.stageIcon))
             super.start(this)
         }
-        trayIcon.addIcon()
+
+        if (Properties.UseTrayIcon.value(true)) {
+            trayIcon.addIcon()
+        }
     }
 
     override fun stop() {

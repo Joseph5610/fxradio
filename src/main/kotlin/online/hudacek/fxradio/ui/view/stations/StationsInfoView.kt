@@ -32,7 +32,6 @@ import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.update
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
@@ -44,7 +43,6 @@ import tornadofx.bindChildren
 import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.button
-import tornadofx.c
 import tornadofx.center
 import tornadofx.flowpane
 import tornadofx.get
@@ -55,6 +53,7 @@ import tornadofx.paddingAll
 import tornadofx.paddingBottom
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
+import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
@@ -63,19 +62,20 @@ private const val LOGO_SIZE = 60.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
-    private val darkModeViewModel: DarkModeViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
     private val likeIcon by lazy {
-        FontAwesome.Glyph.THUMBS_UP.make(12.0, Color.WHITESMOKE)
+        FontAwesome.Glyph.THUMBS_UP.make(12.0) {
+            style {
+                textFill = Color.WHITESMOKE
+            }
+        }
     }
 
     private val copyIcon by lazy {
-        FontAwesome.Glyph.COPY.make(12.0) {
-            darkModeViewModel.appearanceProperty.onChange { textFill = c(it!!.label) }
-        }
+        FontAwesome.Glyph.COPY.make(12.0, isPrimary = false)
     }
 
     private val stationLogo by lazy {

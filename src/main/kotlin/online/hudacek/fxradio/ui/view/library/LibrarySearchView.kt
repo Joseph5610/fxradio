@@ -44,8 +44,8 @@ class LibrarySearchView : BaseView() {
     override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = FontAwesome.Glyph.SEARCH.make(searchGlyphSize) {
-            padding = box(10.px, 5.px)
+        left = FontAwesome.Glyph.SEARCH.make(searchGlyphSize, isPrimary = false) {
+            padding = insets(5, 10)
         }
 
         setOnMouseClicked {
