@@ -27,7 +27,7 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.reloadStylesheets
-import online.hudacek.fxradio.util.saveProperties
+import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
 import tornadofx.booleanProperty
 import tornadofx.property
@@ -56,13 +56,9 @@ class AppAppearanceViewModel : BaseViewModel<AppAppearance>(AppAppearance()) {
             Property(Properties.AccentColor).remove()
             accentColorProperty.value = Appearance.getAccentColor()
         } else {
-            app.saveProperties(
-                mapOf(
-                    Properties.DarkMode to darkModeProperty.value,
-                    Properties.AccentColor to accentColorProperty.value.colorCode,
-                )
-            )
+            Properties.AccentColor.save(accentColorProperty.value.colorCode)
         }
+        Properties.DarkMode.save(darkModeProperty.value)
         reloadStylesheets(darkModeProperty.value)
     }
 }
