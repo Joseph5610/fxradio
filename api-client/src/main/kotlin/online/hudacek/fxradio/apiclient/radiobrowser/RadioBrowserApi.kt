@@ -20,18 +20,17 @@ package online.hudacek.fxradio.apiclient.radiobrowser
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.ApiDefinition
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AddedStation
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsBody
-import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResult
-import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationResponse
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagBody
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByIdsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.apiclient.radiobrowser.model.StationBody
-import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResult
-import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResult
+import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
+import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -45,37 +44,37 @@ interface RadioBrowserApi : ApiDefinition {
 
     @POST("json/stations/bycountrycodeexact/{countryCode}")
     fun getStationsByCountryCode(
-        @Body countriesBody: CountriesBody,
-        @Path("countryCode") countryCode: String
+        @Path("countryCode") countryCode: String,
+        @Query("hidebroken") hidebroken: Boolean = true
     ): Single<List<Station>>
 
     @POST("json/stations/search")
-    fun searchStationByName(@Body searchBody: SearchBody): Single<List<Station>>
+    fun searchStationByName(@Body searchRequest: SearchRequest): Single<List<Station>>
 
     @POST("json/stations/search")
-    fun searchStationByTag(@Body searchBody: SearchByTagBody): Single<List<Station>>
+    fun searchStationByTag(@Body searchBody: SearchByTagRequest): Single<List<Station>>
 
     @POST("json/stations/byuuid")
-    fun searchStationByUUID(@Body searchBody: SearchByUUIDBody): Single<List<Station>>
+    fun searchStationByUUIDs(@Body searchBody: SearchByIdsRequest): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
     fun getTopVotedStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
 
     @POST("json/stations")
-    fun getAllStations(@Body stationsBody: AllStationsBody): Single<List<Station>>
+    fun getAllStations(@Body stationsBody: AllStationsRequest): Single<List<Station>>
 
     @POST("json/add")
-    fun addStation(@Body stationBody: StationBody): Single<AddedStation>
+    fun addStation(@Body newStationRequest: NewStationRequest): Single<NewStationResponse>
 
     @POST("json/countries")
-    fun getCountries(@Body countriesBody: CountriesBody): Single<List<Country>>
+    fun getCountries(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Country>>
 
     @GET("json/stats")
-    fun getStats(): Single<StatsResult>
+    fun getStats(): Single<StatsResponse>
 
     @GET("json/vote/{uuid}")
-    fun addVote(@Path("uuid") uuid: String): Single<VoteResult>
+    fun addVote(@Path("uuid") uuid: String): Single<VoteResponse>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<ClickResult>
+    fun click(@Path("uuid") uuid: String): Single<ClickResponse>
 }

@@ -27,23 +27,20 @@ import tornadofx.get
 
 class AboutMenu : BaseMenu(FxRadio.appName) {
 
-    val aboutMainItems: List<MenuItem> = listOf(
-        item(messages["menu.app.about"] + " " + FxRadio.appName) {
-            action {
-                Modal.AppInfo.open()
+    val aboutMainItems by lazy {
+        listOf(
+            item(messages["menu.app.about"] + " " + FxRadio.appName) {
+                action {
+                    Modal.AppInfo.open()
+                }
+            },
+            item(messages["menu.preferences"], KeyCodes.openPreferences) {
+                action {
+                    Modal.Preferences.open()
+                }
             }
-        },
-        item(messages["menu.app.server"]) {
-            action {
-                Modal.Servers.open()
-            }
-        },
-        item(messages["menu.preferences"], KeyCodes.openPreferences) {
-            action {
-                Modal.Preferences.open()
-            }
-        }
-    )
+        )
+    }
 
     override val menuItems = mutableListOf<MenuItem>().apply {
         addAll(aboutMainItems)

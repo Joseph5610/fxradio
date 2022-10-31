@@ -34,7 +34,5 @@ data class Country(
     override fun hashCode() = name.hashCode()
 }
 
-data class CountriesBody(val hidebroken: Boolean = true)
-
 val Country.isRussia: Boolean
     get() = iso_3166_1 == "RU"

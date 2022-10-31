@@ -26,7 +26,7 @@ object Tables {
     /**
      * Table for stations saved as favourites
      */
-    val favourites by lazy { StationTable("FAVOURITES") }
+    val favourites by lazy { FavouritesTable() }
 
     /**
      * Table for history of played stations

@@ -26,18 +26,8 @@ import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.field
-import tornadofx.fieldset
-import tornadofx.form
-import tornadofx.get
-import tornadofx.paddingAll
-import tornadofx.stringProperty
-import tornadofx.textfield
-import tornadofx.vbox
-import java.util.UUID
+import tornadofx.*
+import java.util.*
 
 /***
  * Simple Information about the app
@@ -56,7 +46,7 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
         vbox(alignment = Pos.CENTER) {
             form {
                 fieldset {
-                    field(messages["menu.stream.url"]){
+                    field(messages["menu.stream.url"]) {
                         textfield(streamUrlProperty) {
                             requestFocusOnSceneAvailable()
                         }
@@ -68,10 +58,8 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
         vbox(alignment = Pos.CENTER_RIGHT) {
             button(messages["open"]) {
                 action {
-                    if (streamUrlProperty.value != null) {
-                        selectedStationViewModel.item = SelectedStation(
-                                createStreamStation()
-                        )
+                    if (streamUrlProperty.value != null && streamUrlProperty.value.trim().isNotEmpty()) {
+                        selectedStationViewModel.item = SelectedStation(createStreamStation())
                         close()
                     }
                 }
@@ -84,7 +72,9 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
     /**
      * Create adhoc Station object containing entered URL address
      */
-    private fun createStreamStation() = Station(UUID.randomUUID().toString(), "Stream URL",
-            streamUrlProperty.value, streamUrlProperty.value, null, tags = streamUrlProperty.value)
+    private fun createStreamStation() = Station(
+        UUID.randomUUID().toString(), "Stream URL",
+        streamUrlProperty.value, streamUrlProperty.value, null, tags = streamUrlProperty.value
+    )
 
 }

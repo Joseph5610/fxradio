@@ -18,7 +18,10 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class VoteResult(
-    val ok: Boolean,
-    val message: String
+data class AllStationsRequest(
+    val order: String = "name",
+    val limit: Int = 50,
+    val hidebroken: Boolean = true,
+    val reverse: Boolean = true
 )
+

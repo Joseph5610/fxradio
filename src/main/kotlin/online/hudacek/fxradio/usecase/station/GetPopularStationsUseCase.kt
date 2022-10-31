@@ -16,18 +16,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
  * Gets list of Top 50 stations from radio-browser API
  */
-class GetTopVotedStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+class GetPopularStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
 
     override fun execute(input: Unit): Single<List<Station>> = radioBrowserApi
-            .getTopVotedStations()
-            .compose(applySchedulersSingle())
+        .getTopVotedStations()
+        .compose(applySchedulersSingle())
+        .flattenAsObservable { it }
+        .filter { it.countrycode != "RU" }
+        .toList()
 }

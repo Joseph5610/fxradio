@@ -27,6 +27,7 @@ import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
+import online.hudacek.fxradio.usecase.station.StationClickUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
@@ -62,6 +63,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
 ) {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
+    private val stationClickUseCase: StationClickUseCase by inject()
 
     val animateProperty = bind(Player::animate) as BooleanProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
@@ -69,8 +71,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
     val mediaPlayerProperty = bind(Player::mediaPlayer) as ObjectProperty
 
     init {
-
-        //Set volume for current player
+        // Set volume for current player
         volumeProperty.onChange { mediaPlayerProperty.value?.changeVolume(it) }
 
         /**
@@ -85,13 +86,12 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
             }
 
         selectedStationViewModel.stationObservable
+            .flatMapSingle(stationClickUseCase::execute)
             .subscribe({
-                //Update the name of the station
+                // Update the name of the station
                 trackNameProperty.value = messages["player.noMetaData"]
 
-                //Restart playing status
-                stateProperty.value = PlayerState.Stopped
-                stateProperty.value = it.url_resolved.let { it1 -> PlayerState.Playing(it1) }
+                stateProperty.value = PlayerState.Playing(selectedStationViewModel.streamUrlProperty.value)
             }, { t ->
                 stateProperty.value = PlayerState.Error(t.localizedMessage)
             })
@@ -126,8 +126,8 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
             if (stateProperty.value is PlayerState.Playing) {
                 stateProperty.value = PlayerState.Stopped
             } else {
-                stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved.let {
-                    PlayerState.Playing(it)
+                stateProperty.value = selectedStationViewModel.streamUrlProperty.let {
+                    PlayerState.Playing(it.value)
                 }
             }
         }

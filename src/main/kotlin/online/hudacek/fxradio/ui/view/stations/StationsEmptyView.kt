@@ -81,7 +81,7 @@ class StationsEmptyView : BaseView() {
         }
     }
 
-    //Description of a message, shown only if relevant
+    // Description of a message, shown only if relevant
     private val subHeader by lazy {
         label(subHeaderProperty) {
             paddingTop = 5.0
@@ -92,9 +92,21 @@ class StationsEmptyView : BaseView() {
 
     private val connectionHelpMessage by lazy {
         hyperlink(messages["connectionErrorDesc"]) {
-            action { Modal.Servers.open() }
-            paddingTop = 5.0
+            paddingTop = 10.0
             id = "stationMessageConnectionHelpMsg"
+
+            action { Modal.Preferences.open() }
+            paddingTop = 5.0
+
+            showWhen {
+                viewModel.stateProperty.booleanBinding {
+                    when (it) {
+                        is StationsState.Error -> true
+                        else -> false
+                    }
+                }
+            }
+
             addClass(Styles.grayLabel)
         }
     }
@@ -119,19 +131,7 @@ class StationsEmptyView : BaseView() {
         add(graphic)
         add(header)
         add(subHeader)
-
-        vbox(alignment = Pos.CENTER) {
-            paddingTop = 10.0
-            add(connectionHelpMessage)
-            showWhen {
-                viewModel.stateProperty.booleanBinding {
-                    when (it) {
-                        is StationsState.Error -> true
-                        else -> false
-                    }
-                }
-            }
-        }
+        add(connectionHelpMessage)
 
         showWhen {
             viewModel.stateProperty.booleanBinding {

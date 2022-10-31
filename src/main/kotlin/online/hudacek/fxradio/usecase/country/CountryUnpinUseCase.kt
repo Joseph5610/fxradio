@@ -16,25 +16,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.country
 
-import io.reactivex.Observable
-import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
+import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
+import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
-import online.hudacek.fxradio.util.getCountryNameFromISO
 
+class CountryUnpinUseCase : BaseUseCase<Country, Single<Country>>() {
 
-/**
- * Gets list of valid country names and count of stations in it
- */
-class GetCountriesUseCase : BaseUseCase<CountriesBody, Observable<Country>>() {
-
-    override fun execute(input: CountriesBody): Observable<Country> = radioBrowserApi
-        .getCountries(input)
+    override fun execute(input: Country): Single<Country> = Tables.pinnedCountries.remove(input)
         .compose(applySchedulersSingle())
-        .flattenAsObservable { it.filter { c -> !c.isRussia }.sortedBy { c -> c.name } }
-        .map { Country(getCountryNameFromISO(it.iso_3166_1) ?: it.name, it.iso_3166_1, it.stationcount) }
-        .distinct()
 }

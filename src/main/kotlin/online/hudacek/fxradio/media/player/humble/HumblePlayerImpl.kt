@@ -17,13 +17,17 @@
  */
 package online.hudacek.fxradio.media.player.humble
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
 
 private val logger = KotlinLogging.logger {}
+
+
 
 /**
  * Custom Audio player using Humble library
@@ -41,7 +45,7 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
         if (MediaPlayer.isMetaDataRefreshEnabled) {
             metaDataService.restartFor(streamUrl)
         }
-        scope.launch {
+        scope.launch(Dispatchers.JavaFx) {
             audioComponent.play(streamUrl)
         }
     }

@@ -16,20 +16,15 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDBody
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulersSingle
-
-/**
- * Searches for station details by UUID of existing station
- */
-class StationSearchUUIDUseCase : BaseUseCase<String, Single<List<Station>>>() {
-
-    override fun execute(input: String): Single<List<Station>> =
-        radioBrowserApi
-            .searchStationByUUID(SearchByUUIDBody(input))
-            .compose(applySchedulersSingle())
-}
+data class NewStationRequest(
+    val name: String = "",
+    val url: String = "",
+    val homepage: String = "",
+    val favicon: String = "",
+    val countrycode: String = "",
+    val country: String = "",
+    val language: String = "",
+    val tags: String = ""
+)

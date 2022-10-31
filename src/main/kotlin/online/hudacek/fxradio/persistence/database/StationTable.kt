@@ -28,30 +28,11 @@ import org.nield.rxkotlinjdbc.SelectOperation
 /**
  * Common operations on database of stations with different tables (e.g. History, Favourites ..)
  */
-open class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
+abstract class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
 
     override fun selectAll(): Observable<Station> = selectAllQuery().toStationObservable()
 
     override fun removeAll(): Single<Int> = removeAllQuery().toSingle().compose(applySchedulersSingle())
-
-    override fun insert(element: Station): Single<Station> = insertQuery(
-        "INSERT INTO $tableName (name, stationuuid, url_resolved, " +
-                "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
-                "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )"
-    )
-        .parameter("name", element.name)
-        .parameter("stationuuid", element.stationuuid)
-        .parameter("url_resolved", element.url_resolved)
-        .parameter("homepage", element.homepage)
-        .parameter("country", element.country)
-        .parameter("countrycode", element.countrycode)
-        .parameter("state", element.state)
-        .parameter("language", element.language)
-        .parameter("favicon", element.favicon)
-        .parameter("tags", element.tags)
-        .parameter("codec", element.codec)
-        .parameter("bitrate", element.bitrate)
-        .toSingle { element }
 
     override fun remove(element: Station): Single<Station> =
         removeQuery("DELETE FROM $tableName WHERE stationuuid = ?")
@@ -59,7 +40,7 @@ open class StationTable(override val tableName: String) : Table<Station>, Databa
             .toSingle()
             .map { element }
 
-    fun SelectOperation.toStationObservable() = toObservable {
+    fun SelectOperation.toStationObservable(): Observable<Station> = toObservable {
         Station(
             it.getString("stationuuid"),
             it.getString("name"),

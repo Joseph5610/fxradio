@@ -38,8 +38,8 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         item(messages["menu.player.start"], KeyCodes.play) {
             disableWhenInvalidStation(selectedStationViewModel.stationProperty)
             action {
-                playerViewModel.stateProperty.value = selectedStationViewModel.stationProperty.value.url_resolved.let {
-                    PlayerState.Playing(it)
+                playerViewModel.stateProperty.value = selectedStationViewModel.streamUrlProperty.let {
+                    PlayerState.Playing(it.value)
                 }
             }
         }
@@ -77,8 +77,10 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
     }
 
     private val notificationsItem by lazy {
-        checkMenuItem(messages["menu.player.notifications"],
-                bindProperty = streamTitleNotificationViewModel.showProperty) {
+        checkMenuItem(
+            messages["menu.player.notifications"],
+            bindProperty = streamTitleNotificationViewModel.showProperty
+        ) {
             action {
                 streamTitleNotificationViewModel.commit()
             }
@@ -91,6 +93,8 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    override val menuItems = listOf(startItem, stopItem,
-            separator(), playerTypeItem, animateItem, notificationsItem)
+    override val menuItems = listOf(
+        startItem, stopItem,
+        separator(), playerTypeItem, animateItem, notificationsItem
+    )
 }

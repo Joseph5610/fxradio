@@ -35,6 +35,7 @@ import tornadofx.borderpane
 import tornadofx.center
 import tornadofx.fitToParentHeight
 import tornadofx.hgrow
+import tornadofx.osgi.addViewsWhen
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.region
@@ -54,15 +55,16 @@ class StationsView : BaseView() {
     private val dataGridView: StationsDataGridView by inject()
     private val historyView: StationsHistoryView by inject()
     private val stationsInfoView: StationsInfoView by inject()
-    private val libraryViewModel: LibraryViewModel by inject()
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     override val root = borderpane {
         vgrow = Priority.ALWAYS
+
         top {
             add(headerView)
         }
+
         center {
             vbox(spacing = 5.0){
                 paddingAll = 5.0
@@ -75,7 +77,6 @@ class StationsView : BaseView() {
 
         right {
             add(stationsInfoView)
-
             right.showWhen {
                 selectedStationViewModel.stationProperty.booleanBinding {
                     it?.isValid() == true

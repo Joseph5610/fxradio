@@ -16,29 +16,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchBody
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResponse
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
- * Searches for all stations that contains provided tag/name
+ * Increases vote count of the station
  */
-class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Station>>>() {
+class StationVoteUseCase : BaseUseCase<Station, Single<VoteResponse>>() {
 
-    /**
-     * If [input.first] is set to true, search is performed by tag, otherwise by name
-     */
-    override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
-        radioBrowserApi
-                .searchStationByTag(SearchByTagBody(input.second))
-                .compose(applySchedulersSingle())
-    } else {
-        radioBrowserApi
-                .searchStationByName(SearchBody(input.second))
-                .compose(applySchedulersSingle())
-    }
+    override fun execute(input: Station): Single<VoteResponse> = radioBrowserApi
+            .addVote(input.stationuuid)
+            .compose(applySchedulersSingle())
+            .onErrorResumeNext {
+                // We do not care if this response fails
+                Single.just(VoteResponse(false, it.localizedMessage))
+            }
 }

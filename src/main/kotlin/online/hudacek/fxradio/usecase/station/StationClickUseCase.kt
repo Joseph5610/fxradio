@@ -16,26 +16,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.Single
-import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AddedStation
-import online.hudacek.fxradio.apiclient.radiobrowser.model.StationBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
-private val logger = KotlinLogging.logger {}
-
-private const val INVALID_UUID = "0"
-
 /**
- * Adds new station to radio-browser API
+ * Increases click count of the station
  */
-class StationAddUseCase : BaseUseCase<StationBody, Single<AddedStation>>() {
+class StationClickUseCase : BaseUseCase<Station, Single<ClickResponse>>() {
 
-    override fun execute(input: StationBody): Single<AddedStation> = radioBrowserApi
-            .addStation(input)
+    override fun execute(input: Station): Single<ClickResponse> = radioBrowserApi
+            .click(input.stationuuid)
             .compose(applySchedulersSingle())
-            .onErrorResumeNext { Single.just(AddedStation(false, it.localizedMessage, INVALID_UUID)) }
-            .doOnError { logger.error(it) { "Exception while adding station $input" } }
+            .onErrorResumeNext {
+                // We do not care if this response fails
+                Single.just(ClickResponse(false, it.localizedMessage, input.name))
+            }
 }

@@ -18,23 +18,34 @@
 
 package online.hudacek.fxradio.ui.fragment
 
+import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.style.AccentColor
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AppAppearanceViewModel
+import online.hudacek.fxradio.viewmodel.ServersState
+import online.hudacek.fxradio.viewmodel.ServersViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
-import tornadofx.button
+import tornadofx.booleanBinding
 import tornadofx.c
 import tornadofx.checkbox
+import tornadofx.combobox
 import tornadofx.disableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.get
-import tornadofx.hbox
+import tornadofx.hyperlink
+import tornadofx.imageview
+import tornadofx.isDirty
+import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.radiobutton
 import tornadofx.style
@@ -48,6 +59,15 @@ import tornadofx.vbox
 class PreferencesFragment : BaseFragment() {
 
     private val appAppearanceViewModel: AppAppearanceViewModel by inject()
+    private val serversViewModel: ServersViewModel by inject()
+
+    override fun onDock() = serversViewModel.fetchServers()
+
+    override fun onUndock() {
+        if (serversViewModel.selectedProperty.isDirty) {
+            serversViewModel.rollback(serversViewModel.selectedProperty)
+        }
+    }
 
     override val root = vbox {
         paddingAll = 5.0
@@ -55,7 +75,9 @@ class PreferencesFragment : BaseFragment() {
 
         form {
             fieldset(messages["app.appearance"]) {
+                icon = FontAwesome.Glyph.PAINT_BRUSH.make(13.0, isPrimary = false)
                 field(messages["app.accentColor"]) {
+                    labelContainer.alignment = Pos.CENTER_RIGHT
                     togglegroup {
                         AccentColor.values().forEach {
                             radiobutton(text = "", value = it, group = this) {
@@ -67,6 +89,7 @@ class PreferencesFragment : BaseFragment() {
                                     appAppearanceViewModel.commit()
                                 }
                                 tooltip(it.humanName)
+                                addClass(Styles.colorRadioButton)
                             }
                         }
                         bind(appAppearanceViewModel.accentColorProperty)
@@ -75,6 +98,7 @@ class PreferencesFragment : BaseFragment() {
                     }
                 }
                 field(messages["app.useSystemColor"]) {
+                    labelContainer.alignment = Pos.CENTER_RIGHT
                     checkbox {
                         bind(appAppearanceViewModel.useSystemColorProperty)
                         action {
@@ -82,10 +106,14 @@ class PreferencesFragment : BaseFragment() {
                         }
                     }
                 }
+                //smallLabel(messages["app.useSystemColorDesc"])
             }
 
             fieldset(messages["app.darkMode"]) {
+                icon = FontAwesome.Glyph.MOON_ALT.make(13.0, isPrimary = false)
+
                 field(messages["menu.app.darkmode"]) {
+                    labelContainer.alignment = Pos.CENTER_RIGHT
                     checkbox {
                         bind(appAppearanceViewModel.darkModeProperty)
                         action {
@@ -95,11 +123,53 @@ class PreferencesFragment : BaseFragment() {
                 }
             }
 
-            hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
-                button(messages["cancel"]) {
-                    isCancelButton = true
-                    action {
-                        close()
+            fieldset(messages["menu.app.server"]) {
+                icon = FontAwesome.Glyph.SERVER.make(13.0, isPrimary = false)
+
+                field(messages["servers.selected"]) {
+                    labelContainer.alignment = Pos.CENTER_RIGHT
+                    combobox(
+                        property = serversViewModel.selectedProperty,
+                        values = serversViewModel.serversProperty
+                    ) {
+
+                        cellFormat(formatButtonCell = false) {
+                            graphic = imageview { image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull() }
+                            text = it
+                        }
+
+                        selectionModel.selectedItemProperty().onChange {
+                            serversViewModel.commit()
+                        }
+                    }
+                    showWhen {
+                        serversViewModel.stateProperty.booleanBinding {
+                            when (it) {
+                                is ServersState.Fetched -> true
+                                else -> false
+                            }
+                        }
+                    }
+                }
+
+                vbox(alignment = Pos.CENTER) {
+                    hyperlink(messages["servers.notAvailable"]) {
+                        addClass(Styles.grayLabel)
+                        action {
+                            serversViewModel.fetchServers()
+                        }
+                        showWhen {
+                            serversViewModel.stateProperty.booleanBinding {
+                                when (it) {
+                                    is ServersState.Fetched -> false
+                                    else -> true
+                                }
+                            }
+                        }
+                    }
+
+                    smallLabel(messages["servers.restartNeeded"]) {
+                        paddingAll = 5.0
                     }
                 }
             }

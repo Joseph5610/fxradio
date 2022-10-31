@@ -29,6 +29,7 @@ import online.hudacek.fxradio.ui.smallLabel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.hbox
 import tornadofx.hgrow
+import tornadofx.onLeftClick
 import tornadofx.paddingLeft
 import tornadofx.paddingRight
 import tornadofx.point
@@ -51,7 +52,7 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
             paddingLeft = 10.0
             paddingRight = 10.0
 
-            setOnMouseClicked {
+            onLeftClick {
                 op()
             }
 

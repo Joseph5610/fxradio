@@ -3,16 +3,19 @@ package online.hudacek.fxradio.persistence.database
 import io.reactivex.Observable
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import org.nield.rxkotlinjdbc.execute
 import org.nield.rxkotlinjdbc.select
 
-class HistoryTable : StationTable("HISTORY") {
+class FavouritesTable : StationTable("FAVOURITES") {
+
     override fun selectAll(): Observable<Station> =
-        connection.select("SELECT * FROM $tableName ORDER BY id DESC;").toStationObservable()
+        connection.select("SELECT * FROM $tableName ORDER BY sorting_order ASC, id ASC;").toStationObservable()
 
     override fun insert(element: Station): Single<Station> = insertQuery(
         "INSERT INTO $tableName (name, stationuuid, url_resolved, " +
-                "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
-                "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )"
+                "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate, sorting_order) " +
+                "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, " +
+                ":favicon, :tags, :codec, :bitrate, :sorting_order )"
     )
         .parameter("name", element.name)
         .parameter("stationuuid", element.stationuuid)
@@ -26,5 +29,13 @@ class HistoryTable : StationTable("HISTORY") {
         .parameter("tags", element.tags)
         .parameter("codec", element.codec)
         .parameter("bitrate", element.bitrate)
+        .parameter("sorting_order", Int.MAX_VALUE)
         .toSingle { element }
+
+    fun updateOrder(station: Station, newOrderId: Int): Single<Station> =
+        connection.execute("UPDATE $tableName SET sorting_order = ? WHERE stationuuid = ?;")
+            .parameter(newOrderId)
+            .parameter(station.stationuuid)
+            .toSingle()
+            .map { station }
 }

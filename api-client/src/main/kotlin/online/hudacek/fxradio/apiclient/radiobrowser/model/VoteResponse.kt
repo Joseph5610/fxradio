@@ -18,4 +18,7 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class SearchBody(val name: String, val limit: Int = 200, val hidebroken: Boolean = true)
+data class VoteResponse(
+    val ok: Boolean,
+    val message: String
+)

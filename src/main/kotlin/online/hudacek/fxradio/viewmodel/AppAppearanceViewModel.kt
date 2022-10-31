@@ -47,7 +47,7 @@ class AppAppearanceViewModel : BaseViewModel<AppAppearance>(AppAppearance()) {
 
     val darkModeProperty by lazy { bind(AppAppearance::isDarkMode) as BooleanProperty }
     val accentColorProperty by lazy { bind(AppAppearance::accentColor) as ObjectProperty }
-    val useSystemColorProperty = booleanProperty(!Property(Properties.AccentColor).isPresent && MacUtils.isMac)
+    val useSystemColorProperty = booleanProperty(!Property(Properties.AccentColor).isPresent && !MacUtils.isMac)
 
 
     // Save and Live reload styles

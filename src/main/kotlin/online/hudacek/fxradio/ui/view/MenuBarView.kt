@@ -62,7 +62,7 @@ class MenuBarView : BaseView() {
     }
 
     /**
-     * Platform specific menu bar working on OSX
+     * Platform specific menu bar working on macOS
      * used instead of in-app menubar
      */
     private fun platformMenuBar() = NSMenuBar()

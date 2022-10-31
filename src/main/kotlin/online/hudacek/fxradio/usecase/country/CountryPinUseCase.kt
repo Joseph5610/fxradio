@@ -16,17 +16,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.country
 
 import io.reactivex.Single
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.usecase.BaseUseCase
+import online.hudacek.fxradio.util.applySchedulersSingle
 
-private val logger = KotlinLogging.logger {}
+class CountryPinUseCase : BaseUseCase<Country, Single<Country>>() {
 
-class CountryUnPinUseCase : BaseUseCase<Country, Single<Country>>() {
-
-    override fun execute(input: Country): Single<Country> = Tables.pinnedCountries.remove(input)
-            .doOnError { logger.error(it) { "Exception when unpinning $input!" } }
+    override fun execute(input: Country): Single<Country> = Tables.pinnedCountries.insert(input)
+        .compose(applySchedulersSingle())
 }

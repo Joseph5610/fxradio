@@ -70,6 +70,7 @@ class TrayIcon : Component() {
                 }
                 menu(FxRadio.appName) {
                     item(messages["show"] + " " + FxRadio.appName) {
+
                         setOnAction(fxThread = true) {
                             primaryStage.show()
                             primaryStage.toFront()

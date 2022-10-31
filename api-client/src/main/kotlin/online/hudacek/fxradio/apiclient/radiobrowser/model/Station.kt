@@ -18,6 +18,8 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
+import java.io.Serializable
+
 /**
  * Station data class
  */
@@ -39,7 +41,7 @@ data class Station(
     val geo_long: Double = 0.0,
     val clicktrend: Int = 0,
     val languagecodes: String = "",
-) {
+) : Serializable {
 
     fun isValid() = stationuuid != "0"
 

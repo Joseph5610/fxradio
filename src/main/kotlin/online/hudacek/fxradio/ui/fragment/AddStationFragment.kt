@@ -30,9 +30,7 @@ import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
-import online.hudacek.fxradio.viewmodel.AppAppearanceViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import org.controlsfx.control.NotificationPane
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.*
 import tornadofx.controlsfx.content
@@ -41,7 +39,6 @@ class AddStationFragment : BaseFragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val appAppearanceViewModel: AppAppearanceViewModel by inject()
 
     // List of Countries for autocomplete
     private val countriesListProperty = listProperty<String>(observableListOf()).apply {
@@ -56,14 +53,6 @@ class AddStationFragment : BaseFragment() {
     override val root = customNotificationPane {
         title = messages["add.title"]
         prefWidth = 400.0
-
-        appAppearanceViewModel.darkModeProperty.onChange {
-            if (!it) {
-                styleClass -= NotificationPane.STYLE_CLASS_DARK
-            } else {
-                styleClass += NotificationPane.STYLE_CLASS_DARK
-            }
-        }
 
         content {
             form {

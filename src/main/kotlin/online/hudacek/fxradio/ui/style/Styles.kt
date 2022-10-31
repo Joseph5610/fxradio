@@ -77,6 +77,8 @@ class Styles : Stylesheet() {
 
         val glyphIconPrimary by cssclass()
         val glyphIcon by cssclass()
+
+        val colorRadioButton by cssclass()
     }
 
     init {
@@ -91,20 +93,22 @@ class Styles : Stylesheet() {
         }
 
         playerMainBox {
-            padding = box(10.0.px, 0.0.px)
-            borderColor += box(c(colors.transparent), c(colors.transparent),
-                    c(colors.backgroundBorder),
-                    c(colors.transparent))
+            padding = box(5.0.px)
+            borderColor += box(
+                c(colors.transparent), c(colors.transparent),
+                c(colors.backgroundBorder),
+                c(colors.transparent)
+            )
         }
 
         playerStationBox {
-            padding = box(3.0.px, 10.0.px)
-            backgroundRadius += box(3.px)
-            borderRadius += box(3.px)
+            padding = box(5.0.px)
+            backgroundRadius += box(4.px)
+            borderRadius += box(4.px)
             backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
-            maxWidth = 260.px
-            prefWidth = 260.px
+            maxWidth = 280.px
+            prefWidth = 280.px
         }
 
         tag {
@@ -256,8 +260,16 @@ class Styles : Stylesheet() {
         }
 
         checkBox {
-            baseColor = c(colors.primary)
+            box {
+                baseColor = c(colors.backgroundSelected)
+                backgroundRadius += box(3.px)
+                borderRadius += box(3.px)
+            }
+
             and(selected) {
+                box {
+                    baseColor = c(colors.primary)
+                }
                 mark {
                     backgroundColor += Color.WHITE
                 }
@@ -430,6 +442,37 @@ class Styles : Stylesheet() {
 
         glyphIcon {
             textFill = c(colors.label)
+        }
+
+        comboBox {
+            baseColor = c(colors.backgroundSelected)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+
+            arrow {
+                backgroundColor += c(colors.primary)
+            }
+
+            comboBoxPopup {
+                listView {
+                    backgroundRadius += box(6.px)
+                    borderRadius += box(6.px)
+                    backgroundColor += c(colors.backgroundBorder)
+                }
+
+                listCell {
+                    textFill = c(colors.label)
+                    backgroundRadius += box(6.px)
+                    borderRadius += box(6.px)
+                    backgroundColor += c(colors.backgroundBorder)
+                    and(selected) {
+                        backgroundColor += c(colors.primary)
+                        borderColor += box(c(colors.primary))
+                        textFill = Color.WHITESMOKE
+                    }
+                    padding = box(5.px)
+                }
+            }
         }
 
         InternalWindow.Styles.floatingWindowWrapper {

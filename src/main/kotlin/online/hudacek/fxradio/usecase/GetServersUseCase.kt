@@ -29,11 +29,12 @@ import online.hudacek.fxradio.util.applySchedulers
  */
 class GetServersUseCase : BaseUseCase<Unit, Single<List<String>>>() {
 
-    private val lookupUrl = Config.API.dnsLookupURL
+    private val dnsResponse
+        get() = HttpClient.lookup(Config.API.dnsLookupURL)
 
-    override fun execute(input: Unit): Single<List<String>> = Observable.fromIterable(HttpClient.lookup(lookupUrl))
-            .compose(applySchedulers())
-            .map { it.canonicalHostName }
-            .distinct()
-            .toList()
+    override fun execute(input: Unit): Single<List<String>> = Observable.fromIterable(dnsResponse)
+        .compose(applySchedulers())
+        .map { it.canonicalHostName }
+        .distinct()
+        .toList()
 }

@@ -16,17 +16,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import io.reactivex.Single
-import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.persistence.database.Tables
+data class ClickResponse(
+    val ok: Boolean,
+    val message: String,
+    val name: String
+)
 
-private val logger = KotlinLogging.logger {}
-
-class CountryPinUseCase : BaseUseCase<Country, Single<Country>>() {
-
-    override fun execute(input: Country): Single<Country> = Tables.pinnedCountries.insert(input)
-            .doOnError { logger.error(it) { "Exception when pinning $input!" } }
-}

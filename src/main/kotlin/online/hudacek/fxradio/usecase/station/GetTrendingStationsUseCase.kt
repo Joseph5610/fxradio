@@ -16,20 +16,25 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.Single
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResult
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
-/**
- * Increases vote count of the station
- */
-class StationVoteUseCase : BaseUseCase<Station, Single<VoteResult>>() {
+private const val ORDER_BY_TREND = "clicktrend"
 
-    override fun execute(input: Station): Single<VoteResult> = radioBrowserApi
-            .addVote(input.stationuuid)
-            .compose(applySchedulersSingle())
-            .onErrorResumeNext { Single.just(VoteResult(false, it.localizedMessage)) }
+/**
+ * Gets list of Top 50 clicked stations from radio-browser API
+ */
+class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+
+    override fun execute(input: Unit): Single<List<Station>> = radioBrowserApi
+        .getAllStations(AllStationsRequest(order = ORDER_BY_TREND))
+        .compose(applySchedulersSingle())
+        .flattenAsObservable { it }
+        .filter { it.countrycode != "RU" }
+        .toList()
 }

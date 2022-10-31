@@ -24,11 +24,12 @@ import tornadofx.addClass
 import tornadofx.fade
 import tornadofx.pane
 import tornadofx.plusAssign
+import tornadofx.px
 import tornadofx.removeFromParent
+import tornadofx.style
 import tornadofx.text
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.set
-
 
 open class TickerEntry<T : Node>(
     var content: T,

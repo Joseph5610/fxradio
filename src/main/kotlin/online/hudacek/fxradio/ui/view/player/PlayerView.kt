@@ -26,35 +26,14 @@ import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.keyCombination
-import online.hudacek.fxradio.util.open
-import online.hudacek.fxradio.util.value
+import online.hudacek.fxradio.util.*
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.bind
-import tornadofx.booleanBinding
-import tornadofx.contextmenu
+import tornadofx.*
 import tornadofx.controlsfx.glyph
-import tornadofx.disableWhen
-import tornadofx.hbox
-import tornadofx.hgrow
-import tornadofx.item
-import tornadofx.objectBinding
-import tornadofx.onChange
-import tornadofx.paddingLeft
-import tornadofx.paddingRight
-import tornadofx.paddingTop
-import tornadofx.region
-import tornadofx.slider
-import tornadofx.vbox
-import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
 private const val VOLUME_GLYPH_SIZE = 14.0
@@ -73,10 +52,48 @@ class PlayerView : BaseView() {
 
     private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, isPrimary = false) }
     private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(CONTROLS_GLYPH_SIZE, isPrimary = false) }
-    private val infoGlyph by lazy { FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) }
 
-    private val volumeDownGlyph by lazy { FontAwesome.Glyph.VOLUME_DOWN.make(VOLUME_GLYPH_SIZE, isPrimary = false) }
-    private val volumeUpGlyph by lazy { FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE, isPrimary = false) }
+    private val infoGlyph by lazy {
+        FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) {
+            id = "stationInfo"
+            disableWhen {
+                selectedStationViewModel.stationProperty.booleanBinding {
+                    it == null || !it.isValid()
+                }
+            }
+
+            onLeftClick {
+                toggleInfoPanelState()
+            }
+
+            shortcut(keyCombination(KeyCode.I)) {
+                toggleInfoPanelState()
+            }
+
+            addClass(Styles.playerControls)
+        }
+    }
+
+    private val volumeDownGlyph by lazy {
+        FontAwesome.Glyph.VOLUME_DOWN.make(VOLUME_GLYPH_SIZE, isPrimary = false) {
+            id = "volumeMinIcon"
+            onLeftClick {
+                volumeSlider.value = volumeSlider.min
+            }
+            addClass(Styles.playerControls)
+        }
+    }
+
+    private val volumeUpGlyph by lazy {
+        FontAwesome.Glyph.VOLUME_UP.make(VOLUME_GLYPH_SIZE, isPrimary = false) {
+            id = "volumeMaxIcon"
+            minWidth = 20.0
+            onLeftClick {
+                volumeSlider.value = volumeSlider.max
+            }
+            addClass(Styles.playerControls)
+        }
+    }
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
         if (it is PlayerState.Playing) {
@@ -96,34 +113,13 @@ class PlayerView : BaseView() {
                     it == null || !it.isValid()
                 }
             }
-            setOnMouseClicked {
+            onLeftClick {
                 viewModel.togglePlayerState()
             }
             addClass(Styles.playerControls)
         }
     }
 
-    private val stationInfo by lazy {
-        glyph {
-            id = "stationInfo"
-            graphic = infoGlyph
-            disableWhen {
-                selectedStationViewModel.stationProperty.booleanBinding {
-                    it == null || !it.isValid()
-                }
-            }
-
-            setOnMouseClicked {
-                toggleInfoPanelState()
-            }
-
-            shortcut(keyCombination(KeyCode.I)) {
-                toggleInfoPanelState()
-            }
-
-            addClass(Styles.playerControls)
-        }
-    }
 
     private val volumeSlider by lazy {
         slider(-30..5) {
@@ -142,18 +138,10 @@ class PlayerView : BaseView() {
     }
 
     override val root = vbox {
-        hbox(spacing = 12) {
+        hbox(spacing = 10) {
             vgrow = Priority.NEVER
             alignment = Pos.CENTER_LEFT
             paddingLeft = 30.0
-
-            if (Properties.EnableDebugView.value(false)) {
-                contextmenu {
-                    item("Debug Window").action {
-                        Modal.Debug.open()
-                    }
-                }
-            }
 
             //Play/Pause buttons
             add(playerControls)
@@ -166,7 +154,15 @@ class PlayerView : BaseView() {
             add(playerStationView)
 
             // Show station details
-            add(stationInfo)
+            add(infoGlyph)
+
+            if (Properties.EnableDebugView.value(false)) {
+                add(FontAwesome.Glyph.BUG.make(14.0) {
+                    onLeftClick {
+                        Modal.Debug.open()
+                    }
+                })
+            }
 
             region {
                 hgrow = Priority.ALWAYS
@@ -176,24 +172,9 @@ class PlayerView : BaseView() {
             hbox {
                 paddingRight = 30.0
                 alignment = Pos.CENTER
-                glyph {
-                    id = "volumeMinIcon"
-                    graphic = volumeDownGlyph
-                    setOnMouseClicked {
-                        volumeSlider.value = volumeSlider.min
-                    }
-                    addClass(Styles.playerControls)
-                }
+                add(volumeDownGlyph)
                 add(volumeSlider)
-                glyph {
-                    id = "volumeMaxIcon"
-                    graphic = volumeUpGlyph
-                    minWidth = 20.0
-                    setOnMouseClicked {
-                        volumeSlider.value = volumeSlider.max
-                    }
-                    addClass(Styles.playerControls)
-                }
+                add(volumeUpGlyph)
             }
         }
         addClass(Styles.playerMainBox)

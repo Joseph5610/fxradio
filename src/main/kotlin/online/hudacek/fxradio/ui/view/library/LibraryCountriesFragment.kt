@@ -52,6 +52,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
     }
 
     override val root = listview(countriesProperty) {
+        fitToParentHeight()
         id = "libraryCountriesFragment"
 
         val handler = ListViewHandler(this)
@@ -65,8 +66,7 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
         })
 
         cellCache {
-            hbox(spacing = 5) {
-                alignment = Pos.CENTER_LEFT
+            hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
 
                 imageview {
                     image = it.flagIcon

@@ -30,8 +30,6 @@ import online.hudacek.fxradio.util.applySchedulersSingle
 import online.hudacek.fxradio.util.confirmDialog
 import tornadofx.get
 
-private val logger = KotlinLogging.logger {}
-
 /**
  * Clears image cache directory
  */
@@ -49,5 +47,4 @@ class CacheClearUseCase : BaseUseCase<Unit, Maybe<Boolean>>() {
         .flatMapSingleElement {
             Single.just(ImageCacheUtils.clear()).compose(applySchedulersSingle())
         }
-        .doOnError { logger.error(it) { "Exception when deleting cache!" } }
 }

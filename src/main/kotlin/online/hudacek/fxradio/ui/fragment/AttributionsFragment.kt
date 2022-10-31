@@ -44,20 +44,18 @@ class AttributionsFragment : BaseFragment() {
     override val root = vbox {
         title = "${messages["attributions.title"]} ${FxRadio.appName}"
         prefWidth = 500.0
+        paddingAll = 10.0
 
-        vbox {
-            paddingAll = 10.0
-            requestFocusOnSceneAvailable() //To get rid of the blue box around the table
-            tableview(Attributions.list) {
-                bindSelected(viewModel)
+        requestFocusOnSceneAvailable() //To get rid of the blue box around the table
+        tableview(Attributions.list) {
+            bindSelected(viewModel)
 
-                columnResizePolicy = SmartResize.POLICY
-                readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
-                readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
+            columnResizePolicy = SmartResize.POLICY
+            readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
+            readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
 
-                onUserSelect {
-                    Modal.License.open()
-                }
+            onUserSelect {
+                Modal.License.open()
             }
         }
 
@@ -71,7 +69,6 @@ class AttributionsFragment : BaseFragment() {
         }
 
         vbox(alignment = Pos.CENTER_RIGHT) {
-            paddingAll = 10.0
             button(messages["close"]) {
                 isCancelButton = true
                 action {

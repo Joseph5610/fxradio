@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
+import javafx.scene.layout.Priority
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
@@ -27,15 +28,14 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.borderpane
-import tornadofx.box
+import tornadofx.bottom
 import tornadofx.center
 import tornadofx.get
 import tornadofx.hyperlink
-import tornadofx.paddingBottom
-import tornadofx.px
-import tornadofx.style
+import tornadofx.paddingAll
 import tornadofx.top
 import tornadofx.vbox
+import tornadofx.vgrow
 
 class LibraryView : BaseView() {
 
@@ -46,10 +46,10 @@ class LibraryView : BaseView() {
 
     override fun onDock() {
         Tables.pinnedCountries
-                .selectAll()
-                .subscribe {
-                    viewModel.pinnedProperty += it
-                }
+            .selectAll()
+            .subscribe {
+                viewModel.pinnedProperty += it
+            }
         viewModel.getCountries()
     }
 
@@ -57,33 +57,23 @@ class LibraryView : BaseView() {
         top {
             vbox {
                 vbox {
+                    paddingAll = 10.0
                     add(librarySearchView)
-                    style {
-                        padding = box(20.px, 10.px, 20.px, 10.px)
-                    }
                 }
 
-                vbox {
-                    add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
-                        viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
-                        viewModel.commit()
-                    })
-                    paddingBottom = 5.0
-                }
+                add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
+                    viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
+                    viewModel.commit()
+                })
+
+                add(libraryListView)
+
+                add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
+                    viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
+                    viewModel.commit()
+                })
 
                 vbox {
-                    add(libraryListView)
-                }
-
-                vbox {
-                    vbox {
-                        add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
-                            viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
-                            viewModel.commit()
-                        })
-                        paddingBottom = 5.0
-                    }
-
                     add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
 
                     showWhen {
@@ -91,28 +81,25 @@ class LibraryView : BaseView() {
                     }
                 }
             }
+
         }
 
         center {
             vbox {
-                vbox {
-                    add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
-                        viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
-                        viewModel.commit()
-                    })
-                    paddingBottom = 5.0
-                }
+                add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
+                    viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
+                    viewModel.commit()
+                })
 
                 vbox {
                     add(LibraryCountriesFragment(viewModel.countriesProperty, viewModel.showCountriesProperty))
-                    prefHeightProperty().bind(this@center.heightProperty())
+                    maxHeightProperty().bind(this@center.heightProperty())
 
                     showWhen {
                         viewModel.countriesProperty.emptyProperty().not()
                     }
                 }
 
-                //Retry link
                 vbox(alignment = Pos.CENTER) {
                     hyperlink(messages["downloadRetry"]) {
 
@@ -121,6 +108,7 @@ class LibraryView : BaseView() {
                         showWhen {
                             viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
                         }
+                        addClass(Styles.primaryTextColor)
                     }
                 }
             }

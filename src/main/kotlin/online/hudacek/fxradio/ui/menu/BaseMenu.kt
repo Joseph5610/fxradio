@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
 import online.hudacek.fxradio.event.AppEvent
@@ -37,9 +36,9 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
     /**
      * Parent menu object, extending classes defines its items via [menuItems] property
      */
-    val menu: Menu by lazy {
-        //Workaround to use actual key as menu text instead of
-        //placeholder when key does not exist in Messages
+    val menu by lazy {
+        // Workaround to use actual key as menu text instead of
+        // placeholder when key does not exist in Messages
         val actualTitle = if (messages[menuTitle].startsWith("[")) {
             menuTitle
         } else {

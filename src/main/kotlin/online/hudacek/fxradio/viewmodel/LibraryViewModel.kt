@@ -23,11 +23,10 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.radiobrowser.model.CountriesBody
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.usecase.CountryPinUseCase
-import online.hudacek.fxradio.usecase.CountryUnPinUseCase
-import online.hudacek.fxradio.usecase.GetCountriesUseCase
+import online.hudacek.fxradio.usecase.country.CountryPinUseCase
+import online.hudacek.fxradio.usecase.country.CountryUnpinUseCase
+import online.hudacek.fxradio.usecase.country.GetCountriesUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
@@ -65,9 +64,9 @@ class Library(
     // Default items shown in library ListView
     var libraries: ObservableList<LibraryItem> by property(
         observableListOf(
-            LibraryItem(LibraryState.TopVotedStations, FontAwesome.Glyph.TROPHY),
-            LibraryItem(LibraryState.TrendingStations, FontAwesome.Glyph.ARROW_CIRCLE_UP),
-            LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.STAR),
+            LibraryItem(LibraryState.TopVotedStations, FontAwesome.Glyph.THUMBS_UP),
+            LibraryItem(LibraryState.TrendingStations, FontAwesome.Glyph.FIRE),
+            LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.HEART),
             LibraryItem(LibraryState.History, FontAwesome.Glyph.HISTORY)
         )
     )
@@ -87,7 +86,7 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
     private val countryPinUseCase: CountryPinUseCase by inject()
-    private val countryUnpinUseCase: CountryUnPinUseCase by inject()
+    private val countryUnpinUseCase: CountryUnpinUseCase by inject()
 
     val countriesProperty = bind(Library::countries) as ListProperty
     val librariesProperty = bind(Library::libraries) as ListProperty
@@ -99,7 +98,7 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
         .subscribe({
-            pinnedProperty.add(it)
+            pinnedProperty += it
         }, {
             logger.error(it) { "Exception when performing Pinning!" }
         })
@@ -111,8 +110,8 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
             logger.error(it) { "Exception when performing Unpinning!" }
         })
 
-    fun getCountries(): Disposable = getCountriesUseCase.execute(CountriesBody()).subscribe({
-        countriesProperty.add(it)
+    fun getCountries(): Disposable = getCountriesUseCase.execute(Unit).subscribe({
+        countriesProperty += it
     }, {
         logger.error(it) { "Exception when downloading countries" }
     })

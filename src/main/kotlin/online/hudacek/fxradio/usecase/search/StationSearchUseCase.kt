@@ -16,21 +16,30 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.search
 
 import io.reactivex.Single
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsBody
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
-private const val ORDER_BY_TREND = "clicktrend"
-
 /**
- * Gets list of Top 50 clicked stations from radio-browser API
+ * Searches for all stations that contains provided tag/name
  */
-class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Station>>>() {
 
-    override fun execute(input: Unit): Single<List<Station>> = radioBrowserApi
-            .getAllStations(AllStationsBody(order = ORDER_BY_TREND))
-            .compose(applySchedulersSingle())
+    /**
+     * If [input.first] is set to true, search is performed by tag, otherwise by name
+     */
+    override fun execute(input: Pair<Boolean, String>): Single<List<Station>> = if (input.first) {
+        radioBrowserApi.searchStationByTag(SearchByTagRequest(input.second))
+    } else {
+        radioBrowserApi.searchStationByName(SearchRequest(input.second))
+    }
+        .compose(applySchedulersSingle())
+        .flattenAsObservable { it }
+        .filter { it.countrycode != "RU" }
+        .toList()
 }

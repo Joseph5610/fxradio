@@ -31,12 +31,8 @@ import javafx.stage.Window
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.util.macos.MacUtils
-import tornadofx.FX
+import tornadofx.*
 import tornadofx.FX.Companion.messages
-import tornadofx.alert
-import tornadofx.get
-import tornadofx.importStylesheet
-import tornadofx.removeStylesheet
 import java.util.*
 
 /**
@@ -71,8 +67,7 @@ internal fun confirmDialog(
 }
 
 internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
-    removeStylesheet(Styles::class)
-    removeStylesheet(StylesDark::class)
+    FX.stylesheets.clear()
     if (isDarkModeProperty) {
         importStylesheet(StylesDark::class)
     } else {
@@ -87,12 +82,9 @@ internal fun keyCombination(keyCode: KeyCode) =
 internal fun getCountryNameFromISO(iso3166: String?): String? {
     val countryCode: String? = Locale.getISOCountries().firstOrNull { it == iso3166 }
     return if (countryCode != null) {
-        val locale = Locale("", countryCode)
-        locale.displayName
+        Locale("", countryCode).displayName
     } else {
         null
     }
 }
-
-
 

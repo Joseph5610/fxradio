@@ -48,7 +48,6 @@ import tornadofx.flowpane
 import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
-import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
 import tornadofx.sizeProperty
@@ -86,9 +85,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     }
 
     override fun onDock() {
-        selectedStationViewModel.stationProperty.onChange {
-            selectedStationViewModel.retrieveAdditionalData()
-        }
+        selectedStationViewModel.retrieveAdditionalData()
     }
 
     override val root = borderpane {
@@ -129,26 +126,12 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     alignment = Pos.CENTER
                     paddingAll = 5.0
 
-                    label(createInfoBinding("info.bitrate", selectedStationViewModel.bitrateProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.codec", selectedStationViewModel.codecProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.votes", selectedStationViewModel.votesProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.language", selectedStationViewModel.languageProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.clicktrend", selectedStationViewModel.clickTrendProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
+                    createInfoLabel("info.bitrate", selectedStationViewModel.bitrateProperty)?.let { add(it) }
+                    createInfoLabel("info.codec", selectedStationViewModel.codecProperty)?.let { add(it) }
+                    createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
+                    createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
+                    createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
+                    createInfoLabel("info.clicktrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
                 }
 
                 vbox {
@@ -203,10 +186,15 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
-    private fun createInfoBinding(key: String, valueProperty: Property<*>) = valueProperty.stringBinding {
-        val value = if (it is String) {
-            it.ifEmpty { messages["unknown"] }
-        } else it
-        messages[key] + ": " + value
+    private fun createInfoLabel(key: String, valueProperty: Property<*>?) = valueProperty?.let { p ->
+        label(p.stringBinding {
+            val value = if (it is String) {
+                it.ifEmpty { messages["unknown"] }
+            } else it
+            messages[key] + ": " + value.toString().capitalize()
+        }) {
+            addClass(Styles.grayLabel)
+            addClass(Styles.tag)
+        }
     }
 }

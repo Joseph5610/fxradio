@@ -84,10 +84,9 @@ class StatsFragment : BaseFragment() {
                 addClass(Styles.primaryTextColor)
             }
 
-            vbox(alignment = Pos.BASELINE_CENTER) {
-                label(labelTextProperty) {
-                    paddingAll = 20.0
-                }
+            label(labelTextProperty) {
+                paddingAll = 20.0
+
                 showWhen {
                     viewModel.stateProperty.booleanBinding {
                         it !is StatsState.Fetched

@@ -20,6 +20,8 @@ package online.hudacek.fxradio.ui.view.stations
 
 import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
+import javafx.scene.input.DragEvent
+import javafx.scene.input.MouseEvent
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
@@ -27,12 +29,14 @@ import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.util.DataCellHandler
 import online.hudacek.fxradio.ui.util.DataGridHandler
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*
 
 private const val CELL_WIDTH = 140.0
 private const val LOGO_SIZE = 100.0
+
 
 /**
  * Main view of stations
@@ -48,8 +52,8 @@ class StationsDataGridView : BaseView() {
     //Show initial stations
     override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
-
     override val root = datagrid(stationsViewModel.stationsProperty) {
+        singleSelect
         id = "stations"
 
         val handler = DataGridHandler(this)
@@ -70,6 +74,8 @@ class StationsDataGridView : BaseView() {
         }
 
         cellFormat {
+            val cellHandler = DataCellHandler(this, this@datagrid)
+
             onHover {
                 if (it) {
                     scale(Duration.seconds(0.07), point(1.05, 1.05), play = false).playFromStart()
@@ -77,15 +83,23 @@ class StationsDataGridView : BaseView() {
                     scale(Duration.seconds(0.07), point(1.0, 1.0), play = false).playFromStart()
                 }
             }
+
+            addEventFilter(MouseEvent.DRAG_DETECTED, cellHandler::onDragDetected)
+            addEventFilter(DragEvent.DRAG_OVER, cellHandler::onDragOver)
+            addEventFilter(DragEvent.DRAG_ENTERED, cellHandler::onDragEntered)
+            addEventFilter(DragEvent.DRAG_EXITED, cellHandler::onDragExited)
+            addEventFilter(DragEvent.DRAG_DROPPED, cellHandler::onDragDropped)
+            addEventFilter(DragEvent.DRAG_DONE, cellHandler::onDragDone)
         }
 
         cellCache { station ->
-            vbox {
+            vbox(alignment = Pos.CENTER) {
                 paddingAll = 5
 
                 onHover {
                     tooltip(station.name)
                 }
+
                 contextmenu {
                     // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
@@ -95,22 +109,20 @@ class StationsDataGridView : BaseView() {
                     }
                 }
 
-                vbox(alignment = Pos.CENTER) {
+                stationView(station) {
                     paddingAll = 5
-                    prefHeight = 120.0
-                    stationView(station) {
-                        fitHeight = LOGO_SIZE
-                        fitWidth = LOGO_SIZE
+                    fitHeight = LOGO_SIZE
+                    fitWidth = LOGO_SIZE
+                }
+
+                label(station.name) {
+                    paddingTop = 5
+                    style {
+                        fontSize = 13.px
                     }
                 }
-                vbox(alignment = Pos.CENTER) {
-                    label(station.name) {
-                        style {
-                            fontSize = 13.px
-                        }
-                    }
-                    smallLabel(station.tagsSplit)
-                }
+
+                smallLabel(station.tagsSplit)
             }
         }
 

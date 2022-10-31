@@ -18,8 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import com.github.thomasnield.rxkotlinfx.toObservable
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
@@ -37,7 +35,6 @@ import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.addClass
-import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.contextmenu
 import tornadofx.get
@@ -77,12 +74,12 @@ class StationsHistoryView : BaseView() {
         }
 
         cellCache {
-            hbox(spacing = 10) {
-                alignment = Pos.CENTER_LEFT
+            hbox(spacing = 10, alignment = Pos.CENTER_LEFT) {
                 stationView(it) {
                     fitHeight = LOGO_SIZE
                     fitWidth = LOGO_SIZE
                 }
+
                 vbox {
                     label(it.name)
                     smallLabel(it.tagsSplit)

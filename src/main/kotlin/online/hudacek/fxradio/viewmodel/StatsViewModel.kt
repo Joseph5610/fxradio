@@ -20,14 +20,14 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResult
+import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
 import online.hudacek.fxradio.usecase.GetStatsUseCase
 import tornadofx.observableListOf
 import tornadofx.property
 
 sealed class StatsState {
     object Loading : StatsState()
-    data class Fetched(val stats: StatsResult) : StatsState()
+    data class Fetched(val stats: StatsResponse) : StatsState()
     data class Error(val cause: String) : StatsState()
 }
 

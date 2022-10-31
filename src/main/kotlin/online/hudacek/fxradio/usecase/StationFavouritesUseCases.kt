@@ -20,9 +20,12 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import javafx.beans.property.ListProperty
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.util.applySchedulersSingle
 
 private val logger = KotlinLogging.logger {}
 
@@ -30,23 +33,35 @@ private val logger = KotlinLogging.logger {}
 class FavouriteAddUseCase : BaseUseCase<Station, Single<Station>>() {
 
     override fun execute(input: Station): Single<Station> = Tables.favourites.insert(input)
-            .doOnError { logger.error(it) { "Exception when adding $input!" } }
+        .compose(applySchedulersSingle())
+        .doOnError { logger.error(it) { "Exception when adding $input!" } }
 }
 
 class FavouriteSetUseCase : BaseUseCase<Unit, Observable<Station>>() {
 
     override fun execute(input: Unit): Observable<Station> = Tables.favourites.selectAll()
-            .doOnError { logger.error(it) { "Exception when setting favourite stations!" } }
+        .compose(applySchedulers())
+        .doOnError { logger.error(it) { "Exception when setting favourite stations!" } }
 }
 
 class FavouritesClearUseCase : BaseUseCase<Unit, Single<Int>>() {
 
     override fun execute(input: Unit): Single<Int> = Tables.favourites.removeAll()
-            .doOnError { logger.error(it) { "Exception when clearing favourite stations!" } }
+        .compose(applySchedulersSingle())
+        .doOnError { logger.error(it) { "Exception when clearing favourite stations!" } }
 }
 
 class FavouriteRemoveUseCase : BaseUseCase<Station, Single<Station>>() {
 
     override fun execute(input: Station): Single<Station> = Tables.favourites.remove(input)
-            .doOnError { logger.error(it) { "Exception when removing favourite $input!" } }
+        .compose(applySchedulersSingle())
+        .doOnError { logger.error(it) { "Exception when removing favourite $input!" } }
+}
+
+class FavouriteUpdateUseCase : BaseUseCase<ListProperty<Station>, Observable<Station>>() {
+
+    override fun execute(input: ListProperty<Station>): Observable<Station> = Observable.fromIterable(input.withIndex())
+        .compose(applySchedulers())
+        .flatMapSingle { Tables.favourites.updateOrder(it.value, it.index) }
+
 }

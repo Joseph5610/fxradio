@@ -20,7 +20,6 @@ package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -28,8 +27,7 @@ import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.usecase.StationClickUseCase
-import online.hudacek.fxradio.usecase.StationSearchUUIDUseCase
+import online.hudacek.fxradio.usecase.search.StationSearchUUIDUseCase
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -67,6 +65,8 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     SelectedStation(Station.dummy), InfoPanelState.Hidden
 ) {
 
+    private val stationSearchUUIDUseCase: StationSearchUUIDUseCase by inject()
+
     val stationProperty = bind(SelectedStation::station) as ObjectProperty
     val tagsProperty = bind(SelectedStation::tags) as ListProperty<String>
     val uuidProperty = bind(SelectedStation::uuid) as StringProperty
@@ -82,29 +82,25 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val countryStateProperty = bind(SelectedStation::countryState) as StringProperty?
     val clickTrendProperty = bind(SelectedStation::clickTrend) as IntegerProperty
 
-    private val stationClickUseCase: StationClickUseCase by inject()
-    private val stationSearchUUIDUseCase: StationSearchUUIDUseCase by inject()
-
     val stationObservable: Observable<Station> = stationProperty
         .toObservableChangesNonNull()
         .map { it.newVal }
         .filter { it.isValid() }
-        .doOnEach(appEvent.addToHistory) //Send the new history item event
-
-    init {
-        stationObservable.subscribe(stationClickUseCase::execute)
-    }
+        .doOnEach(appEvent.addToHistory) //Send the new history item
 
     /**
      * Retrieve additional station data as some of them might not be known at all times
      */
-    fun retrieveAdditionalData(): Disposable = stationSearchUUIDUseCase.execute(uuidProperty.value)
-        .subscribe({
-            it.firstOrNull()?.let { s ->
-                votesProperty.value = s.votes
-                clickTrendProperty.value = s.clicktrend
-            }
-        }, {
-            logger.debug(it) { "Retrieving additional station data unsuccessful." }
-        })
+    fun retrieveAdditionalData() {
+        stationObservable
+            .flatMapSingle { stationSearchUUIDUseCase.execute(it.stationuuid) }
+            .subscribe({
+                it.firstOrNull()?.let { s ->
+                    votesProperty.value = s.votes
+                    clickTrendProperty.value = s.clicktrend
+                }
+            }, {
+                logger.debug(it) { "Retrieving additional station data unsuccessful." }
+            })
+    }
 }

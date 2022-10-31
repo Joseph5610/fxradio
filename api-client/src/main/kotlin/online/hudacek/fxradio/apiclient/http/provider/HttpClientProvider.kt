@@ -37,6 +37,7 @@ abstract class HttpClientProvider {
     private val dnsClient by lazy {
         DnsOverHttps.Builder().client(client)
             .url(CLOUDFLARE_DNS.toHttpUrl())
+            .bootstrapDnsHosts(InetAddress.getByName("1.1.1.1"))
             .includeIPv6(false)
             .build()
     }

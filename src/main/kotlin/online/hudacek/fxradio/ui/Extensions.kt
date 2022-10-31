@@ -37,7 +37,6 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.Window
 import javafx.util.Duration
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.style.Styles
@@ -188,10 +187,6 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
  */
 internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit) = {}) =
     notificationPane(showFromTop = true) {
-        // Show dark notifications
-        if (FxRadio.isDarkModePreferred()) {
-            styleClass += NotificationPane.STYLE_CLASS_DARK
-        }
         op(this)
     }
 

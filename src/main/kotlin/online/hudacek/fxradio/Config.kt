@@ -48,12 +48,4 @@ object Config {
         val cacheDirPath = "$baseAppPath/cache"
         val dbPath = "$baseAppPath/$appName.db"
     }
-
-    /**
-     * Flags that change app behaviour
-     * Experimental features
-     */
-    object Flags {
-
-    }
 }

@@ -57,6 +57,9 @@ allprojects {
         implementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion")
         implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
         implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
+
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
     }
 }
 
@@ -75,9 +78,6 @@ dependencies {
 
     // Local JAR files
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
 
     implementation("no.tornado:tornadofx:$tornadoFxVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
