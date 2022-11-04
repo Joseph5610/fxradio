@@ -23,6 +23,7 @@ import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
@@ -95,7 +96,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                         }
                     }
                     action {
-                        selectedStationViewModel.stationProperty.value = it
+                        selectedStationViewModel.item = SelectedStation(it)
                     }
                 }
             }

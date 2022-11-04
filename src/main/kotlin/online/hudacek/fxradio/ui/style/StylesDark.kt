@@ -23,14 +23,8 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.FXVisibility
-import tornadofx.InternalWindow
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.c
-import tornadofx.cssclass
-import tornadofx.em
-import tornadofx.px
+import tornadofx.*
+
 
 /**
  * Dark mode CSS classes used around the app
@@ -202,17 +196,20 @@ class StylesDark : Stylesheet() {
         libraryListItem {
             fontSize = 12.px
             prefHeight = 30.px
-            textFill = c(colors.label)
             borderInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += c(colors.background)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(selected) {
-                backgroundColor += c(colors.backgroundSelected)
-                borderColor += box(c(colors.backgroundBorder))
-                textFill = Color.WHITESMOKE
+                backgroundColor += c(colors.primary)
+                borderColor += box(c(colors.primary + "22"))
+
+                label {
+                    textFill = Color.WHITESMOKE
+                }
             }
+
             padding = box(6.px, 10.px, 6.px, 15.px)
         }
 
@@ -226,8 +223,8 @@ class StylesDark : Stylesheet() {
         }
 
         decoratedListView {
-            padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += c(colors.transparent)
+            borderColor += box(c(colors.transparent))
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 

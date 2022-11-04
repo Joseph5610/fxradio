@@ -53,7 +53,6 @@ class StationsDataGridView : BaseView() {
     override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
-        singleSelect
         id = "stations"
 
         val handler = DataGridHandler(this)

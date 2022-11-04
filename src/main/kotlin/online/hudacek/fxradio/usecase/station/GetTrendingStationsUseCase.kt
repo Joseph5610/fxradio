@@ -36,5 +36,6 @@ class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
         .compose(applySchedulersSingle())
         .flattenAsObservable { it }
         .filter { it.countrycode != "RU" }
+        .map { it.copy(name = it.name.trim()) }
         .toList()
 }

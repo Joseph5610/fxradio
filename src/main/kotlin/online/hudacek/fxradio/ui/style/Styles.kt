@@ -23,14 +23,7 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.FXVisibility
-import tornadofx.InternalWindow
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.c
-import tornadofx.cssclass
-import tornadofx.em
-import tornadofx.px
+import tornadofx.*
 
 /**
  * Type-safe CSS classes used around the app
@@ -50,6 +43,7 @@ class Styles : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
+
         val decoratedListView by cssclass()
         val decoratedListItem by cssclass()
         val listItemTag by cssclass()
@@ -185,30 +179,36 @@ class Styles : Stylesheet() {
         libraryListItem {
             fontSize = 12.px
             prefHeight = 30.px
-            textFill = c(colors.label)
             borderInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += Color.WHITESMOKE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(selected) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                backgroundColor += c(colors.primary)
+                borderColor += box(c(colors.primary + "22"))
+
+                label and(listItemTag) {
+                    textFill = c(colors.grayLabel)
+                }
+
+                label {
+                    textFill = Color.WHITESMOKE
+                }
             }
             padding = box(6.px, 10.px, 6.px, 15.px)
         }
 
         listItemTag {
             padding = box(2.px)
-            textFill = c(colors.label)
+            textFill = c(colors.grayLabel)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            backgroundColor += c(colors.background)
-            borderColor += box(c(colors.backgroundBorder))
+            backgroundColor += c(colors.backgroundBorder)
+            borderColor += box(c(colors.backgroundBorder + "22"))
         }
 
         decoratedListView {
-            padding = box(0.px, 10.px, 0.px, 10.px)
             backgroundColor += Color.WHITE
             borderColor += box(Color.WHITE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)

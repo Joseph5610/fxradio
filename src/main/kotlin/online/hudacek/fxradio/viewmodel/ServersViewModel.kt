@@ -38,7 +38,7 @@ sealed class ServersState(val key: String = "") {
 
 class Servers(
     selectedServer: String = Properties.ApiServer.value(Config.API.fallbackApiServerURL),
-    availableServers: ObservableList<String> = observableListOf()
+    availableServers: ObservableList<String> = observableListOf(selectedServer)
 ) {
     var selected: String by property(selectedServer)
     var servers: ObservableList<String> by property(availableServers)
@@ -55,31 +55,17 @@ class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
 
     private val getServersUseCase: GetServersUseCase by inject()
 
-    val serversProperty = bind(Servers::servers) as ListProperty<String>
+    val availableServersProperty = bind(Servers::servers) as ListProperty<String>
     val selectedProperty = bind(Servers::selected) as StringProperty
 
     /**
      * Perform async DNS lookup to find working API servers
      */
-    fun fetchServers() {
-        stateProperty.value = ServersState.Loading
-        getServersUseCase.execute(Unit).subscribe({
-            if (it.isEmpty()) {
-                stateProperty.value = ServersState.NoServersAvailable
-            } else {
-                stateProperty.value = ServersState.Fetched(it)
-            }
-        }, {
-            stateProperty.value = ServersState.Error(it.localizedMessage)
-        })
-    }
+    fun fetchServers() = getServersUseCase.execute(stateProperty)
 
     override fun onNewState(newState: ServersState) {
         if (newState is ServersState.Fetched) {
-            item = Servers(
-                selectedServer = selectedProperty.value,
-                availableServers = observableListOf(newState.servers)
-            )
+            availableServersProperty.value = observableListOf(newState.servers)
         }
     }
 

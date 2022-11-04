@@ -24,6 +24,7 @@ import online.hudacek.fxradio.ui.view.StationImageView
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
@@ -63,7 +64,7 @@ class HistoryMenu : BaseMenu("menu.history") {
                         }
                     }
                     action {
-                        selectedStationViewModel.stationProperty.value = it
+                        selectedStationViewModel.item = SelectedStation(it)
                     }
                 }
             }

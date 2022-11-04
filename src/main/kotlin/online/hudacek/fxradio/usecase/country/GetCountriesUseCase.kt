@@ -34,7 +34,7 @@ class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
     override fun execute(input: Unit): Observable<Country> = radioBrowserApi
         .getCountries()
         .compose(applySchedulersSingle())
-        .flattenAsObservable { it.filter { c -> !c.isRussia }.sortedBy { c -> c.name } }
+        .flattenAsObservable { it.filter { c -> !c.isRussia } }
         .filter { it.stationcount != 0 }
         .map { Country(getCountryNameFromISO(it.iso_3166_1) ?: it.name, it.iso_3166_1, it.stationcount) }
         .sorted(Comparator.comparing(Country::name))

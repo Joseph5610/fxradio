@@ -28,7 +28,7 @@ val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.0"
 val vlcjVersion = "4.7.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.4.0"
+val flywayVersion = "9.6.0"
 val controlsFxVersion = "8.40.18"
 
 version = "0.9.6"
@@ -98,7 +98,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
-    testImplementation("org.testfx:openjfx-monocle:8u76-b04")
 }
 
 

@@ -66,7 +66,7 @@ class StationsView : BaseView() {
         }
 
         center {
-            vbox(spacing = 5.0){
+            vbox(spacing = 5.0) {
                 paddingAll = 5.0
                 hgrow = Priority.ALWAYS
                 add(messageView)

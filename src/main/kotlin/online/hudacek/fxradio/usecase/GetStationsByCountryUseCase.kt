@@ -29,6 +29,9 @@ import online.hudacek.fxradio.util.applySchedulersSingle
 class GetStationsByCountryUseCase : BaseUseCase<Country, Single<List<Station>>>() {
 
     override fun execute(input: Country): Single<List<Station>> = radioBrowserApi
-            .getStationsByCountryCode(countryCode = input.iso_3166_1)
-            .compose(applySchedulersSingle())
+        .getStationsByCountryCode(countryCode = input.iso_3166_1)
+        .compose(applySchedulersSingle())
+        .flattenAsObservable { it }
+        .map { it.copy(name = it.name.trim()) }
+        .toList()
 }

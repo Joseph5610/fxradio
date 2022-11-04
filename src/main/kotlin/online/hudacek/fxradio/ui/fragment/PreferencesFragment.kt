@@ -44,8 +44,6 @@ import tornadofx.form
 import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.imageview
-import tornadofx.isDirty
-import tornadofx.onChange
 import tornadofx.paddingAll
 import tornadofx.radiobutton
 import tornadofx.style
@@ -64,9 +62,7 @@ class PreferencesFragment : BaseFragment() {
     override fun onDock() = serversViewModel.fetchServers()
 
     override fun onUndock() {
-        if (serversViewModel.selectedProperty.isDirty) {
-            serversViewModel.rollback(serversViewModel.selectedProperty)
-        }
+        serversViewModel.commit()
     }
 
     override val root = vbox {
@@ -130,16 +126,12 @@ class PreferencesFragment : BaseFragment() {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     combobox(
                         property = serversViewModel.selectedProperty,
-                        values = serversViewModel.serversProperty
+                        values = serversViewModel.availableServersProperty
                     ) {
 
                         cellFormat(formatButtonCell = false) {
                             graphic = imageview { image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull() }
                             text = it
-                        }
-
-                        selectionModel.selectedItemProperty().onChange {
-                            serversViewModel.commit()
                         }
                     }
                     showWhen {

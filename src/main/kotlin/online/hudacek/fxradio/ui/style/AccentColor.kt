@@ -42,14 +42,14 @@ enum class AccentColor(
      */
     fun convertToHex() : String = when (this) {
         MULTICOLOR -> "#d65458"
-        GRAPHITE -> "#8C8C8C"
-        RED -> "#FF5258"
-        ORANGE -> "#F8821B"
-        YELLOW -> "#dda603"
-        GREEN -> "#64B946"
-        BLUE -> "#037AFF"
-        PURPLE -> "#A550A6"
-        PINK -> "#F7509E"
+        GRAPHITE -> "#8c8c8c"
+        RED -> "#e15257"
+        ORANGE -> "#f6821c"
+        YELLOW -> "#d09f1c"
+        GREEN -> "#62ba46"
+        BLUE -> "#007aff"
+        PURPLE -> "#a550a7"
+        PINK -> "#f750bb"
     }
 }
 

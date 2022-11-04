@@ -18,23 +18,40 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import javafx.application.Platform
+import javafx.beans.property.Property
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
-import online.hudacek.fxradio.util.applySchedulers
+import online.hudacek.fxradio.viewmodel.ServersState
 
 /**
  * Retrieves valid list of radio-browser API urls
  */
-class GetServersUseCase : BaseUseCase<Unit, Single<List<String>>>() {
+class GetServersUseCase : BaseUseCase<Property<ServersState>, Unit>() {
 
-    private val dnsResponse
-        get() = HttpClient.lookup(Config.API.dnsLookupURL)
+    private val mainScope = MainScope()
 
-    override fun execute(input: Unit): Single<List<String>> = Observable.fromIterable(dnsResponse)
-        .compose(applySchedulers())
-        .map { it.canonicalHostName }
-        .distinct()
-        .toList()
+    override fun execute(input: Property<ServersState>) {
+        input.value = ServersState.Loading
+        mainScope.launch {
+            withContext(IO) {
+                HttpClient.lookup(Config.API.dnsLookupURL)
+                    .map { it.canonicalHostName }
+                    .distinct()
+                    .let {
+                        Platform.runLater {
+                            input.value = if (it.isEmpty()) {
+                                ServersState.NoServersAvailable
+                            } else {
+                                ServersState.Fetched(it)
+                            }
+                        }
+                    }
+            }
+        }
+    }
 }

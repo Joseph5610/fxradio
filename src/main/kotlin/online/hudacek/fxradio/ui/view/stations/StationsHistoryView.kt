@@ -19,10 +19,11 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
+import online.hudacek.fxradio.ui.menu.item
+import online.hudacek.fxradio.ui.menu.separator
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.stationView
@@ -39,11 +40,9 @@ import tornadofx.booleanBinding
 import tornadofx.contextmenu
 import tornadofx.get
 import tornadofx.hbox
-import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.onUserSelect
-import tornadofx.separator
 import tornadofx.vbox
 
 private const val LOGO_SIZE = 30.0
@@ -55,12 +54,12 @@ class StationsHistoryView : BaseView() {
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
 
-    override val root = listview<Station>(historyViewModel.stationsProperty) {
+    override val root = listview(historyViewModel.stationsProperty) {
         id = "stationsHistoryList"
 
         // Cleanup selected item on refresh of library
         appEvent.historyUpdated.subscribe {
-           selectionModel.select(0)
+            selectionModel.select(0)
         }
 
         onUserSelect(1) {
