@@ -59,14 +59,6 @@ class AddStationFragment : BaseFragment() {
                 fieldset {
                     requestFocusOnSceneAvailable()
 
-                    vbox {
-                        prefHeight = 50.0
-                        vgrow = Priority.ALWAYS
-                        label(messages["add.label"]) {
-                            isWrapText = true
-                        }
-                    }
-
                     field(messages["add.name"], "My Radio Station",
                             viewModel.nameProperty, isRequired = true) { field ->
                         field.validator {
