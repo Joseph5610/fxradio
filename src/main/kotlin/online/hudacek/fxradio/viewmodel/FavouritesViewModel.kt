@@ -93,9 +93,7 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
         })
 
     override fun onCommit() {
-        favouritesUpdateUseCase.execute(stationsProperty).subscribe({
-
-        }, {
+        favouritesUpdateUseCase.execute(stationsProperty).subscribe({}, {
             // rollback viewmodel to previous state when update failed
             rollback()
         })

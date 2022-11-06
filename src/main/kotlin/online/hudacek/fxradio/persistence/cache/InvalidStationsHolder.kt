@@ -30,10 +30,10 @@ object InvalidStationsHolder {
     val invalidLogoStations = observableListOf<Station>()
 
     fun Station.setInvalidLogo() {
-        if (!invalidLogoStations.contains(this)) {
-            invalidLogoStations.add(this)
+        if (!hasInvalidLogo()) {
+            invalidLogoStations += this
         }
     }
 
-    fun Station.hasInvalidLogo() = invalidLogoStations.contains(this)
+    fun Station.hasInvalidLogo() = this in invalidLogoStations
 }

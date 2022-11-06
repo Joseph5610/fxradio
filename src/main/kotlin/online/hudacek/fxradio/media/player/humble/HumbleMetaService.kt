@@ -75,7 +75,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
             if (value.getValue(streamStationName) != null && value.getValue(streamNowPlayingKey) != null) {
                 //Send new MetaData event if stream metadata values are present
                 val mediaMeta = StreamMetaData(value.getValue(streamStationName), value.getValue(streamNowPlayingKey))
-                appEvent.streamMetaDataUpdated.onNext(mediaMeta)
+                appEvent.streamMetaDataUpdates.onNext(mediaMeta)
             }
         }
 

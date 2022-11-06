@@ -24,9 +24,7 @@ import tornadofx.addClass
 import tornadofx.fade
 import tornadofx.pane
 import tornadofx.plusAssign
-import tornadofx.px
 import tornadofx.removeFromParent
-import tornadofx.style
 import tornadofx.text
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.set
@@ -54,12 +52,15 @@ class PlayerTickerView : TickerView() {
 
 open class TickerView : BaseView() {
 
-    val marqueeFragment by lazy { MarqueeFragment() }
+    protected val marqueeFragment = find<MarqueeFragment>()
 
     override val root = pane {
         prefHeight = 15.0
-        marqueeFragment.inside(this)
-        add(marqueeFragment)
+
+        marqueeFragment.apply {
+            inside(this@pane)
+            add(this)
+        }
     }
 
     fun createText(content: String) = text(content) {

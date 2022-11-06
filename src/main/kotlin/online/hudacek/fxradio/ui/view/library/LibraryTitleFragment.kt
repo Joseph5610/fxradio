@@ -27,6 +27,7 @@ import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
 import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.glyphfont.Glyph
 import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.onLeftClick
@@ -35,41 +36,39 @@ import tornadofx.paddingRight
 import tornadofx.point
 import tornadofx.region
 import tornadofx.transform
+import tornadofx.vbox
 
 private const val ICON_SIZE = 11.0
 
 /**
  * Custom title fragment with hide/unhide icons
  */
-class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () -> Unit) : BaseFragment() {
+class LibraryTitleFragment : BaseFragment() {
 
-    override val root = hbox {
-        smallLabel(title) {
-            paddingLeft = 10.0
-        }
-        region { hgrow = Priority.ALWAYS }
-        smallLabel {
+    private val libraryTitle: String by param()
+    private val showProperty: BooleanProperty by param()
+
+    private val showIcon: Glyph by lazy {
+        FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE, isPrimary = false) {
             paddingLeft = 10.0
             paddingRight = 10.0
 
             onLeftClick {
-                op()
+                showProperty.value = !showProperty.value
             }
-
-            graphic = FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE, isPrimary = false)
 
             showProperty
                 .toObservable()
                 .subscribe {
                     if (it)
-                        graphic.transform(
+                        transform(
                             Duration.seconds(0.2), point(0.0, 0.0),
                             angle = 0.0,
                             scale = point(1.0, 1.0),
                             opacity = 1.0
                         )
                     else {
-                        graphic.transform(
+                        transform(
                             Duration.seconds(0.2), point(0.0, 0.0),
                             angle = -90.0,
                             scale = point(1.0, 1.0),
@@ -77,7 +76,16 @@ class LibraryTitleFragment(title: String, showProperty: BooleanProperty, op: () 
                         )
                     }
                 }
+        }
+    }
 
+    override val root = hbox {
+        smallLabel(libraryTitle) {
+            paddingLeft = 10.0
+        }
+        region { hgrow = Priority.ALWAYS }
+        vbox {
+            add(showIcon)
             showWhen {
                 this@hbox.hoverProperty()
             }

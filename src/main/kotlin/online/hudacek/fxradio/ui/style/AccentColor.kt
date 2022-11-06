@@ -18,8 +18,6 @@
 
 package online.hudacek.fxradio.ui.style
 
-import online.hudacek.fxradio.util.macos.MacUtils
-
 /**
  * Accent Color definitions
  */

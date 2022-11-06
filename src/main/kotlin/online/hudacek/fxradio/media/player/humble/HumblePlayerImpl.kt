@@ -27,17 +27,15 @@ import online.hudacek.fxradio.media.MediaPlayer
 
 private val logger = KotlinLogging.logger {}
 
-
-
 /**
- * Custom Audio player using Humble library
+ * Custom Audio player implementation using humble-video library
  */
 class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.Humble) : MediaPlayer {
 
     private val scope = MainScope()
 
     private val audioComponent by lazy { HumbleAudioComponent() }
-    private val metaDataService = HumbleMetaDataService()
+    private val metaDataService by lazy { HumbleMetaDataService() }
 
     override fun play(streamUrl: String) {
         stop() //this player should stop itself before playing new stream

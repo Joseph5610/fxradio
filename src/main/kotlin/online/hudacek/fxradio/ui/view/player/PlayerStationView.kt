@@ -64,7 +64,7 @@ class PlayerStationView : BaseView() {
 
     override val root = hbox(spacing = 5) {
         // Radio logo
-        vbox(alignment = Pos.CENTER_LEFT) {
+        vbox(alignment = Pos.CENTER) {
             minHeight = LOGO_SIZE
             maxHeight = LOGO_SIZE
             add(stationLogo)

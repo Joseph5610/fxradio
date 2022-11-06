@@ -92,7 +92,7 @@ class StationsDataGridView : BaseView() {
         }
 
         cellCache { station ->
-            vbox(alignment = Pos.CENTER) {
+            vbox(alignment = Pos.BOTTOM_CENTER) {
                 paddingAll = 5
 
                 onHover {

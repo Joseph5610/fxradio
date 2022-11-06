@@ -26,14 +26,33 @@ import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.util.*
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.keyCombination
+import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.booleanBinding
 import tornadofx.controlsfx.glyph
+import tornadofx.disableWhen
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.insets
+import tornadofx.objectBinding
+import tornadofx.onChange
+import tornadofx.onLeftClick
+import tornadofx.paddingLeft
+import tornadofx.paddingRight
+import tornadofx.paddingTop
+import tornadofx.region
+import tornadofx.slider
+import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
 private const val VOLUME_GLYPH_SIZE = 14.0
@@ -137,46 +156,43 @@ class PlayerView : BaseView() {
         }
     }
 
-    override val root = vbox {
-        hbox(spacing = 10) {
-            vgrow = Priority.NEVER
-            alignment = Pos.CENTER_LEFT
-            paddingLeft = 30.0
+    override val root = hbox(spacing = 10) {
+        vgrow = Priority.NEVER
+        alignment = Pos.CENTER_LEFT
 
-            //Play/Pause buttons
-            add(playerControls)
+        //Play/Pause buttons
+        add(playerControls)
 
-            region {
-                hgrow = Priority.ALWAYS
-            }
-
-            //Station info box
-            add(playerStationView)
-
-            // Show station details
-            add(infoGlyph)
-
-            if (Properties.EnableDebugView.value(false)) {
-                add(FontAwesome.Glyph.BUG.make(14.0) {
-                    onLeftClick {
-                        Modal.Debug.open()
-                    }
-                })
-            }
-
-            region {
-                hgrow = Priority.ALWAYS
-            }
-
-            //Volume controls
-            hbox {
-                paddingRight = 30.0
-                alignment = Pos.CENTER
-                add(volumeDownGlyph)
-                add(volumeSlider)
-                add(volumeUpGlyph)
-            }
+        region {
+            hgrow = Priority.ALWAYS
         }
+
+        //Station info box
+        add(playerStationView)
+
+        // Show station details
+        add(infoGlyph)
+
+        if (Properties.EnableDebugView.value(false)) {
+            add(FontAwesome.Glyph.BUG.make(14.0) {
+                onLeftClick {
+                    Modal.Debug.open()
+                }
+            })
+        }
+
+        region {
+            hgrow = Priority.ALWAYS
+        }
+
+        //Volume controls
+        hbox {
+            alignment = Pos.CENTER
+            add(volumeDownGlyph)
+            add(volumeSlider)
+            add(volumeUpGlyph)
+        }
+
         addClass(Styles.playerMainBox)
         addClass(Styles.backgroundWhiteSmoke)
     }

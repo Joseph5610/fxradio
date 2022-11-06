@@ -42,13 +42,15 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
     val usePlatformProperty = bind(AppMenu::usePlatform) as BooleanProperty
 
     fun clearCache(): Disposable = cacheClearUseCase.execute(Unit)
-            .subscribe({
-                appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
-            }, {
-                appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
-            })
+        .subscribe({
+            appEvent.appNotification.onNext(
+                AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK)
+            )
+        }, {
+            appEvent.appNotification.onNext(
+                AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING)
+            )
+        })
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

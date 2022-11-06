@@ -49,9 +49,9 @@ class Servers(
  * Item is set in [online.hudacek.fxradio.api.RBServiceProvider]
  *
  * Search for available servers is performed only on first start of the app or when opening
- * [online.hudacek.fxradio.ui.fragment.ServersFragment]
+ * [online.hudacek.fxradio.ui.fragment.PreferencesFragment]
  */
-class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
+class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers(), ServersState.NoServersAvailable) {
 
     private val getServersUseCase: GetServersUseCase by inject()
 

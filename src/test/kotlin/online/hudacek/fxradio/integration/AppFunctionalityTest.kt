@@ -59,6 +59,7 @@ import org.testfx.util.WaitForAsyncUtils
 import tornadofx.DataGrid
 import tornadofx.SmartListCell
 import tornadofx.find
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -115,14 +116,16 @@ class AppFunctionalityTest {
         // Wait for stations to load
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        waitFor(5) { stations.isVisible && stations.items.size == 50 }
+        waitFor(5) {
+            stations.isVisible && stations.items.size > 0
+        }
 
         //Avoid station names that start with # as it is query locator for ID
         val stationToClick = stations.items
-                .filter { !it.name.startsWith("#") }
-                .filter { it.name != selectedStationViewModel.stationProperty.value.name }
-                .take(5)
-                .random()
+            .filter { !it.name.startsWith("#") }
+            .filter { it.name != selectedStationViewModel.stationProperty.value.name }
+            .take(5)
+            .random()
         robot.doubleClickOn(stationToClick.name)
 
         WaitForAsyncUtils.waitForFxEvents()
@@ -151,10 +154,10 @@ class AppFunctionalityTest {
         val appStations = robot.find(stationsDataGrid) as DataGrid<Station>
 
         // Get results from API
-        val stations = service.getTopVotedStations().blockingGet()
+        val apiStations = service.getTopVotedStations().blockingGet()
+            .filter { it.countrycode != "RU" }
 
-        assertEquals(50, stations.size)
-        assertEquals(50, appStations.items.size)
+        assertEquals(apiStations.size, appStations.items.size)
     }
 
     @Test
@@ -172,8 +175,12 @@ class AppFunctionalityTest {
 
         // Click on History item in Library List Item
         val historyItem = robot.from(libraries)
-                .lookup(libraries.items[historyItemIndex].type.key.capitalize())
-                .query<SmartListCell<LibraryItem>>()
+            .lookup(libraries.items[historyItemIndex].type.key.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
+            .query<Label>()
         robot.clickOn(historyItem)
 
         // Find DataGrid, History List and actual db count
@@ -255,8 +262,8 @@ class AppFunctionalityTest {
 
         // Find "TestPinnedCountryName" in the list of items
         val item = robot.from(countries[0])
-                .lookup("TestPinnedCountryName")
-                .query<Label>()
+            .lookup("TestPinnedCountryName")
+            .query<Label>()
 
         // Simulate remove country to pinned list
         robot.interact {
@@ -267,8 +274,8 @@ class AppFunctionalityTest {
 
         // Check there is no item with this label in the app
         val items = robot.from(countries[0])
-                .lookup("TestPinnedCountryName")
-                .queryAll<Label>()
+            .lookup("TestPinnedCountryName")
+            .queryAll<Label>()
         waitFor(2) { items.size == 0 }
     }
 }

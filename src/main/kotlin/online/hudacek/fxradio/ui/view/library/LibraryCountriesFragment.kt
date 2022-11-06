@@ -18,29 +18,44 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
+import javafx.scene.layout.VBox
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.flagIcon
-import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.booleanBinding
+import tornadofx.contextmenu
+import tornadofx.doubleBinding
+import tornadofx.fitToParentHeight
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.insets
+import tornadofx.item
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
+import tornadofx.selectedItem
+import tornadofx.visibleWhen
 
 /**
  * Custom listview fragment for countries
  */
-class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showProperty: BooleanProperty) :
-    BaseFragment() {
+class LibraryCountriesFragment : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    init {
-        viewModel.stateObservableChanges.subscribe {
+    private val countriesProperty: ListProperty<Country> by param()
+
+    override fun onDock() {
+        viewModel.stateObservable.subscribe {
             if (it !is LibraryState.SelectedCountry) {
                 root.selectionModel.clearSelection()
             } else {
@@ -52,9 +67,11 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
     }
 
     override val root = listview(countriesProperty) {
-        fitToParentHeight()
         id = "libraryCountriesFragment"
 
+        fitToParentHeight()
+
+        VBox.setMargin(this, insets(6))
         val handler = ListViewHandler(this)
         setOnKeyPressed(handler::handle)
 
@@ -113,10 +130,6 @@ class LibraryCountriesFragment(countriesProperty: ListProperty<Country>, showPro
 
         onUserSelect(clickCount = 1) {
             viewModel.stateProperty.value = LibraryState.SelectedCountry(it)
-        }
-
-        showWhen {
-            countriesProperty.emptyProperty().not().and(showProperty)
         }
 
         addClass(Styles.libraryListView)

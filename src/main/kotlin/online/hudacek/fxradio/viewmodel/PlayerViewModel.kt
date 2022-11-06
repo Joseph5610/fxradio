@@ -58,8 +58,8 @@ class Player(
  * Handles station playing logic
  */
 class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
-    initialState = PlayerState.Stopped,
-    initialItem = Player()
+    initialItem = Player(),
+    initialState = PlayerState.Stopped
 ) {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
@@ -77,7 +77,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
         /**
          * Emitted when new song starts playing or other metadata of stream changes
          */
-        appEvent.streamMetaDataUpdated
+        appEvent.streamMetaDataUpdates
             .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
             .filter { it.nowPlaying.length > 1 }
             .observeOnFx()
@@ -115,7 +115,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
     }
 
     override fun onError(throwable: Throwable) {
-        stateProperty.value = PlayerState.Error(throwable.localizedMessage)
+        stateProperty.value = PlayerState.Error(throwable.message ?: "Unknown error")
         super.onError(throwable)
     }
 

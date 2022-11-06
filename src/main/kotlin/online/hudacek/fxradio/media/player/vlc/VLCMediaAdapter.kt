@@ -62,7 +62,7 @@ class VLCMediaAdapter : MediaEventAdapter() {
                             .replace("\r", "")
                             .replace("\n", "")
                     )
-                    appEvent.streamMetaDataUpdated.onNext(metaData)
+                    appEvent.streamMetaDataUpdates.onNext(metaData)
                 }
             }
         }

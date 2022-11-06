@@ -23,8 +23,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
-import mu.KotlinLogging
-import online.hudacek.fxradio.persistence.cache.ImageCacheUtils
+import online.hudacek.fxradio.persistence.cache.ImageCache
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.util.applySchedulersSingle
 import online.hudacek.fxradio.util.confirmDialog
@@ -38,13 +37,13 @@ class CacheClearUseCase : BaseUseCase<Unit, Maybe<Boolean>>() {
     private val alert: Alert
         get() = confirmDialog(
             messages["cache.clear.confirm"],
-            messages["cache.clear.text"].formatted(ImageCacheUtils.totalSize), owner = primaryStage
+            messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage
         )
 
     override fun execute(input: Unit): Maybe<Boolean> = alert.toMaybe()
         .defaultIfEmpty(ButtonType.CANCEL)
         .filter { it == ButtonType.OK }
         .flatMapSingleElement {
-            Single.just(ImageCacheUtils.clear()).compose(applySchedulersSingle())
+            Single.just(ImageCache.clear()).compose(applySchedulersSingle())
         }
 }

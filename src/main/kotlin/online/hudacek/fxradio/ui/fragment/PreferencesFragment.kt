@@ -52,7 +52,7 @@ import tornadofx.tooltip
 import tornadofx.vbox
 
 /**
- * Set app appearance
+ * Change app preferences
  */
 class PreferencesFragment : BaseFragment() {
 
@@ -102,7 +102,6 @@ class PreferencesFragment : BaseFragment() {
                         }
                     }
                 }
-                //smallLabel(messages["app.useSystemColorDesc"])
             }
 
             fieldset(messages["app.darkMode"]) {
@@ -166,7 +165,6 @@ class PreferencesFragment : BaseFragment() {
                 }
             }
         }
-
         addClass(Styles.backgroundWhite)
     }
 }

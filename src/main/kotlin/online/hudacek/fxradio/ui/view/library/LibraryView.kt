@@ -25,17 +25,7 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.borderpane
-import tornadofx.bottom
-import tornadofx.center
-import tornadofx.get
-import tornadofx.hyperlink
-import tornadofx.paddingAll
-import tornadofx.top
-import tornadofx.vbox
-import tornadofx.vgrow
+import tornadofx.*
 
 class LibraryView : BaseView() {
 
@@ -61,23 +51,35 @@ class LibraryView : BaseView() {
                     add(librarySearchView)
                 }
 
-                add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
-                    viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
-                    viewModel.commit()
-                })
+                add(
+                    find<LibraryTitleFragment>(
+                        params = mapOf(
+                            "libraryTitle" to messages["library"],
+                            "showProperty" to viewModel.showLibraryProperty
+                        )
+                    )
+                )
 
                 add(libraryListView)
 
-                add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
-                    viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
-                    viewModel.commit()
-                })
+                add(
+                    find<LibraryTitleFragment>(
+                        params = mapOf(
+                            "libraryTitle" to messages["pinned"],
+                            "showProperty" to viewModel.showPinnedProperty
+                        )
+                    )
+                )
 
                 vbox {
-                    add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
+                    add(
+                        find<LibraryCountriesFragment>(
+                            params = mapOf("countriesProperty" to viewModel.pinnedProperty)
+                        )
+                    )
 
                     showWhen {
-                        viewModel.pinnedProperty.emptyProperty().not()
+                        viewModel.pinnedProperty.emptyProperty().not().and(viewModel.showPinnedProperty)
                     }
                 }
             }
@@ -86,17 +88,25 @@ class LibraryView : BaseView() {
 
         center {
             vbox {
-                add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
-                    viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
-                    viewModel.commit()
-                })
-
+                add(
+                    find<LibraryTitleFragment>(
+                        params = mapOf(
+                            "libraryTitle" to messages["countries"],
+                            "showProperty" to viewModel.showCountriesProperty
+                        )
+                    )
+                )
                 vbox {
-                    add(LibraryCountriesFragment(viewModel.countriesProperty, viewModel.showCountriesProperty))
-                    maxHeightProperty().bind(this@center.heightProperty())
+                    vgrow = Priority.ALWAYS
+                    add(
+                        find<LibraryCountriesFragment>(
+                            params = mapOf("countriesProperty" to viewModel.countriesProperty)
+                        )
+                    )
+                    prefHeightProperty().bind(this@center.heightProperty().minus(10.0))
 
                     showWhen {
-                        viewModel.countriesProperty.emptyProperty().not()
+                        viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
                     }
                 }
 

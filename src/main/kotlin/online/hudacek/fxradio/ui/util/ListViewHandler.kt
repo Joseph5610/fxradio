@@ -10,8 +10,8 @@ class ListViewHandler<T>(private val listView: ListView<T>) {
         if (key.code == TAB) {
             with(listView.selectionModel) {
                 if (selectedIndex == -1) {
-                    select(0)
                     listView.scrollTo(0)
+                    select(0)
                     key.consume()
                 } else {
                     clearSelection()

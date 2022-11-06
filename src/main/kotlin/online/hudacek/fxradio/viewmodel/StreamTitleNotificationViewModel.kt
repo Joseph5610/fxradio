@@ -41,7 +41,7 @@ class StreamTitleNotificationViewModel : BaseViewModel<StreamTitleNotification>(
     val showProperty = bind(StreamTitleNotification::show) as BooleanProperty
 
     init {
-        appEvent.streamMetaDataUpdated
+        appEvent.streamMetaDataUpdates
                 .filter { showProperty.value }
                 .distinctUntilChanged()
                 .subscribe {

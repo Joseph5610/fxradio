@@ -66,7 +66,7 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
     val uuidProperty = bind(AddStationModel::uuid) as StringProperty
     val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
 
-    //Find Country Code from countryProperty value
+    // Find Country Code from countryProperty value
     private val countryCodeProperty = countryProperty.stringBinding { countryName ->
         Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     }

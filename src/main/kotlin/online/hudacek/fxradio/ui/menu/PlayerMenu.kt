@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import javafx.scene.control.CheckMenuItem
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.viewmodel.PlayerState
@@ -25,6 +26,7 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
 import tornadofx.action
+import tornadofx.booleanBinding
 import tornadofx.get
 import tornadofx.onChange
 
@@ -54,9 +56,9 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    private val playerTypeItem by lazy {
+    private val playerTypeItem: CheckMenuItem by lazy {
         checkMenuItem(messages["menu.player.switch"]) {
-            isSelected = playerViewModel.mediaPlayerProperty.value?.playerType == MediaPlayer.Type.Humble
+            isSelected = playerShowProperty.value
             action {
                 with(playerViewModel) {
                     stateProperty.value = PlayerState.Stopped
@@ -66,6 +68,12 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
                 }
             }
         }
+    }
+
+    private val playerShowProperty = playerViewModel.mediaPlayerProperty.booleanBinding {
+        it?.playerType == MediaPlayer.Type.Humble
+    }.onChange {
+        playerTypeItem.isSelected = it
     }
 
     private val animateItem by lazy {
@@ -84,12 +92,6 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
             action {
                 streamTitleNotificationViewModel.commit()
             }
-        }
-    }
-
-    init {
-        playerViewModel.mediaPlayerProperty.onChange {
-            playerTypeItem.isSelected = it?.playerType == MediaPlayer.Type.Humble
         }
     }
 

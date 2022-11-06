@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
@@ -38,6 +39,7 @@ import tornadofx.paddingBottom
 import tornadofx.paddingTop
 import tornadofx.right
 import tornadofx.stringBinding
+import tornadofx.vbox
 
 /**
  * Bar with opened library name and action button within stationsView
@@ -48,7 +50,7 @@ class StationsHeaderView : BaseView() {
     private val libraryViewModel: LibraryViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
 
-    private val stationsHeaderSearchView: StationsHeaderSearchView by inject()
+    private val stationsSearchButtonView: StationsSearchButtonView by inject()
 
     // Bindings for library name based on selected library
     private val libraryNameTextProperty = libraryViewModel.stateProperty.stringBinding {
@@ -87,7 +89,9 @@ class StationsHeaderView : BaseView() {
         }
 
         right {
-            add(stationsHeaderSearchView)
+            vbox(alignment = Pos.CENTER) {
+                add(stationsSearchButtonView)
+            }
         }
 
         showWhen {

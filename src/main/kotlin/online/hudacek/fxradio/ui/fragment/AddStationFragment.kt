@@ -20,7 +20,6 @@ package online.hudacek.fxradio.ui.fragment
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
-import javafx.scene.layout.Priority
 import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.customNotificationPane

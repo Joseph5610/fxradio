@@ -48,14 +48,12 @@ class TrayIcon : Component() {
             }
         }
 
-        playerViewModel.stateProperty.onChange {
-            it?.let {
-                playPauseItem?.let { mi ->
-                    mi.label = if (it is PlayerState.Playing) {
-                        messages["menu.player.stop"]
-                    } else {
-                        messages["menu.player.start"]
-                    }
+        playerViewModel.stateObservable.subscribe {
+            playPauseItem?.let { mi ->
+                mi.label = if (it is PlayerState.Playing) {
+                    messages["menu.player.stop"]
+                } else {
+                    messages["menu.player.start"]
                 }
             }
         }

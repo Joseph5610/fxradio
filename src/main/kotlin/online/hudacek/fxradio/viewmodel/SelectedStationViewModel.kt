@@ -20,6 +20,7 @@ package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -86,7 +87,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
         .toObservableChangesNonNull()
         .map { it.newVal }
         .filter { it.isValid() }
-        .doOnEach(appEvent.addToHistory) //Send the new history item
+        .doOnEach(appEvent.stationsHistory) //Send the new history item
 
     /**
      * Retrieve additional station data as some of them might not be known at all times

@@ -28,7 +28,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.hasInvalidLogo
 import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.setInvalidLogo
-import online.hudacek.fxradio.persistence.cache.StationImageLoader
+import online.hudacek.fxradio.persistence.cache.StationImageCache
 import tornadofx.objectProperty
 
 private val logger = KotlinLogging.logger {}
@@ -60,7 +60,7 @@ class StationImageView(private val stationProperty: Property<Station>) : ImageVi
      * Loads image of [Station] from cache into [view] asynchronously
      */
     private fun getStationImage() {
-        stationImageLoader.load(stationProperty.value).subscribe({
+        stationImageCache.load(stationProperty.value).subscribe({
             image = it
             it?.errorProperty()?.toObservable()?.subscribe { isError ->
                 if (isError) {
@@ -79,6 +79,6 @@ class StationImageView(private val stationProperty: Property<Station>) : ImageVi
 
         private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
 
-        private val stationImageLoader by lazy { StationImageLoader() }
+        private val stationImageCache by lazy { StationImageCache() }
     }
 }

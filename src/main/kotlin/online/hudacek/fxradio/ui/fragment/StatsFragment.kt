@@ -37,7 +37,6 @@ import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.paddingAll
-import tornadofx.paddingBottom
 import tornadofx.stringBinding
 import tornadofx.vbox
 

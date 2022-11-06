@@ -83,7 +83,7 @@ class AttributionsFragment : BaseFragment() {
      * Text Area When user clicks on any attribution
      * to show the contents of license file
      */
-    class LicenseFragment : Fragment() {
+    class LicenseFragment : BaseFragment() {
 
         private val viewModel: AttributionViewModel by inject()
 

@@ -52,7 +52,7 @@ class HistoryViewModel : BaseViewModel<History>(History()) {
             }
 
         // Add currently listened station to history
-        appEvent.addToHistory
+        appEvent.stationsHistory
             .compose(applySchedulers())
             // Add only valid stations
             .filter { it.isValid() }

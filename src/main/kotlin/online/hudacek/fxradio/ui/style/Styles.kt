@@ -87,7 +87,7 @@ class Styles : Stylesheet() {
         }
 
         playerMainBox {
-            padding = box(5.0.px)
+            padding = box(5.0.px, 35.0.px)
             borderColor += box(
                 c(colors.transparent), c(colors.transparent),
                 c(colors.backgroundBorder),
@@ -179,8 +179,6 @@ class Styles : Stylesheet() {
         libraryListItem {
             fontSize = 12.px
             prefHeight = 30.px
-            borderInsets += box(0.px, 5.px, 0.px, 5.px)
-            backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += Color.WHITESMOKE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
@@ -196,7 +194,7 @@ class Styles : Stylesheet() {
                     textFill = Color.WHITESMOKE
                 }
             }
-            padding = box(6.px, 10.px, 6.px, 15.px)
+            padding = box(6.px, 10.px, 6.px, 10.px)
         }
 
         listItemTag {

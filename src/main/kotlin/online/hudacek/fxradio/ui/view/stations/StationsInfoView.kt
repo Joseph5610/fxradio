@@ -49,13 +49,13 @@ import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.paddingAll
-import tornadofx.paddingBottom
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
 import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
+import java.util.*
 
 private const val LOGO_SIZE = 60.0
 
@@ -93,28 +93,25 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         paddingAll = 10.0
 
         top {
-            vbox {
-                vbox(alignment = Pos.CENTER) {
-                    paddingAll = 10.0
+            vbox(alignment = Pos.CENTER) {
+                paddingAll = 10.0
 
-                    vbox(alignment = Pos.CENTER) {
-                        paddingBottom = 5.0
-                        add(stationLogo)
-                    }
+                add(stationLogo)
 
-                    hyperlink(selectedStationViewModel.nameProperty) {
-                        action {
-                            app.openUrl(selectedStationViewModel.homePageProperty.value)
-                        }
-                        addClass(Styles.subheader)
-                        addClass(Styles.primaryTextColor)
-                        tooltip(messages["info.visit.website"])
+                hyperlink(selectedStationViewModel.nameProperty) {
+                    action {
+                        app.openUrl(selectedStationViewModel.homePageProperty.value)
                     }
-                    label(selectedStationViewModel.countryProperty) {
-                        addClass(Styles.grayLabel)
-                    }
+                    addClass(Styles.subheader)
+                    addClass(Styles.primaryTextColor)
+                    tooltip(messages["info.visit.website"])
+                }
+
+                label(selectedStationViewModel.countryProperty) {
+                    addClass(Styles.grayLabel)
                 }
             }
+
         }
 
         center {
@@ -163,20 +160,24 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
         bottom {
             vbox(spacing = 5.0, alignment = Pos.CENTER) {
-                paddingAll = 5.0
                 button(messages["copy.stream.url"]) {
                     graphic = copyIcon
                     maxWidth = Double.MAX_VALUE
-                    actionEvents().map { selectedStationViewModel.stationProperty.value }
+
+                    actionEvents()
+                        .map { selectedStationViewModel.stationProperty.value }
                         .subscribe {
                             clipboard.update(it.url_resolved)
                         }
                 }
                 button(messages["menu.station.vote"]) {
-                    graphic = likeIcon
                     requestFocusOnSceneAvailable()
+                    graphic = likeIcon
                     maxWidth = Double.MAX_VALUE
-                    actionEvents().map { selectedStationViewModel.stationProperty.value }.subscribe(appEvent.addVote)
+
+                    actionEvents()
+                        .map { selectedStationViewModel.stationProperty.value}
+                        .subscribe(appEvent.votedStations)
 
                     addClass(Styles.primaryButton)
                 }
@@ -191,7 +192,8 @@ class StationsInfoView : BaseView(FxRadio.appName) {
             val value = if (it is String) {
                 it.ifEmpty { messages["unknown"] }
             } else it
-            messages[key] + ": " + value.toString().capitalize()
+            messages[key] + ": " + value.toString()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
         }) {
             addClass(Styles.grayLabel)
             addClass(Styles.tag)

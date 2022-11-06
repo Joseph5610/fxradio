@@ -14,10 +14,11 @@ buildscript {
     }
 }
 
-
 plugins {
     kotlin("jvm") version "1.7.20"
 }
+
+apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "1.7.20"
@@ -34,8 +35,6 @@ val controlsFxVersion = "8.40.18"
 version = "0.9.6"
 
 val appVersion: String = version as String
-
-apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
 allprojects {
     apply(plugin = "kotlin")

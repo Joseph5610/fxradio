@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import javafx.scene.layout.VBox
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.showWhen
@@ -34,7 +35,7 @@ class LibraryListView : BaseView() {
     private val viewModel: LibraryViewModel by inject()
     override fun onDock() {
         // React to changes of library not from by clicking on list item
-        viewModel.stateObservableChanges.subscribe {
+        viewModel.stateObservable.subscribe {
             if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
                 root.selectionModel.clearSelection()
             } else {
@@ -49,6 +50,7 @@ class LibraryListView : BaseView() {
     override val root = listview(viewModel.librariesProperty) {
         id = "libraryListView"
 
+        VBox.setMargin(this, insets(6))
         val handler = ListViewHandler(this)
         setOnKeyPressed(handler::handle)
 

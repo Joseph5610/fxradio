@@ -21,24 +21,19 @@ package online.hudacek.fxradio.persistence.cache
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javafx.scene.image.Image
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulersSingle
 import java.io.InputStream
 import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
-class StationImageLoader {
-
-    private val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
+class StationImageCache : ImageCache() {
 
     /**
      * Retrieves the station image either from local cache or remote url
      */
-    fun load(station: Station): Maybe<Image?> = maybeOfNullable(getLocalPath(station))
+    override fun load(station: Station): Maybe<Image> = maybeOfNullable(getLocalPath(station))
         .onErrorResumeNext(getRemote(station))
         .switchIfEmpty(getRemote(station))
 
@@ -56,7 +51,7 @@ class StationImageLoader {
                     )
                 }
             }.flatMapMaybe { response ->
-                maybeOfNullable(response.body())
+                maybeOfNullable(response.body)
                     .map { copyInputStreamIntoFile(it.byteStream(), station.stationuuid) }
             }.flatMap {
                 maybeOfNullable(getLocalPath(station))
@@ -78,9 +73,6 @@ class StationImageLoader {
             StandardCopyOption.REPLACE_EXISTING
         )
     }
-
-    private val Station.isCached: Boolean
-        get() = Files.exists(cacheBasePath.resolve(stationuuid))
 
     companion object {
         private fun <T> maybeOfNullable(value: T?): Maybe<T> {

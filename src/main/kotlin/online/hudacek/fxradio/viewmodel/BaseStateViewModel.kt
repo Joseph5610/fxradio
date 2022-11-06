@@ -18,30 +18,29 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import com.github.thomasnield.rxkotlinfx.toObservable
 import io.reactivex.Observable
 import mu.KotlinLogging
 import tornadofx.objectProperty
 
 private val logger = KotlinLogging.logger {}
 
-abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item? = null,
-                                                           initialState: State? = null) :
-        BaseViewModel<Item>(initialItem = initialItem) {
+abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item, initialState: State) :
+    BaseViewModel<Item>(initialItem = initialItem) {
 
     val stateProperty by lazy { objectProperty(initialState) }
 
-    val stateObservableChanges: Observable<State> = stateProperty
-            .toObservableChangesNonNull()
-            .filter { it.newVal != null }
-            .map { it.newVal }
-            .also { it.subscribe(::onNewState, ::onError) }
+    val stateObservable: Observable<State> = stateProperty.toObservable(initialState)
+
+    init {
+        stateObservable.subscribe(::onNewState, ::onError)
+    }
 
     /**
      * Called on every new state
      */
     protected open fun onNewState(newState: State) {
-        logger.debug { "StateChange: $newState" }
+        logger.trace { "State Change: $newState" }
     }
 
 

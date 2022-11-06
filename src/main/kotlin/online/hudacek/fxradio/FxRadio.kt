@@ -102,6 +102,11 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
         if (Properties.UseTrayIcon.value(true)) {
             trayIcon.addIcon()
         }
+
+        if(!Properties.EnableDebugView.value(false)) {
+            // Disable built-in tornadofx layout debugger
+            FX.layoutDebuggerShortcut = null
+        }
     }
 
     override fun stop() {
