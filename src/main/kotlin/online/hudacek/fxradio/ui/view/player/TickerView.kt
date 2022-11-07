@@ -57,10 +57,8 @@ open class TickerView : BaseView() {
     override val root = pane {
         prefHeight = 15.0
 
-        marqueeFragment.apply {
-            inside(this@pane)
-            add(this)
-        }
+        marqueeFragment.inside(this)
+        add(marqueeFragment)
     }
 
     fun createText(content: String) = text(content) {

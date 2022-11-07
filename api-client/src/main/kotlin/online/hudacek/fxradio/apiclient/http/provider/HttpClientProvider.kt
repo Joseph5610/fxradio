@@ -26,7 +26,7 @@ import okhttp3.Response
 import okhttp3.dnsoverhttps.DnsOverHttps
 import java.net.InetAddress
 
-private const val CLOUDFLARE_DNS = "https://1.1.1.1/dns-query"
+private const val GOOGLE_DNS = "https://dns.google/dns-query"
 
 abstract class HttpClientProvider {
 
@@ -36,8 +36,7 @@ abstract class HttpClientProvider {
 
     private val dnsClient by lazy {
         DnsOverHttps.Builder().client(client)
-            .url(CLOUDFLARE_DNS.toHttpUrl())
-            .bootstrapDnsHosts(InetAddress.getByName("1.1.1.1"))
+            .url(GOOGLE_DNS.toHttpUrl())
             .includeIPv6(false)
             .build()
     }

@@ -110,7 +110,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
             if (newState is PlayerState.Error) {
                 appEvent.appNotification.onNext(AppNotification(newState.cause, FontAwesome.Glyph.WARNING))
             }
-            mediaPlayerProperty.value?.stop()
+            mediaPlayerProperty?.value?.stop()
         }
     }
 
