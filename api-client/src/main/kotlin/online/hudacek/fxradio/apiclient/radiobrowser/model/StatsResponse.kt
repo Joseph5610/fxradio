@@ -19,14 +19,14 @@
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
 data class StatsResponse(
-    val supported_version: String,
-    val software_version: String,
-    val status: String,
-    val stations: String,
-    val stations_broken: String,
-    val tags: String,
-    val clicks_last_hour: Int,
-    val clicks_last_day: Int,
-    val languages: Int,
-    val countries: Int
+    val supported_version: String = "",
+    val software_version: String = "",
+    val status: String = "",
+    val stations: String = "",
+    val stations_broken: String = "",
+    val tags: String = "",
+    val clicks_last_hour: Int = 0,
+    val clicks_last_day: Int = 0,
+    val languages: Int = 0,
+    val countries: Int = 0
 )

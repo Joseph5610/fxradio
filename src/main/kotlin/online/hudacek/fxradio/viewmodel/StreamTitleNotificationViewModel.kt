@@ -21,7 +21,7 @@ package online.hudacek.fxradio.viewmodel
 import javafx.application.Platform
 import javafx.beans.property.BooleanProperty
 import javafx.geometry.Pos
-import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.save
@@ -38,32 +38,36 @@ class StreamTitleNotification(show: Boolean = Properties.SendStreamTitleNotifica
  */
 class StreamTitleNotificationViewModel : BaseViewModel<StreamTitleNotification>(StreamTitleNotification()) {
 
+    private val appearanceViewModel: AppAppearanceViewModel by inject()
+
     val showProperty = bind(StreamTitleNotification::show) as BooleanProperty
 
     init {
         appEvent.streamMetaDataUpdates
-                .filter { showProperty.value }
-                .distinctUntilChanged()
-                .subscribe {
-                    if (MacUtils.isMac) {
-                        MacUtils.notification(it.nowPlaying, it.stationName)
-                    } else {
-                        Platform.runLater {
-                            val notificationBuilder = Notifications.create()
-                                    .position(Pos.TOP_RIGHT)
-                                    .title(it.stationName)
-                                    .text(it.nowPlaying)
-                                    //.graphic(ImageView(Image(Config.Resources.appLogo)))
-                                    .onAction {
-                                        primaryStage.show()
-                                    }
-                            if (FxRadio.isDarkModePreferred()) {
-                                notificationBuilder.darkStyle()
-                            }
-                            notificationBuilder.show()
-                        }
+            .filter { showProperty.value }
+            .distinctUntilChanged()
+            .subscribe(::sendNotification)
+    }
+
+    private fun sendNotification(metaData: StreamMetaData) {
+        if (MacUtils.isMac) {
+            MacUtils.notification(metaData.nowPlaying, metaData.stationName)
+        } else {
+            Platform.runLater {
+                val notificationBuilder = Notifications.create()
+                    .position(Pos.TOP_RIGHT)
+                    .title(metaData.stationName)
+                    .text(metaData.nowPlaying)
+                    //.graphic(ImageView(Image(Config.Resources.appLogo)))
+                    .onAction {
+                        primaryStage.show()
                     }
+                if (appearanceViewModel.darkModeProperty.value) {
+                    notificationBuilder.darkStyle()
                 }
+                notificationBuilder.show()
+            }
+        }
     }
 
     override fun onCommit() = Properties.SendStreamTitleNotification.save(showProperty.value)

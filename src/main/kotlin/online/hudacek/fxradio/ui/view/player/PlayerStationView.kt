@@ -40,13 +40,7 @@ class PlayerStationView : BaseView() {
     private val viewModel: PlayerViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 
-    private val tickerView by lazy {
-        PlayerTickerView().apply {
-            root.showWhen {
-                viewModel.animateProperty
-            }
-        }
-    }
+    private val tickerView: PlayerTickerView by inject()
 
     private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {
@@ -79,10 +73,15 @@ class PlayerStationView : BaseView() {
             top {
                 autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {
+
                     // Dynamic ticker for station name
                     add(tickerView)
 
-                    //Static label for station name
+                    tickerView.root.showWhen {
+                        viewModel.animateProperty
+                    }
+
+                    // Static label for station name
                     label(viewModel.trackNameProperty) {
                         onHover { tooltip(text) }
                         showWhen {

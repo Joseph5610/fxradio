@@ -57,10 +57,7 @@ class Player(
 /**
  * Handles station playing logic
  */
-class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
-    initialItem = Player(),
-    initialState = PlayerState.Stopped
-) {
+class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), PlayerState.Stopped) {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationClickUseCase: StationClickUseCase by inject()
@@ -70,7 +67,8 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
     val trackNameProperty = bind(Player::trackName) as StringProperty
     val mediaPlayerProperty = bind(Player::mediaPlayer) as ObjectProperty
 
-    init {
+    fun initializePlayer() {
+
         // Set volume for current player
         volumeProperty.onChange { mediaPlayerProperty.value?.changeVolume(it) }
 
@@ -90,48 +88,48 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(
             .subscribe({
                 // Update the name of the station
                 trackNameProperty.value = messages["player.noMetaData"]
-
                 stateProperty.value = PlayerState.Playing(selectedStationViewModel.streamUrlProperty.value)
             }, { t ->
                 stateProperty.value = PlayerState.Error(t.localizedMessage)
             })
+
+        stateObservable.subscribe {
+            when (it) {
+                is PlayerState.Error -> {
+                    appEvent.appNotification.onNext(AppNotification(it.cause, FontAwesome.Glyph.WARNING))
+                }
+
+                is PlayerState.Playing -> {
+                    mediaPlayerProperty.value?.let { mp ->
+                        mp.changeVolume(volumeProperty.value)
+                        mp.play(it.url)
+                    }
+                }
+
+                is PlayerState.Stopped -> mediaPlayerProperty.value?.stop()
+            }
+        }
     }
 
     /**
      * Handles player state changes
      */
-    override fun onNewState(newState: PlayerState) {
-        if (newState is PlayerState.Playing) {
-            mediaPlayerProperty.value?.let {
-                it.changeVolume(volumeProperty.value)
-                it.play(newState.url)
-            }
-        } else {
-            if (newState is PlayerState.Error) {
-                appEvent.appNotification.onNext(AppNotification(newState.cause, FontAwesome.Glyph.WARNING))
-            }
-            mediaPlayerProperty?.value?.stop()
-        }
-    }
-
-    override fun onError(throwable: Throwable) {
-        stateProperty.value = PlayerState.Error(throwable.message ?: "Unknown error")
-        super.onError(throwable)
-    }
-
-    fun releasePlayer() = mediaPlayerProperty.value.release()
 
     fun togglePlayerState() {
-        if (selectedStationViewModel.stationProperty.value.isValid()) {
-            if (stateProperty.value is PlayerState.Playing) {
-                stateProperty.value = PlayerState.Stopped
+        if (!selectedStationViewModel.stationProperty.value.isValid()) return
+
+        with(stateProperty) {
+            value = if (value is PlayerState.Playing) {
+                PlayerState.Stopped
             } else {
-                stateProperty.value = selectedStationViewModel.streamUrlProperty.let {
+                selectedStationViewModel.streamUrlProperty.let {
                     PlayerState.Playing(it.value)
                 }
             }
         }
     }
+
+    fun releasePlayer() = mediaPlayerProperty.value.release()
 
     /**
      * Save player related key/values to app.properties file

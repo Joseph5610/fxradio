@@ -20,11 +20,11 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.util.NoSelectionModel
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.NoSelectionModel
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import online.hudacek.fxradio.viewmodel.StatsState
 import online.hudacek.fxradio.viewmodel.StatsViewModel
@@ -32,7 +32,6 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.booleanBinding
 import tornadofx.get
-import tornadofx.hbox
 import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.listview
@@ -94,19 +93,14 @@ class StatsFragment : BaseFragment() {
             }
         }
 
-        listview(viewModel.statsProperty) {
+        listview(viewModel.statsListProperty) {
             selectionModel = NoSelectionModel()
 
             cellFormat {
                 addClass(Styles.decoratedListItem)
             }
 
-            cellCache {
-                hbox(spacing = 5) {
-                    label(messages[it.first] + ":")
-                    label(it.second)
-                }
-            }
+            cellCache { label(it) }
 
             showWhen {
                 viewModel.stateProperty.booleanBinding {

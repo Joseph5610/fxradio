@@ -43,12 +43,9 @@ import tornadofx.controlsfx.glyph
 import tornadofx.disableWhen
 import tornadofx.hbox
 import tornadofx.hgrow
-import tornadofx.insets
 import tornadofx.objectBinding
 import tornadofx.onChange
 import tornadofx.onLeftClick
-import tornadofx.paddingLeft
-import tornadofx.paddingRight
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
@@ -201,6 +198,7 @@ class PlayerView : BaseView() {
         currentWindow?.setOnSpacePressed {
             viewModel.togglePlayerState()
         }
+        viewModel.initializePlayer()
     }
 
     private fun toggleInfoPanelState() {

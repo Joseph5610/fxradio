@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservable
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import io.reactivex.Observable
 import mu.KotlinLogging
 import tornadofx.objectProperty
@@ -31,23 +32,28 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item, in
     val stateProperty by lazy { objectProperty(initialState) }
 
     val stateObservable: Observable<State> = stateProperty.toObservable(initialState)
+        .doOnNext { logger.debug { "State Change: $it" } }
+
+    val stateChangeObservable: Observable<State> = stateProperty.toObservableChanges()
+        .doOnNext { logger.debug { "State Change from ${it.oldVal} to ${it.newVal}" } }
+        .doOnError { logger.error(it) { "Exception when changing state" } }
+        .map { it.newVal }
 
     init {
-        stateObservable.subscribe(::onNewState, ::onError)
+        stateChangeObservable.subscribe(::onNewState, ::onError)
     }
 
     /**
      * Called on every new state
      */
     protected open fun onNewState(newState: State) {
-        logger.trace { "State Change: $newState" }
-    }
 
+    }
 
     /**
      * Called on every new state
      */
     protected open fun onError(throwable: Throwable) {
-        logger.error(throwable) { "Exception when changing state" }
+
     }
 }

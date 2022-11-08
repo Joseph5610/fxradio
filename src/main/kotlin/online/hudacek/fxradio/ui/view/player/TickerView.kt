@@ -42,7 +42,7 @@ class PlayerTickerView : TickerView() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    init {
+    override fun onDock() {
         playerViewModel.trackNameProperty.toObservable()
             .subscribe {
                 marqueeFragment.replaceTickEntry(TickerEntry(content = createText(it), reschedule = true))

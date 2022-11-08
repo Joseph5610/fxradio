@@ -21,18 +21,30 @@ package online.hudacek.fxradio.ui.fragment
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.ApiUtils
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.customNotificationPane
 import online.hudacek.fxradio.ui.field
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.set
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.button
+import tornadofx.checkbox
 import tornadofx.controlsfx.content
+import tornadofx.enableWhen
+import tornadofx.field
+import tornadofx.fieldset
+import tornadofx.form
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.listProperty
+import tornadofx.observableListOf
+import tornadofx.validator
 
 class AddStationFragment : BaseFragment() {
 
@@ -58,16 +70,20 @@ class AddStationFragment : BaseFragment() {
                 fieldset {
                     requestFocusOnSceneAvailable()
 
-                    field(messages["add.name"], "My Radio Station",
-                            viewModel.nameProperty, isRequired = true) { field ->
+                    field(
+                        messages["add.name"], "My Radio Station",
+                        viewModel.nameProperty, isRequired = true
+                    ) { field ->
                         field.validator {
                             if (!validate(it, 400)) error(messages["field.invalid.length"])
                             else null
                         }
                     }
 
-                    field(messages["add.url"], "https://example.com/stream.m3u",
-                            viewModel.urlProperty, isRequired = true) { field ->
+                    field(
+                        messages["add.url"], "https://example.com/stream.m3u",
+                        viewModel.urlProperty, isRequired = true
+                    ) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -77,8 +93,10 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.site"], "https://example.com/",
-                            viewModel.homePageProperty, isRequired = false) { field ->
+                    field(
+                        messages["add.site"], "https://example.com/",
+                        viewModel.homePageProperty, isRequired = false
+                    ) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -88,8 +106,10 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.icon"], "https://example.com/favicon.ico",
-                            viewModel.faviconProperty, isRequired = false) { field ->
+                    field(
+                        messages["add.icon"], "https://example.com/favicon.ico",
+                        viewModel.faviconProperty, isRequired = false
+                    ) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -99,16 +119,20 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.language"], messages["add.language.prompt"],
-                            viewModel.languageProperty, isRequired = true, countriesListProperty) { field ->
+                    field(
+                        messages["add.language"], messages["add.language.prompt"],
+                        viewModel.languageProperty, isRequired = true, countriesListProperty
+                    ) { field ->
                         field.validator {
                             if (!validate(it, 150)) error(messages["field.invalid.length"])
                             else null
                         }
                     }
 
-                    field(messages["add.country"], messages["add.country.prompt"],
-                            viewModel.countryProperty, isRequired = true, countriesListProperty) { field ->
+                    field(
+                        messages["add.country"], messages["add.country.prompt"],
+                        viewModel.countryProperty, isRequired = true, countriesListProperty
+                    ) { field ->
                         field.validator {
                             if (it !in countriesListProperty)
                                 error(messages["field.invalid.country"])
@@ -124,8 +148,9 @@ class AddStationFragment : BaseFragment() {
 
                 hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
                     button(messages["add.cleanupForm"]) {
+                        enableWhen(viewModel.dirty)
                         action {
-                            viewModel.item = AddStationModel()
+                            viewModel.rollback()
                         }
                     }
 
@@ -140,22 +165,9 @@ class AddStationFragment : BaseFragment() {
                         isDefaultButton = true
 
                         actionEvents()
-                                .flatMapSingle { viewModel.addStation() }
-                                .subscribe {
-                                    if (it.ok) {
-                                        //Save UUID of new station
-                                        viewModel.uuidProperty.value = it.uuid
+                            .flatMapMaybe { viewModel.addNewStation() }
+                            .subscribe(::save)
 
-                                        viewModel.commit {
-                                            close()
-
-                                            //Cleanup view model
-                                            viewModel.item = AddStationModel()
-                                        }
-                                    } else {
-                                        this@customNotificationPane[FontAwesome.Glyph.WARNING] = it.message
-                                    }
-                                }
                         addClass(Styles.primaryButton)
                     }
                 }
@@ -165,4 +177,18 @@ class AddStationFragment : BaseFragment() {
     }
 
     private fun validate(property: String?, maxValue: Int) = property?.length in 0 until maxValue
+
+    private fun save(newStation: Station) {
+        viewModel.commit {
+            viewModel.saveToFavouritesObservable
+                .filter { it }
+                .map { newStation }
+                .subscribe(appEvent.addFavourite)
+        }
+
+        // Cleanup view model
+        viewModel.item = AddStationModel()
+
+        close()
+    }
 }

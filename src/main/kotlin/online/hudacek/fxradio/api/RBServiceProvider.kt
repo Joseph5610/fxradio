@@ -32,7 +32,7 @@ object RBServiceProvider : Component() {
 
     private val serviceProvider: ServiceProvider by lazy {
         ServiceProvider("https://${viewModel.selectedProperty.value}").also {
-            logger.debug { "Initialized Stations API provider" }
+            logger.debug { "Initialized Stations API provider for ${it.retrofit.baseUrl()}" }
         }
     }
 
