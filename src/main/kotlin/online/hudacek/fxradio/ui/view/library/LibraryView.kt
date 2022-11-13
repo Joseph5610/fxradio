@@ -47,7 +47,7 @@ class LibraryView : BaseView() {
         top {
             vbox {
                 vbox {
-                    paddingAll = 10.0
+                    padding = insets(10, 20)
                     add(librarySearchView)
                 }
 

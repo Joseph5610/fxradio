@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import javafx.geometry.Pos
 import javafx.scene.input.KeyCode
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
@@ -45,7 +46,8 @@ class LibrarySearchView : BaseView() {
         id = "search"
 
         left = FontAwesome.Glyph.SEARCH.make(searchGlyphSize, isPrimary = false) {
-            padding = insets(5, 10)
+            alignment = Pos.CENTER
+            padding = insets(5, 9)
         }
 
         setOnMouseClicked {
