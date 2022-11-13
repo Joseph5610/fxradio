@@ -24,6 +24,7 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.smallLabel
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
@@ -43,11 +44,11 @@ import tornadofx.vbox
 /***
  * Simple Information about the app
  */
-class AppInfoFragment : BaseFragment(FxRadio.appName) {
+class AppInfoFragment : BaseFragment() {
 
     override val root = vbox {
         requestFocusOnSceneAvailable()
-        prefWidth = 300.0
+        prefWidth = 280.0
 
         vbox(alignment = Pos.CENTER) {
             imageview(Config.Resources.appLogo) {
@@ -55,32 +56,27 @@ class AppInfoFragment : BaseFragment(FxRadio.appName) {
                 isPreserveRatio = true
                 paddingAll = 20.0
             }
-            label(FxRadio.appName + " " + FxRadio.version) {
+
+            label(FxRadio.appName) {
                 style {
-                    paddingTop = 5.0
-                    paddingBottom = 8.0
+                    paddingAll = 10.0
                 }
-                addClass(Styles.grayLabel)
+                addClass(Styles.subheader)
             }
 
-            label(FxRadio.appDesc) {
+            smallLabel(FxRadio.version) {
                 style {
-                    paddingBottom = 8.0
+                    paddingBottom = 10.0
                 }
-                addClass(Styles.grayLabel)
             }
 
-            label("${FxRadio.copyright} ${FxRadio.author}") {
-                paddingBottom = 10.0
-                addClass(Styles.grayLabel)
+            smallLabel(FxRadio.appDesc) {
+                style {
+                    paddingBottom = 10.0
+                }
             }
 
-            hyperlink(messages["about.datasource"]) {
-                action {
-                    app.openUrl(Config.API.radioBrowserUrl)
-                }
-                addClass(Styles.grayLabel)
-            }
+            smallLabel("${FxRadio.copyright} ${FxRadio.author}")
         }
 
         vbox(alignment = Pos.CENTER_RIGHT) {
