@@ -72,7 +72,7 @@ class StatsFragment : BaseFragment() {
 
         vbox(alignment = Pos.CENTER) {
             requestFocusOnSceneAvailable()
-            paddingAll = 10.0
+            paddingAll = 5.0
 
             hyperlink(serversViewModel.selectedProperty) {
                 action {

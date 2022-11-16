@@ -68,6 +68,7 @@ import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
+
 private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
 
 /**

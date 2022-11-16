@@ -186,8 +186,14 @@ class Styles : Stylesheet() {
                 backgroundColor += c(colors.primary)
                 borderColor += box(c(colors.primary + "22"))
 
-                label and(listItemTag) {
+                label and (listItemTag) {
                     textFill = c(colors.grayLabel)
+                }
+
+                menuItem {
+                    label {
+                        textFill = c(colors.label)
+                    }
                 }
 
                 label {
