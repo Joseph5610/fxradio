@@ -20,6 +20,7 @@ package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -28,7 +29,6 @@ import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
 import tornadofx.booleanBinding
-import tornadofx.confirm
 import tornadofx.disableWhen
 import tornadofx.enableWhen
 import tornadofx.get
@@ -107,10 +107,11 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                 favouritesViewModel.stationsProperty.emptyProperty()
             }
             action {
-                confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                    favouritesViewModel.cleanupFavourites()
-                    appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                }
+                confirmAlert(messages["database.clear.confirm"], messages["database.clear.text"])
+                    .subscribe {
+                        favouritesViewModel.cleanupFavourites()
+                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                    }
             }
         }))
     }

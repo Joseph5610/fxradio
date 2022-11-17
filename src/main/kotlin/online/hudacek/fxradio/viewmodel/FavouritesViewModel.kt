@@ -26,11 +26,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.usecase.FavouriteAddUseCase
-import online.hudacek.fxradio.usecase.FavouriteRemoveUseCase
-import online.hudacek.fxradio.usecase.FavouriteSetUseCase
-import online.hudacek.fxradio.usecase.FavouriteUpdateUseCase
-import online.hudacek.fxradio.usecase.FavouritesClearUseCase
+import online.hudacek.fxradio.usecase.favourites.*
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.observableListOf
@@ -52,12 +48,12 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
     private val favouriteRemoveUseCase: FavouriteRemoveUseCase by inject()
     private val cleanFavouritesClearUseCase: FavouritesClearUseCase by inject()
     private val favouritesUpdateUseCase: FavouriteUpdateUseCase by inject()
-    private val favouriteSetUseCase: FavouriteSetUseCase by inject()
+    private val favouritesGetUseCase: FavouritesGetUseCase by inject()
 
     val stationsProperty = bind(Favourites::stations) as ListProperty
 
     init {
-        favouriteSetUseCase.execute(Unit).subscribe { stationsProperty.add(it) }
+        favouritesGetUseCase.execute(Unit).subscribe { stationsProperty.add(it) }
 
         appEvent.addFavourite
             .filter { it.isValid() && it !in stationsProperty }

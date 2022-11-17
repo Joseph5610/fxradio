@@ -20,19 +20,9 @@ package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.stationView
-import online.hudacek.fxradio.ui.view.StationImageView
-import online.hudacek.fxradio.viewmodel.HistoryViewModel
-import online.hudacek.fxradio.viewmodel.LibraryState
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.SelectedStation
-import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import tornadofx.action
-import tornadofx.bind
-import tornadofx.confirm
-import tornadofx.disableWhen
-import tornadofx.get
-import tornadofx.item
-import tornadofx.objectProperty
+import online.hudacek.fxradio.util.AlertHelper.confirmAlert
+import online.hudacek.fxradio.viewmodel.*
+import tornadofx.*
 
 class HistoryMenu : BaseMenu("menu.history") {
 
@@ -73,14 +63,17 @@ class HistoryMenu : BaseMenu("menu.history") {
 
     private val clearHistoryItem by lazy {
         item(messages["menu.history.clear"]) {
+
             disableWhen {
                 historyViewModel.stationsProperty.emptyProperty()
             }
 
+
             action {
-                confirm(messages["history.clear.confirm"],
-                        messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
-                        owner = primaryStage) {
+                confirmAlert(
+                    messages["history.clear.confirm"],
+                    messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
+                ).subscribe {
                     historyViewModel.cleanupHistory()
                 }
             }

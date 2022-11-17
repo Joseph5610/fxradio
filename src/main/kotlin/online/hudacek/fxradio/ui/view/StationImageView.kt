@@ -37,6 +37,7 @@ private val logger = KotlinLogging.logger {}
  * Custom ImageView for station logos
  */
 class StationImageView(private val stationProperty: Property<Station>) : ImageView(defaultRadioLogo) {
+
     constructor(station: Station) : this(objectProperty(station))
 
     init {
@@ -57,7 +58,7 @@ class StationImageView(private val stationProperty: Property<Station>) : ImageVi
     }
 
     /**
-     * Loads image of [Station] from cache into [view] asynchronously
+     * Loads favicon of [stationProperty] from cache into [image] field asynchronously
      */
     private fun getStationImage() {
         stationImageCache.load(stationProperty.value).subscribe({

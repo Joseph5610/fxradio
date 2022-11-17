@@ -63,7 +63,10 @@ private const val WINDOW_MIN_HEIGHT = 400.0
 /**
  * Load the app with provided [stylesheet] class
  */
-open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
+open class FxRadio(
+    stylesheet: KClass<out Stylesheet>,
+    val isAppRunningInTest: Boolean = false
+) : App(MainView::class, stylesheet) {
 
     private val playerViewModel: PlayerViewModel by inject()
 
@@ -99,18 +102,18 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             super.start(this)
         }
 
-        if (Properties.UseTrayIcon.value(true)) {
+        if (Properties.UseTrayIcon.value(true) && !isAppRunningInTest) {
             trayIcon.addIcon()
         }
 
-        if(!Properties.EnableDebugView.value(false)) {
+        if (!Properties.EnableDebugView.value(false)) {
             // Disable built-in tornadofx layout debugger
             FX.layoutDebuggerShortcut = null
         }
     }
 
     override fun stop() {
-        if (!isTestEnvironment) {
+        if (!isAppRunningInTest) {
             playerViewModel.releasePlayer()
             RBServiceProvider.close()
             HttpClient.close()
@@ -135,8 +138,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
      */
     companion object {
 
-        var isTestEnvironment = false
-
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
         const val appUrl = "https://hudacek.online/fxradio/"
@@ -153,16 +154,14 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
         private fun hasSystemDarkMode() = MacUtils.isMac && MacUtils.isSystemDarkMode
 
-        fun isDarkModePreferred(): Boolean {
-            return runCatching {
-                // We have to use the ugly java way to access this property as we want to access it
-                // in the time that the app is not yet instantiated
-                val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
-                val props = java.util.Properties().also { it.load(fis) }
-                val darkModeProp = props.getProperty(Properties.DarkMode.key)
-                darkModeProp?.toBoolean() ?: hasSystemDarkMode()
-            }.getOrDefault(hasSystemDarkMode())
-        }
+        fun isDarkModePreferred() = runCatching {
+            // We have to use the ugly java way to access this property as we want to access it
+            // in the time that the app is not yet instantiated
+            val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
+            val props = java.util.Properties().also { it.load(fis) }
+            val darkModeProp = props.getProperty(Properties.DarkMode.key)
+            darkModeProp?.toBoolean() ?: hasSystemDarkMode()
+        }.getOrDefault(hasSystemDarkMode())
     }
 }
 

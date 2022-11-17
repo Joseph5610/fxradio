@@ -27,7 +27,8 @@ import tornadofx.observableListOf
  * instead it is simply ignored until next start of the app as the list is not persistent
  */
 object InvalidStationsHolder {
-    val invalidLogoStations = observableListOf<Station>()
+
+    val invalidLogoStations = observableListOf(Station.dummy)
 
     fun Station.setInvalidLogo() {
         if (!hasInvalidLogo()) {

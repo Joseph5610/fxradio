@@ -25,7 +25,6 @@ import javafx.stage.Stage
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.FxRadioLight
 import online.hudacek.fxradio.apiclient.ServiceProvider
 import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
@@ -43,6 +42,7 @@ import online.hudacek.fxradio.integration.Elements.volumeMaxIcon
 import online.hudacek.fxradio.integration.Elements.volumeMinIcon
 import online.hudacek.fxradio.integration.Elements.volumeSlider
 import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.Glyph
@@ -52,12 +52,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
-import org.testfx.framework.junit5.Init
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
 import tornadofx.DataGrid
-import tornadofx.SmartListCell
 import tornadofx.find
 import java.util.*
 
@@ -79,14 +77,9 @@ class AppFunctionalityTest {
     // Stations service, init needed only once
     private val service = ServiceProvider("https://${Config.API.fallbackApiServerURL}").create<RadioBrowserApi>()
 
-    @Init
-    fun init() {
-        FxRadio.isTestEnvironment = true
-    }
-
     @Start
     fun start(stage: Stage) {
-        app = FxRadioLight()
+        app = FxRadio(stylesheet = Styles::class, isAppRunningInTest = true)
         app.start(stage)
 
         // Disable app notifications to not interfere with tests

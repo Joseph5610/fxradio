@@ -23,41 +23,46 @@ import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
+import tornadofx.Component
 import tornadofx.FX
 
 /**
  * NSMenu helper for macOS only
  */
-open class NSMenu {
+open class NSMenu : Component() {
 
     /**
      * NSMenu toolkit initialization
      */
     protected val menuToolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
 
+    protected val isMenuEnabled by lazy { !(app as FxRadio).isAppRunningInTest }
+
     fun appMenu(menuItems: List<MenuItem>) = menu(FxRadio.appName) {
-        if (!FxRadio.isTestEnvironment) {
+        if (isMenuEnabled) {
             menuToolkit.setApplicationMenu(this)
             items.addAll(menuItems)
             items.addAll(
-                    separator(),
-                    menuToolkit.createHideMenuItem(FxRadio.appName),
-                    menuToolkit.createHideOthersMenuItem(),
-                    menuToolkit.createUnhideAllMenuItem(),
-                    separator(),
-                    menuToolkit.createQuitMenuItem(FxRadio.appName))
+                separator(),
+                menuToolkit.createHideMenuItem(FxRadio.appName),
+                menuToolkit.createHideOthersMenuItem(),
+                menuToolkit.createUnhideAllMenuItem(),
+                separator(),
+                menuToolkit.createQuitMenuItem(FxRadio.appName)
+            )
         }
     }
 
     fun windowMenu(name: String) = menu(name) {
-        if (!FxRadio.isTestEnvironment) {
+        if (isMenuEnabled) {
             menuToolkit.autoAddWindowMenuItems(this)
             items.addAll(
-                    menuToolkit.createMinimizeMenuItem(),
-                    menuToolkit.createZoomMenuItem(),
-                    menuToolkit.createCycleWindowsItem(),
-                    separator(),
-                    menuToolkit.createBringAllToFrontItem())
+                menuToolkit.createMinimizeMenuItem(),
+                menuToolkit.createZoomMenuItem(),
+                menuToolkit.createCycleWindowsItem(),
+                separator(),
+                menuToolkit.createBringAllToFrontItem()
+            )
         }
     }
 }

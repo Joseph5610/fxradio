@@ -65,6 +65,9 @@ internal inline fun <reified T : Fragment> Modal<T>.open() {
     }
 }
 
+/**
+ * Finds and opens internal window for [Modal]
+ */
 internal inline fun <reified T : Fragment> Modal<T>.openInternalWindow() {
     val activeWindow = FX.primaryStage.scene.findUIComponents().firstOrNull { it is T }
     if (activeWindow == null) {

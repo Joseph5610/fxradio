@@ -23,7 +23,7 @@
     </appenders>
 
     <loggers>
-        <root level="debug">
+        <root level="INFO">
             <appenderRef ref="stdout"/>
             <appenderRef ref="Async"/>
         </root>

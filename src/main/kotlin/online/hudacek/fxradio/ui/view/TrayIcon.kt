@@ -20,14 +20,11 @@ package online.hudacek.fxradio.ui.view
 import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Component
 import tornadofx.get
-import tornadofx.onChange
 import java.awt.MenuItem
 
 /**
@@ -60,38 +57,33 @@ class TrayIcon : Component() {
     }
 
     fun addIcon() = with(app) {
-        if (!FxRadio.isTestEnvironment) {
-            trayicon(resources.stream("/" + Config.Resources.stageIcon), tooltip = FxRadio.appName) {
-                setOnMouseClicked(fxThread = true) {
-                    primaryStage.show()
-                    primaryStage.toFront()
+        trayicon(resources.stream("/" + Config.Resources.stageIcon), tooltip = FxRadio.appName) {
+            setOnMouseClicked(fxThread = true) {
+                primaryStage.show()
+                primaryStage.toFront()
+            }
+            menu(FxRadio.appName) {
+                item(messages["show"] + " " + FxRadio.appName) {
+                    setOnAction(fxThread = true) {
+                        primaryStage.show()
+                        primaryStage.toFront()
+                    }
                 }
-                menu(FxRadio.appName) {
-                    item(messages["show"] + " " + FxRadio.appName) {
+                addSeparator()
 
-                        setOnAction(fxThread = true) {
-                            primaryStage.show()
-                            primaryStage.toFront()
-                        }
-                    }
-                    addSeparator()
+                stationItem = item(messages["player.streamingStopped"]) {
+                    isEnabled = false
+                }
 
-                    stationItem = item(messages["player.streamingStopped"]) {
-                        isEnabled = false
+                playPauseItem = item("Play/Stop") {
+                    setOnAction(fxThread = true) {
+                        playerViewModel.togglePlayerState()
                     }
-
-                    playPauseItem = item("Play/Stop") {
-                        setOnAction(fxThread = true) {
-                            if (selectedStationViewModel.stationProperty.value.isValid()) {
-                                playerViewModel.togglePlayerState()
-                            }
-                        }
-                    }
-                    addSeparator()
-                    item(messages["exit"]) {
-                        setOnAction(fxThread = true) {
-                            Platform.exit()
-                        }
+                }
+                addSeparator()
+                item(messages["exit"]) {
+                    setOnAction(fxThread = true) {
+                        Platform.exit()
                     }
                 }
             }

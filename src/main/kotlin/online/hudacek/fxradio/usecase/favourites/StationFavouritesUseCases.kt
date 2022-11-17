@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase
+package online.hudacek.fxradio.usecase.favourites
 
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -24,6 +24,7 @@ import javafx.beans.property.ListProperty
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulers
 import online.hudacek.fxradio.util.applySchedulersSingle
 
@@ -37,7 +38,7 @@ class FavouriteAddUseCase : BaseUseCase<Station, Single<Station>>() {
         .doOnError { logger.error(it) { "Exception when adding $input!" } }
 }
 
-class FavouriteSetUseCase : BaseUseCase<Unit, Observable<Station>>() {
+class FavouritesGetUseCase : BaseUseCase<Unit, Observable<Station>>() {
 
     override fun execute(input: Unit): Observable<Station> = Tables.favourites.selectAll()
         .compose(applySchedulers())

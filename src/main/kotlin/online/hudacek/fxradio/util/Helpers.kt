@@ -22,12 +22,9 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
-import javafx.scene.control.Alert
-import javafx.scene.control.ButtonType
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import javafx.stage.Window
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.util.macos.MacUtils
@@ -46,24 +43,6 @@ internal fun <T> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransf
 internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
-}
-
-internal fun vlcAlert() = alert(
-    Alert.AlertType.ERROR,
-    messages["player.vlc.missing"], messages["player.vlc.missing.description"]
-)
-
-internal fun confirmDialog(
-    header: String, content: String = "",
-    confirmButton: ButtonType = ButtonType.OK,
-    cancelButton: ButtonType = ButtonType.CANCEL,
-    owner: Window? = null, title: String? = null
-): Alert {
-    val alert = Alert(Alert.AlertType.CONFIRMATION, content, confirmButton, cancelButton)
-    title?.let { alert.title = it }
-    alert.headerText = header
-    owner?.also { alert.initOwner(it) }
-    return alert
 }
 
 internal fun reloadStylesheets(isDarkModeProperty: Boolean) {

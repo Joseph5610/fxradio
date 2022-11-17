@@ -54,18 +54,17 @@ class StreamTitleNotificationViewModel : BaseViewModel<StreamTitleNotification>(
             MacUtils.notification(metaData.nowPlaying, metaData.stationName)
         } else {
             Platform.runLater {
-                val notificationBuilder = Notifications.create()
+                Notifications.create()
                     .position(Pos.TOP_RIGHT)
                     .title(metaData.stationName)
                     .text(metaData.nowPlaying)
-                    //.graphic(ImageView(Image(Config.Resources.appLogo)))
-                    .onAction {
-                        primaryStage.show()
+                    .also {
+                        if (appearanceViewModel.darkModeProperty.value) {
+                            it.darkStyle()
+                        }
                     }
-                if (appearanceViewModel.darkModeProperty.value) {
-                    notificationBuilder.darkStyle()
-                }
-                notificationBuilder.show()
+                    .onAction { primaryStage.show() }
+                    .show()
             }
         }
     }

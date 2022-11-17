@@ -44,7 +44,7 @@ class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type
                 if (newVolume < -29.5) {
                     0.0
                 } else {
-                    (newVolume + 65) * (100 / 95)
+                    (newVolume + 65) * 0.6
                 }
         vlcAudioComponent.setVolume(vlcVolume)
     }

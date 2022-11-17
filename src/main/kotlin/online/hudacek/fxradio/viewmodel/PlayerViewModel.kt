@@ -103,6 +103,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
                     mediaPlayerProperty.value?.let { mp ->
                         mp.changeVolume(volumeProperty.value)
                         mp.play(it.url)
+                        mp.changeVolume(volumeProperty.value)
                     }
                 }
 

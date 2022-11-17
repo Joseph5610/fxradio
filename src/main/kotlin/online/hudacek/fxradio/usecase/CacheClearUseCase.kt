@@ -18,15 +18,12 @@
 
 package online.hudacek.fxradio.usecase
 
-import com.github.thomasnield.rxkotlinfx.toMaybe
 import io.reactivex.Maybe
 import io.reactivex.Single
-import javafx.scene.control.Alert
-import javafx.scene.control.ButtonType
 import online.hudacek.fxradio.persistence.cache.ImageCache
 import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.util.applySchedulersSingle
-import online.hudacek.fxradio.util.confirmDialog
 import tornadofx.get
 
 /**
@@ -34,16 +31,10 @@ import tornadofx.get
  */
 class CacheClearUseCase : BaseUseCase<Unit, Maybe<Boolean>>() {
 
-    private val alert: Alert
-        get() = confirmDialog(
-            messages["cache.clear.confirm"],
-            messages["cache.clear.text"].formatted(ImageCache.totalSize), owner = primaryStage
-        )
-
-    override fun execute(input: Unit): Maybe<Boolean> = alert.toMaybe()
-        .defaultIfEmpty(ButtonType.CANCEL)
-        .filter { it == ButtonType.OK }
-        .flatMapSingleElement {
-            Single.just(ImageCache.clear()).compose(applySchedulersSingle())
-        }
+    override fun execute(input: Unit): Maybe<Boolean> = confirmAlert(
+        messages["cache.clear.confirm"],
+        messages["cache.clear.text"].formatted(ImageCache.totalSize)
+    ).flatMapSingleElement {
+        Single.just(ImageCache.clear()).compose(applySchedulersSingle())
+    }
 }
