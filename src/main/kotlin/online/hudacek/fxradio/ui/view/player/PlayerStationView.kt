@@ -23,23 +23,12 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.addClass
-import tornadofx.borderpane
-import tornadofx.bottom
-import tornadofx.get
-import tornadofx.hbox
-import tornadofx.imageview
-import tornadofx.label
-import tornadofx.onHover
-import tornadofx.separator
-import tornadofx.stringBinding
-import tornadofx.tooltip
-import tornadofx.top
-import tornadofx.vbox
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
+import tornadofx.*
 
 private const val LOGO_SIZE = 30.0
 
@@ -49,27 +38,27 @@ private const val LOGO_SIZE = 30.0
 class PlayerStationView : BaseView() {
 
     private val viewModel: PlayerViewModel by inject()
-    private val tickerView by lazy { PlayerTickerView() }
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
+
+    private val tickerView: PlayerTickerView by inject()
 
     private val playingStatusLabel = viewModel.stateProperty.stringBinding {
         when (it) {
             is PlayerState.Stopped -> messages["player.streamingStopped"]
             is PlayerState.Error -> messages["player.streamingError"]
-            else -> viewModel.stationProperty.value.name
+            else -> selectedStationViewModel.nameProperty.value
         }
     }
 
     private val stationLogo by lazy {
-        imageview {
-            // Subscribe to property changes
-            viewModel.stationProperty.stationImage(this)
+        stationView(selectedStationViewModel.stationProperty) {
             fitWidth = LOGO_SIZE
         }
     }
 
     override val root = hbox(spacing = 5) {
         // Radio logo
-        vbox(alignment = Pos.CENTER_LEFT) {
+        vbox(alignment = Pos.CENTER) {
             minHeight = LOGO_SIZE
             maxHeight = LOGO_SIZE
             add(stationLogo)
@@ -84,15 +73,15 @@ class PlayerStationView : BaseView() {
             top {
                 autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {
-                    //Dynamic ticker for station name
-                    vbox {
-                        add(tickerView)
-                        showWhen {
-                            viewModel.animateProperty
-                        }
+
+                    // Dynamic ticker for station name
+                    add(tickerView)
+
+                    tickerView.root.showWhen {
+                        viewModel.animateProperty
                     }
 
-                    //Static label for station name
+                    // Static label for station name
                     label(viewModel.trackNameProperty) {
                         onHover { tooltip(text) }
                         showWhen {

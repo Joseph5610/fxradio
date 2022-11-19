@@ -24,6 +24,7 @@ import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.NoSelectionModel
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import online.hudacek.fxradio.viewmodel.StatsState
 import online.hudacek.fxradio.viewmodel.StatsViewModel
@@ -31,7 +32,6 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.booleanBinding
 import tornadofx.get
-import tornadofx.hbox
 import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.listview
@@ -54,9 +54,11 @@ class StatsFragment : BaseFragment() {
             is StatsState.Loading -> {
                 messages["loading"]
             }
+
             is StatsState.Error -> {
                 messages["stats.statsUnavailable"]
             }
+
             else -> {
                 ""
             }
@@ -64,24 +66,25 @@ class StatsFragment : BaseFragment() {
     }
 
     override val root = vbox {
+        paddingAll = 5.0
         title = messages["stats.title"]
-        setPrefSize(300.0, 230.0)
+        setPrefSize(300.0, 260.0)
 
         vbox(alignment = Pos.CENTER) {
-            paddingAll = 10.0
+            requestFocusOnSceneAvailable()
+            paddingAll = 5.0
 
             hyperlink(serversViewModel.selectedProperty) {
                 action {
-                    app.openUrl("https://${this.text}")
+                    app.openUrl("https://$text")
                 }
                 addClass(Styles.header)
                 addClass(Styles.primaryTextColor)
             }
 
-            vbox(alignment = Pos.BASELINE_CENTER) {
-                label(labelTextProperty) {
-                    paddingAll = 20.0
-                }
+            label(labelTextProperty) {
+                paddingAll = 20.0
+
                 showWhen {
                     viewModel.stateProperty.booleanBinding {
                         it !is StatsState.Fetched
@@ -90,17 +93,14 @@ class StatsFragment : BaseFragment() {
             }
         }
 
-        listview(viewModel.statsProperty) {
-            requestFocusOnSceneAvailable() // To get rid of the blue box around the hyperlink
-            isMouseTransparent = true // Disable clicking into listview, as it is not needed for this listview
+        listview(viewModel.statsListProperty) {
+            selectionModel = NoSelectionModel()
+
             cellFormat {
-                paddingAll = 0.0
-                graphic = hbox(spacing = 5) {
-                    label(messages[item.first] + ":")
-                    label(item.second)
-                    addClass(Styles.libraryListItem)
-                }
+                addClass(Styles.decoratedListItem)
             }
+
+            cellCache { label(it) }
 
             showWhen {
                 viewModel.stateProperty.booleanBinding {
@@ -110,8 +110,8 @@ class StatsFragment : BaseFragment() {
                     }
                 }
             }
-            addClass(Styles.libraryListView)
+            addClass(Styles.decoratedListView)
         }
-        addClass(Styles.backgroundWhiteSmoke)
+        addClass(Styles.backgroundWhite)
     }
 }

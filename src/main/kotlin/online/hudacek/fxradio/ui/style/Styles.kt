@@ -23,12 +23,7 @@ package online.hudacek.fxradio.ui.style
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.c
-import tornadofx.cssclass
-import tornadofx.em
-import tornadofx.px
+import tornadofx.*
 
 /**
  * Type-safe CSS classes used around the app
@@ -48,9 +43,10 @@ class Styles : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
-        val historyListView by cssclass()
-        val historyListItem by cssclass()
-        val libraryListItemTag by cssclass()
+
+        val decoratedListView by cssclass()
+        val decoratedListItem by cssclass()
+        val listItemTag by cssclass()
 
         val primaryButton by cssclass()
         val segmentedButton by cssclass()
@@ -72,6 +68,11 @@ class Styles : Stylesheet() {
         val noBorder by cssclass()
 
         val mainMenuBox by cssclass()
+
+        val glyphIconPrimary by cssclass()
+        val glyphIcon by cssclass()
+
+        val colorRadioButton by cssclass()
     }
 
     init {
@@ -86,20 +87,22 @@ class Styles : Stylesheet() {
         }
 
         playerMainBox {
-            padding = box(10.0.px, 0.0.px)
-            borderColor += box(c(colors.transparent), c(colors.transparent),
-                    c(colors.backgroundBorder),
-                    c(colors.transparent))
+            padding = box(5.0.px, 35.0.px)
+            borderColor += box(
+                c(colors.transparent), c(colors.transparent),
+                c(colors.backgroundBorder),
+                c(colors.transparent)
+            )
         }
 
         playerStationBox {
-            padding = box(3.0.px, 10.0.px)
-            backgroundRadius += box(3.px)
-            borderRadius += box(3.px)
+            padding = box(5.0.px)
+            backgroundRadius += box(4.px)
+            borderRadius += box(4.px)
             backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
-            maxWidth = 260.px
-            prefWidth = 260.px
+            maxWidth = 280.px
+            prefWidth = 280.px
         }
 
         tag {
@@ -167,11 +170,6 @@ class Styles : Stylesheet() {
             minHeight = 20.px
         }
 
-        hyperlink {
-            textFill = c(colors.primary)
-            borderColor += box(c(colors.primary))
-        }
-
         libraryListView {
             backgroundColor += Color.WHITESMOKE
             borderColor += box(Color.WHITESMOKE)
@@ -181,36 +179,46 @@ class Styles : Stylesheet() {
         libraryListItem {
             fontSize = 12.px
             prefHeight = 30.px
-            textFill = c(colors.label)
-            borderInsets += box(0.px, 5.px, 0.px, 5.px)
-            backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += Color.WHITESMOKE
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(selected) {
-                backgroundColor += c(colors.background)
-                borderColor += box(c(colors.backgroundBorder))
+                backgroundColor += c(colors.primary)
+                borderColor += box(c(colors.primary + "22"))
+
+                label and (listItemTag) {
+                    textFill = c(colors.grayLabel)
+                }
+
+                menuItem {
+                    label {
+                        textFill = c(colors.label)
+                    }
+                }
+
+                label {
+                    textFill = Color.WHITESMOKE
+                }
             }
-            padding = box(6.px, 10.px, 6.px, 15.px)
+            padding = box(6.px, 10.px, 6.px, 10.px)
         }
 
-        libraryListItemTag {
+        listItemTag {
             padding = box(2.px)
-            textFill = c(colors.label)
+            textFill = c(colors.grayLabel)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            backgroundColor += c(colors.background)
-            borderColor += box(c(colors.backgroundBorder))
+            backgroundColor += c(colors.backgroundBorder)
+            borderColor += box(c(colors.backgroundBorder + "22"))
         }
 
-        historyListView {
-            padding = box(0.px, 10.px, 0.px, 10.px)
+        decoratedListView {
             backgroundColor += Color.WHITE
             borderColor += box(Color.WHITE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
-        historyListItem {
+        decoratedListItem {
             fontSize = 12.px
             textFill = c(colors.label)
             backgroundRadius += box(6.px)
@@ -256,8 +264,16 @@ class Styles : Stylesheet() {
         }
 
         checkBox {
-            baseColor = c(colors.primary)
+            box {
+                baseColor = c(colors.backgroundSelected)
+                backgroundRadius += box(3.px)
+                borderRadius += box(3.px)
+            }
+
             and(selected) {
+                box {
+                    baseColor = c(colors.primary)
+                }
                 mark {
                     backgroundColor += Color.WHITE
                 }
@@ -339,6 +355,7 @@ class Styles : Stylesheet() {
 
         textArea {
             fontFamily = "monospace"
+            accentColor = c(colors.primary, 0.6)
             backgroundColor += c(colors.background)
             content {
                 backgroundColor += c(colors.background)
@@ -415,11 +432,68 @@ class Styles : Stylesheet() {
         textField {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            accentColor = c(colors.primary, 0.6)
         }
 
         noBorder {
             backgroundInsets += box(0.px)
             padding = box(0.px)
+        }
+
+        glyphIconPrimary {
+            textFill = c(colors.primary)
+        }
+
+        glyphIcon {
+            textFill = c(colors.label)
+        }
+
+        comboBox {
+            baseColor = c(colors.backgroundSelected)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+
+            arrow {
+                backgroundColor += c(colors.primary)
+            }
+
+            comboBoxPopup {
+                listView {
+                    backgroundRadius += box(6.px)
+                    borderRadius += box(6.px)
+                    backgroundColor += c(colors.backgroundBorder)
+                }
+
+                listCell {
+                    textFill = c(colors.label)
+                    backgroundRadius += box(6.px)
+                    borderRadius += box(6.px)
+                    backgroundColor += c(colors.backgroundBorder)
+                    and(selected) {
+                        backgroundColor += c(colors.primary)
+                        borderColor += box(c(colors.primary))
+                        textFill = Color.WHITESMOKE
+                    }
+                    padding = box(5.px)
+                }
+            }
+        }
+
+        InternalWindow.Styles.floatingWindowWrapper {
+
+            InternalWindow.Styles.top {
+                backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
+                borderRadius += box(6.px, 6.px, 0.px, 0.px)
+            }
+
+            InternalWindow.Styles.closebutton {
+                visibility = FXVisibility.HIDDEN
+            }
+
+            InternalWindow.Styles.floatingWindowContent {
+                backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
+                borderRadius += box(0.px, 0.px, 6.px, 6.px)
+            }
         }
     }
 }

@@ -18,12 +18,16 @@
 
 package online.hudacek.fxradio.event
 
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import mu.KotlinLogging
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.viewmodel.LibraryState
 import tornadofx.Controller
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * General App Events
@@ -31,12 +35,14 @@ import tornadofx.Controller
 class AppEvent : Controller() {
 
     val appNotification = BehaviorSubject.create<AppNotification>()
-    val streamMetaDataUpdated = BehaviorSubject.create<StreamMetaData>()
+    val streamMetaDataUpdates = BehaviorSubject.create<StreamMetaData>()
 
     val addFavourite = BehaviorSubject.create<Station>()
     val removeFavourite = BehaviorSubject.create<Station>()
 
-    val addToHistory = BehaviorSubject.create<Station>()
-    val addVote = BehaviorSubject.create<Station>()
+    val stationsHistory = BehaviorSubject.create<Station>()
+    val votedStations = BehaviorSubject.create<Station>()
+
+    val historyUpdated = BehaviorSubject.create<Station>()
     val refreshLibrary = BehaviorSubject.create<LibraryState>()
 }

@@ -19,24 +19,16 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.viewmodel.HistoryViewModel
-import online.hudacek.fxradio.viewmodel.LibraryState
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import tornadofx.action
-import tornadofx.bind
-import tornadofx.confirm
-import tornadofx.disableWhen
-import tornadofx.get
-import tornadofx.imageview
-import tornadofx.item
+import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.util.AlertHelper.confirmAlert
+import online.hudacek.fxradio.viewmodel.*
+import tornadofx.*
 
 class HistoryMenu : BaseMenu("menu.history") {
 
     private val libraryViewModel: LibraryViewModel by inject()
     private val historyViewModel: HistoryViewModel by inject()
-    private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     private val showHistoryItem by lazy {
         item(messages["menu.history.show"], KeyCodes.history) {
@@ -53,17 +45,16 @@ class HistoryMenu : BaseMenu("menu.history") {
             }
             items.bind(historyViewModel.stationsProperty) {
                 item(it.name) {
-                    //for some reason macos native menu does not respect
-                    //width/height setting so it is disabled for now
+                    // For some reason macOS native menu does not respect
+                    // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = imageview {
-                            it.stationImage(this)
+                        graphic = stationView(it) {
                             fitHeight = 15.0
                             fitWidth = 15.0
                         }
                     }
                     action {
-                        playerViewModel.stationProperty.value = it
+                        selectedStationViewModel.item = SelectedStation(it)
                     }
                 }
             }
@@ -72,14 +63,17 @@ class HistoryMenu : BaseMenu("menu.history") {
 
     private val clearHistoryItem by lazy {
         item(messages["menu.history.clear"]) {
+
             disableWhen {
                 historyViewModel.stationsProperty.emptyProperty()
             }
 
+
             action {
-                confirm(messages["history.clear.confirm"],
-                        messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
-                        owner = primaryStage) {
+                confirmAlert(
+                    messages["history.clear.confirm"],
+                    messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
+                ).subscribe {
                     historyViewModel.cleanupHistory()
                 }
             }

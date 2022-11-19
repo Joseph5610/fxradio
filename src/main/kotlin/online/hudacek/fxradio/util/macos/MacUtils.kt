@@ -21,10 +21,10 @@ package online.hudacek.fxradio.util.macos
 import airsquared.JMacNotification.NSUserNotification
 import online.hudacek.fxradio.util.Command
 import org.controlsfx.tools.Platform
-import tornadofx.Component
+import tornadofx.FX.Companion.messages
 import tornadofx.get
 
-object MacUtils : Component() {
+object MacUtils {
 
     val isMac = Platform.getCurrent() == Platform.OSX
 

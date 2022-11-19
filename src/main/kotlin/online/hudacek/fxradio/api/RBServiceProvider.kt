@@ -1,0 +1,45 @@
+/*
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package online.hudacek.fxradio.api
+
+import mu.KotlinLogging
+import online.hudacek.fxradio.apiclient.ServiceProvider
+import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
+import online.hudacek.fxradio.viewmodel.ServersViewModel
+import tornadofx.Component
+
+private val logger = KotlinLogging.logger {}
+
+object RBServiceProvider : Component() {
+
+    private val viewModel: ServersViewModel by inject()
+
+    private val serviceProvider: ServiceProvider by lazy {
+        ServiceProvider("https://${viewModel.selectedProperty.value}").also {
+            logger.debug { "Initialized Stations API provider for ${it.retrofit.baseUrl()}" }
+        }
+    }
+
+    /**
+     * Get the radio-browser API service instance
+     */
+    fun provide(): RadioBrowserApi = serviceProvider.create()
+
+    fun close() = serviceProvider.close()
+}

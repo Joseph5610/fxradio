@@ -20,8 +20,10 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.openUrl
 import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
@@ -42,25 +44,31 @@ class AttributionsFragment : BaseFragment() {
     override val root = vbox {
         title = "${messages["attributions.title"]} ${FxRadio.appName}"
         prefWidth = 500.0
+        paddingAll = 10.0
 
-        vbox {
-            paddingAll = 10.0
-            requestFocusOnSceneAvailable() //To get rid of the blue box around the table
-            tableview(Attributions.list) {
-                bindSelected(viewModel)
+        requestFocusOnSceneAvailable() //To get rid of the blue box around the table
+        tableview(Attributions.list) {
+            bindSelected(viewModel)
 
-                columnResizePolicy = SmartResize.POLICY
-                readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
-                readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
+            columnResizePolicy = SmartResize.POLICY
+            readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
+            readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
 
-                onUserSelect {
-                    Modal.License.open()
+            onUserSelect {
+                Modal.License.open()
+            }
+        }
+
+        vbox(alignment = Pos.CENTER) {
+            hyperlink(messages["about.datasource"]) {
+                action {
+                    app.openUrl(Config.API.radioBrowserUrl)
                 }
+                addClass(Styles.grayLabel)
             }
         }
 
         vbox(alignment = Pos.CENTER_RIGHT) {
-            paddingAll = 10.0
             button(messages["close"]) {
                 isCancelButton = true
                 action {
@@ -75,7 +83,7 @@ class AttributionsFragment : BaseFragment() {
      * Text Area When user clicks on any attribution
      * to show the contents of license file
      */
-    class LicenseFragment : Fragment() {
+    class LicenseFragment : BaseFragment() {
 
         private val viewModel: AttributionViewModel by inject()
 
@@ -85,17 +93,27 @@ class AttributionsFragment : BaseFragment() {
 
             vbox(alignment = Pos.CENTER) {
                 paddingAll = 10
-                label(viewModel.licenseNameProperty)
+                label(viewModel.licenseNameProperty) {
+                    addClass(Styles.subheader)
+                }
                 showWhen {
                     viewModel.licenseNameProperty.isNotEmpty
                 }
-                addClass(Styles.backgroundWhiteSmoke)
             }
 
-            textarea(viewModel.licenseContentProperty) {
+            vbox(alignment = Pos.TOP_LEFT) {
+                paddingAll = 5
                 vgrow = Priority.ALWAYS
+
+                textarea(viewModel.licenseContentProperty) {
+                    paddingAll = 3
+                    isEditable = false
+                    vgrow = Priority.ALWAYS
+                    addClass(Styles.backgroundWhiteSmoke)
+                }
             }
-            addClass(Styles.backgroundWhiteSmoke)
+
+            addClass(Styles.backgroundWhite)
         }
     }
 }

@@ -21,12 +21,12 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
-import online.hudacek.fxradio.usecase.GetStationsByCountryUseCase
-import online.hudacek.fxradio.usecase.GetTrendingStationsUseCase
-import online.hudacek.fxradio.usecase.GetTopVotedStationsUseCase
-import online.hudacek.fxradio.usecase.StationVoteUseCase
+import online.hudacek.fxradio.usecase.station.GetStationsByCountryUseCase
+import online.hudacek.fxradio.usecase.station.GetPopularStationsUseCase
+import online.hudacek.fxradio.usecase.station.GetTrendingStationsUseCase
+import online.hudacek.fxradio.usecase.station.StationVoteUseCase
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.asObservable
 import tornadofx.get
@@ -54,7 +54,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     private val searchViewModel: SearchViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
-    private val getTopVotedStationsUseCase: GetTopVotedStationsUseCase by inject()
+    private val getPopularStationsUseCase: GetPopularStationsUseCase by inject()
     private val getTrendingStationsUseCase: GetTrendingStationsUseCase by inject()
     private val getStationsByCountryUseCase: GetStationsByCountryUseCase by inject()
     private val stationVoteUseCase: StationVoteUseCase by inject()
@@ -63,28 +63,30 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
 
     init {
         appEvent.refreshLibrary
-                .filter { it == libraryViewModel.stateProperty.value }
-                .subscribe(::handleNewLibraryState)
+            .filter { it == libraryViewModel.stateProperty.value }
+            .subscribe(::handleNewLibraryState)
 
         libraryViewModel
-                .stateObservableChanges
-                .subscribe(::handleNewLibraryState)
+            .stateObservable
+            .subscribe(::handleNewLibraryState)
 
         searchViewModel
-                .queryChanges
-                .subscribe { search() }
+            .queryChanges
+            .subscribe { search() }
 
         //Increase vote count on the server
-        appEvent.addVote
-                .flatMapSingle(stationVoteUseCase::execute)
-                .flatMapSingle {
-                    Single.just(if (it.ok) {
+        appEvent.votedStations
+            .flatMapSingle(stationVoteUseCase::execute)
+            .flatMapSingle {
+                Single.just(
+                    if (it.ok) {
                         AppNotification(messages["vote.ok"], FontAwesome.Glyph.CHECK)
                     } else {
                         AppNotification(messages["vote.error"], FontAwesome.Glyph.WARNING)
-                    })
-                }
-                .subscribe(appEvent.appNotification)
+                    }
+                )
+            }
+            .subscribe(appEvent.appNotification)
     }
 
     fun show(stations: List<Station>) {
@@ -101,8 +103,8 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
             stateProperty.value = StationsState.ShortQuery
         } else {
             searchViewModel
-                    .search()
-                    .subscribe(::show, ::handleError)
+                .search()
+                .subscribe(::show, ::handleError)
         }
     }
 
@@ -113,15 +115,18 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     fun handleNewLibraryState(newState: LibraryState) {
         when (newState) {
             is LibraryState.SelectedCountry -> getStationsByCountryUseCase
-                    .execute(newState.country)
-                    .subscribe(::show, ::handleError)
+                .execute(newState.country)
+                .subscribe(::show, ::handleError)
+
             is LibraryState.Favourites -> show(favouritesViewModel.stationsProperty)
-            is LibraryState.TopVotedStations -> getTopVotedStationsUseCase
-                    .execute(Unit)
-                    .subscribe(::show, ::handleError)
+            is LibraryState.TopVotedStations -> getPopularStationsUseCase
+                .execute(Unit)
+                .subscribe(::show, ::handleError)
+
             is LibraryState.TrendingStations -> getTrendingStationsUseCase
-                    .execute(Unit)
-                    .subscribe(::show, ::handleError)
+                .execute(Unit)
+                .subscribe(::show, ::handleError)
+
             is LibraryState.Search -> search()
             else -> {
                 show(observableListOf(Station.dummy))

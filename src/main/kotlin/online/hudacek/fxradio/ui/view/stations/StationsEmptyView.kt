@@ -35,6 +35,7 @@ import tornadofx.controlsfx.glyph
 import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
+import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.stringBinding
 import tornadofx.text
@@ -49,9 +50,9 @@ class StationsEmptyView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
 
-    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE) }
-    private val errorGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE) }
-    private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = GLYPH_SIZE) }
+    private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE, isPrimary = false) }
+    private val errorGlyph by lazy { FontAwesome.Glyph.WARNING.make(size = GLYPH_SIZE, isPrimary = false) }
+    private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = GLYPH_SIZE, isPrimary = false) }
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
@@ -80,7 +81,7 @@ class StationsEmptyView : BaseView() {
         }
     }
 
-    //Description of a message, shown only if relevant
+    // Description of a message, shown only if relevant
     private val subHeader by lazy {
         label(subHeaderProperty) {
             paddingTop = 5.0
@@ -91,16 +92,29 @@ class StationsEmptyView : BaseView() {
 
     private val connectionHelpMessage by lazy {
         hyperlink(messages["connectionErrorDesc"]) {
-            action { Modal.Servers.open() }
-            paddingTop = 5.0
+            paddingTop = 10.0
             id = "stationMessageConnectionHelpMsg"
+
+            action { Modal.Preferences.open() }
+            paddingTop = 5.0
+
+            showWhen {
+                viewModel.stateProperty.booleanBinding {
+                    when (it) {
+                        is StationsState.Error -> true
+                        else -> false
+                    }
+                }
+            }
+
             addClass(Styles.grayLabel)
         }
     }
 
     private val graphic by lazy {
         glyph {
-            viewModel.stateObservableChanges
+            paddingAll = 10.0
+            viewModel.stateObservable
                     .subscribe {
                         graphicProperty().value = when (it) {
                             is StationsState.Error -> errorGlyph
@@ -117,19 +131,7 @@ class StationsEmptyView : BaseView() {
         add(graphic)
         add(header)
         add(subHeader)
-
-        vbox(alignment = Pos.CENTER) {
-            paddingTop = 10.0
-            add(connectionHelpMessage)
-            showWhen {
-                viewModel.stateProperty.booleanBinding {
-                    when (it) {
-                        is StationsState.Error -> true
-                        else -> false
-                    }
-                }
-            }
-        }
+        add(connectionHelpMessage)
 
         showWhen {
             viewModel.stateProperty.booleanBinding {

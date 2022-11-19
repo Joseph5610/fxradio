@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.usecase
 
-import online.hudacek.fxradio.data.StationsApiProvider
-import online.hudacek.fxradio.apiclient.stations.StationsApi
+import online.hudacek.fxradio.api.RBServiceProvider
+import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
 import online.hudacek.fxradio.event.AppEvent
 import tornadofx.Controller
 
@@ -30,7 +30,7 @@ abstract class BaseUseCase<InputType, OutputType> : Controller() {
 
     protected val appEvent: AppEvent by inject()
 
-    protected val stationsApi: StationsApi by lazy { StationsApiProvider.provide() }
+    protected val radioBrowserApi: RadioBrowserApi by lazy { RBServiceProvider.provide() }
 
     abstract fun execute(input: InputType): OutputType
 }

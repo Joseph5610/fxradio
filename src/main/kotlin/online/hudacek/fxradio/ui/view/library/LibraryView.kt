@@ -19,23 +19,13 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.data.db.Tables
+import javafx.scene.layout.Priority
+import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.borderpane
-import tornadofx.box
-import tornadofx.center
-import tornadofx.get
-import tornadofx.hyperlink
-import tornadofx.paddingBottom
-import tornadofx.px
-import tornadofx.style
-import tornadofx.top
-import tornadofx.vbox
+import tornadofx.*
 
 class LibraryView : BaseView() {
 
@@ -46,10 +36,10 @@ class LibraryView : BaseView() {
 
     override fun onDock() {
         Tables.pinnedCountries
-                .selectAll()
-                .subscribe {
-                    viewModel.pinnedProperty += it
-                }
+            .selectAll()
+            .subscribe {
+                viewModel.pinnedProperty += it
+            }
         viewModel.getCountries()
     }
 
@@ -57,62 +47,69 @@ class LibraryView : BaseView() {
         top {
             vbox {
                 vbox {
+                    padding = insets(10, 20)
                     add(librarySearchView)
-                    style {
-                        padding = box(20.px, 10.px, 20.px, 10.px)
-                    }
                 }
 
-                vbox {
-                    add(LibraryTitleFragment(messages["library"], viewModel.showLibraryProperty) {
-                        viewModel.showLibraryProperty.value = !viewModel.showLibraryProperty.value
-                        viewModel.commit()
-                    })
-                    paddingBottom = 5.0
-                }
+                add(
+                    find<LibraryTitleFragment>(
+                        params = mapOf(
+                            "libraryTitle" to messages["library"],
+                            "showProperty" to viewModel.showLibraryProperty
+                        )
+                    )
+                )
+
+                add(libraryListView)
+
+                add(
+                    find<LibraryTitleFragment>(
+                        params = mapOf(
+                            "libraryTitle" to messages["pinned"],
+                            "showProperty" to viewModel.showPinnedProperty
+                        )
+                    )
+                )
 
                 vbox {
-                    add(libraryListView)
-                }
-
-                vbox {
-                    vbox {
-                        add(LibraryTitleFragment(messages["pinned"], viewModel.showPinnedProperty) {
-                            viewModel.showPinnedProperty.value = !viewModel.showPinnedProperty.value
-                            viewModel.commit()
-                        })
-                        paddingBottom = 5.0
-                    }
-
-                    add(LibraryCountriesFragment(viewModel.pinnedProperty, viewModel.showPinnedProperty))
+                    add(
+                        find<LibraryCountriesFragment>(
+                            params = mapOf("countriesProperty" to viewModel.pinnedProperty)
+                        )
+                    )
 
                     showWhen {
-                        viewModel.pinnedProperty.emptyProperty().not()
+                        viewModel.pinnedProperty.emptyProperty().not().and(viewModel.showPinnedProperty)
                     }
                 }
             }
+
         }
 
         center {
             vbox {
+                add(
+                    find<LibraryTitleFragment>(
+                        params = mapOf(
+                            "libraryTitle" to messages["countries"],
+                            "showProperty" to viewModel.showCountriesProperty
+                        )
+                    )
+                )
                 vbox {
-                    add(LibraryTitleFragment(messages["countries"], viewModel.showCountriesProperty) {
-                        viewModel.showCountriesProperty.value = !viewModel.showCountriesProperty.value
-                        viewModel.commit()
-                    })
-                    paddingBottom = 5.0
-                }
-
-                vbox {
-                    add(LibraryCountriesFragment(viewModel.countriesProperty, viewModel.showCountriesProperty))
-                    prefHeightProperty().bind(this@center.heightProperty())
+                    vgrow = Priority.ALWAYS
+                    add(
+                        find<LibraryCountriesFragment>(
+                            params = mapOf("countriesProperty" to viewModel.countriesProperty)
+                        )
+                    )
+                    prefHeightProperty().bind(this@center.heightProperty().minus(10.0))
 
                     showWhen {
-                        viewModel.countriesProperty.emptyProperty().not()
+                        viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
                     }
                 }
 
-                //Retry link
                 vbox(alignment = Pos.CENTER) {
                     hyperlink(messages["downloadRetry"]) {
 
@@ -121,6 +118,7 @@ class LibraryView : BaseView() {
                         showWhen {
                             viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
                         }
+                        addClass(Styles.primaryTextColor)
                     }
                 }
             }

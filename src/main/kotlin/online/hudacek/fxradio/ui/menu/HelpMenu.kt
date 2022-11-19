@@ -32,28 +32,33 @@ class HelpMenu : BaseMenu("menu.help") {
     private val logsFolderPath = "file://${Config.Paths.baseAppPath}"
 
     override val menuItems = listOf(
-            item(messages["menu.help.openhomepage"], KeyCodes.website) {
-                action {
-                    appMenuViewModel.openWebsite()
-                }
-            },
-            separator(),
-            item(messages["menu.help.stats"]) {
-                action {
-                    Modal.Stats.open()
-                }
-            },
-            item(messages["menu.help.clearCache"]) {
-                action {
-                    appMenuViewModel.clearCache()
-                }
-            },
-            logMenu.menu,
-            separator(),
-            item(messages["menu.help.logs"], KeyCodes.open) {
-                action {
-                    app.openUrl(logsFolderPath)
-                }
+        item(messages["menu.app.attributions"]) {
+            action {
+                Modal.Attributions.open()
             }
+        },
+        item(messages["menu.help.openhomepage"], KeyCodes.website) {
+            action {
+                appMenuViewModel.openWebsite()
+            }
+        },
+        separator(),
+        item(messages["menu.help.stats"]) {
+            action {
+                Modal.Stats.open()
+            }
+        },
+        item(messages["menu.help.clearCache"]) {
+            action {
+                appMenuViewModel.clearCache()
+            }
+        },
+        logMenu.menu,
+        separator(),
+        item(messages["menu.help.logs"], KeyCodes.open) {
+            action {
+                app.openUrl(logsFolderPath)
+            }
+        },
     )
 }

@@ -21,18 +21,22 @@ package online.hudacek.fxradio.ui.view.stations
 import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.beans.property.Property
 import javafx.geometry.Pos
+import javafx.scene.paint.Color
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.make
 import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.update
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -43,32 +47,45 @@ import tornadofx.center
 import tornadofx.flowpane
 import tornadofx.get
 import tornadofx.hyperlink
-import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
+import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
+import java.util.*
 
 private const val LOGO_SIZE = 60.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
+    private val likeIcon by lazy {
+        FontAwesome.Glyph.THUMBS_UP.make(12.0) {
+            style {
+                textFill = Color.WHITESMOKE
+            }
+        }
+    }
+
+    private val copyIcon by lazy {
+        FontAwesome.Glyph.COPY.make(12.0, isPrimary = false)
+    }
+
     private val stationLogo by lazy {
-        imageview {
+        stationView(selectedStationViewModel.stationProperty) {
             fitHeight = LOGO_SIZE
             fitHeight = LOGO_SIZE
         }
     }
 
     override fun onDock() {
-        stationInfoViewModel.stationProperty.stationImage(stationLogo)
+        selectedStationViewModel.retrieveAdditionalData()
     }
 
     override val root = borderpane {
@@ -76,24 +93,25 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         paddingAll = 10.0
 
         top {
-            vbox {
-                vbox(alignment = Pos.CENTER) {
-                    paddingAll = 10.0
-                    add(stationLogo)
+            vbox(alignment = Pos.CENTER) {
+                paddingAll = 10.0
 
-                    hyperlink(stationInfoViewModel.nameProperty) {
-                        action {
-                            app.openUrl(stationInfoViewModel.homePageProperty.value)
-                        }
-                        addClass(Styles.subheader)
-                        addClass(Styles.primaryTextColor)
-                        tooltip(messages["info.visit.website"])
+                add(stationLogo)
+
+                hyperlink(selectedStationViewModel.nameProperty) {
+                    action {
+                        app.openUrl(selectedStationViewModel.homePageProperty.value)
                     }
-                    label(stationInfoViewModel.countryProperty) {
-                        addClass(Styles.grayLabel)
-                    }
+                    addClass(Styles.subheader)
+                    addClass(Styles.primaryTextColor)
+                    tooltip(messages["info.visit.website"])
+                }
+
+                label(selectedStationViewModel.countryProperty) {
+                    addClass(Styles.grayLabel)
                 }
             }
+
         }
 
         center {
@@ -105,26 +123,12 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     alignment = Pos.CENTER
                     paddingAll = 5.0
 
-                    label(createInfoBinding("info.bitrate", stationInfoViewModel.bitrateProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.codec", stationInfoViewModel.codecProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.votes", stationInfoViewModel.votesProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.language", stationInfoViewModel.languageProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
-                    label(createInfoBinding("info.clicktrend", stationInfoViewModel.clickTrendProperty)) {
-                        addClass(Styles.grayLabel)
-                        addClass(Styles.tag)
-                    }
+                    createInfoLabel("info.bitrate", selectedStationViewModel.bitrateProperty)?.let { add(it) }
+                    createInfoLabel("info.codec", selectedStationViewModel.codecProperty)?.let { add(it) }
+                    createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
+                    createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
+                    createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
+                    createInfoLabel("info.clicktrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
                 }
 
                 vbox {
@@ -134,7 +138,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         vgap = 5.0
                         paddingAll = 5.0
                         alignment = Pos.CENTER
-                        bindChildren(stationInfoViewModel.tagsProperty) {
+                        bindChildren(selectedStationViewModel.tagsProperty) {
                             hyperlink(it) {
                                 addClass(Styles.tag)
                                 addClass(Styles.grayLabel)
@@ -148,7 +152,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                         }
                     }
                     showWhen {
-                        stationInfoViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
+                        selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
                     }
                 }
             }
@@ -157,15 +161,23 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         bottom {
             vbox(spacing = 5.0, alignment = Pos.CENTER) {
                 button(messages["copy.stream.url"]) {
+                    graphic = copyIcon
                     maxWidth = Double.MAX_VALUE
-                    actionEvents().map { stationInfoViewModel.stationProperty.value }
-                            .subscribe {
-                                clipboard.update(it.url_resolved!!)
-                            }
+
+                    actionEvents()
+                        .map { selectedStationViewModel.stationProperty.value }
+                        .subscribe {
+                            clipboard.update(it.url_resolved)
+                        }
                 }
                 button(messages["menu.station.vote"]) {
+                    requestFocusOnSceneAvailable()
+                    graphic = likeIcon
                     maxWidth = Double.MAX_VALUE
-                    actionEvents().map { stationInfoViewModel.stationProperty.value }.subscribe(appEvent.addVote)
+
+                    actionEvents()
+                        .map { selectedStationViewModel.stationProperty.value}
+                        .subscribe(appEvent.votedStations)
 
                     addClass(Styles.primaryButton)
                 }
@@ -175,13 +187,16 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
-    private fun createInfoBinding(key: String, valueProperty: Property<*>) = valueProperty.stringBinding {
-        val value = if (it is String) {
-            it.ifEmpty { messages["unknown"] }
-        } else if (it is Int) {
-            if (it == 0) messages["unknown"]
-            else it
-        } else it
-        messages[key] + ": " + value
+    private fun createInfoLabel(key: String, valueProperty: Property<*>?) = valueProperty?.let { p ->
+        label(p.stringBinding {
+            val value = if (it is String) {
+                it.ifEmpty { messages["unknown"] }
+            } else it
+            messages[key] + ": " + value.toString()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        }) {
+            addClass(Styles.grayLabel)
+            addClass(Styles.tag)
+        }
     }
 }

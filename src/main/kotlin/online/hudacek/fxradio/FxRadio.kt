@@ -21,9 +21,9 @@ package online.hudacek.fxradio
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
+import online.hudacek.fxradio.api.RBServiceProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
-import online.hudacek.fxradio.data.StationsApiProvider
-import online.hudacek.fxradio.data.db.Database
+import online.hudacek.fxradio.persistence.database.Database
 import online.hudacek.fxradio.ui.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
@@ -32,14 +32,23 @@ import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
+import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.*
+import tornadofx.App
+import tornadofx.FX
+import tornadofx.Stylesheet
+import tornadofx.launch
+import tornadofx.setStageIcon
+import tornadofx.stylesheet
 import java.io.FileInputStream
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Year
 import kotlin.reflect.KClass
+
+private const val WINDOW_MIN_WIDTH = 600.0
+private const val WINDOW_MIN_HEIGHT = 400.0
 
 /**
  * Load app in Dark Mode
@@ -51,18 +60,18 @@ class FxRadioDark : FxRadio(stylesheet = StylesDark::class)
  */
 class FxRadioLight : FxRadio(stylesheet = Styles::class)
 
-private const val WINDOW_MIN_WIDTH = 600.0
-private const val WINDOW_MIN_HEIGHT = 400.0
-
 /**
  * Load the app with provided [stylesheet] class
  */
-open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, stylesheet) {
+open class FxRadio(
+    stylesheet: KClass<out Stylesheet>,
+    val isAppRunningInTest: Boolean = false
+) : App(MainView::class, stylesheet) {
 
     private val playerViewModel: PlayerViewModel by inject()
 
     /**
-     * override app.config path to $user.home/fxradio
+     * override app.config path to ${user.home}/.fxradio
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
@@ -74,7 +83,7 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             minWidth = WINDOW_MIN_WIDTH
             minHeight = WINDOW_MIN_HEIGHT
 
-            //Setup window location on screen
+            // Setup window location on screen
             with(config) {
                 double(Properties.WindowWidth.key)?.let {
                     width = it
@@ -92,25 +101,35 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
             setStageIcon(Image(Config.Resources.stageIcon))
             super.start(this)
         }
-        trayIcon.addIcon()
+
+        if (Properties.UseTrayIcon.value(true) && !isAppRunningInTest) {
+            trayIcon.addIcon()
+        }
+
+        if (!Properties.EnableDebugView.value(false)) {
+            // Disable built-in tornadofx layout debugger
+            FX.layoutDebuggerShortcut = null
+        }
     }
 
     override fun stop() {
-        if (!isTestEnvironment) {
+        if (!isAppRunningInTest) {
             playerViewModel.releasePlayer()
-            StationsApiProvider.close()
+            RBServiceProvider.close()
             HttpClient.close()
             Database.close()
             LogManager.shutdown()
         }
 
         //Save last used window width/height on close of the app to use it on next start
-        saveProperties(mapOf(
+        saveProperties(
+            mapOf(
                 Properties.WindowWidth to FX.primaryStage.width,
                 Properties.WindowHeight to FX.primaryStage.height,
                 Properties.WindowX to FX.primaryStage.x,
                 Properties.WindowY to FX.primaryStage.y
-        ))
+            )
+        )
         super.stop()
     }
 
@@ -118,8 +137,6 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
      * Basic info about the app
      */
     companion object {
-
-        var isTestEnvironment = false
 
         const val appName = "FXRadio"
         const val appDesc = "Internet radio directory"
@@ -129,24 +146,22 @@ open class FxRadio(stylesheet: KClass<out Stylesheet>) : App(MainView::class, st
 
         /**
          * Gets version from jar MANIFEST.MF file
-         * On failure (e.g if app is not run from the jar file), returns the "0.0-DEVELOPMENT" value
+         * On failure (e.g. if app is not run from the jar file), returns the "0.0.0" value
          */
         val version: String by lazy {
-            FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.0.0"
         }
 
         private fun hasSystemDarkMode() = MacUtils.isMac && MacUtils.isSystemDarkMode
 
-        fun isDarkModePreferred(): Boolean {
-            return runCatching {
-                //we have to use the ugly java way to access this property as we want to access it
-                //in the time that the app is not yet instantiated
-                val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
-                val props = java.util.Properties().also { it.load(fis) }
-                val darkModeProp = props.getProperty(Properties.DarkMode.key)
-                darkModeProp?.toBoolean() ?: hasSystemDarkMode()
-            }.getOrDefault(hasSystemDarkMode())
-        }
+        fun isDarkModePreferred() = runCatching {
+            // We have to use the ugly java way to access this property as we want to access it
+            // in the time that the app is not yet instantiated
+            val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
+            val props = java.util.Properties().also { it.load(fis) }
+            val darkModeProp = props.getProperty(Properties.DarkMode.key)
+            darkModeProp?.toBoolean() ?: hasSystemDarkMode()
+        }.getOrDefault(hasSystemDarkMode())
     }
 }
 

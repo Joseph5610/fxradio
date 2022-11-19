@@ -18,37 +18,42 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
+import com.github.thomasnield.rxkotlinfx.toObservable
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import io.reactivex.Observable
 import mu.KotlinLogging
 import tornadofx.objectProperty
 
 private val logger = KotlinLogging.logger {}
 
-abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item? = null,
-                                                           initialState: State? = null) :
-        BaseViewModel<Item>(initialItem = initialItem) {
+abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item, initialState: State) :
+    BaseViewModel<Item>(initialItem = initialItem) {
 
     val stateProperty by lazy { objectProperty(initialState) }
 
-    val stateObservableChanges: Observable<State> = stateProperty
-            .toObservableChangesNonNull()
-            .filter { it.newVal != null }
-            .map { it.newVal }
-            .also { it.subscribe(::onNewState, ::onError) }
+    val stateObservable: Observable<State> = stateProperty.toObservable(initialState)
+        .doOnNext { logger.debug { "State Change: $it" } }
+
+    val stateChangeObservable: Observable<State> = stateProperty.toObservableChanges()
+        .doOnNext { logger.debug { "State Change from ${it.oldVal} to ${it.newVal}" } }
+        .doOnError { logger.error(it) { "Exception when changing state" } }
+        .map { it.newVal }
+
+    init {
+        stateChangeObservable.subscribe(::onNewState, ::onError)
+    }
 
     /**
      * Called on every new state
      */
     protected open fun onNewState(newState: State) {
-        logger.debug { "StateChange: $newState" }
-    }
 
+    }
 
     /**
      * Called on every new state
      */
     protected open fun onError(throwable: Throwable) {
-        logger.error(throwable) { "Exception when changing state" }
+
     }
 }

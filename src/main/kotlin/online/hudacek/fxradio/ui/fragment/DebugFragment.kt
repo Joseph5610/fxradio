@@ -19,34 +19,44 @@
 package online.hudacek.fxradio.ui.fragment
 
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.fieldset
 import tornadofx.form
+import tornadofx.label
+import tornadofx.listview
 import tornadofx.textarea
-import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.vgrow
 
 class DebugFragment : BaseFragment("Debug Window") {
 
-    private val viewModel: PlayerViewModel by inject()
+    private val viewModel: SelectedStationViewModel by inject()
 
     override val root = vbox {
-        setPrefSize(600.0, 400.0)
+       prefWidth = 600.0
         form {
-            fieldset("Station") {
+            fieldset("Selected Station") {
                 textarea(viewModel.stationProperty.asString()) {
                     vgrow = Priority.ALWAYS
                     isWrapText = true
+                    prefHeight = 150.0
                 }
             }
-            fieldset("Player values") {
-                textfield(viewModel.trackNameProperty.value)
-                textfield(viewModel.mediaPlayerProperty.value.toString())
-                textfield(viewModel.volumeProperty.value.toString())
+            fieldset("Stations with invalid logo") {
+                listview(InvalidStationsHolder.invalidLogoStations) {
+                    prefHeight = 150.0
+                    cellFormat {
+                        graphic = vbox {
+                            label(it.name)
+                        }
+                        addClass(Styles.decoratedListItem)
+                    }
+                    addClass(Styles.decoratedListView)
+                }
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

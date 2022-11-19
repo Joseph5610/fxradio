@@ -30,12 +30,9 @@ import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
-import org.controlsfx.control.NotificationPane
 import tornadofx.addClass
 import tornadofx.controlsfx.content
 import tornadofx.hgrow
-import tornadofx.onChange
 import tornadofx.splitpane
 import tornadofx.vbox
 
@@ -51,10 +48,9 @@ class MainView : BaseView(FxRadio.appName) {
     private val stationsView: StationsView by inject()
     private val menuBarView: MenuBarView by inject()
     private val libraryView: LibraryView by inject()
-    private val darkModeViewModel: DarkModeViewModel by inject()
 
     override fun onDock() {
-        with(leftPane) {
+        with(splitPane) {
             // Workaround for setting correct position of divider after restart of app
             setDividerPositions(windowDividerProperty.get(0.30))
         }
@@ -62,7 +58,7 @@ class MainView : BaseView(FxRadio.appName) {
 
     override fun onUndock() {
         // Save divider position before closing the app
-        windowDividerProperty.save(leftPane.dividers[0].position)
+        windowDividerProperty.save(splitPane.dividers[0].position)
     }
 
     // Right pane of the app (Player + Stations)
@@ -74,11 +70,11 @@ class MainView : BaseView(FxRadio.appName) {
         }
     }
 
-    private val leftPane by lazy {
+    private val splitPane by lazy {
         splitpane(Orientation.HORIZONTAL, libraryView.root, rightPane) {
 
             // Constrains width of left pane
-            libraryView.root.minWidthProperty().bind(widthProperty().divide(5))
+            libraryView.root.minWidthProperty().bind(widthProperty().divide(6))
             libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
 
             // Remove 1px border from SplitPane
@@ -87,24 +83,16 @@ class MainView : BaseView(FxRadio.appName) {
     }
 
     override val root = vbox {
+
         setPrefSize(800.0, 600.0)
         add(menuBarView)
 
         customNotificationPane {
-            appEvent.appNotification
-                    .subscribe { this[it.glyph] = it.title }
-
-            darkModeViewModel.darkModeProperty.onChange {
-                if (!it) {
-                    styleClass -= NotificationPane.STYLE_CLASS_DARK
-                } else {
-                    styleClass += NotificationPane.STYLE_CLASS_DARK
-                }
-            }
+            appEvent.appNotification.subscribe { this[it.glyph] = it.title }
 
             content {
-                add(leftPane)
-                with(leftPane) {
+                add(splitPane)
+                with(splitPane) {
                     prefWidthProperty().bind(this@vbox.widthProperty())
                     prefHeightProperty().bind(this@vbox.heightProperty())
                 }

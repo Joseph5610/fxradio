@@ -18,17 +18,18 @@
 
 package online.hudacek.fxradio.ui.view.library
 
+import javafx.geometry.Pos
+import javafx.scene.input.KeyCode
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.make
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.searchField
+import online.hudacek.fxradio.util.keyCombination
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.get
-import tornadofx.label
-import tornadofx.onChange
-import tornadofx.validator
+import tornadofx.*
 
 private const val searchGlyphSize = 14.0
 private const val searchMaxLength = 49.0
@@ -44,14 +45,23 @@ class LibrarySearchView : BaseView() {
     override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = label(graphic = FontAwesome.Glyph.SEARCH.make(searchGlyphSize))
+        left = FontAwesome.Glyph.SEARCH.make(searchGlyphSize, isPrimary = false) {
+            alignment = Pos.CENTER
+            padding = insets(5, 9)
+        }
 
         setOnMouseClicked {
-            libraryViewModel.stateProperty.value = LibraryState.Search
+            setSearchState()
         }
 
         textProperty().onChange {
+            setSearchState()
             viewModel.commit()
+        }
+
+        shortcut(keyCombination(KeyCode.F)) {
+            requestFocusOnSceneAvailable()
+            setSearchState()
         }
 
         validator {
@@ -60,5 +70,9 @@ class LibrarySearchView : BaseView() {
                 else -> null
             }
         }
+    }
+
+    private fun setSearchState() {
+        libraryViewModel.stateProperty.value = LibraryState.Search
     }
 }

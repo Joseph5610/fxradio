@@ -25,12 +25,10 @@ import javafx.stage.Stage
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.FxRadioLight
-import online.hudacek.fxradio.apiclient.ApiServiceProvider
-import online.hudacek.fxradio.apiclient.stations.StationsApi
-import online.hudacek.fxradio.apiclient.stations.model.Country
-import online.hudacek.fxradio.apiclient.stations.model.SearchBody
-import online.hudacek.fxradio.apiclient.stations.model.Station
+import online.hudacek.fxradio.apiclient.ServiceProvider
+import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.integration.Elements.libraryCountriesFragment
 import online.hudacek.fxradio.integration.Elements.libraryListView
 import online.hudacek.fxradio.integration.Elements.nowPlayingLabel
@@ -43,7 +41,8 @@ import online.hudacek.fxradio.integration.Elements.stationsHistory
 import online.hudacek.fxradio.integration.Elements.volumeMaxIcon
 import online.hudacek.fxradio.integration.Elements.volumeMinIcon
 import online.hudacek.fxradio.integration.Elements.volumeSlider
-import online.hudacek.fxradio.data.db.Tables
+import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.Glyph
@@ -53,13 +52,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
-import org.testfx.framework.junit5.Init
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
 import tornadofx.DataGrid
-import tornadofx.SmartListCell
 import tornadofx.find
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -77,16 +75,11 @@ class AppFunctionalityTest {
     private lateinit var app: FxRadio
 
     // Stations service, init needed only once
-    private val service = ApiServiceProvider("https://${Config.API.fallbackApiServerURL}").get<StationsApi>()
-
-    @Init
-    fun init() {
-        FxRadio.isTestEnvironment = true
-    }
+    private val service = ServiceProvider("https://${Config.API.fallbackApiServerURL}").create<RadioBrowserApi>()
 
     @Start
     fun start(stage: Stage) {
-        app = FxRadioLight()
+        app = FxRadio(stylesheet = Styles::class, isAppRunningInTest = true)
         app.start(stage)
 
         // Disable app notifications to not interfere with tests
@@ -111,24 +104,27 @@ class AppFunctionalityTest {
 
         // Get Instance of player
         val player = find<PlayerViewModel>()
+        val selectedStationViewModel = find<SelectedStationViewModel>()
 
         // Wait for stations to load
         val stations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        waitFor(5) { stations.isVisible && stations.items.size == 50 }
+        waitFor(5) {
+            stations.isVisible && stations.items.size > 0
+        }
 
         //Avoid station names that start with # as it is query locator for ID
         val stationToClick = stations.items
-                .filter { !it.name.startsWith("#") }
-                .filter { it.name != player.stationProperty.value.name }
-                .take(5)
-                .random()
+            .filter { !it.name.startsWith("#") }
+            .filter { it.name != selectedStationViewModel.stationProperty.value.name }
+            .take(5)
+            .random()
         robot.doubleClickOn(stationToClick.name)
 
         WaitForAsyncUtils.waitForFxEvents()
 
         // Wait for stream start
-        waitFor(5) { player.stateProperty.value == PlayerState.Playing }
+        waitFor(5) { player.stateProperty.value is PlayerState.Playing }
 
         // Check that player has text with name of the station
         verifyThat(nowPlayingLabel, hasLabel(stationToClick.name))
@@ -146,19 +142,15 @@ class AppFunctionalityTest {
     }
 
     @Test
-    fun `api should return same results as in app`() {
-        // Get results from API
-        val stations = service.getTopVotedStations().blockingGet()
-
-        assertEquals(50, stations.size)
-
+    fun `api test`() {
         // Wait for stations to load
         val appStations = robot.find(stationsDataGrid) as DataGrid<Station>
 
-        // Compare results with the app
-        stations.forEachIndexed { index, _ ->
-            assertEquals(stations[index].name, appStations.items[index].name)
-        }
+        // Get results from API
+        val apiStations = service.getTopVotedStations().blockingGet()
+            .filter { it.countrycode != "RU" }
+
+        assertEquals(apiStations.size, appStations.items.size)
     }
 
     @Test
@@ -176,8 +168,12 @@ class AppFunctionalityTest {
 
         // Click on History item in Library List Item
         val historyItem = robot.from(libraries)
-                .lookup(libraries.items[historyItemIndex].type.key.capitalize())
-                .query<SmartListCell<LibraryItem>>()
+            .lookup(libraries.items[historyItemIndex].type.key.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            })
+            .query<Label>()
         robot.clickOn(historyItem)
 
         // Find DataGrid, History List and actual db count
@@ -232,9 +228,6 @@ class AppFunctionalityTest {
         verifyThat(search, hasValue("st"))
         verifyThat(stationMessageHeader, hasText("Searching Radio Directory"))
 
-        // Perform API search
-        val stationResults = service.searchStationByName(SearchBody("station")).blockingGet()
-
         // Enter query into field
         robot.enterText(search, "station")
         verifyThat(search, hasValue("station"))
@@ -242,14 +235,7 @@ class AppFunctionalityTest {
         // Wait until DataGrid is loaded with stations for the provided search query
         sleep(8)
 
-        // Get stations in DataGrid
-        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
         verifyThat(stationMessageHeader, visible())
-
-        // Compare results from API and APP
-        logger.info { "Search results displayed: " + stations.items.size }
-        logger.info { "Search Results from API: " + stationResults.size }
-        waitFor(10) { stationResults.size == stations.items.size }
     }
 
     @Test
@@ -269,8 +255,8 @@ class AppFunctionalityTest {
 
         // Find "TestPinnedCountryName" in the list of items
         val item = robot.from(countries[0])
-                .lookup("TestPinnedCountryName")
-                .query<Label>()
+            .lookup("TestPinnedCountryName")
+            .query<Label>()
 
         // Simulate remove country to pinned list
         robot.interact {
@@ -281,8 +267,8 @@ class AppFunctionalityTest {
 
         // Check there is no item with this label in the app
         val items = robot.from(countries[0])
-                .lookup("TestPinnedCountryName")
-                .queryAll<Label>()
+            .lookup("TestPinnedCountryName")
+            .queryAll<Label>()
         waitFor(2) { items.size == 0 }
     }
 }

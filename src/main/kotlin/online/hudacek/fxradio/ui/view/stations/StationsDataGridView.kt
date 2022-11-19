@@ -20,38 +20,23 @@ package online.hudacek.fxradio.ui.view.stations
 
 import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
-import online.hudacek.fxradio.apiclient.stations.model.tagsSplit
+import javafx.scene.input.DragEvent
+import javafx.scene.input.MouseEvent
+import javafx.util.Duration
+import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
 import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationImage
-import online.hudacek.fxradio.viewmodel.InfoPanelState
-import online.hudacek.fxradio.viewmodel.LibraryState
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.StationInfo
-import online.hudacek.fxradio.viewmodel.StationInfoViewModel
-import online.hudacek.fxradio.viewmodel.StationsState
-import online.hudacek.fxradio.viewmodel.StationsViewModel
-import tornadofx.action
-import tornadofx.booleanBinding
-import tornadofx.contextmenu
-import tornadofx.datagrid
-import tornadofx.get
-import tornadofx.imageview
-import tornadofx.item
-import tornadofx.label
-import tornadofx.onHover
-import tornadofx.paddingAll
-import tornadofx.px
-import tornadofx.separator
-import tornadofx.style
-import tornadofx.tooltip
-import tornadofx.vbox
+import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.util.DataCellHandler
+import online.hudacek.fxradio.ui.util.DataGridHandler
+import online.hudacek.fxradio.viewmodel.*
+import tornadofx.*
 
 private const val CELL_WIDTH = 140.0
 private const val LOGO_SIZE = 100.0
+
 
 /**
  * Main view of stations
@@ -59,8 +44,7 @@ private const val LOGO_SIZE = 100.0
  */
 class StationsDataGridView : BaseView() {
 
-    private val playerViewModel: PlayerViewModel by inject()
-    private val stationInfoViewModel: StationInfoViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
@@ -68,54 +52,76 @@ class StationsDataGridView : BaseView() {
     //Show initial stations
     override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
-
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
+
+        val handler = DataGridHandler(this)
+        setOnKeyPressed(handler::handle)
+
         cellWidth = CELL_WIDTH
 
-        //Cleanup selected item on refresh of library
+        // Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
-                    selectionModel.clearSelection()
-                    selectionModel.select(playerViewModel.stationProperty.value)
-                }
+            selectionModel.clearSelection()
+            selectionModel.select(selectedStationViewModel.stationProperty.value)
+        }
 
         onUserSelect(1) {
-            playerViewModel.stationProperty.value = it
-            stationInfoViewModel.item = StationInfo(it)
+            if (selectedStationViewModel.item.station != it) {
+                selectedStationViewModel.item = SelectedStation(it)
+            }
+        }
+
+        cellFormat {
+            val cellHandler = DataCellHandler(this, this@datagrid)
+
+            onHover {
+                if (it) {
+                    scale(Duration.seconds(0.07), point(1.05, 1.05), play = false).playFromStart()
+                } else {
+                    scale(Duration.seconds(0.07), point(1.0, 1.0), play = false).playFromStart()
+                }
+            }
+
+            addEventFilter(MouseEvent.DRAG_DETECTED, cellHandler::onDragDetected)
+            addEventFilter(DragEvent.DRAG_OVER, cellHandler::onDragOver)
+            addEventFilter(DragEvent.DRAG_ENTERED, cellHandler::onDragEntered)
+            addEventFilter(DragEvent.DRAG_EXITED, cellHandler::onDragExited)
+            addEventFilter(DragEvent.DRAG_DROPPED, cellHandler::onDragDropped)
+            addEventFilter(DragEvent.DRAG_DONE, cellHandler::onDragDone)
         }
 
         cellCache { station ->
-            vbox {
+            vbox(alignment = Pos.BOTTOM_CENTER) {
                 paddingAll = 5
 
-                onHover { tooltip(station.name) }
+                onHover {
+                    tooltip(station.name)
+                }
+
                 contextmenu {
                     // Add Add or Remove from favourites menu items
                     items.addAll(favouritesMenu.addRemoveFavouriteItems)
                     separator()
                     item(messages["menu.station.info"]).action {
-                        stationInfoViewModel.item = StationInfo(station)
-                        stationInfoViewModel.stateProperty.value = InfoPanelState.Shown
+                        selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
                     }
                 }
 
-                vbox(alignment = Pos.CENTER) {
+                stationView(station) {
                     paddingAll = 5
-                    prefHeight = 120.0
-                    imageview {
-                        station.stationImage(this)
-                        fitHeight = LOGO_SIZE
-                        fitWidth = LOGO_SIZE
+                    fitHeight = LOGO_SIZE
+                    fitWidth = LOGO_SIZE
+                }
+
+                label(station.name) {
+                    paddingTop = 5
+                    style {
+                        fontSize = 13.px
                     }
                 }
-                vbox(alignment = Pos.CENTER) {
-                    label(station.name) {
-                        style {
-                            fontSize = 13.px
-                        }
-                    }
-                    smallLabel(station.tagsSplit)
-                }
+
+                smallLabel(station.tagsSplit)
             }
         }
 

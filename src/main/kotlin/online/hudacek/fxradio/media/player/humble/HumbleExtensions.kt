@@ -46,3 +46,12 @@ internal fun Demuxer.getStreamInfo(streamUrl: String): HumbleStreamInfo? {
     }
     return null
 }
+
+internal fun Demuxer.correctlyClose() {
+    if (state == Demuxer.State.STATE_PLAYING
+        || state == Demuxer.State.STATE_OPENED
+        || state == Demuxer.State.STATE_PAUSED
+    ) {
+        close()
+    }
+}

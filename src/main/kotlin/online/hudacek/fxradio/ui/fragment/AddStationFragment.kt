@@ -19,19 +19,17 @@
 package online.hudacek.fxradio.ui.fragment
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
-import javafx.scene.layout.Priority
+import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.ApiUtils
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.customNotificationPane
 import online.hudacek.fxradio.ui.field
-import online.hudacek.fxradio.ui.set
+import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
-import online.hudacek.fxradio.viewmodel.DarkModeViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import org.controlsfx.control.NotificationPane
-import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
@@ -44,27 +42,22 @@ import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.get
 import tornadofx.hbox
-import tornadofx.label
 import tornadofx.listProperty
 import tornadofx.observableListOf
-import tornadofx.onChange
 import tornadofx.validator
-import tornadofx.vbox
-import tornadofx.vgrow
 
 class AddStationFragment : BaseFragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val darkModeViewModel: DarkModeViewModel by inject()
 
-    //Autocomplete list of countries
-    private val countriesListProperty = listProperty(observableListOf<String>()).also {
-        it.bind(libraryViewModel.countriesProperty) { c -> c.name }
+    // List of Countries for autocomplete
+    private val countriesListProperty = listProperty<String>(observableListOf()).apply {
+        bind(libraryViewModel.countriesProperty) { c -> c.name }
     }
 
     override fun onDock() {
-        //Recheck viewmodel validity when reopening fragment
+        // Recheck ViewModel validity when reopening fragment
         viewModel.validate(focusFirstError = false)
     }
 
@@ -72,35 +65,25 @@ class AddStationFragment : BaseFragment() {
         title = messages["add.title"]
         prefWidth = 400.0
 
-        darkModeViewModel.darkModeProperty.onChange {
-            if (!it) {
-                styleClass -= NotificationPane.STYLE_CLASS_DARK
-            } else {
-                styleClass += NotificationPane.STYLE_CLASS_DARK
-            }
-        }
-
         content {
             form {
-                fieldset(messages["add.title"]) {
-                    vbox {
-                        prefHeight = 50.0
-                        vgrow = Priority.ALWAYS
-                        label(messages["add.label"]) {
-                            isWrapText = true
-                        }
-                    }
+                fieldset {
+                    requestFocusOnSceneAvailable()
 
-                    field(messages["add.name"], "My Radio Station",
-                            viewModel.nameProperty, true) { field ->
+                    field(
+                        messages["add.name"], "My Radio Station",
+                        viewModel.nameProperty, isRequired = true
+                    ) { field ->
                         field.validator {
                             if (!validate(it, 400)) error(messages["field.invalid.length"])
                             else null
                         }
                     }
 
-                    field(messages["add.site"], "https://example.com/",
-                            viewModel.homePageProperty) { field ->
+                    field(
+                        messages["add.url"], "https://example.com/stream.m3u",
+                        viewModel.urlProperty, isRequired = true
+                    ) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -110,8 +93,10 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.url"], "https://example.com/stream.m3u",
-                            viewModel.urlProperty) { field ->
+                    field(
+                        messages["add.site"], "https://example.com/",
+                        viewModel.homePageProperty, isRequired = false
+                    ) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -121,8 +106,10 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.icon"], "https://example.com/favicon.ico",
-                            viewModel.faviconProperty) { field ->
+                    field(
+                        messages["add.icon"], "https://example.com/favicon.ico",
+                        viewModel.faviconProperty, isRequired = false
+                    ) { field ->
                         field.validator {
                             if (it == null || !ApiUtils.isValidUrl(it)) {
                                 error(messages["field.invalid.url"])
@@ -132,16 +119,20 @@ class AddStationFragment : BaseFragment() {
                         }
                     }
 
-                    field(messages["add.language"], messages["add.language.prompt"],
-                            viewModel.languageProperty, true) { field ->
+                    field(
+                        messages["add.language"], messages["add.language.prompt"],
+                        viewModel.languageProperty, isRequired = true, countriesListProperty
+                    ) { field ->
                         field.validator {
                             if (!validate(it, 150)) error(messages["field.invalid.length"])
                             else null
                         }
                     }
 
-                    field(messages["add.country"], messages["add.country.prompt"],
-                            viewModel.countryProperty, true, countriesListProperty) { field ->
+                    field(
+                        messages["add.country"], messages["add.country.prompt"],
+                        viewModel.countryProperty, isRequired = true, countriesListProperty
+                    ) { field ->
                         field.validator {
                             if (it !in countriesListProperty)
                                 error(messages["field.invalid.country"])
@@ -155,34 +146,11 @@ class AddStationFragment : BaseFragment() {
                     }
                 }
 
-                hbox(spacing = 5) {
-                    button(messages["save"]) {
-                        enableWhen(viewModel.valid)
-                        isDefaultButton = true
-
-                        actionEvents()
-                                .flatMapSingle { viewModel.addStation() }
-                                .subscribe {
-                                    if (it.ok) {
-                                        //Save UUID of new station
-                                        viewModel.uuidProperty.value = it.uuid
-
-                                        viewModel.commit {
-                                            close()
-
-                                            //Cleanup view model
-                                            viewModel.item = AddStationModel()
-                                        }
-                                    } else {
-                                        this@customNotificationPane[FontAwesome.Glyph.WARNING] = it.message
-                                    }
-                                }
-                        addClass(Styles.primaryButton)
-                    }
-
+                hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
                     button(messages["add.cleanupForm"]) {
+                        enableWhen(viewModel.dirty)
                         action {
-                            viewModel.item = AddStationModel()
+                            viewModel.rollback()
                         }
                     }
 
@@ -192,6 +160,16 @@ class AddStationFragment : BaseFragment() {
                             close()
                         }
                     }
+                    button(messages["save"]) {
+                        enableWhen(viewModel.valid)
+                        isDefaultButton = true
+
+                        actionEvents()
+                            .flatMapMaybe { viewModel.addNewStation() }
+                            .subscribe(::save)
+
+                        addClass(Styles.primaryButton)
+                    }
                 }
             }
         }
@@ -199,4 +177,18 @@ class AddStationFragment : BaseFragment() {
     }
 
     private fun validate(property: String?, maxValue: Int) = property?.length in 0 until maxValue
+
+    private fun save(newStation: Station) {
+        viewModel.commit {
+            viewModel.saveToFavouritesObservable
+                .filter { it }
+                .map { newStation }
+                .subscribe(appEvent.addFavourite)
+        }
+
+        // Cleanup view model
+        viewModel.item = AddStationModel()
+
+        close()
+    }
 }

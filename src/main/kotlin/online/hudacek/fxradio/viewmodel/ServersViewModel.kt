@@ -25,6 +25,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.usecase.GetServersUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.value
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -36,8 +37,8 @@ sealed class ServersState(val key: String = "") {
 }
 
 class Servers(
-        selectedServer: String = Config.API.fallbackApiServerURL,
-        availableServers: ObservableList<String> = observableListOf()
+    selectedServer: String = Properties.ApiServer.value(Config.API.fallbackApiServerURL),
+    availableServers: ObservableList<String> = observableListOf(selectedServer)
 ) {
     var selected: String by property(selectedServer)
     var servers: ObservableList<String> by property(availableServers)
@@ -45,37 +46,26 @@ class Servers(
 
 /**
  * Holds available and selected API servers
- * Item is set in [online.hudacek.fxradio.api.StationsApiProvider]
+ * Item is set in [online.hudacek.fxradio.api.RBServiceProvider]
  *
  * Search for available servers is performed only on first start of the app or when opening
- * [online.hudacek.fxradio.ui.fragment.ServersFragment]
+ * [online.hudacek.fxradio.ui.fragment.PreferencesFragment]
  */
-class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers()) {
+class ServersViewModel : BaseStateViewModel<Servers, ServersState>(Servers(), ServersState.NoServersAvailable) {
 
     private val getServersUseCase: GetServersUseCase by inject()
 
-    val serversProperty = bind(Servers::servers) as ListProperty<String>
+    val availableServersProperty = bind(Servers::servers) as ListProperty<String>
     val selectedProperty = bind(Servers::selected) as StringProperty
 
     /**
      * Perform async DNS lookup to find working API servers
      */
-    fun fetchServers() {
-        stateProperty.value = ServersState.Loading
-        getServersUseCase.execute(Unit).subscribe({
-            if (it.isEmpty()) {
-                stateProperty.value = ServersState.NoServersAvailable
-            } else {
-                stateProperty.value = ServersState.Fetched(it)
-            }
-        }, {
-            stateProperty.value = ServersState.Error(it.localizedMessage)
-        })
-    }
+    fun fetchServers() = getServersUseCase.execute(stateProperty)
 
     override fun onNewState(newState: ServersState) {
         if (newState is ServersState.Fetched) {
-            item = Servers(selectedServer = selectedProperty.value, availableServers = observableListOf(newState.servers))
+            availableServersProperty.value = observableListOf(newState.servers)
         }
     }
 

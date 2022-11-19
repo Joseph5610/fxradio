@@ -4,48 +4,45 @@
 
 Internet radio directory desktop app written in [tornadofx](https://tornadofx.io) framework.
 
-Play thousands of radio stations from around the world. Find out which stations are currently trending or find all radio stations broadcasting in your country. If you know the name of your favourite station, you can just search for it, and it will appear instantly if we have it in our database. If we don't, you can add it yourself - you just need to provide a couple of details about the station.
+Play thousands of radio stations from all around the world. 
 
-The app is using VLCLib, so we recommend installing VLC player for the best experience. If the VLC Player is not present on your system, the app will use ffmpeg library to play the audio streams. However, ffmpeg implementation is not perfect at the moment, and some (many) of the streams might play broken or not play at all.
+The app is using VLCLib, so we recommend installing VLC player for the best experience. 
+If the VLC Player is not present on your system, the app will use ffmpeg library to play the audio. 
+However, ffmpeg implementation is not perfect at the moment, and some stations might sound broken or not play at all.
 
-This app is using http://radio-browser.info public API
+The app is using http://radio-browser.info public API
 
-[Visit the website of the project to find more information](https://hudacek.online/fxradio)
+[Visit the website of the project](https://hudacek.online/fxradio)
 
-# Download
+## Download and run the app
 
 Download the latest release from [Releases](https://github.com/Joseph5610/fxradio-main/releases) page in this repository.
-Currently, we provide several release files:
-- Plain JAR file with dependencies, but beware, the JAR file can only be run using **Java 1.8**.
-- Otherwise, we currently provide standard .dmg installer for macOS
+Currently, we provide following installers:
+- .dmg installer for macOS
+- .msi installer for Windows
 
-:warning: **Native format for Windows/Unix OS is currently not built** 
-Those builds have not been tested, but you can still try to build it yourself.
+### Windows
 
-# How to run the app
+Download **fxradio_windows.msi**, run it and proceed with installation.
+In case your antivirus flags the installer or application exe file as malicious, please add it to exceptions. App is currently not correctly signed so it might trigger some false positives.
 
-Assuming you already downloaded the preferred distribution from [Releases](https://github.com/Joseph5610/fxradio-main/releases)
-page, there is just a few more steps to run the app.
+### macOS
+Download DMG archive **fxradio_macOS.dmg**. After downloading follow those steps:
+1. Double click to open the downloaded file and move the FXRadio icon into "Applications" folder
+2. Open the Applications folder in Finder and launch the app
 
-If you downloaded DMG archive **fxradio_macOS.dmg**:
-1. Double click to open the downloaded file and move the FxRadio icon into "Applications" folder
-2. Find the FXRadio application in Launchpad or Applications folder in Finder
+:warning: Currently, macOS refuses to run the app entirely with the warning that the app is unsafe and should be moved to trash. 
+This is because builds are not correctly signed. If the alert is shown, go to
+```
+System Preferences -> Security & Privacy 
+```
+Allow changes by clicking on Lock icon and click Open button on the screen. 
 
-:warning: Currently, macOS refuses to run the app entirely with the warning that the app is unsafe and should be moved to trash. This is because builds are not correctly signed. 
-There is a workaround that requires some basic Terminal skills. After installation of the app, perform this command:
+If the option to open the app is not present, try to run the following command in the Terminal app:
 
 ```bash
 sudo xattr -r -d com.apple.quarantine /Applications/FXRadio.app/
 ```
-
-If you are not on macOS and you have downloaded .jar files, beware, this distribution is not officially supported but allows you to run the app on any system that supports Java.
-1. Ensure that you have Java8 installed, as this is only supported Java version
-2. Locate the downloaded fxRadio.jar file on your file system and navigate to this directory using command line.
-3. Check that java command points to JRE 1.8 installation - run the command  **java -version**
-3. If java version command returns 1.8.0_xyz, you can run the command **java -jar fxRadio.jar** and app should now start. 
-
-As we didn't test the jar files on every OS, we cannot guarantee that app will run smoothly. You should expect bugs.
-
 # Build
 
 > We recommend using IntelliJ IDEA as IDE for this project. 

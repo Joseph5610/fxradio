@@ -18,11 +18,15 @@
 
 package online.hudacek.fxradio.apiclient.http.provider
 
-import okhttp3.Call
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
+import okhttp3.dnsoverhttps.DnsOverHttps
 import java.net.InetAddress
+
+private const val GOOGLE_DNS = "https://dns.google/dns-query"
 
 abstract class HttpClientProvider {
 
@@ -30,22 +34,31 @@ abstract class HttpClientProvider {
 
     protected abstract val interceptors: List<Interceptor>
 
+    private val dnsClient by lazy {
+        DnsOverHttps.Builder().client(client)
+            .url(GOOGLE_DNS.toHttpUrl())
+            .includeIPv6(false)
+            .build()
+    }
+
     /**
      * Default implementation of closing the OkHttpClient
      */
     fun close() {
-        client.dispatcher().executorService().shutdownNow()
-        client.connectionPool().evictAll()
+        client.dispatcher.executorService.shutdownNow()
+        client.connectionPool.evictAll()
     }
 
-    fun dns(hostname: String): MutableList<InetAddress> = client.dns().lookup(hostname)
+    fun dns(hostname: String): List<InetAddress> = runCatching {
+        dnsClient.lookup(hostname).sortedBy { it.canonicalHostName }
+    }.getOrDefault(emptyList())
 
-    fun request(url: String): Call = client.newCall(buildRequest(url))
+    fun request(url: String): Response = client.newCall(buildRequest(url)).execute()
 
     /**
      * Constructs [Request] object for given [url] address
      */
     private fun buildRequest(url: String) = Request.Builder()
-            .url(url)
-            .build()
+        .url(url)
+        .build()
 }

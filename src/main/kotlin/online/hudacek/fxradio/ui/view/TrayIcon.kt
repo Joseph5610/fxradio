@@ -22,9 +22,9 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Component
 import tornadofx.get
-import tornadofx.onChange
 import java.awt.MenuItem
 
 /**
@@ -33,61 +33,57 @@ import java.awt.MenuItem
 class TrayIcon : Component() {
 
     private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
+
     private var stationItem: MenuItem? = null
     private var playPauseItem: MenuItem? = null
 
     init {
-        playerViewModel.stationObservable.subscribe {
+        selectedStationViewModel.stationObservable.subscribe {
             stationItem?.let { mi ->
                 mi.label = it.name
             }
         }
 
-        playerViewModel.stateProperty.onChange {
-            it?.let {
-                playPauseItem?.let { mi ->
-                    mi.label = if (it == PlayerState.Playing) {
-                        messages["menu.player.stop"]
-                    } else {
-                        messages["menu.player.start"]
-                    }
+        playerViewModel.stateObservable.subscribe {
+            playPauseItem?.let { mi ->
+                mi.label = if (it is PlayerState.Playing) {
+                    messages["menu.player.stop"]
+                } else {
+                    messages["menu.player.start"]
                 }
             }
         }
     }
 
     fun addIcon() = with(app) {
-        if (Config.Flags.useTrayIcon && !FxRadio.isTestEnvironment) {
-            trayicon(resources.stream("/" + Config.Resources.stageIcon)) {
-                setOnMouseClicked(fxThread = true) {
-                    primaryStage.show()
-                    primaryStage.toFront()
+        trayicon(resources.stream("/" + Config.Resources.stageIcon), tooltip = FxRadio.appName) {
+            setOnMouseClicked(fxThread = true) {
+                primaryStage.show()
+                primaryStage.toFront()
+            }
+            menu(FxRadio.appName) {
+                item(messages["show"] + " " + FxRadio.appName) {
+                    setOnAction(fxThread = true) {
+                        primaryStage.show()
+                        primaryStage.toFront()
+                    }
                 }
-                menu(FxRadio.appName) {
-                    item(messages["show"] + " " + FxRadio.appName) {
-                        setOnAction(fxThread = true) {
-                            primaryStage.show()
-                            primaryStage.toFront()
-                        }
-                    }
-                    addSeparator()
+                addSeparator()
 
-                    stationItem = item(messages["player.streamingStopped"]) {
-                        isEnabled = false
-                    }
+                stationItem = item(messages["player.streamingStopped"]) {
+                    isEnabled = false
+                }
 
-                    playPauseItem = item("Play/Stop") {
-                        setOnAction(fxThread = true) {
-                            if (playerViewModel.stationProperty.value.isValid()) {
-                                playerViewModel.togglePlayerState()
-                            }
-                        }
+                playPauseItem = item("Play/Stop") {
+                    setOnAction(fxThread = true) {
+                        playerViewModel.togglePlayerState()
                     }
-                    addSeparator()
-                    item(messages["exit"]) {
-                        setOnAction(fxThread = true) {
-                            Platform.exit()
-                        }
+                }
+                addSeparator()
+                item(messages["exit"]) {
+                    setOnAction(fxThread = true) {
+                        Platform.exit()
                     }
                 }
             }

@@ -18,13 +18,17 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.event.data.AppNotification
+import online.hudacek.fxradio.persistence.cache.ImageCache
+import online.hudacek.fxradio.ui.formatted
 import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.usecase.CacheClearUseCase
+import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.applySchedulersSingle
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome
@@ -37,18 +41,22 @@ class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuB
 
 class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
 
-    private val cacheClearUseCase: CacheClearUseCase by inject()
-
     val usePlatformProperty = bind(AppMenu::usePlatform) as BooleanProperty
 
-    fun clearCache(): Disposable = cacheClearUseCase.execute(Unit)
-            .subscribe({
-                appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
-            }, {
-                appEvent.appNotification.onNext(
-                        AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
-            })
+    fun clearCache(): Disposable = confirmAlert(
+        messages["cache.clear.confirm"],
+        messages["cache.clear.text"].formatted(ImageCache.totalSize)
+    ).flatMapSingleElement {
+        Single.just(ImageCache.clear()).compose(applySchedulersSingle())
+    }.subscribe({
+        appEvent.appNotification.onNext(
+            AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK)
+        )
+    }, {
+        appEvent.appNotification.onNext(
+            AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING)
+        )
+    })
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

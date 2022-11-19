@@ -31,25 +31,26 @@ import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
+import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import javafx.scene.paint.Color
 import javafx.stage.Window
 import javafx.util.Duration
-import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.apiclient.stations.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.view.StationImageView
 import org.controlsfx.control.NotificationPane
 import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
+import org.controlsfx.glyphfont.Glyph
 import tornadofx.App
 import tornadofx.action
 import tornadofx.add
 import tornadofx.addClass
 import tornadofx.bind
-import tornadofx.box
 import tornadofx.contextmenu
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.notificationPane
@@ -60,14 +61,13 @@ import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.onChange
 import tornadofx.opcr
-import tornadofx.px
 import tornadofx.required
 import tornadofx.setContent
-import tornadofx.style
 import tornadofx.textfield
 import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
+
 
 private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
 
@@ -96,39 +96,40 @@ internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}
 }
 
 internal fun FontAwesome.Glyph.make(
-        size: Double,
-        useStyle: Boolean = true,
-        color: Color? = null) = toGlyph {
+    size: Double,
+    isPrimary: Boolean = true,
+    op: Glyph.() -> Unit = {}
+) = toGlyph {
     size(size)
-    if (color != null) {
-        style {
-            textFill = color
-        }
+    if (isPrimary) {
+        addClass(Styles.glyphIconPrimary)
+    } else {
+        addClass(Styles.glyphIcon)
     }
-    if (useStyle) {
-        style {
-            padding = box(10.px, 5.px)
-        }
-    }
+    op(this)
 }
 
-internal fun EventTarget.searchField(promptText: String,
-                                     property: ObservableValue<String>,
-                                     op: (CustomTextField.() -> Unit) = {}) = searchField {
+internal fun EventTarget.searchField(
+    promptText: String,
+    property: ObservableValue<String>,
+    op: (CustomTextField.() -> Unit) = {}
+) = searchField {
     this.promptText = promptText
     bind(property)
     op(this)
 }
 
 internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): CustomTextField =
-        opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
+    opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
 
 /**
  * Copy Menu
  */
-internal fun EventTarget.copyMenu(clipboard: Clipboard,
-                                  name: String,
-                                  value: String = "") = contextmenu {
+internal fun EventTarget.copyMenu(
+    clipboard: Clipboard,
+    name: String,
+    value: String = ""
+) = contextmenu {
     item(name) {
         action {
             clipboard.update(value)
@@ -136,9 +137,11 @@ internal fun EventTarget.copyMenu(clipboard: Clipboard,
     }
 }
 
-internal fun EventTarget.autoUpdatingCopyMenu(clipboard: Clipboard,
-                                              menuItemName: String,
-                                              valueToCopy: StringProperty) = contextmenu {
+internal fun EventTarget.autoUpdatingCopyMenu(
+    clipboard: Clipboard,
+    menuItemName: String,
+    valueToCopy: StringProperty
+) = contextmenu {
     item(menuItemName) {
         action {
             if (valueToCopy.value != null) {
@@ -175,21 +178,18 @@ internal fun App.openUrl(url: String, query: String = "") {
 }
 
 internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
-        visibleWhen(expr()).apply {
-            managedWhen(expr())
-        }
+    visibleWhen(expr()).apply {
+        managedWhen(expr())
+    }
 
 
 /**
  * Notification UI helpers
  */
-internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit) = {}) = notificationPane(showFromTop = true) {
-    //Show dark notifications
-    if (FxRadio.isDarkModePreferred()) {
-        styleClass += NotificationPane.STYLE_CLASS_DARK
+internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit) = {}) =
+    notificationPane(showFromTop = true) {
+        op(this)
     }
-    op(this)
-}
 
 /**
  * Custom function for showing notification in NotificationPane.
@@ -207,19 +207,27 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
 
 internal fun String.formatted(replaceWith: Any) = MessageFormat.format(this, replaceWith)
 
-internal fun EventTarget.field(message: String, prompt: String,
-                               property: Property<String>,
-                               isRequired: Boolean = false,
-                               autoCompleteProperty: ListProperty<String>? = null,
-                               op: (TextField) -> Unit = {}) =
-        add(field(message) {
-            textfield(property) {
-                if (autoCompleteProperty != null) bindAutoCompletion(autoCompleteProperty)
-                if (isRequired) required()
-                promptText = prompt
-                op(this)
-            }
-        })
+internal fun EventTarget.field(
+    message: String, prompt: String,
+    property: Property<String>,
+    isRequired: Boolean = false,
+    autoCompleteProperty: ListProperty<String>? = null,
+    op: (TextField) -> Unit = {}
+) =
+    add(field(message) {
+        textfield(property) {
+            if (autoCompleteProperty != null) bindAutoCompletion(autoCompleteProperty)
+            if (isRequired) required()
+            promptText = prompt
+            op(this)
+        }
+    })
+
+fun EventTarget.stationView(station: Station, op: ImageView.() -> Unit = {}) =
+    opcr(this, StationImageView(station), op)
+
+fun EventTarget.stationView(stationProperty: Property<Station>, op: ImageView.() -> Unit = {}) =
+    opcr(this, StationImageView(stationProperty), op)
 
 internal val Country.flagIcon: FlagIcon?
     get() = runCatching { FlagIcon(iso_3166_1) }.getOrNull()

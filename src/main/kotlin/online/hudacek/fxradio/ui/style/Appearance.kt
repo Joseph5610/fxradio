@@ -21,6 +21,7 @@ package online.hudacek.fxradio.ui.style
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
+import tornadofx.Component
 
 class LightAppearance : Appearance() {
     override val background = "#E9E9E9"
@@ -38,9 +39,11 @@ class DarkAppearance : Appearance() {
     override val grayLabel = "#a0a1a2"
 }
 
-abstract class Appearance {
+abstract class Appearance : Component() {
 
-    val primary by lazy { getPrimaryColor() }
+    val primary: String
+        get() = getAccentColor().convertToHex()
+
     val transparent = "transparent"
     val playerBox = "#464646"
 
@@ -50,23 +53,26 @@ abstract class Appearance {
     abstract val label: String
     abstract val grayLabel: String
 
-    /**
-     * Detects primary color from system accept color
-     */
-    private fun getPrimaryColor(): String {
-        val accentProperty = Property(Properties.AccentColor)
-        // Use accent color from app.property file
-        val colorCode: Int = if (accentProperty.isPresent) {
-            accentProperty.get()
-        } else {
-            if (MacUtils.isMac) {
-                // Use system accent color
-                MacUtils.systemAccentColor
+
+    companion object {
+        /**
+         * Detects color from system accent color
+         */
+        fun getAccentColor(): AccentColor {
+            val accentProperty = Property(Properties.AccentColor)
+            // Use accent color from app.property file
+            val systemColorCode: Int = if (accentProperty.isPresent) {
+                accentProperty.get()
             } else {
-                // Fallback primary color for non-mac OS
-                AccentColor.MULTICOLOR.colorCode
+                if (MacUtils.isMac) {
+                    // Use system accent color
+                    MacUtils.systemAccentColor
+                } else {
+                    // Fallback primary color for non-mac OS
+                    AccentColor.MULTICOLOR.colorCode
+                }
             }
+            return AccentColor.values().first { it.colorCode == systemColorCode }
         }
-        return AccentColor.values().first { it.colorCode == colorCode }.color()
     }
 }

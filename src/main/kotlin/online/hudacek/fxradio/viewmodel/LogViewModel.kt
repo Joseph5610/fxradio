@@ -33,7 +33,7 @@ class Log(level: Level = Level.valueOf(Properties.LogLevel.value("INFO"))) {
 
 /**
  * Keeps information about current logging level chosen in UI
- * Used in [online.hudacek.fxradio.ui.view.menu.MenuBarView]
+ * Used in [online.hudacek.fxradio.ui.view.MenuBarView]
  */
 class LogViewModel : BaseViewModel<Log>(Log()) {
     val levelProperty = bind(Log::level) as ObjectProperty

@@ -24,7 +24,7 @@ import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.menu.HelpMenu
 import online.hudacek.fxradio.ui.menu.HistoryMenu
 import online.hudacek.fxradio.ui.menu.PlayerMenu
-import online.hudacek.fxradio.ui.menu.StationMenu
+import online.hudacek.fxradio.ui.menu.FileMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.macos.NSMenu
 import online.hudacek.fxradio.util.macos.NSMenuBar
@@ -41,7 +41,7 @@ class MenuBarView : BaseView() {
     private val historyMenu: HistoryMenu by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val helpMenu: HelpMenu by inject()
-    private val stationMenu: StationMenu by inject()
+    private val fileMenu: FileMenu by inject()
     private val playerMenu: PlayerMenu by inject()
 
     override val root = if (appMenuViewModel.usePlatformProperty.value) {
@@ -53,7 +53,7 @@ class MenuBarView : BaseView() {
     private fun defaultMenuBar() = menubar {
         menus.addAll(
                 aboutMenu.menu,
-                stationMenu.menu,
+                fileMenu.menu,
                 playerMenu.menu,
                 favouritesMenu.menu,
                 historyMenu.menu,
@@ -62,7 +62,7 @@ class MenuBarView : BaseView() {
     }
 
     /**
-     * Platform specific menu bar working on OSX
+     * Platform specific menu bar working on macOS
      * used instead of in-app menubar
      */
     private fun platformMenuBar() = NSMenuBar()
@@ -70,7 +70,7 @@ class MenuBarView : BaseView() {
                 val nsMenu = NSMenu()
                 nsMenu.appMenu(aboutMenu.aboutMainItems)
                 menus.addAll(
-                        stationMenu.menu,
+                        fileMenu.menu,
                         playerMenu.menu,
                         favouritesMenu.menu,
                         historyMenu.menu,

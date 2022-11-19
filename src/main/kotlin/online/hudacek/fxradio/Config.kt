@@ -41,20 +41,11 @@ object Config {
      * All user files should be stored in $USER_HOME/.fxradio/ directory
      */
     object Paths {
-        private val appName = FxRadio.appName.toLowerCase()
+        private val appName = FxRadio.appName.lowercase()
 
         val baseAppPath = System.getProperty("user.home") + "/.$appName"
         val confDirPath = "$baseAppPath/conf"
         val cacheDirPath = "$baseAppPath/cache"
         val dbPath = "$baseAppPath/$appName.db"
-    }
-
-    /**
-     * Flags that change app behaviour
-     * Experimental features
-     */
-    object Flags {
-        const val useTrayIcon = true
-        const val enableDebugWindow = false
     }
 }

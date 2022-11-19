@@ -20,30 +20,31 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
-import online.hudacek.fxradio.apiclient.stations.model.StatsResult
+import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
 import online.hudacek.fxradio.usecase.GetStatsUseCase
+import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
 
 sealed class StatsState {
     object Loading : StatsState()
-    data class Fetched(val stats: StatsResult) : StatsState()
+    data class Fetched(val stats: StatsResponse) : StatsState()
     data class Error(val cause: String) : StatsState()
 }
 
-class Stats(stats: ObservableList<Pair<String, String>> = observableListOf()) {
-    var stats: ObservableList<Pair<String, String>> by property(stats)
+class Stats(statsList: ObservableList<String> = observableListOf()) {
+    val statsList: ObservableList<String> by property(statsList)
 }
 
 /**
  * Holds information about radio-browser API stats and health
  * Shown inside [online.hudacek.fxradio.ui.fragment.StatsFragment]
  */
-class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats()) {
+class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats(), StatsState.Loading) {
 
     private val getStatsUseCase: GetStatsUseCase by inject()
 
-    val statsProperty = bind(Stats::stats) as ListProperty
+    val statsListProperty = bind(Stats::statsList) as ListProperty
 
     fun fetchStats() {
         stateProperty.value = StatsState.Loading
@@ -56,14 +57,19 @@ class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats()) {
 
     override fun onNewState(newState: StatsState) {
         if (newState is StatsState.Fetched) {
-            item = Stats(
-                    observableListOf(
-                            Pair("stats.status", newState.stats.status),
-                            Pair("stats.software_version", newState.stats.software_version),
-                            Pair("stats.stations", newState.stats.stations),
-                            Pair("stats.stations_broken", newState.stats.stations_broken),
-                            Pair("stats.tags", newState.stats.tags)
-                    ))
+            item = Stats(newState.stats.convertToList())
         }
     }
+
+    private fun StatsResponse.convertToList() = observableListOf(
+        "${messages["stats.software_version"]}: $supported_version",
+        "${messages["stats.status"]}: $status",
+        "${messages["stats.stations"]}: $stations",
+        "${messages["stats.stations_broken"]}: $stations_broken",
+        "${messages["stats.tags"]}: $tags",
+        "${messages["stats.clicks_last_hour"]}: $clicks_last_hour",
+        "${messages["stats.clicks_last_day"]}: $clicks_last_day",
+        "${messages["stats.languages"]}: $languages",
+        "${messages["stats.countries"]}: $countries"
+    )
 }

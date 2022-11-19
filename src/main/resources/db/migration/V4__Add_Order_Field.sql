@@ -1,0 +1,2 @@
+ALTER TABLE FAVOURITES
+    ADD sorting_order INTEGER;

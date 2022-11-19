@@ -17,17 +17,14 @@
  */
 
 @file:Suppress("MagicNumber")
+
 package online.hudacek.fxradio.ui.style
 
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.c
-import tornadofx.cssclass
-import tornadofx.em
-import tornadofx.px
+import tornadofx.*
+
 
 /**
  * Dark mode CSS classes used around the app
@@ -47,9 +44,9 @@ class StylesDark : Stylesheet() {
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
-        val historyListView by cssclass()
-        val historyListItem by cssclass()
-        val libraryListItemTag by cssclass()
+        val decoratedListView by cssclass()
+        val decoratedListItem by cssclass()
+        val listItemTag by cssclass()
 
         val primaryButton by cssclass()
         val segmentedButton by cssclass()
@@ -69,6 +66,13 @@ class StylesDark : Stylesheet() {
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
+
+        val glyphIconPrimary by cssclass()
+        val glyphIcon by cssclass()
+
+        val notificationPane by cssclass()
+
+        val colorRadioButton by cssclass()
     }
 
     init {
@@ -83,8 +87,16 @@ class StylesDark : Stylesheet() {
         }
 
         checkBox {
-            baseColor = c(colors.primary)
+            box {
+                baseColor = c(colors.backgroundSelected)
+                backgroundRadius += box(3.px)
+                borderRadius += box(3.px)
+            }
+
             and(selected) {
+                box {
+                    baseColor = c(colors.primary)
+                }
                 mark {
                     backgroundColor += Color.WHITE
                 }
@@ -93,20 +105,20 @@ class StylesDark : Stylesheet() {
         }
 
         playerMainBox {
-            padding = box(10.0.px, 0.0.px)
+            padding = box(5.0.px, 35.0.px)
             borderColor += box(
-                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+                c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
             )
         }
 
         playerStationBox {
-            padding = box(3.0.px, 10.0.px)
-            backgroundRadius += box(3.px)
-            borderRadius += box(3.px)
+            padding = box(5.0.px)
+            backgroundRadius += box(4.px)
+            borderRadius += box(4.px)
             backgroundColor += c(colors.playerBox)
             borderColor += box(c(colors.backgroundBorder))
-            maxWidth = 260.px
-            prefWidth = 260.px
+            maxWidth = 280.px
+            prefWidth = 280.px
         }
 
         tag {
@@ -184,21 +196,22 @@ class StylesDark : Stylesheet() {
         libraryListItem {
             fontSize = 12.px
             prefHeight = 30.px
-            textFill = c(colors.label)
-            borderInsets += box(0.px, 5.px, 0.px, 5.px)
-            backgroundInsets += box(0.px, 5.px, 0.px, 5.px)
             backgroundColor += c(colors.background)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(selected) {
-                backgroundColor += c(colors.backgroundSelected)
-                borderColor += box(c(colors.backgroundBorder))
-                textFill = Color.WHITESMOKE
+                backgroundColor += c(colors.primary)
+                borderColor += box(c(colors.primary + "22"))
+
+                label {
+                    textFill = Color.WHITESMOKE
+                }
             }
-            padding = box(6.px, 10.px, 6.px, 15.px)
+
+            padding = box(6.px, 10.px, 6.px, 10.px)
         }
 
-        libraryListItemTag {
+        listItemTag {
             padding = box(2.px)
             textFill = Color.WHITESMOKE
             borderColor += box(c(colors.backgroundBorder))
@@ -207,22 +220,22 @@ class StylesDark : Stylesheet() {
             backgroundColor += c(colors.playerBox)
         }
 
-        historyListView {
-            padding = box(0.px, 10.px, 0.px, 10.px)
+        decoratedListView {
             backgroundColor += c(colors.transparent)
+            borderColor += box(c(colors.transparent))
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
-        historyListItem {
+        decoratedListItem {
             fontSize = 12.px
             textFill = c(colors.label)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(odd) {
-                backgroundColor += c(colors.background)
+                backgroundColor += c(colors.transparent)
             }
             and(even) {
-                backgroundColor += c(colors.transparent)
+                backgroundColor += c(colors.background)
             }
             and(selected) {
                 borderColor += box(c(colors.primary))
@@ -244,7 +257,7 @@ class StylesDark : Stylesheet() {
 
         mainMenuBox {
             borderColor += box(
-                    c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
+                c(colors.transparent), c(colors.transparent), c(colors.backgroundBorder), c(colors.transparent)
             )
         }
 
@@ -339,13 +352,21 @@ class StylesDark : Stylesheet() {
         textArea {
             fontFamily = "monospace"
             textFill = Color.WHITESMOKE
+            accentColor = c(colors.primary, 0.2)
             backgroundColor += c(colors.background)
+            borderColor += box(c(colors.background))
             content {
                 backgroundColor += c(colors.background)
+                borderColor += box(c(colors.background))
             }
         }
 
         slider {
+
+            thumb {
+                unsafe("-fx-color", raw("whitesmoke"))
+            }
+
             track {
                 prefHeight = 3.px
                 backgroundColor += c(colors.backgroundBorder)
@@ -415,6 +436,7 @@ class StylesDark : Stylesheet() {
             promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            accentColor = c(colors.primary, 0.2)
             and(focused) {
                 borderColor += box(c(colors.primary, 0.6))
                 faintFocusColor = c("${colors.primary}22")
@@ -434,6 +456,80 @@ class StylesDark : Stylesheet() {
             baseColor = c(colors.transparent)
             line {
                 maxWidth = 1.px
+            }
+        }
+
+        glyphIconPrimary {
+            textFill = c(colors.primary)
+        }
+
+        glyphIcon {
+            textFill = c(colors.label)
+        }
+
+        colorRadioButton {
+            and(selected) {
+                radio {
+                    dot {
+                        backgroundColor += Color.WHITESMOKE
+                        backgroundInsets += box(0.px)
+                        backgroundRadius += box(0.3.em)
+                    }
+                }
+            }
+        }
+
+        notificationPane {
+            baseColor = c(colors.background)
+        }
+
+        comboBox {
+            baseColor = c(colors.backgroundBorder)
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+
+            arrow {
+                backgroundColor += c(colors.primary)
+            }
+
+            comboBoxPopup {
+                listView {
+                    backgroundRadius += box(6.px)
+                    borderRadius += box(6.px)
+                    backgroundColor += c(colors.background)
+                }
+
+                listCell {
+                    textFill = Color.WHITESMOKE
+                    backgroundRadius += box(6.px)
+                    borderRadius += box(6.px)
+                    backgroundColor += c(colors.background)
+                    and(selected) {
+                        backgroundColor += c(colors.primary + "30")
+                        borderColor += box(c(colors.primary + "30"))
+                    }
+                    padding = box(5.px)
+                }
+            }
+        }
+
+
+        InternalWindow.Styles.floatingWindowWrapper {
+
+            InternalWindow.Styles.top {
+                backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
+                borderRadius += box(6.px, 6.px, 0.px, 0.px)
+                backgroundColor += c(colors.background)
+            }
+
+            InternalWindow.Styles.closebutton {
+                visibility = FXVisibility.HIDDEN
+            }
+
+            InternalWindow.Styles.floatingWindowContent {
+                backgroundColor += c(colors.background)
+                backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
+                borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }
         }
     }

@@ -19,28 +19,32 @@
 package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.apiclient.stations.model.Station
-import online.hudacek.fxradio.apiclient.stations.model.StationBody
-import online.hudacek.fxradio.usecase.StationAddUseCase
+import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.usecase.station.StationAddUseCase
 import tornadofx.property
 import tornadofx.stringBinding
-import java.util.Locale
+import java.util.*
 
 /**
  * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
  * Handles logic for adding new station into the API
  */
-class AddStationModel(name: String = "",
-                      url: String = "",
-                      homepage: String = "",
-                      favicon: String = "",
-                      country: String = "",
-                      language: String = "",
-                      tags: String = "",
-                      uuid: String = "",
-                      saveToFavourites: Boolean = false) {
+class AddStationModel(
+    name: String = "",
+    url: String = "",
+    homepage: String = "",
+    favicon: String = "",
+    country: String = "",
+    language: String = "",
+    tags: String = "",
+    saveToFavourites: Boolean = false
+) {
     var name: String by property(name)
     var url: String by property(url)
     var homepage: String by property(homepage)
@@ -49,7 +53,6 @@ class AddStationModel(name: String = "",
     var language: String by property(language)
     var tags: String by property(tags)
     var saveToFavourites: Boolean by property(saveToFavourites)
-    var uuid: String by property(uuid)
 }
 
 class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
@@ -63,42 +66,40 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
     val countryProperty = bind(AddStationModel::country) as StringProperty
     val languageProperty = bind(AddStationModel::language) as StringProperty
     val tagsProperty = bind(AddStationModel::tags) as StringProperty
-    val uuidProperty = bind(AddStationModel::uuid) as StringProperty
     val saveToFavouritesProperty = bind(AddStationModel::saveToFavourites) as BooleanProperty
 
-    //Find Country Code from countryProperty value
+    val saveToFavouritesObservable: Observable<Boolean> = saveToFavouritesProperty.toObservable()
+
+    // Find Country Code from countryProperty value
     private val countryCodeProperty = countryProperty.stringBinding { countryName ->
         Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     }
 
-    fun addStation() = stationAddUseCase.execute(
-            StationBody(
-                    nameProperty.value,
-                    urlProperty.value,
-                    homePageProperty.value,
-                    faviconProperty.value,
-                    countryCodeProperty.value,
-                    countryProperty.value,
-                    languageProperty.value,
-                    tagsProperty.value
-            )
-    )
+    fun addNewStation(): Maybe<Station> =
+        stationAddUseCase.execute(convertToRequest())
+            .filter { it.ok }
+            .map {
+                Station(
+                    stationuuid = it.uuid,
+                    name = nameProperty.value,
+                    url_resolved = urlProperty.value,
+                    homepage = homePageProperty.value,
+                    favicon = faviconProperty.value,
+                    countrycode = countryCodeProperty.value,
+                    country = countryProperty.value,
+                    language = languageProperty.value,
+                    tags = tagsProperty.value
+                )
+            }
 
-    override fun onCommit() {
-        saveToFavouritesProperty
-                .toObservable()
-                .filter { it }
-                .map {
-                    Station(stationuuid = uuidProperty.value,
-                            name = nameProperty.value,
-                            url_resolved = urlProperty.value,
-                            homepage = homePageProperty.value,
-                            favicon = faviconProperty.value,
-                            countrycode = countryCodeProperty.value,
-                            country = countryProperty.value,
-                            language = languageProperty.value,
-                            tags = tagsProperty.value)
-                }
-                .subscribe(appEvent.addFavourite)
-    }
+    private fun convertToRequest() = NewStationRequest(
+        nameProperty.value,
+        urlProperty.value,
+        homePageProperty.value,
+        faviconProperty.value,
+        countryCodeProperty.value,
+        countryProperty.value,
+        languageProperty.value,
+        tagsProperty.value
+    )
 }

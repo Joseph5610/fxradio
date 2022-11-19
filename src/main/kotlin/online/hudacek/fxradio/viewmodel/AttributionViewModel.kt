@@ -38,7 +38,6 @@ class Attribution(name: String, version: String = "", license: License) {
  */
 class AttributionViewModel : BaseViewModel<Attribution>() {
     val nameProperty = bind(Attribution::name) as StringProperty
-    val versionProperty = bind(Attribution::version) as StringProperty
     val licenseNameProperty = bind(Attribution::licenseName) as StringProperty
     val licenseContentProperty = bind(Attribution::licenseContent) as StringProperty
 }

@@ -19,34 +19,34 @@
 package online.hudacek.fxradio.ui.menu
 
 import javafx.scene.control.MenuItem
-import online.hudacek.fxradio.ui.stationImage
+import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
 import tornadofx.booleanBinding
-import tornadofx.confirm
 import tornadofx.disableWhen
 import tornadofx.enableWhen
 import tornadofx.get
-import tornadofx.imageview
 import tornadofx.item
 import tornadofx.visibleWhen
 
 class FavouritesMenu : BaseMenu("menu.favourites") {
 
-    private val playerViewModel: PlayerViewModel by inject()
+    private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val playedStationNotInFavouritesProperty = playerViewModel.stationProperty.booleanBinding {
-        //User should be able to add favourite station only when it is not already present
+    private val playedStationNotInFavouritesProperty = selectedStationViewModel.stationProperty.booleanBinding {
+        // User should be able to add favourite station only when it is not already present
         it != null && it !in favouritesViewModel.stationsProperty
     }
 
-    private val favouriteMenuItemVisibleProperty = playerViewModel.stationProperty.booleanBinding {
+    private val favouriteMenuItemVisibleProperty = selectedStationViewModel.stationProperty.booleanBinding {
         it != null && it.isValid()
     }
 
@@ -54,30 +54,30 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
      * Items for add/remove favourite station reused in multiple menus around the app
      */
     val addRemoveFavouriteItems
-        get() = mutableListOf(item(messages["menu.station.favourite"], KeyCodes.favourite) {
+        get() = mutableListOf(item(messages["menu.station.favourite"], KeyCodes.favouriteAdd) {
             enableWhen(playedStationNotInFavouritesProperty)
             visibleWhen(favouriteMenuItemVisibleProperty)
 
             action {
-                appEvent.addFavourite.onNext(playerViewModel.stationProperty.value)
+                appEvent.addFavourite.onNext(selectedStationViewModel.stationProperty.value)
                 appEvent.refreshLibrary.onNext(LibraryState.Favourites)
                 playedStationNotInFavouritesProperty.invalidate()
             }
         },
-                //Remove favourite
-                item(messages["menu.station.favouriteRemove"]) {
-                    disableWhen(playedStationNotInFavouritesProperty)
-                    visibleWhen(favouriteMenuItemVisibleProperty)
+            //Remove favourite
+            item(messages["menu.station.favouriteRemove"]) {
+                disableWhen(playedStationNotInFavouritesProperty)
+                visibleWhen(favouriteMenuItemVisibleProperty)
 
-                    action {
-                        appEvent.removeFavourite.onNext(playerViewModel.stationProperty.value)
-                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                        playedStationNotInFavouritesProperty.invalidate()
-                    }
-                })
+                action {
+                    appEvent.removeFavourite.onNext(selectedStationViewModel.stationProperty.value)
+                    appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                    playedStationNotInFavouritesProperty.invalidate()
+                }
+            })
 
     override val menuItems = mutableListOf<MenuItem>().apply {
-        addAll(listOf(item(messages["menu.favourites.show"]) {
+        addAll(listOf(item(messages["menu.favourites.show"], KeyCodes.favouriteView) {
             action {
                 libraryViewModel.stateProperty.value = LibraryState.Favourites
             }
@@ -87,32 +87,31 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
             }
             items.bind(favouritesViewModel.stationsProperty) {
                 item(it.name) {
-                    //for some reason macos native menu does not respect
-                    //width/height setting so it is disabled for now
+                    // For some reason macOS native menu does not respect
+                    // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = imageview {
-                            it.stationImage(this)
+                        graphic = stationView(it) {
                             fitHeight = 15.0
                             fitWidth = 15.0
-                            isPreserveRatio = true
                         }
                     }
                     action {
-                        playerViewModel.stationProperty.value = it
+                        selectedStationViewModel.item = SelectedStation(it)
                     }
                 }
             }
-        }))
+        }, separator()))
         addAll(addRemoveFavouriteItems)
         addAll(listOf(separator(), item(messages["menu.station.favourite.clear"]) {
             disableWhen {
                 favouritesViewModel.stationsProperty.emptyProperty()
             }
             action {
-                confirm(messages["database.clear.confirm"], messages["database.clear.text"], owner = primaryStage) {
-                    favouritesViewModel.cleanupFavourites()
-                    appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                }
+                confirmAlert(messages["database.clear.confirm"], messages["database.clear.text"])
+                    .subscribe {
+                        favouritesViewModel.cleanupFavourites()
+                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
+                    }
             }
         }))
     }

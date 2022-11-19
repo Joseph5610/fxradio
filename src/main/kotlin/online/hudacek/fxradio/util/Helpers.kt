@@ -22,48 +22,31 @@ import com.github.thomasnield.rxkotlinfx.observeOnFx
 import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
-import javafx.scene.control.Alert
-import javafx.scene.control.ButtonType
-import javafx.stage.Window
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
-import tornadofx.FX
+import online.hudacek.fxradio.util.macos.MacUtils
+import tornadofx.*
 import tornadofx.FX.Companion.messages
-import tornadofx.alert
-import tornadofx.get
-import tornadofx.importStylesheet
-import tornadofx.removeStylesheet
+import java.util.*
 
 /**
  * Perform async calls on correct thread
  */
-internal fun <T> applySchedulers(): SingleTransformer<T, T> = SingleTransformer {
+internal fun <T> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransformer {
     it.subscribeOn(Schedulers.io())
-            .observeOnFx()
+        .observeOnFx()
 }
 
-internal fun <T> applySchedulersObservable(): ObservableTransformer<T, T> = ObservableTransformer {
+internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
     it.subscribeOn(Schedulers.io())
-            .observeOnFx()
-}
-
-internal fun vlcAlert() = alert(Alert.AlertType.ERROR,
-        messages["player.vlc.missing"], messages["player.vlc.missing.description"])
-
-internal fun confirmDialog(header: String, content: String = "",
-                           confirmButton: ButtonType = ButtonType.OK,
-                           cancelButton: ButtonType = ButtonType.CANCEL,
-                           owner: Window? = null, title: String? = null): Alert {
-    val alert = Alert(Alert.AlertType.CONFIRMATION, content, confirmButton, cancelButton)
-    title?.let { alert.title = it }
-    alert.headerText = header
-    owner?.also { alert.initOwner(it) }
-    return alert
+        .observeOnFx()
 }
 
 internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
-    removeStylesheet(Styles::class)
-    removeStylesheet(StylesDark::class)
+    FX.stylesheets.clear()
     if (isDarkModeProperty) {
         importStylesheet(StylesDark::class)
     } else {
@@ -71,3 +54,8 @@ internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
     }
     FX.applyStylesheetsTo(FX.primaryStage.scene)
 }
+
+internal fun keyCombination(keyCode: KeyCode) =
+    KeyCodeCombination(keyCode, if (MacUtils.isMac) KeyCombination.META_DOWN else KeyCombination.CONTROL_DOWN)
+
+

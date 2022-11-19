@@ -1,23 +1,12 @@
 /*
- *     FXRadio - Internet radio directory
- *     Copyright (C) 2020  hudacek.online
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU Affero General Public License as
- *     published by the Free Software Foundation, either version 3 of the
- *     License, or (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU Affero General Public License for more details.
- *
- *     You should have received a copy of the GNU Affero General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * TickerView
+ * Custom view displays currently playing stream title in the player
+ * Original Source:
+ * https://gitlab.light.kow.is/kowis-projects/deskscreen/-/blob/marquee/src/main/kotlin/is/kow/deskscreen/ticker/TickerView.kt
  */
-
 package online.hudacek.fxradio.ui.view.player
 
+import com.github.thomasnield.rxkotlinfx.toObservable
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import javafx.animation.Animation
@@ -32,7 +21,7 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.addClass
-import tornadofx.onChange
+import tornadofx.fade
 import tornadofx.pane
 import tornadofx.plusAssign
 import tornadofx.removeFromParent
@@ -40,14 +29,9 @@ import tornadofx.text
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.set
 
-/**
- * TickerView shows ticker with currently playing song/radio name
- * Source:
- * https://gitlab.light.kow.is/kowis-projects/deskscreen/-/blob/marquee/src/main/kotlin/is/kow/deskscreen/ticker/TickerView.kt
- */
 open class TickerEntry<T : Node>(
-        var content: T,
-        var reschedule: Boolean = false
+    var content: T,
+    var reschedule: Boolean = false
 ) {
     open fun updateObservable(): Completable? = null
 }
@@ -58,45 +42,31 @@ class PlayerTickerView : TickerView() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    init {
-        // Update "TickerEntry" value
-        playerViewModel.trackNameProperty.onChange {
-            if (it != null) {
-                setNewEntry(TickerEntry(content = createText(it), reschedule = true))
+    override fun onDock() {
+        playerViewModel.trackNameProperty.toObservable()
+            .subscribe {
+                marqueeFragment.replaceTickEntry(TickerEntry(content = createText(it), reschedule = true))
             }
-        }
     }
 }
 
-open class TickerView(content: String = "", reschedule: Boolean = true) : BaseView() {
+open class TickerView : BaseView() {
 
-    private var entry = TickerEntry<Node>(content = createText(content), reschedule = reschedule)
-
-    private val marqueeFragment by lazy {
-        MarqueeFragment().apply {
-            enqueueTickEntry(entry)
-        }
-    }
+    protected val marqueeFragment = find<MarqueeFragment>()
 
     override val root = pane {
         prefHeight = 15.0
+
         marqueeFragment.inside(this)
         add(marqueeFragment)
     }
 
-    fun setNewEntry(futureEntry: TickerEntry<Node>) {
-        marqueeFragment.clear(entry)
-        entry = futureEntry
-        marqueeFragment.enqueueTickEntry(entry)
-    }
-
-    protected fun createText(content: String = "") = text(content) {
+    fun createText(content: String) = text(content) {
         layoutY = 12.0
         isVisible = false
         addClass(Styles.defaultTextColor)
     }
 
-    //Actual implementation of Ticker
     class MarqueeFragment : BaseFragment() {
 
         // Amount of space between entries
@@ -127,7 +97,12 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
             root.prefHeightProperty().bind(of.heightProperty())
         }
 
-        fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
+        fun replaceTickEntry(entry: TickerEntry<Node>) {
+            clear()
+            queuedTicks.add(entry)
+        }
+
+        private fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
 
         //Fire up the animation process for the ticker
         private fun startAnimation() {
@@ -194,16 +169,16 @@ open class TickerView(content: String = "", reschedule: Boolean = true) : BaseVi
                     }
                 }
             }).also { timeline.keyFrames += it }
-
             timeline.cycleCount = Animation.INDEFINITE
             timeline.play()
         }
 
-        fun clear(entry: TickerEntry<Node>) {
-            entry.reschedule = false
-            entry.content.removeFromParent()
-            if (activeTicks.isNotEmpty()) activeTicks.remove()
+        private fun clear() {
             queuedTicks.clear()
+            activeTicks.forEach {
+                it.entry.reschedule = false
+                it.entry.content.fade(Duration.seconds(0.5), 0.0)
+            }
         }
     }
 }
