@@ -230,4 +230,4 @@ fun EventTarget.stationView(stationProperty: Property<Station>, op: ImageView.()
     opcr(this, StationImageView(stationProperty), op)
 
 internal val Country.flagIcon: FlagIcon?
-    get() = runCatching { FlagIcon(iso_3166_1) }.getOrNull()
+    get() = runCatching { FlagIcon(iso3166) }.getOrNull()

@@ -37,8 +37,8 @@ class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
         .getCountries()
         .compose(applySchedulersSingle())
         .flattenAsObservable { it.filter { c -> !c.isRussia } }
-        .filter { it.stationcount != 0 }
-        .map { it.copy(name = getCountryNameFromISO(it.iso_3166_1) ?: it.name) }
+        .filter { it.stationCount != 0 }
+        .map { it.copy(name = getCountryNameFromISO(it.iso3166) ?: it.name) }
         .sorted(Comparator.comparing(Country::name))
         .distinct()
 

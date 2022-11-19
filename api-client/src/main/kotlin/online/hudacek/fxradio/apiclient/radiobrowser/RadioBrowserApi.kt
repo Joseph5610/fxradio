@@ -26,7 +26,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByIdsRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
@@ -45,29 +45,29 @@ interface RadioBrowserApi : ApiDefinition {
     @POST("json/stations/bycountrycodeexact/{countryCode}")
     fun getStationsByCountryCode(
         @Path("countryCode") countryCode: String,
-        @Query("hidebroken") hidebroken: Boolean = true
+        @Query("hidebroken") hideBroken: Boolean = true
     ): Single<List<Station>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchRequest: SearchRequest): Single<List<Station>>
 
     @POST("json/stations/search")
-    fun searchStationByTag(@Body searchBody: SearchByTagRequest): Single<List<Station>>
+    fun searchStationByTag(@Body searchByTagRequest: SearchByTagRequest): Single<List<Station>>
 
     @POST("json/stations/byuuid")
-    fun searchStationByUUIDs(@Body searchBody: SearchByIdsRequest): Single<List<Station>>
+    fun searchStationByUUIDs(@Body searchByUUIDsRequest: SearchByUUIDsRequest): Single<List<Station>>
 
     @GET("json/stations/topvote/50")
-    fun getTopVotedStations(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Station>>
+    fun getTopVotedStations(@Query("hidebroken") hideBroken: Boolean = true): Single<List<Station>>
 
     @POST("json/stations")
-    fun getAllStations(@Body stationsBody: AllStationsRequest): Single<List<Station>>
+    fun getAllStations(@Body allStationsRequest: AllStationsRequest): Single<List<Station>>
 
     @POST("json/add")
     fun addStation(@Body newStationRequest: NewStationRequest): Single<NewStationResponse>
 
-    @POST("json/countries")
-    fun getCountries(@Query("hidebroken") hidebroken: Boolean = true): Single<List<Country>>
+    @GET("json/countries")
+    fun getCountries(@Query("hidebroken") hideBroken: Boolean = true): Single<List<Country>>
 
     @GET("json/stats")
     fun getStats(): Single<StatsResponse>

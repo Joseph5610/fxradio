@@ -46,11 +46,11 @@ class LogMenu : BaseMenu("menu.help.loglevel") {
             }
         }
     }
-    private val checkLoggerAll by lazy {
+    private val checkLoggerDebug by lazy {
         checkMenuItem(messages["menu.help.loglevel.debug"]) {
-            isSelected = logViewModel.item.level == Level.ALL
+            isSelected = logViewModel.item.level == Level.DEBUG
             action {
-                logViewModel.item = Log(Level.ALL)
+                logViewModel.item = Log(Level.DEBUG)
             }
         }
     }
@@ -59,10 +59,10 @@ class LogMenu : BaseMenu("menu.help.loglevel") {
         logViewModel.levelProperty.onChange {
             checkLoggerOff.isSelected = it == Level.OFF
             checkLoggerInfo.isSelected = it == Level.INFO
-            checkLoggerAll.isSelected = it == Level.ALL
+            checkLoggerDebug.isSelected = it == Level.DEBUG
             logViewModel.commit()
         }
     }
 
-    override val menuItems = listOf(checkLoggerOff, checkLoggerInfo, checkLoggerAll)
+    override val menuItems = listOf(checkLoggerOff, checkLoggerInfo, checkLoggerDebug)
 }

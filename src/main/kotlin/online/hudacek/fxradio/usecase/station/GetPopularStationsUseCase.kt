@@ -32,7 +32,7 @@ class GetPopularStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
         .getTopVotedStations()
         .compose(applySchedulersSingle())
         .flattenAsObservable { it }
-        .filter { it.countrycode != "RU" }
+        .filter { it.countryCode != "RU" }
         .map { it.copy(name = it.name.trim()) }
         .toList()
 }

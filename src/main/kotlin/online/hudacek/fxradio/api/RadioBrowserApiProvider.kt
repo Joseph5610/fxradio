@@ -26,7 +26,7 @@ import tornadofx.Component
 
 private val logger = KotlinLogging.logger {}
 
-object RBServiceProvider : Component() {
+object RadioBrowserApiProvider : Component() {
 
     private val viewModel: ServersViewModel by inject()
 

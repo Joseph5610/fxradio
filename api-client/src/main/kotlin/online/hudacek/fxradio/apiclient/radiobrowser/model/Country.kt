@@ -18,10 +18,12 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Country(
     val name: String,
-    val iso_3166_1: String,
-    val stationcount: Int
+    @SerializedName("iso_3166_1") val iso3166: String,
+    @SerializedName("stationcount") val stationCount: Int
 ) {
 
     // Don't use stationCount when comparing this data class
@@ -35,4 +37,4 @@ data class Country(
 }
 
 val Country.isRussia: Boolean
-    get() = iso_3166_1 == "RU"
+    get() = iso3166 == "RU"

@@ -40,6 +40,6 @@ class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Stat
     }
         .compose(applySchedulersSingle())
         .flattenAsObservable { it }
-        .filter { it.countrycode != "RU" }
+        .filter { it.countryCode != "RU" }
         .toList()
 }

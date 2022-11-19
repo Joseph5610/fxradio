@@ -21,7 +21,6 @@ package online.hudacek.fxradio.viewmodel
 import com.github.thomasnield.rxkotlinfx.toObservable
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
@@ -82,10 +81,10 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
                 Station(
                     stationuuid = it.uuid,
                     name = nameProperty.value,
-                    url_resolved = urlProperty.value,
+                    urlResolved = urlProperty.value,
                     homepage = homePageProperty.value,
                     favicon = faviconProperty.value,
-                    countrycode = countryCodeProperty.value,
+                    countryCode = countryCodeProperty.value,
                     country = countryProperty.value,
                     language = languageProperty.value,
                     tags = tagsProperty.value

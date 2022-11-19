@@ -19,7 +19,7 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
-import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
+import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.menu.item
@@ -81,7 +81,7 @@ class StationsHistoryView : BaseView() {
 
                 vbox {
                     label(it.name)
-                    smallLabel(it.tagsSplit)
+                    smallLabel(it.description)
                 }
 
                 contextmenu {

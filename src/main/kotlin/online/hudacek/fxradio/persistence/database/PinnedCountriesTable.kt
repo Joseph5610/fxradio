@@ -39,7 +39,7 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Co
     override fun insert(element: Country): Single<Country> = insertQuery("INSERT INTO $tableName (name, iso3)  " +
             "VALUES (:name, :iso3)")
             .parameter("name", element.name)
-            .parameter("iso3", element.iso_3166_1)
+            .parameter("iso3", element.iso3166)
             .toSingle { element }
 
     override fun remove(element: Country): Single<Country> = removeQuery("DELETE FROM $tableName WHERE name = ?")

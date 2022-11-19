@@ -59,7 +59,7 @@ class LibraryCountriesFragment : BaseFragment() {
             if (it !is LibraryState.SelectedCountry) {
                 root.selectionModel.clearSelection()
             } else {
-                if (it.country.iso_3166_1 != root.selectedItem?.iso_3166_1) {
+                if (it.country.iso3166 != root.selectedItem?.iso3166) {
                     root.selectionModel.clearSelection()
                 }
             }
@@ -93,8 +93,8 @@ class LibraryCountriesFragment : BaseFragment() {
 
                 // Do not show count of stations for pinned stations, they would always show 0
                 // as we do not store this in DB
-                if (it.stationcount > 0) {
-                    label("${it.stationcount}") {
+                if (it.stationCount > 0) {
+                    label("${it.stationCount}") {
                         addClass(Styles.listItemTag)
                     }
                 }

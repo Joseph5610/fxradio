@@ -167,7 +167,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     actionEvents()
                         .map { selectedStationViewModel.stationProperty.value }
                         .subscribe {
-                            clipboard.update(it.url_resolved)
+                            clipboard.update(it.urlResolved)
                         }
                 }
                 button(messages["menu.station.vote"]) {

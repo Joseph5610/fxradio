@@ -148,7 +148,7 @@ class AppFunctionalityTest {
 
         // Get results from API
         val apiStations = service.getTopVotedStations().blockingGet()
-            .filter { it.countrycode != "RU" }
+            .filter { it.countryCode != "RU" }
 
         assertEquals(apiStations.size, appStations.items.size)
     }

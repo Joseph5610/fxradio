@@ -20,7 +20,6 @@ package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -49,8 +48,8 @@ class SelectedStation(station: Station) {
     var codec: String by property(station.codec)
     var bitrate: Int by property(station.bitrate)
     var votes: Int by property(station.votes)
-    var streamUrl: String by property(station.url_resolved)
-    var clickTrend: Int by property(station.clicktrend)
+    var streamUrl: String by property(station.urlResolved)
+    var clickTrend: Int by property(station.clickTrend)
     var favicon: String? by property(station.favicon)
     var countryState: String? by property(station.state)
     var tags: ObservableList<String> by property(observableListOf(
@@ -98,7 +97,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
             .subscribe({
                 it.firstOrNull()?.let { s ->
                     votesProperty.value = s.votes
-                    clickTrendProperty.value = s.clicktrend
+                    clickTrendProperty.value = s.clickTrend
                 }
             }, {
                 logger.debug(it) { "Retrieving additional station data unsuccessful." }

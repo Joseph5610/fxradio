@@ -23,7 +23,7 @@ import javafx.geometry.Pos
 import javafx.scene.input.DragEvent
 import javafx.scene.input.MouseEvent
 import javafx.util.Duration
-import online.hudacek.fxradio.apiclient.radiobrowser.model.tagsSplit
+import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.showWhen
@@ -121,7 +121,7 @@ class StationsDataGridView : BaseView() {
                     }
                 }
 
-                smallLabel(station.tagsSplit)
+                smallLabel(station.description)
             }
         }
 

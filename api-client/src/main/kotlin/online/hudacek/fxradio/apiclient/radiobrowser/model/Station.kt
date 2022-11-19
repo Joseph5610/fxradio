@@ -18,7 +18,10 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
+
+private const val dummyStationUrl = "http://hudacek.online"
 
 /**
  * Station data class
@@ -26,21 +29,21 @@ import java.io.Serializable
 data class Station(
     val stationuuid: String,
     val name: String,
-    val url_resolved: String,
+    @SerializedName("url_resolved") val urlResolved: String,
     val homepage: String,
     val favicon: String?,
     val tags: String = "",
     val country: String = "",
-    val countrycode: String = "",
+    @SerializedName("countrycode") val countryCode: String = "",
     val state: String = "",
     val language: String = "",
     val codec: String = "",
     val bitrate: Int = 0,
     val votes: Int = 0,
-    val geo_lat: Double = 0.0,
-    val geo_long: Double = 0.0,
-    val clicktrend: Int = 0,
-    val languagecodes: String = "",
+    @SerializedName("geo_lat") val geoLat: Double = 0.0,
+    @SerializedName("geo_long") val geoLong: Double = 0.0,
+    @SerializedName("clicktrend") val clickTrend: Int = 0,
+    @SerializedName("languagecodes") val languageCodes: String = "",
 ) : Serializable {
 
     fun isValid() = stationuuid != "0"
@@ -55,15 +58,15 @@ data class Station(
 
     companion object {
         val dummy by lazy {
-            Station("0", "Nothing playing", "http://hudacek.online", "http://hudacek.online", null)
+            Station("0", "Nothing playing", dummyStationUrl, dummyStationUrl, null)
         }
     }
 }
 
 /**
- * Contains tag or country name of station
+ * Contains first 2 tags or country name of station
  */
-val Station.tagsSplit: String
+val Station.description: String
     get() {
         val stationTagsSplit = tags.split(",")
         return when {
