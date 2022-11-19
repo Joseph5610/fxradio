@@ -105,7 +105,7 @@ task<PackageTask>("jfxNative") {
     appName = "FXRadio"
     appDescription = "Internet Radio Directory"
     assetsDir = File("src/main/deploy/package")
-    outputDirectory = File("build/jfx/native")
+    outputDirectory = File("${project.buildDir}/jfx/native")
     displayName = "FXRadio"
     version = appVersion
     url = "https://hudacek.online/fxradio"

@@ -65,7 +65,7 @@ jobs:
                   distribution: 'zulu'
                   java-version: '8'
                   java-package: jdk+fx
-            - run: ./gradlew -i jfxNative
+            - run: ./gradlew -d jfxNative
             - name: Find MSI file on filesystem
               id: find-msi
               run: echo "MSI_PATH=$(Get-ChildItem -path D:\ -recurse -include "FXRadio-*.msi" | Select -ExpandProperty FullName)" >> $env:GITHUB_ENV
