@@ -29,7 +29,7 @@ import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.viewmodel.ServersState
 
 /**
- * Retrieves valid list of radio-browser API urls
+ * Retrieves valid list of radio-browser API servers
  */
 class GetServersUseCase : BaseUseCase<Property<ServersState>, Unit>() {
 

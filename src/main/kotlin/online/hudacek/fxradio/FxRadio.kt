@@ -47,6 +47,9 @@ import java.nio.file.Paths
 import java.time.Year
 import kotlin.reflect.KClass
 
+private const val WINDOW_MIN_WIDTH = 600.0
+private const val WINDOW_MIN_HEIGHT = 400.0
+
 /**
  * Load app in Dark Mode
  */
@@ -56,9 +59,6 @@ class FxRadioDark : FxRadio(stylesheet = StylesDark::class)
  * Load app in Light Mode
  */
 class FxRadioLight : FxRadio(stylesheet = Styles::class)
-
-private const val WINDOW_MIN_WIDTH = 600.0
-private const val WINDOW_MIN_HEIGHT = 400.0
 
 /**
  * Load the app with provided [stylesheet] class
@@ -71,7 +71,7 @@ open class FxRadio(
     private val playerViewModel: PlayerViewModel by inject()
 
     /**
-     * override app.config path to ${user.home}/fxradio
+     * override app.config path to ${user.home}/.fxradio
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
 
@@ -83,7 +83,7 @@ open class FxRadio(
             minWidth = WINDOW_MIN_WIDTH
             minHeight = WINDOW_MIN_HEIGHT
 
-            //Setup window location on screen
+            // Setup window location on screen
             with(config) {
                 double(Properties.WindowWidth.key)?.let {
                     width = it
@@ -146,10 +146,10 @@ open class FxRadio(
 
         /**
          * Gets version from jar MANIFEST.MF file
-         * On failure (e.g. if app is not run from the jar file), returns the "0.0-DEVELOPMENT" value
+         * On failure (e.g. if app is not run from the jar file), returns the "0.0.0" value
          */
         val version: String by lazy {
-            FxRadio::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
+            FxRadio::class.java.getPackage().implementationVersion ?: "0.0.0"
         }
 
         private fun hasSystemDarkMode() = MacUtils.isMac && MacUtils.isSystemDarkMode

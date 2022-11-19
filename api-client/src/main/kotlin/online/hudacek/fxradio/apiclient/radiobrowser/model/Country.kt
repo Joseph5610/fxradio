@@ -24,7 +24,7 @@ data class Country(
     val stationcount: Int
 ) {
 
-    //Don't use stationCount when comparing this data class
+    // Don't use stationCount when comparing this data class
     override fun equals(other: Any?) = if (other is Country) {
         this.name == other.name
     } else {

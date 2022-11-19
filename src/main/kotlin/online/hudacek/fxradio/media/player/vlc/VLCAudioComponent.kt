@@ -62,7 +62,7 @@ class VLCAudioComponent {
 
         // Workaround for a very strange VLC bug...
         mainScope.launch {
-            delay(500L)
+            delay(800L)
             setVolume(volume)
         }
     }

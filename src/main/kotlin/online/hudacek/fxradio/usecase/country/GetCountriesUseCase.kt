@@ -23,7 +23,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
-import online.hudacek.fxradio.util.getCountryNameFromISO
+import java.util.*
 
 
 /**
@@ -31,12 +31,24 @@ import online.hudacek.fxradio.util.getCountryNameFromISO
  */
 class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
 
+    private val isoCountries = Locale.getISOCountries()
+
     override fun execute(input: Unit): Observable<Country> = radioBrowserApi
         .getCountries()
         .compose(applySchedulersSingle())
         .flattenAsObservable { it.filter { c -> !c.isRussia } }
         .filter { it.stationcount != 0 }
-        .map { Country(getCountryNameFromISO(it.iso_3166_1) ?: it.name, it.iso_3166_1, it.stationcount) }
+        .map { it.copy(name = getCountryNameFromISO(it.iso_3166_1) ?: it.name) }
         .sorted(Comparator.comparing(Country::name))
         .distinct()
+
+    private fun getCountryNameFromISO(iso3166: String?): String? {
+        val countryCode: String? = isoCountries.firstOrNull { it == iso3166 }
+        return if (countryCode != null) {
+            Locale("", countryCode).displayName
+        } else {
+            null
+        }
+    }
+
 }

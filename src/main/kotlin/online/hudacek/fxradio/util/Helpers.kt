@@ -58,12 +58,4 @@ internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
 internal fun keyCombination(keyCode: KeyCode) =
     KeyCodeCombination(keyCode, if (MacUtils.isMac) KeyCombination.META_DOWN else KeyCombination.CONTROL_DOWN)
 
-internal fun getCountryNameFromISO(iso3166: String?): String? {
-    val countryCode: String? = Locale.getISOCountries().firstOrNull { it == iso3166 }
-    return if (countryCode != null) {
-        Locale("", countryCode).displayName
-    } else {
-        null
-    }
-}
 
