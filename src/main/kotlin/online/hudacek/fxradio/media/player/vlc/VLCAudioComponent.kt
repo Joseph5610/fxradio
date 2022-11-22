@@ -18,12 +18,12 @@
 
 package online.hudacek.fxradio.media.player.vlc
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.value
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
@@ -48,8 +48,6 @@ class VLCAudioComponent {
         "--no-video"
     )
 
-    private var volume = Properties.Volume.value(30.0)
-
     private val player = AudioPlayerComponent(MediaPlayerFactory(playerArgs))
 
     private val mainScope = MainScope()
@@ -57,33 +55,37 @@ class VLCAudioComponent {
     private lateinit var nativeLog: NativeLog
 
     fun play(streamUrl: String) {
-        player.mediaPlayer().media().prepare(streamUrl)
         player.mediaPlayer().media().play(streamUrl)
+    }
 
-        // Workaround for a very strange VLC bug...
-        mainScope.launch {
-            delay(800L)
-            setVolume(volume)
+    fun setVolume(newVolume: Double) = mainScope.launch {
+        withContext(Dispatchers.IO) {
+            delay(500L)
+            logger.trace { "Setting volume to $newVolume" }
+
+            // Workaround for a very strange VLC bug probably only on Ventura? ...
+            if (newVolume.toInt() == 0) {
+                do {
+                    player.mediaPlayer().audio().isMute = true
+                } while(!player.mediaPlayer().audio().isMute)
+            } else {
+                player.mediaPlayer().audio().isMute = false
+                do {
+                    player.mediaPlayer().audio().setVolume(newVolume.toInt())
+                } while (player.mediaPlayer().audio().volume() != newVolume.toInt())
+            }
         }
     }
 
-    fun setVolume(newVolume: Double) {
-        logger.debug { "Setting volume to $newVolume" }
-        player.mediaPlayer().audio().setVolume(newVolume.toInt())
-        volume = newVolume
-    }
-
-    fun cancel() {
-        runCatching {
-            player.let {
-                // It is not allowed to call back into LibVLC from an event handling thread,
-                // so submit() is used
-                it.mediaPlayer().submit {
-                    it.mediaPlayer().controls().stop()
-                }
+    fun cancel() = runCatching {
+        player.let {
+            // It is not allowed to call back into LibVLC from an event handling thread,
+            // so submit() is used
+            it.mediaPlayer().submit {
+                it.mediaPlayer().controls().stop()
             }
-        }.onFailure { logger.error(it) { "Can't cancel playing..." } }
-    }
+        }
+    }.onFailure { logger.error(it) { "Can't cancel playing..." } }
 
     fun attachMediaListener(listener: MediaEventListener) =
         player.mediaPlayer().events().addMediaEventListener(listener)
@@ -98,7 +100,7 @@ class VLCAudioComponent {
         }
     }
 
-    fun releaseLogListener(listener: LogEventListener) = player.let {
+    fun releaseLogListener(listener: LogEventListener) {
         nativeLog.removeLogListener(listener)
         nativeLog.release()
     }

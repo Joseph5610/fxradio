@@ -49,13 +49,9 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
     ).flatMapSingleElement {
         Single.just(ImageCache.clear()).compose(applySchedulersSingle())
     }.subscribe({
-        appEvent.appNotification.onNext(
-            AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK)
-        )
+        appEvent.appNotification.onNext(AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
     }, {
-        appEvent.appNotification.onNext(
-            AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING)
-        )
+        appEvent.appNotification.onNext(AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
     })
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)

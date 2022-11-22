@@ -23,8 +23,8 @@ import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
-import online.hudacek.fxradio.usecase.station.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.station.GetPopularStationsUseCase
+import online.hudacek.fxradio.usecase.station.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.station.GetTrendingStationsUseCase
 import online.hudacek.fxradio.usecase.station.StationVoteUseCase
 import org.controlsfx.glyphfont.FontAwesome
@@ -109,7 +109,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     }
 
     private fun handleError(throwable: Throwable) {
-        stateProperty.value = StationsState.Error(throwable.localizedMessage)
+        stateProperty.value = StationsState.Error(throwable.toString())
     }
 
     fun handleNewLibraryState(newState: LibraryState) {

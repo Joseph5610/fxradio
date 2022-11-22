@@ -92,7 +92,7 @@ class Property(property: Properties) : Component() {
     }
 
     fun <T> save(newValue: T) {
-        logger.debug { "Saving $key: $newValue " }
+        logger.info { "Saving $key: $newValue " }
         with(app.config) {
             set(key to newValue)
             save()
@@ -100,7 +100,7 @@ class Property(property: Properties) : Component() {
     }
 
     fun remove() {
-        logger.debug { "Remove value for key: $key " }
+        logger.info { "Remove value for key: $key " }
         with(app.config) {
             remove(key)
             save()
@@ -109,7 +109,7 @@ class Property(property: Properties) : Component() {
 }
 
 fun App.saveProperties(keyValueMap: Map<Properties, Any>) {
-    logger.debug { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
+    logger.info { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
     with(config) {
         keyValueMap.forEach {
             set(it.key.key to it.value)

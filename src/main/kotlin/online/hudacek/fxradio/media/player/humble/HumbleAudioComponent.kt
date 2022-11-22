@@ -60,7 +60,7 @@ class HumbleAudioComponent {
                     var rawAudio: ByteBuffer? = null
 
                     //Log audio format
-                    logger.info { audioFrame?.format }
+                    logger.debug { audioFrame?.format }
 
                     setVolume(lastTriedVolumeChange)
 

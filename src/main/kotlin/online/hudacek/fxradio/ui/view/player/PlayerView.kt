@@ -138,7 +138,7 @@ class PlayerView : BaseView() {
 
 
     private val volumeSlider by lazy {
-        slider(-30..5) {
+        slider(-35..1) {
             bind(viewModel.volumeProperty)
             id = "volumeSlider"
             maxWidth = 90.0

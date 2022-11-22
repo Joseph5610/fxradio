@@ -24,7 +24,7 @@ import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
 import online.hudacek.fxradio.api.RadioBrowserApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.persistence.database.Database
-import online.hudacek.fxradio.ui.CustomErrorHandler
+import online.hudacek.fxradio.ui.util.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.ui.view.MainView
@@ -157,9 +157,11 @@ open class FxRadio(
         fun isDarkModePreferred() = runCatching {
             // We have to use the ugly java way to access this property as we want to access it
             // in the time that the app is not yet instantiated
-            val fis = FileInputStream(Config.Paths.confDirPath + "/app.properties")
-            val props = java.util.Properties().also { it.load(fis) }
-            val darkModeProp = props.getProperty(Properties.DarkMode.key)
+            val darkModeProp = FileInputStream(Config.Paths.confDirPath + "/app.properties").use {
+                val props = java.util.Properties().apply { load(it) }
+                props.getProperty(Properties.DarkMode.key)
+            }
+
             darkModeProp?.toBoolean() ?: hasSystemDarkMode()
         }.getOrDefault(hasSystemDarkMode())
     }

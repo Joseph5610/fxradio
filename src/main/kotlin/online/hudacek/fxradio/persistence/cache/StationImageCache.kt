@@ -67,11 +67,13 @@ class StationImageCache : ImageCache() {
     }
 
     private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) {
-        Files.copy(
-            ips,
-            cacheBasePath.resolve(fileName),
-            StandardCopyOption.REPLACE_EXISTING
-        )
+        ips.use {
+            Files.copy(
+                it,
+                cacheBasePath.resolve(fileName),
+                StandardCopyOption.REPLACE_EXISTING
+            )
+        }
     }
 
     companion object {

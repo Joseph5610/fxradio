@@ -32,7 +32,23 @@ import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
-import tornadofx.*
+import tornadofx.SmartResize
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.bindSelected
+import tornadofx.button
+import tornadofx.get
+import tornadofx.hyperlink
+import tornadofx.label
+import tornadofx.onUserSelect
+import tornadofx.paddingAll
+import tornadofx.prefWidth
+import tornadofx.readonlyColumn
+import tornadofx.remainingWidth
+import tornadofx.tableview
+import tornadofx.textarea
+import tornadofx.vbox
+import tornadofx.vgrow
 
 private const val WINDOW_MIN_WIDTH = 600.0
 private const val WINDOW_MIN_HEIGHT = 400.0
@@ -46,7 +62,7 @@ class AttributionsFragment : BaseFragment() {
         prefWidth = 500.0
         paddingAll = 10.0
 
-        requestFocusOnSceneAvailable() //To get rid of the blue box around the table
+        requestFocusOnSceneAvailable() // To get rid of the blue box around the table
         tableview(Attributions.list) {
             bindSelected(viewModel)
 

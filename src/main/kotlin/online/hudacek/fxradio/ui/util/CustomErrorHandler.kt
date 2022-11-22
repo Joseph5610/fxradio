@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.ui
+package online.hudacek.fxradio.ui.util
 
 import javafx.application.Platform.runLater
 import javafx.scene.control.Alert
@@ -36,8 +36,6 @@ import tornadofx.FX.Companion.primaryStage
 import tornadofx.add
 import tornadofx.addClass
 import tornadofx.setContent
-import java.io.ByteArrayOutputStream
-import java.io.PrintWriter
 import java.net.URLEncoder
 
 private const val ISSUE_URL = Config.API.repositoryURL +
@@ -63,8 +61,10 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
     override fun uncaughtException(t: Thread, error: Throwable) {
         log.error(error) { "Uncaught error" }
 
-        error.stackTrace[0]?.let {
-            if ("okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:75)" in it.toString()) return
+        if (error.stackTrace.isNotEmpty()) {
+            error.stackTrace[0]?.let {
+                if ("okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:75)" in it.toString()) return
+            }
         }
 
         if (isCycle(error)) {
@@ -94,7 +94,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
         val textarea = TextArea().apply {
             prefRowCount = 20
             prefColumnCount = 50
-            text = stringFromError(error)
+            text = error.stackTraceToString()
             addClass(Styles.backgroundWhiteSmoke)
         }
 
@@ -129,13 +129,4 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             }
         }
     }
-
-}
-
-private fun stringFromError(e: Throwable): String {
-    val out = ByteArrayOutputStream()
-    val writer = PrintWriter(out)
-    e.printStackTrace(writer)
-    writer.close()
-    return out.toString()
 }

@@ -18,9 +18,6 @@
 
 package online.hudacek.fxradio.util
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
-
 /**
  * Execute OS command
  */
@@ -33,9 +30,12 @@ class Command(private val command: String) {
      */
     private val Process.result: String
         get() = StringBuilder().apply {
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            reader.forEachLine {
-                append(it)
+            inputStream.use { inputStream ->
+                inputStream.bufferedReader().useLines { sequence ->
+                    sequence.forEach {
+                        append(it)
+                    }
+                }
             }
         }.toString()
 }

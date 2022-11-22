@@ -49,7 +49,7 @@ class StationsDataGridView : BaseView() {
     private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    //Show initial stations
+    // Show initial stations
     override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
@@ -77,9 +77,9 @@ class StationsDataGridView : BaseView() {
 
             onHover {
                 if (it) {
-                    scale(Duration.seconds(0.07), point(1.05, 1.05), play = false).playFromStart()
+                    scale(Duration.seconds(0.07), point(1.05, 1.05))
                 } else {
-                    scale(Duration.seconds(0.07), point(1.0, 1.0), play = false).playFromStart()
+                    scale(Duration.seconds(0.07), point(1.0, 1.0))
                 }
             }
 
@@ -93,7 +93,6 @@ class StationsDataGridView : BaseView() {
 
         cellCache { station ->
             vbox(alignment = Pos.BOTTOM_CENTER) {
-                paddingAll = 5
 
                 onHover {
                     tooltip(station.name)

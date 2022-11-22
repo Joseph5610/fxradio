@@ -40,21 +40,26 @@ class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type
     override fun play(streamUrl: String) = vlcAudioComponent.play(streamUrl)
 
     override fun changeVolume(newVolume: Double) {
+        // Recalculate humble player volume levels to VLC
         val vlcVolume: Double =
-                if (newVolume < -29.5) {
-                    0.0
-                } else {
-                    (newVolume + 65) * 0.6
-                }
+            if (newVolume < -34.5) {
+                0.0
+            } else {
+                (newVolume + 65) * 0.8
+            }
         vlcAudioComponent.setVolume(vlcVolume)
     }
 
-    override fun stop() = vlcAudioComponent.cancel()
+    override fun stop() {
+        vlcAudioComponent.cancel()
+    }
 
     override fun release() {
         logger.info { "Releasing VLC player..." }
-        vlcAudioComponent.releaseLogListener(vlcLogListener)
-        vlcAudioComponent.removeMediaListener(vlcMediaAdapter)
-        vlcAudioComponent.release()
+        with(vlcAudioComponent) {
+            releaseLogListener(vlcLogListener)
+            removeMediaListener(vlcMediaAdapter)
+            release()
+        }
     }
 }

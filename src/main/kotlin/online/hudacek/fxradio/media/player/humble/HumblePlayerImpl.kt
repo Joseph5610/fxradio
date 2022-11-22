@@ -62,6 +62,7 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     }
 
     override fun release() {
+        logger.info { "Releasing Humble player..." }
         stop()
         scope.cancel()
     }

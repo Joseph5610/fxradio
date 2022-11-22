@@ -37,7 +37,7 @@ object MediaPlayerFactory {
      */
     fun create(): MediaPlayer {
         val player = Properties.Player.value(defaultPlayerType.name)
-        logger.debug { "MediaPlayer $player is initializing..." }
+        logger.info { "MediaPlayer $player is initializing..." }
         return when (player.asPlayerType()) {
             MediaPlayer.Type.VLC -> tryLoadVLCPlayer()
             MediaPlayer.Type.Humble -> HumblePlayerImpl()

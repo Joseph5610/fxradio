@@ -3,6 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="online.hudacek.fxradio.FxRadioKt" />
     <module name="fxradio.main" />
     <shortenClasspath name="NONE" />
+    <option name="VM_PARAMETERS" value="-Xms256m -Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

@@ -29,8 +29,10 @@ private val logger = KotlinLogging.logger {}
  */
 class VLCLogListener : LogEventListener {
 
-    override fun log(level: LogLevel?, module: String?, file: String?, line: Int?, name: String?,
-                     header: String?, id: Int?, message: String) {
-        logger.info { "[$module] ($name) $level: $message" }
+    override fun log(
+        level: LogLevel?, module: String?, file: String?, line: Int?, name: String?,
+        header: String?, id: Int?, message: String
+    ) {
+        logger.debug { "[$module] ($name) $level: $message" }
     }
 }

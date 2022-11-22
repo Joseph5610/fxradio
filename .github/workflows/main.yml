@@ -13,8 +13,8 @@ jobs:
     name: "Build and create APP file"
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '8'
@@ -23,7 +23,7 @@ jobs:
       - name: Find zipball on filesystem
         id: find-zipball
         run: echo "ZIPBALL_PATH=$(find . -name "FXRadio-*.zip")" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: FXRadio.zip
           path: ${{ env.ZIPBALL_PATH }}

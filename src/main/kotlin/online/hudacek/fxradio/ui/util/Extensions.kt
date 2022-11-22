@@ -68,7 +68,6 @@ import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
-
 private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
 
 /**
@@ -123,7 +122,7 @@ internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): Cus
     opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
 
 /**
- * Copy Menu
+ * Copy Context Menu
  */
 internal fun EventTarget.copyMenu(
     clipboard: Clipboard,

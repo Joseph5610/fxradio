@@ -129,4 +129,5 @@ task<PackageTask>("jfxNative") {
         backgroundImage = File("src/main/deploy/package/mac/background.png")
     } as Closure<MacConfig>)
     dependsOn("jar")
+    vmArgs = listOf("-Xms256m", "-Xmx2048m", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC")
 }

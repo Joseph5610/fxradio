@@ -38,6 +38,14 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
 
     private val streamUrlProperty = stringProperty()
 
+    private val context = ValidationContext()
+
+    private val textField by lazy {
+        textfield(streamUrlProperty) {
+            requestFocusOnSceneAvailable()
+        }
+    }
+
     override val root = vbox {
         paddingAll = 15.0
         prefWidth = 300.0
@@ -47,18 +55,20 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
             form {
                 fieldset {
                     field(messages["menu.stream.url"]) {
-                        textfield(streamUrlProperty) {
-                            requestFocusOnSceneAvailable()
-                        }
+                        add(textField)
                     }
                 }
             }
         }
 
+        val validator = context.addValidator(textField, textField.textProperty()) {
+            if (it!!.trim().length < 5) error(messages["field.min.length"]) else null
+        }
+
         vbox(alignment = Pos.CENTER_RIGHT) {
             button(messages["open"]) {
                 action {
-                    if (streamUrlProperty.value != null && streamUrlProperty.value.trim().isNotEmpty()) {
+                    if (validator.validate()) {
                         selectedStationViewModel.item = SelectedStation(createStreamStation())
                         close()
                     }
@@ -73,8 +83,11 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
      * Create adhoc Station object containing entered URL address
      */
     private fun createStreamStation() = Station(
-        UUID.randomUUID().toString(), "Stream URL",
-        streamUrlProperty.value, streamUrlProperty.value, null, tags = streamUrlProperty.value
+        UUID.randomUUID().toString(),
+        name = messages["menu.stream.stationName"],
+        urlResolved = streamUrlProperty.value,
+        homepage = streamUrlProperty.value,
+        favicon = null,
+        tags = messages["menu.stream.stationTag"]
     )
-
 }
