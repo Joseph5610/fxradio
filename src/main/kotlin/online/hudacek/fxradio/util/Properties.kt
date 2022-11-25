@@ -21,6 +21,7 @@ package online.hudacek.fxradio.util
 import mu.KotlinLogging
 import tornadofx.App
 import tornadofx.Component
+import tornadofx.ConfigProperties
 
 private val logger = KotlinLogging.logger {}
 
@@ -35,7 +36,6 @@ enum class Properties(val key: String) {
     PlayerMetaDataRefresh("player.refreshMeta"), // Not configurable in UI
     ApiServer("app.server"),
     SearchQuery("search.query"),
-    SendStreamTitleNotification("notifications"),
     WindowDivider("windowDivider"),
     ShowLibrary("window.showLibrary"),
     ShowCountries("window.showCountries"),
@@ -54,37 +54,41 @@ enum class Properties(val key: String) {
 /**
  * Creates app configuration for property key [Properties]
  */
-class Property(property: Properties) : Component() {
+class Property(property: Properties, appConfig: ConfigProperties? = null) : Component() {
+
+    val actualConfig = appConfig ?: app.config
 
     // Extracts value
     val key by lazy { property.key }
 
     val isPresent: Boolean
         // runCatching handles situations where config or key fields are throwing NPE
-        get() = runCatching { app.config.keys.any { it == key } }.getOrDefault(false)
+        get() = runCatching { actualConfig.keys.any { it == key } }.getOrDefault(false)
 
     inline fun <reified T> get(): T {
         return when (T::class) {
-            Boolean::class -> app.config.boolean(key) as T
-            Double::class -> app.config.double(key) as T
-            Int::class -> app.config.int(key) as T
-            String::class -> app.config.string(key) as T
+            Boolean::class -> actualConfig.boolean(key) as T
+            Double::class -> actualConfig.double(key) as T
+            Int::class -> actualConfig.int(key) as T
+            String::class -> actualConfig.string(key) as T
             else -> {
                 throw IllegalArgumentException("${T::class} is not supported argument!")
             }
         }
     }
 
+    inline fun <reified T> getOrNull(): T? = runCatching { get<T>() }.getOrNull()
+
     /**
-     * Return the value from the app.config based on key
+     * Return the value from the config based on key
      * or default value if the value does not exist there
      */
     inline fun <reified T> get(defaultValue: T): T {
         return when (T::class) {
-            Boolean::class -> (app.config.boolean(key, defaultValue as Boolean)) as T
-            Double::class -> app.config.double(key, defaultValue as Double) as T
-            Int::class -> app.config.int(key, defaultValue as Int) as T
-            String::class -> app.config.string(key, defaultValue as String) as T
+            Boolean::class -> (actualConfig.boolean(key, defaultValue as Boolean)) as T
+            Double::class -> actualConfig.double(key, defaultValue as Double) as T
+            Int::class -> actualConfig.int(key, defaultValue as Int) as T
+            String::class -> actualConfig.string(key, defaultValue as String) as T
             else -> {
                 defaultValue
             }
@@ -93,7 +97,7 @@ class Property(property: Properties) : Component() {
 
     fun <T> save(newValue: T) {
         logger.info { "Saving $key: $newValue " }
-        with(app.config) {
+        with(actualConfig) {
             set(key to newValue)
             save()
         }
@@ -101,7 +105,7 @@ class Property(property: Properties) : Component() {
 
     fun remove() {
         logger.info { "Remove value for key: $key " }
-        with(app.config) {
+        with(actualConfig) {
             remove(key)
             save()
         }

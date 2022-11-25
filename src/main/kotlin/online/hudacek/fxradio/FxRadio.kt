@@ -24,9 +24,9 @@ import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
 import online.hudacek.fxradio.api.RadioBrowserApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.persistence.database.Database
-import online.hudacek.fxradio.ui.util.CustomErrorHandler
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
+import online.hudacek.fxradio.ui.util.CustomErrorHandler
 import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.Properties

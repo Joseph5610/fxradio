@@ -62,7 +62,7 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
         }
 
         val validator = context.addValidator(textField, textField.textProperty()) {
-            if (it!!.trim().length < 5) error(messages["field.min.length"]) else null
+            if (it == null || it.trim().length < 5) error(messages["field.min.length"]) else null
         }
 
         vbox(alignment = Pos.CENTER_RIGHT) {

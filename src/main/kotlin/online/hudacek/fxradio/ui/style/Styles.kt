@@ -40,6 +40,7 @@ class Styles : Stylesheet() {
         val playerStationBox by cssclass()
 
         val playerControls by cssclass()
+        val playerControlsBorder by cssclass()
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
@@ -143,6 +144,13 @@ class Styles : Stylesheet() {
             unsafe("-fx-background-color", raw("-fx-background"))
             unsafe("-fx-border-color", raw(colors.transparent))
             unsafe("-fx-faint-focus-color", raw(colors.transparent))
+        }
+
+        playerControlsBorder {
+            and(hover) {
+                backgroundRadius += box(6.px)
+                backgroundColor += c(colors.background)
+            }
         }
 
         grayLabel {

@@ -82,11 +82,6 @@ class AppFunctionalityTest {
         app = FxRadio(stylesheet = Styles::class, isAppRunningInTest = true)
         app.start(stage)
 
-        // Disable app notifications to not interfere with tests
-        val notificationViewModel = find<StreamTitleNotificationViewModel>()
-        notificationViewModel.showProperty.value = false
-        notificationViewModel.commit()
-
         // Disable app logger to have only relevant logs
         val logViewModel = find<LogViewModel>()
         logViewModel.item = Log(Level.INFO)

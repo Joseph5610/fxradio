@@ -41,6 +41,7 @@ class StylesDark : Stylesheet() {
         val playerStationBox by cssclass()
 
         val playerControls by cssclass()
+        val playerControlsBorder by cssclass()
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
@@ -154,12 +155,13 @@ class StylesDark : Stylesheet() {
             textFill = c(colors.primary)
         }
 
-        playerControls {
-            unsafe("-fx-padding", raw("0"))
-            unsafe("-fx-background-insets", raw("0"))
-            unsafe("-fx-background-color", raw(colors.background))
-            unsafe("-fx-border-color", raw(colors.transparent))
-            unsafe("-fx-faint-focus-color", raw(colors.transparent))
+        playerControls {}
+
+        playerControlsBorder {
+            and(hover) {
+                backgroundRadius += box(6.px)
+                backgroundColor += c(colors.grayLabel + "22")
+            }
         }
 
         grayLabel {

@@ -43,9 +43,11 @@ import tornadofx.controlsfx.glyph
 import tornadofx.disableWhen
 import tornadofx.hbox
 import tornadofx.hgrow
+import tornadofx.insets
 import tornadofx.objectBinding
 import tornadofx.onChange
 import tornadofx.onLeftClick
+import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
@@ -66,8 +68,16 @@ class PlayerView : BaseView() {
 
     private val playerStationView: PlayerStationView by inject()
 
-    private val playGlyph by lazy { FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, isPrimary = false) }
-    private val stopGlyph by lazy { FontAwesome.Glyph.STOP.make(CONTROLS_GLYPH_SIZE, isPrimary = false) }
+    private val playGlyph by lazy {
+        FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, isPrimary = false) {
+            padding = insets(5, 7, 5, 7)
+        }
+    }
+    private val pauseGlyph by lazy {
+        FontAwesome.Glyph.PAUSE.make(CONTROLS_GLYPH_SIZE, isPrimary = false) {
+            padding = insets(5, 7, 5, 7)
+        }
+    }
 
     private val infoGlyph by lazy {
         FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) {
@@ -85,7 +95,6 @@ class PlayerView : BaseView() {
             shortcut(keyCombination(KeyCode.I)) {
                 toggleInfoPanelState()
             }
-
             addClass(Styles.playerControls)
         }
     }
@@ -113,7 +122,7 @@ class PlayerView : BaseView() {
 
     private val playerControlsBinding = viewModel.stateProperty.objectBinding {
         if (it is PlayerState.Playing) {
-            stopGlyph
+            pauseGlyph
         } else {
             playGlyph
         }
@@ -132,6 +141,8 @@ class PlayerView : BaseView() {
             onLeftClick {
                 viewModel.togglePlayerState()
             }
+
+            addClass(Styles.playerControlsBorder)
             addClass(Styles.playerControls)
         }
     }

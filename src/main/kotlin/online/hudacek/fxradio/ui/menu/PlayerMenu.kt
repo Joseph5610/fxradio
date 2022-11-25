@@ -24,7 +24,6 @@ import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import online.hudacek.fxradio.viewmodel.StreamTitleNotificationViewModel
 import tornadofx.action
 import tornadofx.booleanBinding
 import tornadofx.get
@@ -34,7 +33,6 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
-    private val streamTitleNotificationViewModel: StreamTitleNotificationViewModel by inject()
 
     private val startItem by lazy {
         item(messages["menu.player.start"], KeyCodes.play) {
@@ -84,19 +82,5 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    private val notificationsItem by lazy {
-        checkMenuItem(
-            messages["menu.player.notifications"],
-            bindProperty = streamTitleNotificationViewModel.showProperty
-        ) {
-            action {
-                streamTitleNotificationViewModel.commit()
-            }
-        }
-    }
-
-    override val menuItems = listOf(
-        startItem, stopItem,
-        separator(), playerTypeItem, animateItem, notificationsItem
-    )
+    override val menuItems = listOf(startItem, stopItem, separator(), playerTypeItem, animateItem)
 }
