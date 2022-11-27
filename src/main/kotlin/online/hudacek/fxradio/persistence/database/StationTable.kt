@@ -36,7 +36,7 @@ abstract class StationTable(override val tableName: String) : Table<Station>, Da
 
     override fun remove(element: Station): Single<Station> =
         removeQuery("DELETE FROM $tableName WHERE stationuuid = ?")
-            .parameter(element.stationuuid)
+            .parameter(element.uuid)
             .toSingle()
             .map { element }
 

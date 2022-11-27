@@ -20,9 +20,9 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.util.openUrl
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.NoSelectionModel
 import online.hudacek.fxradio.viewmodel.ServersViewModel

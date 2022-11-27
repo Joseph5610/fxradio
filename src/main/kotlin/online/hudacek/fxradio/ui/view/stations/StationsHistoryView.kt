@@ -24,9 +24,9 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.separator
-import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.ui.util.smallLabel
+import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
 import online.hudacek.fxradio.viewmodel.InfoPanelState

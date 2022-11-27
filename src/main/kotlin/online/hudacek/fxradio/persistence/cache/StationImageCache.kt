@@ -47,12 +47,12 @@ class StationImageCache : ImageCache() {
                     Single.fromCallable { HttpClient.request(it) }.compose(applySchedulersSingle())
                 } else {
                     Single.error(
-                        IllegalArgumentException("Station ${station.stationuuid} does not have valid icon URL")
+                        IllegalArgumentException("Station ${station.uuid} does not have valid icon URL")
                     )
                 }
             }.flatMapMaybe { response ->
                 maybeOfNullable(response.body)
-                    .map { copyInputStreamIntoFile(it.byteStream(), station.stationuuid) }
+                    .map { copyInputStreamIntoFile(it.byteStream(), station.uuid) }
             }.flatMap {
                 maybeOfNullable(getLocalPath(station))
             }
@@ -61,7 +61,7 @@ class StationImageCache : ImageCache() {
      * Gets Image for [station] from local cache
      */
     private fun getLocalPath(station: Station) = if (station.isCached) {
-        Image("file:" + cacheBasePath.resolve(station.stationuuid).toFile().absolutePath, true)
+        Image("file:" + cacheBasePath.resolve(station.uuid).toFile().absolutePath, true)
     } else {
         null
     }

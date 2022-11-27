@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.apiclient.http.provider
 
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -31,8 +30,6 @@ private const val GOOGLE_DNS = "https://dns.google/dns-query"
 abstract class HttpClientProvider {
 
     abstract val client: OkHttpClient
-
-    protected abstract val interceptors: List<Interceptor>
 
     private val dnsClient by lazy {
         DnsOverHttps.Builder().client(client)

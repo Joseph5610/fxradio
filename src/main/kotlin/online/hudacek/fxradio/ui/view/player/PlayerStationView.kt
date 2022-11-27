@@ -21,9 +21,9 @@ package online.hudacek.fxradio.ui.view.player
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.autoUpdatingCopyMenu
-import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.util.autoUpdatingCopyMenu
+import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel

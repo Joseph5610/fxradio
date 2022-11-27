@@ -60,7 +60,7 @@ abstract class ImageCache {
                 .sum() / 1e+6).roundToInt()
 
         val Station.isCached: Boolean
-            get() = Files.exists(cacheBasePath.resolve(stationuuid))
+            get() = Files.exists(cacheBasePath.resolve(uuid))
 
         private fun createCacheDirectory() {
             if (!Files.isDirectory(cacheBasePath)) {

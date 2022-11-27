@@ -21,10 +21,10 @@ package online.hudacek.fxradio.ui.view
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.AboutMenu
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
+import online.hudacek.fxradio.ui.menu.FileMenu
 import online.hudacek.fxradio.ui.menu.HelpMenu
 import online.hudacek.fxradio.ui.menu.HistoryMenu
 import online.hudacek.fxradio.ui.menu.PlayerMenu
-import online.hudacek.fxradio.ui.menu.FileMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.macos.NSMenu
 import online.hudacek.fxradio.util.macos.NSMenuBar
@@ -52,12 +52,13 @@ class MenuBarView : BaseView() {
 
     private fun defaultMenuBar() = menubar {
         menus.addAll(
-                aboutMenu.menu,
-                fileMenu.menu,
-                playerMenu.menu,
-                favouritesMenu.menu,
-                historyMenu.menu,
-                helpMenu.menu)
+            aboutMenu.menu,
+            fileMenu.menu,
+            playerMenu.menu,
+            favouritesMenu.menu,
+            historyMenu.menu,
+            helpMenu.menu
+        )
         addClass(Styles.mainMenuBox)
     }
 
@@ -66,15 +67,17 @@ class MenuBarView : BaseView() {
      * used instead of in-app menubar
      */
     private fun platformMenuBar() = NSMenuBar()
-            .menuBar.apply {
-                val nsMenu = NSMenu()
-                nsMenu.appMenu(aboutMenu.aboutMainItems)
+        .menuBar.apply {
+            NSMenu().apply {
+                appMenu(aboutMenu.aboutMainItems)
                 menus.addAll(
-                        fileMenu.menu,
-                        playerMenu.menu,
-                        favouritesMenu.menu,
-                        historyMenu.menu,
-                        nsMenu.windowMenu(messages["macos.menu.window"]),
-                        helpMenu.menu)
+                    fileMenu.menu,
+                    playerMenu.menu,
+                    favouritesMenu.menu,
+                    historyMenu.menu,
+                    windowMenu(messages["macos.menu.window"]),
+                    helpMenu.menu
+                )
             }
+        }
 }

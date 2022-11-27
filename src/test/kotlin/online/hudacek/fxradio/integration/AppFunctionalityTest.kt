@@ -188,8 +188,8 @@ class AppFunctionalityTest {
 
     @Test
     fun `click on volume icons should change slider value`() {
-        val sliderMinValueExpected = -30.0
-        val sliderMaxValueExpected = 5.0
+        val sliderMinValueExpected = -35.0
+        val sliderMaxValueExpected = 1.0
 
         // Verify app initial state
         verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))

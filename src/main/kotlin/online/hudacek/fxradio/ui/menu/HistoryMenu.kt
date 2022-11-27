@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.util.formatted
+import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.viewmodel.*
 import tornadofx.*

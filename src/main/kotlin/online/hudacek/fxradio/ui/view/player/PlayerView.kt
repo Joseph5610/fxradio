@@ -22,9 +22,9 @@ import javafx.geometry.Pos
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.make
-import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.setOnSpacePressed
+import online.hudacek.fxradio.ui.util.make
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.util.setOnSpacePressed
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
@@ -82,6 +82,8 @@ class PlayerView : BaseView() {
     private val infoGlyph by lazy {
         FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) {
             id = "stationInfo"
+            paddingAll = 5
+
             disableWhen {
                 selectedStationViewModel.stationProperty.booleanBinding {
                     it == null || !it.isValid()

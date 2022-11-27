@@ -23,9 +23,9 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.util.openUrl
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Attributions
 import online.hudacek.fxradio.util.Modal

@@ -27,7 +27,7 @@ class UserAgentInterceptor : Interceptor {
     /**
      * Defines what is app sending as a User Agent string
      */
-    private val userAgent = "${ApiUtils.userAgent}/${ApiUtils.version}"
+    private val userAgent = "FxRadio/${ApiUtils.version}"
 
     override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
             chain.request()

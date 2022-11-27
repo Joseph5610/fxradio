@@ -24,7 +24,7 @@ Currently, we provide following installers:
 ### Windows
 
 Download **fxradio_windows.msi**, run it and proceed with installation.
-In case your antivirus flags the installer or application exe file as malicious, please add it to exceptions. App is currently not correctly signed so it might trigger some false positives.
+In case your antivirus flags the installer or application exe file as malicious, please add it to exceptions. App is currently not correctly signed, so it might trigger some false positives.
 
 ### macOS
 Download DMG archive **fxradio_macOS.dmg**. After downloading follow those steps:

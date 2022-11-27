@@ -41,7 +41,7 @@ sealed class InfoPanelState {
 
 class SelectedStation(station: Station) {
     var station: Station by property(station)
-    var uuid: String by property(station.stationuuid)
+    var uuid: String by property(station.uuid)
     var name: String by property(station.name)
     var country: String by property(station.country)
     var language: String by property(station.language)
@@ -93,7 +93,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
      */
     fun retrieveAdditionalData() {
         stationObservable
-            .flatMapSingle { stationSearchUUIDUseCase.execute(it.stationuuid) }
+            .flatMapSingle { stationSearchUUIDUseCase.execute(it.uuid) }
             .subscribe({
                 it.firstOrNull()?.let { s ->
                     votesProperty.value = s.votes

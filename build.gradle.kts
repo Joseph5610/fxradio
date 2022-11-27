@@ -23,13 +23,13 @@ apply(plugin = "io.github.fvarrui.javapackager.plugin")
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "1.7.20"
 val log4jVersion = "2.19.0"
-val slf4jVersion = "2.0.3"
-val kotlinLoggingVersion = "3.0.0"
+val slf4jVersion = "2.0.4"
+val kotlinLoggingVersion = "3.0.4"
 val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.0"
 val vlcjVersion = "4.7.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.6.0"
+val flywayVersion = "9.8.2"
 val controlsFxVersion = "8.40.18"
 
 version = "0.10.0"
@@ -83,7 +83,7 @@ dependencies {
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
     implementation("com.github.thomasnield:rxkotlinfx:2.2.2")
-    implementation("org.xerial:sqlite-jdbc:3.39.3.0")
+    implementation("org.xerial:sqlite-jdbc:3.39.4.1")
     implementation("org.nield:rxkotlin-jdbc:0.4.1")
     implementation("de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.7")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
@@ -94,7 +94,6 @@ dependencies {
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
 }

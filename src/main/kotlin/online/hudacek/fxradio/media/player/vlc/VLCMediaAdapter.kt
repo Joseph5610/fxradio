@@ -23,7 +23,7 @@ import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
-import online.hudacek.fxradio.ui.formatted
+import online.hudacek.fxradio.ui.util.formatted
 import tornadofx.FX.Companion.messages
 import tornadofx.find
 import tornadofx.get

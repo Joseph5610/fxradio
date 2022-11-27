@@ -79,7 +79,7 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
             .filter { it.ok }
             .map {
                 Station(
-                    stationuuid = it.uuid,
+                    uuid = it.uuid,
                     name = nameProperty.value,
                     urlResolved = urlProperty.value,
                     homepage = homePageProperty.value,

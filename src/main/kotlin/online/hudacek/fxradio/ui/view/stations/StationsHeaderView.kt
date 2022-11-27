@@ -20,7 +20,7 @@ package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel

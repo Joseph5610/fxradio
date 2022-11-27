@@ -21,13 +21,13 @@ package online.hudacek.fxradio.apiclient.radiobrowser.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-private const val dummyStationUrl = "http://hudacek.online"
+private const val dummyStationUrl = "https://hudacek.online"
 
 /**
  * Station data class
  */
 data class Station(
-    val stationuuid: String,
+    @SerializedName("stationuuid") val uuid: String,
     val name: String,
     @SerializedName("url_resolved") val urlResolved: String,
     val homepage: String,
@@ -46,15 +46,15 @@ data class Station(
     @SerializedName("languagecodes") val languageCodes: String = "",
 ) : Serializable {
 
-    fun isValid() = stationuuid != "0"
+    fun isValid() = uuid != "0"
 
     override fun equals(other: Any?) = if (other is Station) {
-        this.stationuuid == other.stationuuid
+        this.uuid == other.uuid
     } else {
         super.equals(other)
     }
 
-    override fun hashCode() = stationuuid.hashCode()
+    override fun hashCode() = uuid.hashCode()
 
     companion object {
         val dummy by lazy {

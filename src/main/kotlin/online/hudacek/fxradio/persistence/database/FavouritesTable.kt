@@ -18,7 +18,7 @@ class FavouritesTable : StationTable("FAVOURITES") {
                 ":favicon, :tags, :codec, :bitrate, :sorting_order )"
     )
         .parameter("name", element.name)
-        .parameter("stationuuid", element.stationuuid)
+        .parameter("stationuuid", element.uuid)
         .parameter("url_resolved", element.urlResolved)
         .parameter("homepage", element.homepage)
         .parameter("country", element.country)
@@ -35,7 +35,7 @@ class FavouritesTable : StationTable("FAVOURITES") {
     fun updateOrder(station: Station, newOrderId: Int): Single<Station> =
         connection.execute("UPDATE $tableName SET sorting_order = ? WHERE stationuuid = ?;")
             .parameter(newOrderId)
-            .parameter(station.stationuuid)
+            .parameter(station.uuid)
             .toSingle()
             .map { station }
 }

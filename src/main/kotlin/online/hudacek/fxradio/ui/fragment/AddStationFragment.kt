@@ -23,9 +23,9 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.customNotificationPane
-import online.hudacek.fxradio.ui.field
-import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.util.customNotificationPane
+import online.hudacek.fxradio.ui.util.field
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel

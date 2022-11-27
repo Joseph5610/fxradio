@@ -23,7 +23,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.VBox
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.flagIcon
+import online.hudacek.fxradio.ui.util.flagIcon
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.viewmodel.LibraryState

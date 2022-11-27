@@ -26,9 +26,9 @@ import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
-import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.smallLabel
-import online.hudacek.fxradio.ui.stationView
+import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.ui.util.smallLabel
+import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.ui.util.DataCellHandler
 import online.hudacek.fxradio.ui.util.DataGridHandler
 import online.hudacek.fxradio.viewmodel.*

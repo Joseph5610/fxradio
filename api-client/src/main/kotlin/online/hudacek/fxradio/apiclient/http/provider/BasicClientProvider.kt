@@ -20,7 +20,6 @@ package online.hudacek.fxradio.apiclient.http.provider
 
 import mu.KotlinLogging
 import okhttp3.ConnectionPool
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import online.hudacek.fxradio.apiclient.http.interceptor.UserAgentInterceptor
@@ -48,30 +47,24 @@ class BasicClientProvider : HttpClientProvider() {
      * Enables Logging of http requests in app logger on trace level
      */
     private val loggerInterceptor = HttpLoggingInterceptor { message -> logger.trace { message } }
-            .apply {
-                //Set logging level for HTTP requests to full request and response
-                //Http requests are logged only on trace app logger level
-                level = HttpLoggingInterceptor.Level.BODY
+        .apply {
+            // Set logging level for HTTP requests to full request and response
+            // Http requests are logged only on trace app logger level
+            level = HttpLoggingInterceptor.Level.BODY
 
-                //Do not show sensitive information
-                redactHeader("Authorization")
-                redactHeader("Cookie")
-            }
-
-    override val interceptors: MutableList<Interceptor> = mutableListOf(loggerInterceptor)
+            //Do not show sensitive information
+            redactHeader("Authorization")
+            redactHeader("Cookie")
+        }
 
     /**
      * Construct http client with custom user agent, connection pool and timeouts
      */
-    override val client: OkHttpClient =
-            OkHttpClient.Builder()
-                    // The whole call should not take longer than 20 seconds
-                    .callTimeout(TIMEOUT_SECS, TimeUnit.SECONDS)
-                    .addNetworkInterceptor(UserAgentInterceptor())
-                    .connectionPool(connectionPool)
-                    .apply {
-                        interceptors.forEach {
-                            addInterceptor(it)
-                        }
-                    }.build()
+    override val client: OkHttpClient = OkHttpClient.Builder()
+        // The whole call should not take longer than 20 seconds
+        .callTimeout(TIMEOUT_SECS, TimeUnit.SECONDS)
+        .addNetworkInterceptor(UserAgentInterceptor())
+        .connectionPool(connectionPool)
+        .addInterceptor(loggerInterceptor)
+        .build()
 }

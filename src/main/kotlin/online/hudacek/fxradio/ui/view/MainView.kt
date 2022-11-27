@@ -22,8 +22,8 @@ import javafx.geometry.Orientation
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.set
-import online.hudacek.fxradio.ui.customNotificationPane
+import online.hudacek.fxradio.ui.util.set
+import online.hudacek.fxradio.ui.util.customNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.player.PlayerView

@@ -22,8 +22,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 object ApiUtils {
 
-    const val userAgent = "FxRadio"
-
     val version: String by lazy {
         ApiUtils::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
     }

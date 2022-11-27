@@ -23,9 +23,9 @@ import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
 import javafx.util.Duration
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.make
-import online.hudacek.fxradio.ui.showWhen
-import online.hudacek.fxradio.ui.smallLabel
+import online.hudacek.fxradio.ui.util.make
+import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.ui.util.smallLabel
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.hbox

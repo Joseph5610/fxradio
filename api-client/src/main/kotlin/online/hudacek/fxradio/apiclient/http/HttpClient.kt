@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.apiclient.http
 
-import kotlinx.coroutines.MainScope
 import mu.KotlinLogging
 import okhttp3.Response
 import online.hudacek.fxradio.apiclient.http.provider.BasicClientProvider

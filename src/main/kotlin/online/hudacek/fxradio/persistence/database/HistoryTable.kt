@@ -15,7 +15,7 @@ class HistoryTable : StationTable("HISTORY") {
                 "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )"
     )
         .parameter("name", element.name)
-        .parameter("stationuuid", element.stationuuid)
+        .parameter("stationuuid", element.uuid)
         .parameter("url_resolved", element.urlResolved)
         .parameter("homepage", element.homepage)
         .parameter("country", element.country)

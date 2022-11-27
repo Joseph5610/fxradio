@@ -1,5 +1,5 @@
 
-version = "0.1.0"
+version = "0.1.1"
 
 dependencies {
     api(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))

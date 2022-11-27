@@ -19,7 +19,7 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.Config
-import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import tornadofx.action

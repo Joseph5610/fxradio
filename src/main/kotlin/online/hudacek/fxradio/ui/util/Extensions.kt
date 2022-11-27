@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.ui
+package online.hudacek.fxradio.ui.util
 
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.animation.PauseTransition

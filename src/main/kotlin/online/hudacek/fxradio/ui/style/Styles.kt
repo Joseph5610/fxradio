@@ -260,7 +260,7 @@ class Styles : Stylesheet() {
         }
 
         // ===================================================================
-        // Restyled default compontents
+        // Restyled default components
         // ===================================================================
 
         tableView {

@@ -36,7 +36,7 @@ class DataCellHandler(
     fun onDragDetected(e: MouseEvent) {
         if (libraryViewModel.stateProperty.value is LibraryState.Favourites) {
             if (!dataCell.updating) {
-                logger.trace { "OnDragDetected for ${dataCell.item.stationuuid}" }
+                logger.trace { "OnDragDetected for ${dataCell.item.uuid}" }
                 dataCell.startDragAndDrop(TransferMode.MOVE).apply {
                     put(dfStation, dataCell.item)
                 }
@@ -48,7 +48,7 @@ class DataCellHandler(
     fun onDragOver(e: DragEvent) {
         if (libraryViewModel.stateProperty.value is LibraryState.Favourites) {
             if (e.gestureSource != this && e.dragboard.hasContent(dfStation)) {
-                logger.trace { "OnDragOver for ${dataCell.item.stationuuid}" }
+                logger.trace { "OnDragOver for ${dataCell.item.uuid}" }
                 e.acceptTransferModes(TransferMode.MOVE)
             }
             e.consume()
@@ -58,7 +58,7 @@ class DataCellHandler(
     fun onDragEntered(e: DragEvent) {
         if (libraryViewModel.stateProperty.value is LibraryState.Favourites) {
             if (e.gestureSource != this && e.dragboard.hasContent(dfStation)) {
-                logger.trace { "OnDragEntered for ${dataCell.item.stationuuid}" }
+                logger.trace { "OnDragEntered for ${dataCell.item.uuid}" }
                 if (dataCell.scaleX == 1.0) {
                     dataCell.scale(Duration.seconds(0.05), point(0.9, 0.9))
                 }
@@ -68,7 +68,7 @@ class DataCellHandler(
     }
 
     fun onDragExited(e: DragEvent) {
-        logger.trace { "OnDragExited for ${dataCell.item.stationuuid}" }
+        logger.trace { "OnDragExited for ${dataCell.item.uuid}" }
         dataCell.scale(Duration.seconds(0.05), point(1.0, 1.0))
         e.consume()
     }
@@ -78,7 +78,7 @@ class DataCellHandler(
             with(e.dragboard) {
                 try {
                     if (hasContent(dfStation)) {
-                        logger.trace { "OnDragDropped for ${dataCell.item.stationuuid}" }
+                        logger.trace { "OnDragDropped for ${dataCell.item.uuid}" }
                         val droppedItem = getContent(dfStation) as Station
 
                         val targetIndex = dataGrid.items.indexOf(dataCell.item)
@@ -97,7 +97,7 @@ class DataCellHandler(
 
     fun onDragDone(e: DragEvent) {
         if (e.transferMode == TransferMode.MOVE) {
-            logger.trace { "OnDragDone for ${dataCell.item.stationuuid}" }
+            logger.trace { "OnDragDone for ${dataCell.item.uuid}" }
             favouritesViewModel.commit()
         }
         e.consume()

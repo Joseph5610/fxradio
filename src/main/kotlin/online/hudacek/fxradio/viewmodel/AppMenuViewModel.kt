@@ -24,8 +24,8 @@ import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.persistence.cache.ImageCache
-import online.hudacek.fxradio.ui.formatted
-import online.hudacek.fxradio.ui.openUrl
+import online.hudacek.fxradio.ui.util.formatted
+import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.applySchedulersSingle

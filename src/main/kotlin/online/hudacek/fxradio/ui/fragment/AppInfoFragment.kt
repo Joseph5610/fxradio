@@ -22,9 +22,8 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.openUrl
-import online.hudacek.fxradio.ui.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.smallLabel
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
@@ -32,12 +31,10 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.button
 import tornadofx.get
-import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
 import tornadofx.paddingBottom
-import tornadofx.paddingTop
 import tornadofx.style
 import tornadofx.vbox
 

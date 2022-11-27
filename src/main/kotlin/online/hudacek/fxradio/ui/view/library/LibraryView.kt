@@ -22,7 +22,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.showWhen
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.*

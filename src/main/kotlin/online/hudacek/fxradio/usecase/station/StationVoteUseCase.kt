@@ -30,7 +30,7 @@ import online.hudacek.fxradio.util.applySchedulersSingle
 class StationVoteUseCase : BaseUseCase<Station, Single<VoteResponse>>() {
 
     override fun execute(input: Station): Single<VoteResponse> = radioBrowserApi
-            .addVote(input.stationuuid)
+            .addVote(input.uuid)
             .compose(applySchedulersSingle())
             .onErrorResumeNext {
                 // We do not care if this response fails
