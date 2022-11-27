@@ -20,12 +20,9 @@ object AlertHelper {
      * Shows confirmation alert dialog
      */
     fun confirmAlert(
-        header: String, content: String = "",
-        confirmButton: ButtonType = ButtonType.OK,
-        cancelButton: ButtonType = ButtonType.CANCEL,
-        owner: Window? = FX.primaryStage, title: String? = null
+        header: String, content: String = "", owner: Window? = FX.primaryStage, title: String? = null
     ): Maybe<ButtonType> {
-        val alert = Alert(Alert.AlertType.CONFIRMATION, content, confirmButton, cancelButton)
+        val alert = Alert(Alert.AlertType.CONFIRMATION, content)
         title?.let { alert.title = it }
         alert.headerText = header
         owner?.also { alert.initOwner(it) }

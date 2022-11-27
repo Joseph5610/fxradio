@@ -507,8 +507,8 @@ class StylesDark : Stylesheet() {
                     borderRadius += box(6.px)
                     backgroundColor += c(colors.background)
                     and(selected) {
-                        backgroundColor += c(colors.primary + "30")
-                        borderColor += box(c(colors.primary + "30"))
+                        backgroundColor += c(colors.primary)
+                        borderColor += box(c(colors.primary))
                     }
                     padding = box(5.px)
                 }
