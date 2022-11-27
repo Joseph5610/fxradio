@@ -85,16 +85,29 @@
         <h3 class="font-weight-light text-center text-lg-left mt-4 mb-3">See it in action</h3>
         <div class="row text-center text-lg-left">
             <div class="col-lg-3 col-md-4 col-6">
-                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/1.png" alt="Main view">
+                <a class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/1.png" alt="Main view"
+                         onclick="$('#p1').addClass('active');$('#p2').removeClass('active');$('#p3').removeClass('active');$('#p4').removeClass('active')">
+                </a>
             </div>
             <div class="col-lg-3 col-md-4 col-6">
-                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/2.png" alt="Station history">
+                <a class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/2.png"
+                         alt="Station history"
+                         onclick="$('#p1').removeClass('active');$('#p2').addClass('active');$('#p3').removeClass('active');$('#p4').removeClass('active')">
+                </a>
             </div>
             <div class="col-lg-3 col-md-4 col-6">
-                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/3.png" alt="Search">
+                <a class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/3.png" alt="Search"
+                         onclick="$('#p1').removeClass('active');$('#p2').removeClass('active');$('#p3').addClass('active');$('#p4').removeClass('active')">
+                </a>
             </div>
             <div class="col-lg-3 col-md-4 col-6">
-                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/4.png" alt="Station detail">
+                <a class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/4.png" alt="Station detail"
+                         onclick="$('#p1').removeClass('active');$('#p2').removeClass('active');$('#p3').removeClass('active');$('#p4').addClass('active')">
+                </a>
             </div>
         </div>
 
@@ -108,7 +121,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-
                         <div id="carousel" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div id="p1" class="carousel-item">
