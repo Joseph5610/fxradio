@@ -62,14 +62,19 @@ class LibraryView : BaseView() {
 
                 add(libraryListView)
 
-                add(
-                    find<LibraryTitleFragment>(
-                        params = mapOf(
-                            "libraryTitle" to messages["pinned"],
-                            "showProperty" to viewModel.showPinnedProperty
+                vbox {
+                    add(
+                        find<LibraryTitleFragment>(
+                            params = mapOf(
+                                "libraryTitle" to messages["pinned"],
+                                "showProperty" to viewModel.showPinnedProperty
+                            )
                         )
                     )
-                )
+                    showWhen {
+                        viewModel.pinnedProperty.emptyProperty().not()
+                    }
+                }
 
                 vbox {
                     add(
