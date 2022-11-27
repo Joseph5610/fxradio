@@ -1,149 +1,152 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
+<html lang="{{ site.lang | default: " en-US" }}">
 <head>
 
-  {% if site.google_analytics %}
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '{{ site.google_analytics }}');
-  </script>
-  {% endif %}
-  <meta charset="UTF-8">
+    {% if site.google_analytics %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-  {% seo %}
-  <title>{{ site.title }} | {{ site.description }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#157878">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css" crossorigin="anonymous">
+        function gtag() {
+            dataLayer.push(arguments);
+        }
 
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        gtag('js', new Date());
+        gtag('config', '{{ site.google_analytics }}');
+    </script>
+    {% endif %}
+    <meta charset="UTF-8">
 
-  <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    {% seo %}
+    <title>{{ site.title }} | {{ site.description }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
 </head>
 <body>
 
 
- <nav style="max-width: 55rem;margin:0 auto;background-color: white;" class="navbar navbar-expand-lg navbar-light">
-  <a class="navbar-brand" href="#">{{ site.title }}</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<nav style="max-width: 55rem;margin:0 auto;background-color: white;" class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#">{{ site.title }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
+            aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarColor03">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#content">About</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#gallery">Gallery</a>
-      </li>
-    </ul>
-  </div>
+    <div class="collapse navbar-collapse" id="navbarColor03">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#content">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#gallery">Gallery</a>
+            </li>
+        </ul>
+    </div>
 </nav>
 
 <header class="page-header" role="banner">
 
-  <h1 class="project-name" style="color: white">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
-  <h2 class="project-tagline" style="color: white">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
-  {% if site.github.is_project_page %}
-  <a href="{{ site.github.repository_url }}" class="btn btn-outline-primary">View on GitHub</a>
-  {% endif %}
-  {% if site.show_downloads %}
-  <a href="{{ site.github.release_url }}" class="btn btn-outline-primary">Download latest release</a>
-  {% endif %}
+    <h1 class="project-name" style="color: white">{{ page.title | default: site.title | default:
+        site.github.repository_name }}</h1>
+    <h2 class="project-tagline" style="color: white">{{ page.description | default: site.description | default:
+        site.github.project_tagline }}</h2>
+    {% if site.github.is_project_page %}
+    <a href="{{ site.github.repository_url }}" class="btn btn-outline-primary">View on GitHub</a>
+    {% endif %}
+    {% if site.show_downloads %}
+    <a href="{{ site.github.release_url }}" class="btn btn-outline-primary">Download latest release</a>
+    {% endif %}
 </header>
 
 <main id="content" class="main-content" role="main">
 
-  {{ content }}
+    {{ content }}
 
-  <div id="gallery" data-toggle="modal" data-target="#galleryModal">
-    <h3 class="font-weight-light text-center text-lg-left mt-4 mb-3">See it in action</h3>
-      <div class="row text-center text-lg-left">
-        <div class="col-lg-3 col-md-4 col-6">
-          <a class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail"  data-target="#carousel" src="images/1.png" alt="Main view"
-            onclick="$('#p1').addClass('active');$('#p2').removeClass('active');$('#p3').removeClass('active');$('#p4').removeClass('active')">
-          </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-          <a class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/2.png" alt="Station history"
-            onclick="$('#p1').removeClass('active');$('#p2').addClass('active');$('#p3').removeClass('active');$('#p4').removeClass('active')">
-          </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-          <a class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/3.png" alt="Search"
-            onclick="$('#p1').removeClass('active');$('#p2').removeClass('active');$('#p3').addClass('active');$('#p4').removeClass('active')">
-          </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-          <a class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/4.png" alt="Station detail"
-            onclick="$('#p1').removeClass('active');$('#p2').removeClass('active');$('#p3').removeClass('active');$('#p4').addClass('active')">
-          </a>
-        </div>
-      </div>
-
-      <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content"> 
-            <div class="modal-header" style="max-height: 50px">
-              <button type="button" style="padding: 0 20px 5px 0; margin: 0" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+    <div id="gallery" data-toggle="modal" data-target="#galleryModal">
+        <h3 class="font-weight-light text-center text-lg-left mt-4 mb-3">See it in action</h3>
+        <div class="row text-center text-lg-left">
+            <div class="col-lg-3 col-md-4 col-6">
+                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/1.png" alt="Main view">
             </div>
-            <div class="modal-body">
-             
-             <div id="carousel" class="carousel slide" data-ride="carousel">
-                      <div class="carousel-inner">
-                        <div id="p1" class="carousel-item">
-                          <img class="d-block w-100" src="images/1.png">
-                        </div>
-                        <div id="p2" class="carousel-item">
-                          <img class="d-block w-100" src="images/2.png">
-                        </div>
-                        <div id="p3" class="carousel-item">
-                          <img class="d-block w-100" src="images/3.png">
-                        </div>
-                        <div id="p4" class="carousel-item">
-                          <img class="d-block w-100" src="images/4.png">
-                        </div>
-                      </div>
-                      <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                      </a>
-                      <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                      </a>
+            <div class="col-lg-3 col-md-4 col-6">
+                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/2.png" alt="Station history">
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/3.png" alt="Search">
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <img class="img-fluid img-thumbnail" data-target="#carousel" src="images/4.png" alt="Station detail">
+            </div>
+        </div>
+
+        <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="max-height: 50px">
+                        <button type="button" style="padding: 0 20px 5px 0; margin: 0" class="close"
+                                data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span> Close gallery
+                        </button>
                     </div>
+                    <div class="modal-body">
 
+                        <div id="carousel" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div id="p1" class="carousel-item">
+                                    <img class="d-block w-100" src="images/1.png">
+                                </div>
+                                <div id="p2" class="carousel-item">
+                                    <img class="d-block w-100" src="images/2.png">
+                                </div>
+                                <div id="p3" class="carousel-item">
+                                    <img class="d-block w-100" src="images/3.png">
+                                </div>
+                                <div id="p4" class="carousel-item">
+                                    <img class="d-block w-100" src="images/4.png">
+                                </div>
+                            </div>
+                            <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
 
     <footer class="site-footer">
-      {% if site.github.is_project_page %}
-      <span class="site-footer-owner"><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.</span>
-      {% endif %}
-      <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+        {% if site.github.is_project_page %}
+        <span class="site-footer-owner"><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a
+                href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.</span>
+        {% endif %}
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
     </footer>
-  </main>
+</main>
 </body>
 </html>
