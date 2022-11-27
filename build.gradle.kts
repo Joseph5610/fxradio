@@ -32,7 +32,7 @@ val humbleVersion = "0.3.0"
 val flywayVersion = "9.8.2"
 val controlsFxVersion = "8.40.18"
 
-version = "0.10.0"
+version = "0.10.1"
 
 val appVersion: String = version as String
 
