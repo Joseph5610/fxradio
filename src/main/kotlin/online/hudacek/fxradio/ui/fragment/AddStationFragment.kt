@@ -23,12 +23,13 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.customNotificationPane
 import online.hudacek.fxradio.ui.util.field
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
-import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
+import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.action
 import tornadofx.addClass
@@ -50,6 +51,7 @@ class AddStationFragment : BaseFragment() {
 
     private val viewModel: AddStationViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
+    private val favouritesViewModel: FavouritesViewModel by inject()
 
     // List of Countries for autocomplete
     private val countriesListProperty = listProperty<String>(observableListOf()).apply {
@@ -183,7 +185,7 @@ class AddStationFragment : BaseFragment() {
             viewModel.saveToFavouritesObservable
                 .filter { it }
                 .map { newStation }
-                .subscribe(appEvent.addFavourite)
+                .subscribe(favouritesViewModel::addFavourite)
         }
 
         // Cleanup view model

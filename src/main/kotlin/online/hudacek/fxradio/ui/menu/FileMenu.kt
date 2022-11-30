@@ -27,7 +27,7 @@ import tornadofx.get
 class FileMenu : BaseMenu("menu.file") {
 
     override val menuItems = listOf(
-            item(messages["menu.station.add"], KeyCodes.add) {
+            item(messages["menu.station.add"], KeyCodes.newStation) {
                 action {
                     Modal.AddNewStation.openInternalWindow()
                 }

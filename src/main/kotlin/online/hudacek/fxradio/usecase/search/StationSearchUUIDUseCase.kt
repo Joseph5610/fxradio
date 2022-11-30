@@ -29,8 +29,7 @@ import online.hudacek.fxradio.util.applySchedulersSingle
  */
 class StationSearchUUIDUseCase : BaseUseCase<String, Single<List<Station>>>() {
 
-    override fun execute(input: String): Single<List<Station>> =
-        radioBrowserApi
-            .searchStationByUUIDs(SearchByUUIDsRequest(input))
-            .compose(applySchedulersSingle())
+    override fun execute(input: String): Single<List<Station>> = radioBrowserApi
+        .searchStationByUUIDs(SearchByUUIDsRequest(input))
+        .compose(applySchedulersSingle())
 }

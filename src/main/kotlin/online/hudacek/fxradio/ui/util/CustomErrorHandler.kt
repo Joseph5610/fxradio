@@ -35,6 +35,7 @@ import tornadofx.FX
 import tornadofx.FX.Companion.primaryStage
 import tornadofx.add
 import tornadofx.addClass
+import tornadofx.putString
 import tornadofx.setContent
 import java.net.URLEncoder
 
@@ -122,8 +123,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             }
 
             if (result.get().buttonData == ButtonBar.ButtonData.HELP_2) {
-                val clipboard = Clipboard.getSystemClipboard()
-                clipboard.setContent {
+                Clipboard.getSystemClipboard().apply {
                     putString(textarea.text)
                 }
             }

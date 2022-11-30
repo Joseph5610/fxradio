@@ -37,7 +37,7 @@ class HelpMenu : BaseMenu("menu.help") {
                 Modal.Attributions.open()
             }
         },
-        item(messages["menu.help.openhomepage"], KeyCodes.website) {
+        item(messages["menu.help.openhomepage"], KeyCodes.openWebsite) {
             action {
                 appMenuViewModel.openWebsite()
             }
@@ -55,7 +55,7 @@ class HelpMenu : BaseMenu("menu.help") {
         },
         logMenu.menu,
         separator(),
-        item(messages["menu.help.logs"], KeyCodes.open) {
+        item(messages["menu.help.logs"], KeyCodes.openLogs) {
             action {
                 app.openUrl(logsFolderPath)
             }

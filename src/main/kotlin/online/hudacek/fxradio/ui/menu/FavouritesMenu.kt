@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import javafx.scene.control.MenuItem
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
@@ -28,12 +28,9 @@ import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.bind
-import tornadofx.booleanBinding
 import tornadofx.disableWhen
-import tornadofx.enableWhen
 import tornadofx.get
 import tornadofx.item
-import tornadofx.visibleWhen
 
 class FavouritesMenu : BaseMenu("menu.favourites") {
 
@@ -41,47 +38,13 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
     private val favouritesViewModel: FavouritesViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    private val playedStationNotInFavouritesProperty = selectedStationViewModel.stationProperty.booleanBinding {
-        // User should be able to add favourite station only when it is not already present
-        it != null && it !in favouritesViewModel.stationsProperty
-    }
-
-    private val favouriteMenuItemVisibleProperty = selectedStationViewModel.stationProperty.booleanBinding {
-        it != null && it.isValid()
-    }
-
-    /**
-     * Items for add/remove favourite station reused in multiple menus around the app
-     */
-    val addRemoveFavouriteItems
-        get() = mutableListOf(item(messages["menu.station.favourite"], KeyCodes.favouriteAdd) {
-            enableWhen(playedStationNotInFavouritesProperty)
-            visibleWhen(favouriteMenuItemVisibleProperty)
-
-            action {
-                appEvent.addFavourite.onNext(selectedStationViewModel.stationProperty.value)
-                appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                playedStationNotInFavouritesProperty.invalidate()
-            }
-        },
-            //Remove favourite
-            item(messages["menu.station.favouriteRemove"]) {
-                disableWhen(playedStationNotInFavouritesProperty)
-                visibleWhen(favouriteMenuItemVisibleProperty)
-
-                action {
-                    appEvent.removeFavourite.onNext(selectedStationViewModel.stationProperty.value)
-                    appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                    playedStationNotInFavouritesProperty.invalidate()
-                }
-            })
-
-    override val menuItems = mutableListOf<MenuItem>().apply {
-        addAll(listOf(item(messages["menu.favourites.show"], KeyCodes.favouriteView) {
+    override val menuItems = listOf(
+        item(messages["menu.favourites.show"], KeyCodes.favouriteView) {
             action {
                 libraryViewModel.stateProperty.value = LibraryState.Favourites
             }
-        }, menu(messages["menu.favourites.all"]) {
+        },
+        menu(messages["menu.favourites.all"]) {
             disableWhen {
                 favouritesViewModel.stationsProperty.emptyProperty()
             }
@@ -90,29 +53,25 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     // For some reason macOS native menu does not respect
                     // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = stationView(it) {
-                            fitHeight = 15.0
-                            fitWidth = 15.0
-                        }
+                        graphic = stationView(it, 15.0)
                     }
                     action {
                         selectedStationViewModel.item = SelectedStation(it)
                     }
                 }
             }
-        }, separator()))
-        addAll(addRemoveFavouriteItems)
-        addAll(listOf(separator(), item(messages["menu.station.favourite.clear"]) {
+        },
+        separator(),
+        item(messages["menu.station.favourite.clear"]) {
             disableWhen {
                 favouritesViewModel.stationsProperty.emptyProperty()
             }
-            action {
-                confirmAlert(messages["database.clear.confirm"], messages["database.clear.text"])
-                    .subscribe {
-                        favouritesViewModel.cleanupFavourites()
-                        appEvent.refreshLibrary.onNext(LibraryState.Favourites)
-                    }
-            }
-        }))
-    }
+
+            actionEvents()
+                .flatMapMaybe { confirmAlert(messages["database.clear.confirm"], messages["database.clear.text"]) }
+                .subscribe {
+                    favouritesViewModel.cleanupFavourites()
+                }
+        }
+    )
 }

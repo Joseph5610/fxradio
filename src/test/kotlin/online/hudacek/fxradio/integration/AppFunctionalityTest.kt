@@ -56,6 +56,7 @@ import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
 import tornadofx.DataGrid
+import tornadofx.FX
 import tornadofx.find
 import java.util.*
 
@@ -165,7 +166,7 @@ class AppFunctionalityTest {
         val historyItem = robot.from(libraries)
             .lookup(libraries.items[historyItemIndex].type.key.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
+                    FX.locale
                 ) else it.toString()
             })
             .query<Label>()

@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import com.github.thomasnield.rxkotlinfx.actionEvents
 import online.hudacek.fxradio.ui.util.formatted
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.AlertHelper.confirmAlert
@@ -31,7 +32,7 @@ class HistoryMenu : BaseMenu("menu.history") {
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 
     private val showHistoryItem by lazy {
-        item(messages["menu.history.show"], KeyCodes.history) {
+        item(messages["menu.history.show"], KeyCodes.historyView) {
             action {
                 libraryViewModel.stateProperty.value = LibraryState.History
             }
@@ -48,10 +49,7 @@ class HistoryMenu : BaseMenu("menu.history") {
                     // For some reason macOS native menu does not respect
                     // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = stationView(it) {
-                            fitHeight = 15.0
-                            fitWidth = 15.0
-                        }
+                        graphic = stationView(it, 15.0)
                     }
                     action {
                         selectedStationViewModel.item = SelectedStation(it)
@@ -68,15 +66,13 @@ class HistoryMenu : BaseMenu("menu.history") {
                 historyViewModel.stationsProperty.emptyProperty()
             }
 
-
-            action {
-                confirmAlert(
-                    messages["history.clear.confirm"],
-                    messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
-                ).subscribe {
-                    historyViewModel.cleanupHistory()
-                }
-            }
+            actionEvents()
+                .flatMapMaybe {
+                    confirmAlert(
+                        messages["history.clear.confirm"],
+                        messages["history.clear.text"].formatted(historyViewModel.stationsProperty.size),
+                    )
+                }.subscribe { historyViewModel.cleanupHistory() }
         }
     }
 

@@ -21,24 +21,17 @@ package online.hudacek.fxradio.ui.view.stations
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.menu.FavouritesMenu
-import online.hudacek.fxradio.ui.menu.item
-import online.hudacek.fxradio.ui.menu.separator
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
-import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.HistoryViewModel
-import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import tornadofx.action
 import tornadofx.addClass
 import tornadofx.booleanBinding
-import tornadofx.contextmenu
-import tornadofx.get
 import tornadofx.hbox
 import tornadofx.label
 import tornadofx.listview
@@ -52,7 +45,6 @@ class StationsHistoryView : BaseView() {
     private val historyViewModel: HistoryViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
-    private val favouritesMenu: FavouritesMenu by inject()
 
     override val root = listview(historyViewModel.stationsProperty) {
         id = "stationsHistoryList"
@@ -74,23 +66,11 @@ class StationsHistoryView : BaseView() {
 
         cellCache {
             hbox(spacing = 10, alignment = Pos.CENTER_LEFT) {
-                stationView(it) {
-                    fitHeight = LOGO_SIZE
-                    fitWidth = LOGO_SIZE
-                }
+                stationView(it, LOGO_SIZE)
 
                 vbox {
                     label(it.name)
                     smallLabel(it.description)
-                }
-
-                contextmenu {
-                    // Add Add or Remove from favourites menu items
-                    items.addAll(favouritesMenu.addRemoveFavouriteItems)
-                    separator()
-                    item(messages["menu.station.info"]).action {
-                        selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
-                    }
                 }
             }
         }

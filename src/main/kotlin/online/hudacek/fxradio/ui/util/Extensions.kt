@@ -46,25 +46,10 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
-import tornadofx.App
-import tornadofx.action
-import tornadofx.add
-import tornadofx.addClass
-import tornadofx.bind
-import tornadofx.contextmenu
+import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.notificationPane
 import tornadofx.controlsfx.toGlyph
-import tornadofx.field
-import tornadofx.item
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.onChange
-import tornadofx.opcr
-import tornadofx.required
-import tornadofx.setContent
-import tornadofx.textfield
-import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
@@ -131,7 +116,7 @@ internal fun EventTarget.copyMenu(
 ) = contextmenu {
     item(name) {
         action {
-            clipboard.update(value)
+            clipboard.putString(value)
         }
     }
 }
@@ -144,20 +129,16 @@ internal fun EventTarget.autoUpdatingCopyMenu(
     item(menuItemName) {
         action {
             if (valueToCopy.value != null) {
-                clipboard.update(valueToCopy.value)
+                clipboard.putString(valueToCopy.value)
             }
         }
 
         valueToCopy.onChange {
             action {
-                clipboard.update(it!!)
+                clipboard.putString(it!!)
             }
         }
     }
-}
-
-internal fun Clipboard.update(newValue: String) = setContent {
-    putString(newValue)
 }
 
 internal fun Window.setOnSpacePressed(action: () -> Unit) {
@@ -222,11 +203,11 @@ internal fun EventTarget.field(
         }
     })
 
-fun EventTarget.stationView(station: Station, op: ImageView.() -> Unit = {}) =
-    opcr(this, StationImageView(station), op)
+fun EventTarget.stationView(station: Station, size: Double, op: ImageView.() -> Unit = {}) =
+    opcr(this, StationImageView(station, size), op)
 
-fun EventTarget.stationView(stationProperty: Property<Station>, op: ImageView.() -> Unit = {}) =
-    opcr(this, StationImageView(stationProperty), op)
+fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: ImageView.() -> Unit = {}) =
+    opcr(this, StationImageView(stationProperty, size), op)
 
 internal val Country.flagIcon: FlagIcon?
     get() = runCatching { FlagIcon(iso3166) }.getOrNull()

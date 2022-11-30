@@ -28,9 +28,8 @@ import javafx.scene.input.KeyCombination
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.style.StylesDark
 import online.hudacek.fxradio.util.macos.MacUtils
-import tornadofx.*
-import tornadofx.FX.Companion.messages
-import java.util.*
+import tornadofx.FX
+import tornadofx.importStylesheet
 
 /**
  * Perform async calls on correct thread
@@ -46,13 +45,16 @@ internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTran
 }
 
 internal fun reloadStylesheets(isDarkModeProperty: Boolean) {
+    val scene = FX.primaryStage.scene
     FX.stylesheets.clear()
+    scene.stylesheets.clear()
+
     if (isDarkModeProperty) {
         importStylesheet(StylesDark::class)
     } else {
         importStylesheet(Styles::class)
     }
-    FX.applyStylesheetsTo(FX.primaryStage.scene)
+    FX.applyStylesheetsTo(scene)
 }
 
 internal fun keyCombination(keyCode: KeyCode) =

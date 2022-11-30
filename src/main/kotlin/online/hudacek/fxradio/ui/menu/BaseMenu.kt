@@ -54,14 +54,13 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
      * Defines keyboard shortcuts for menu actions
      */
     protected companion object KeyCodes {
-        val favouriteAdd = keyCombination(KeyCode.L)
         val favouriteView = keyCombination(KeyCode.DIGIT1)
-        val history = keyCombination(KeyCode.DIGIT2)
+        val historyView = keyCombination(KeyCode.DIGIT2)
         val play = keyCombination(KeyCode.P)
         val stop = keyCombination(KeyCode.S)
-        val add = keyCombination(KeyCode.N)
-        val open = keyCombination(KeyCode.O)
-        val website = keyCombination(KeyCode.W)
+        val newStation = keyCombination(KeyCode.N)
+        val openLogs = keyCombination(KeyCode.O)
+        val openWebsite = keyCombination(KeyCode.W)
         val openStream = keyCombination(KeyCode.U)
         val openPreferences = keyCombination(KeyCode.COMMA)
     }

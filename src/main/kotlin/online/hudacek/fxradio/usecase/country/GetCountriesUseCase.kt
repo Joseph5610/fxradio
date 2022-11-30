@@ -50,5 +50,4 @@ class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
             null
         }
     }
-
 }

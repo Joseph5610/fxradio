@@ -25,14 +25,34 @@ import javafx.scene.input.MouseEvent
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.menu.FavouritesMenu
+import online.hudacek.fxradio.ui.util.DataCellHandler
+import online.hudacek.fxradio.ui.util.DataGridHandler
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
-import online.hudacek.fxradio.ui.util.DataCellHandler
-import online.hudacek.fxradio.ui.util.DataGridHandler
-import online.hudacek.fxradio.viewmodel.*
-import tornadofx.*
+import online.hudacek.fxradio.viewmodel.InfoPanelState
+import online.hudacek.fxradio.viewmodel.LibraryState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
+import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
+import online.hudacek.fxradio.viewmodel.StationsState
+import online.hudacek.fxradio.viewmodel.StationsViewModel
+import tornadofx.action
+import tornadofx.booleanBinding
+import tornadofx.contextmenu
+import tornadofx.datagrid
+import tornadofx.get
+import tornadofx.item
+import tornadofx.label
+import tornadofx.onHover
+import tornadofx.paddingAll
+import tornadofx.paddingTop
+import tornadofx.point
+import tornadofx.px
+import tornadofx.scale
+import tornadofx.style
+import tornadofx.tooltip
+import tornadofx.vbox
 
 private const val CELL_WIDTH = 140.0
 private const val LOGO_SIZE = 100.0
@@ -46,11 +66,7 @@ class StationsDataGridView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
-    private val favouritesMenu: FavouritesMenu by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-
-    // Show initial stations
-    override fun onDock() = stationsViewModel.handleNewLibraryState(libraryViewModel.stateProperty.value)
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
@@ -99,18 +115,13 @@ class StationsDataGridView : BaseView() {
                 }
 
                 contextmenu {
-                    // Add Add or Remove from favourites menu items
-                    items.addAll(favouritesMenu.addRemoveFavouriteItems)
-                    separator()
                     item(messages["menu.station.info"]).action {
                         selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
                     }
                 }
 
-                stationView(station) {
+                stationView(station, LOGO_SIZE) {
                     paddingAll = 5
-                    fitHeight = LOGO_SIZE
-                    fitWidth = LOGO_SIZE
                 }
 
                 label(station.name) {

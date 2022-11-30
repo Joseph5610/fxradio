@@ -51,9 +51,7 @@ class PlayerStationView : BaseView() {
     }
 
     private val stationLogo by lazy {
-        stationView(selectedStationViewModel.stationProperty) {
-            fitWidth = LOGO_SIZE
-        }
+        stationView(selectedStationViewModel.stationProperty, size = LOGO_SIZE)
     }
 
     override val root = hbox(spacing = 5) {

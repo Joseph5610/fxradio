@@ -18,17 +18,14 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Single
+import com.github.thomasnield.rxkotlinfx.toObservable
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.event.data.AppNotification
-import online.hudacek.fxradio.ui.util.formatted
 import online.hudacek.fxradio.usecase.favourites.*
-import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.get
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -52,34 +49,25 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
 
     val stationsProperty = bind(Favourites::stations) as ListProperty
 
+    val stationsObservable: Observable<ObservableList<Station>> = stationsProperty.toObservable()
+
     init {
-        favouritesGetUseCase.execute(Unit).subscribe { stationsProperty.add(it) }
-
-        appEvent.addFavourite
-            .filter { it.isValid() && it !in stationsProperty }
-            .flatMapSingle { favouriteAddUseCase.execute(it) }
-            .flatMapSingle {
-                stationsProperty += it
-                Single.just(
-                    AppNotification(
-                        messages["menu.station.favouriteAdded"].formatted(it.name),
-                        FontAwesome.Glyph.CHECK
-                    )
-                )
-            }.subscribe(appEvent.appNotification)
-
-        appEvent.removeFavourite
-            .flatMapSingle { favouriteRemoveUseCase.execute(it) }
-            .flatMapSingle {
-                stationsProperty -= it
-                Single.just(
-                    AppNotification(
-                        messages["menu.station.favouriteRemoved"].formatted(it.name),
-                        FontAwesome.Glyph.CHECK
-                    )
-                )
-            }.subscribe(appEvent.appNotification)
+        favouritesGetUseCase.execute(Unit).subscribe {
+            stationsProperty.add(it)
+        }
     }
+
+    fun addFavourite(station: Station): Disposable = favouriteAddUseCase.execute(station).subscribe({
+        stationsProperty += it
+    }, {
+        logger.error(it) { "Cannot add ${station.uuid}" }
+    })
+
+    fun removeFavourite(station: Station): Disposable = favouriteRemoveUseCase.execute(station).subscribe({
+        stationsProperty -= it
+    }, {
+        logger.error(it) { "Cannot remove ${station.uuid}" }
+    })
 
     fun cleanupFavourites(): Disposable = cleanFavouritesClearUseCase.execute(Unit)
         .subscribe({
@@ -90,7 +78,7 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
 
     override fun onCommit() {
         favouritesUpdateUseCase.execute(stationsProperty).subscribe({}, {
-            // rollback viewmodel to previous state when update failed
+            // Rollback ViewModel to previous state when update failed
             rollback()
         })
     }

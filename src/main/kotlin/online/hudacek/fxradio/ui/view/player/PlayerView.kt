@@ -51,6 +51,7 @@ import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
+import tornadofx.togglebutton
 import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
@@ -73,6 +74,7 @@ class PlayerView : BaseView() {
             padding = insets(5, 7, 5, 7)
         }
     }
+
     private val pauseGlyph by lazy {
         FontAwesome.Glyph.PAUSE.make(CONTROLS_GLYPH_SIZE, isPrimary = false) {
             padding = insets(5, 7, 5, 7)

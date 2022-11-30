@@ -129,10 +129,6 @@ class StylesDark : Stylesheet() {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             borderColor += box(c(colors.backgroundBorder))
-
-            and(hover) {
-                textFill = Color.WHITESMOKE
-            }
         }
 
         header {

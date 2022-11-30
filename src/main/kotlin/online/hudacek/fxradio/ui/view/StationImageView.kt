@@ -36,15 +36,20 @@ private val logger = KotlinLogging.logger {}
 /**
  * Custom ImageView for station logos
  */
-class StationImageView(private val stationProperty: Property<Station>) : ImageView(defaultRadioLogo) {
+class StationImageView(
+    private val stationProperty: Property<Station>,
+    private val size: Double = 15.0
+) : ImageView(defaultRadioLogo) {
 
-    constructor(station: Station) : this(objectProperty(station))
+    constructor(station: Station, size: Double) : this(objectProperty(station), size)
 
     init {
         // Set basic image properties
         isCache = true
         cacheHint = CacheHint.SPEED
         isPreserveRatio = true
+        fitWidth = size
+        fitHeight = size
 
         // Subscribe to property changes
         stationProperty.toObservable().subscribe {

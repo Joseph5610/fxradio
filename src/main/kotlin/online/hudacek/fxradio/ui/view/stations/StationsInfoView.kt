@@ -19,24 +19,27 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import com.github.thomasnield.rxkotlinfx.actionEvents
+import com.github.thomasnield.rxkotlinfx.toBinding
+import io.reactivex.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
-import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.update
+import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.FX
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -49,19 +52,22 @@ import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.paddingAll
+import tornadofx.putString
+import tornadofx.separator
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
 import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
-import java.util.*
 
 private const val LOGO_SIZE = 60.0
+private const val ICON_SIZE = 12.0
 
 class StationsInfoView : BaseView(FxRadio.appName) {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
+    private val favouritesViewModel: FavouritesViewModel by inject()
     private val searchViewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
@@ -73,15 +79,12 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         }
     }
 
-    private val copyIcon by lazy {
-        FontAwesome.Glyph.COPY.make(12.0, isPrimary = false)
-    }
+    private val copyIcon by lazy { FontAwesome.Glyph.COPY.make(ICON_SIZE, isPrimary = false) }
+    private val favouriteAddIcon by lazy { FontAwesome.Glyph.HEART.make(ICON_SIZE, isPrimary = false) }
+    private val favouriteRemoveIcon by lazy { FontAwesome.Glyph.HEART_ALT.make(ICON_SIZE, isPrimary = false) }
 
     private val stationLogo by lazy {
-        stationView(selectedStationViewModel.stationProperty) {
-            fitHeight = LOGO_SIZE
-            fitHeight = LOGO_SIZE
-        }
+        stationView(selectedStationViewModel.stationProperty, LOGO_SIZE)
     }
 
     override fun onDock() {
@@ -111,12 +114,10 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     addClass(Styles.grayLabel)
                 }
             }
-
         }
 
         center {
             vbox {
-                smallLabel(messages["info.details"])
                 flowpane {
                     hgap = 5.0
                     vgap = 5.0
@@ -167,16 +168,58 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     actionEvents()
                         .map { selectedStationViewModel.stationProperty.value }
                         .subscribe {
-                            clipboard.update(it.urlResolved)
+                            clipboard.putString(it.urlResolved)
                         }
                 }
+
+                separator()
+
+                button(messages["menu.station.favourite"]) {
+                    graphic = favouriteAddIcon
+                    maxWidth = Double.MAX_VALUE
+
+                    actionEvents()
+                        .map { selectedStationViewModel.stationProperty.value }
+                        .filter { it !in favouritesViewModel.stationsProperty }
+                        .subscribe(favouritesViewModel::addFavourite)
+
+                    showWhen {
+                        Observable.combineLatest(
+                            favouritesViewModel.stationsObservable,
+                            selectedStationViewModel.stationObservable
+                        ) { list, station ->
+                            !list.contains(station)
+                        }.toBinding()
+                    }
+                }
+
+                button(messages["menu.station.favouriteRemove"]) {
+                    graphic = favouriteRemoveIcon
+                    maxWidth = Double.MAX_VALUE
+
+                    actionEvents()
+                        .map { selectedStationViewModel.stationProperty.value }
+                        .filter { it in favouritesViewModel.stationsProperty }
+                        .subscribe(favouritesViewModel::removeFavourite)
+
+
+                    showWhen {
+                        Observable.combineLatest(
+                            favouritesViewModel.stationsObservable,
+                            selectedStationViewModel.stationObservable
+                        ) { list, station ->
+                            list.contains(station)
+                        }.toBinding()
+                    }
+                }
+
                 button(messages["menu.station.vote"]) {
                     requestFocusOnSceneAvailable()
                     graphic = likeIcon
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
-                        .map { selectedStationViewModel.stationProperty.value}
+                        .map { selectedStationViewModel.stationProperty.value }
                         .subscribe(appEvent.votedStations)
 
                     addClass(Styles.primaryButton)
@@ -193,7 +236,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                 it.ifEmpty { messages["unknown"] }
             } else it
             messages[key] + ": " + value.toString()
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                .replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase(FX.locale) else c.toString() }
         }) {
             addClass(Styles.grayLabel)
             addClass(Styles.tag)

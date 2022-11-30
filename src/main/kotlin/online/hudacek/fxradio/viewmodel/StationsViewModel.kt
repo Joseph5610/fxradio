@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import io.reactivex.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
@@ -62,19 +63,20 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     val stationsProperty = bind(Stations::stations) as ListProperty
 
     init {
-        appEvent.refreshLibrary
-            .filter { it == libraryViewModel.stateProperty.value }
-            .subscribe(::handleNewLibraryState)
+        libraryViewModel.stateObservable.subscribe(::handleNewLibraryState)
 
-        libraryViewModel
-            .stateObservable
-            .subscribe(::handleNewLibraryState)
+        searchViewModel.searchByTagProperty.toObservableChanges().subscribe { search() }
 
-        searchViewModel
-            .queryChanges
-            .subscribe { search() }
+        searchViewModel.queryChanges.subscribe { search() }
 
-        //Increase vote count on the server
+        favouritesViewModel.stationsObservable
+            .subscribe {
+                if (libraryViewModel.stateProperty.value == LibraryState.Favourites) {
+                    show(it)
+                }
+            }
+
+        // Increase vote count on the server
         appEvent.votedStations
             .flatMapSingle(stationVoteUseCase::execute)
             .flatMapSingle {
@@ -89,7 +91,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
             .subscribe(appEvent.appNotification)
     }
 
-    fun show(stations: List<Station>) {
+    private fun show(stations: List<Station>) {
         if (stations.isEmpty()) {
             stateProperty.value = StationsState.NoStations
         } else {
@@ -98,7 +100,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         }
     }
 
-    fun search() {
+    private fun search() {
         if (searchViewModel.queryBinding.value.length <= 2) {
             stateProperty.value = StationsState.ShortQuery
         } else {
@@ -112,7 +114,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         stateProperty.value = StationsState.Error(throwable.toString())
     }
 
-    fun handleNewLibraryState(newState: LibraryState) {
+    private fun handleNewLibraryState(newState: LibraryState) {
         when (newState) {
             is LibraryState.SelectedCountry -> getStationsByCountryUseCase
                 .execute(newState.country)

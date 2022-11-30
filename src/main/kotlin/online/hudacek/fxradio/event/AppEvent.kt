@@ -33,12 +33,8 @@ class AppEvent : Controller() {
     val appNotification = BehaviorSubject.create<AppNotification>()
     val streamMetaDataUpdates = BehaviorSubject.create<StreamMetaData>()
 
-    val addFavourite = BehaviorSubject.create<Station>()
-    val removeFavourite = BehaviorSubject.create<Station>()
-
     val stationsHistory = BehaviorSubject.create<Station>()
     val votedStations = BehaviorSubject.create<Station>()
 
     val historyUpdated = BehaviorSubject.create<Station>()
-    val refreshLibrary = BehaviorSubject.create<LibraryState>()
 }
