@@ -22,7 +22,6 @@ import io.reactivex.subjects.BehaviorSubject
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.StreamMetaData
-import online.hudacek.fxradio.viewmodel.LibraryState
 import tornadofx.Controller
 
 /**

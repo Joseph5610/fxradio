@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.usecase.country
 
 import io.reactivex.Single
-import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.usecase.BaseUseCase

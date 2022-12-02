@@ -87,8 +87,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                         AppNotification(messages["vote.error"], FontAwesome.Glyph.WARNING)
                     }
                 )
-            }
-            .subscribe(appEvent.appNotification)
+            }.subscribe(appEvent.appNotification)
     }
 
     private fun show(stations: List<Station>) {

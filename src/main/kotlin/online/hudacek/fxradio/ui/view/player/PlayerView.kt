@@ -22,10 +22,10 @@ import javafx.geometry.Pos
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.setOnSpacePressed
-import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.keyCombination
@@ -51,7 +51,6 @@ import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
-import tornadofx.togglebutton
 import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0

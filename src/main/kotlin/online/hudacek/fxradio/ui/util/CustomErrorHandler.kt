@@ -36,7 +36,6 @@ import tornadofx.FX.Companion.primaryStage
 import tornadofx.add
 import tornadofx.addClass
 import tornadofx.putString
-import tornadofx.setContent
 import java.net.URLEncoder
 
 private const val ISSUE_URL = Config.API.repositoryURL +

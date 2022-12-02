@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.showWhen
