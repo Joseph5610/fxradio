@@ -160,7 +160,6 @@ class PlayerView : BaseView() {
             isSnapToTicks = true
             paddingTop = 2.0
 
-            //Save new value
             valueProperty().onChange {
                 viewModel.commit()
             }

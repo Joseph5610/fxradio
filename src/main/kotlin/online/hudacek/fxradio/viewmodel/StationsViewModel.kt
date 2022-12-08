@@ -120,11 +120,11 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                 .subscribe(::show, ::handleError)
 
             is LibraryState.Favourites -> show(favouritesViewModel.stationsProperty)
-            is LibraryState.TopVotedStations -> getPopularStationsUseCase
+            is LibraryState.Popular -> getPopularStationsUseCase
                 .execute(Unit)
                 .subscribe(::show, ::handleError)
 
-            is LibraryState.TrendingStations -> getTrendingStationsUseCase
+            is LibraryState.Trending -> getTrendingStationsUseCase
                 .execute(Unit)
                 .subscribe(::show, ::handleError)
 

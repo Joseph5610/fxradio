@@ -32,12 +32,15 @@ import tornadofx.textarea
 import tornadofx.vbox
 import tornadofx.vgrow
 
+private const val WINDOW_PREF_WIDTH = 600.0
+
 class DebugFragment : BaseFragment("Debug Window") {
 
     private val viewModel: SelectedStationViewModel by inject()
 
     override val root = vbox {
-       prefWidth = 600.0
+       prefWidth = WINDOW_PREF_WIDTH
+
         form {
             fieldset("Selected Station") {
                 textarea(viewModel.stationProperty.asString()) {

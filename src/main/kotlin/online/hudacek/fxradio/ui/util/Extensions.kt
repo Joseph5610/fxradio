@@ -114,10 +114,8 @@ internal fun EventTarget.copyMenu(
     name: String,
     value: String = ""
 ) = contextmenu {
-    item(name) {
-        action {
-            clipboard.putString(value)
-        }
+    item(name).action {
+        clipboard.putString(value)
     }
 }
 

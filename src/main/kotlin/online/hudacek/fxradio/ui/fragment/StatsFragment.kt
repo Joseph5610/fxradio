@@ -66,9 +66,9 @@ class StatsFragment : BaseFragment() {
     }
 
     override val root = vbox {
-        paddingAll = 5.0
         title = messages["stats.title"]
         setPrefSize(300.0, 260.0)
+        paddingAll = 5.0
 
         vbox(alignment = Pos.CENTER) {
             requestFocusOnSceneAvailable()

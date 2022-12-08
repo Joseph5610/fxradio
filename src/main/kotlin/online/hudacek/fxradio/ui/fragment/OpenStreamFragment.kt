@@ -29,6 +29,8 @@ import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.*
 import java.util.*
 
+private const val WINDOW_PREF_WIDTH = 300.0
+
 /***
  * Simple Information about the app
  */
@@ -47,9 +49,9 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
     }
 
     override val root = vbox {
-        paddingAll = 15.0
-        prefWidth = 300.0
+        prefWidth = WINDOW_PREF_WIDTH
         title = messages["menu.stream.title"]
+        paddingAll = 15.0
 
         vbox(alignment = Pos.CENTER) {
             form {

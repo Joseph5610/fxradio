@@ -66,8 +66,8 @@ class PreferencesFragment : BaseFragment() {
     }
 
     override val root = vbox {
-        paddingAll = 5.0
         title = messages["app.preferences"]
+        paddingAll = 5.0
 
         form {
             fieldset(messages["app.appearance"]) {
