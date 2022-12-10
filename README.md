@@ -55,3 +55,7 @@ To build the app yourself you only need to set up a few things:
 
 Build output is present in build/jfx/ directory. 
 
+-----------------------------------------------------
+macOS install disk background designed by [xb100 / Freepik](https://www.freepik.com/author/xb100)
+
+[Voice chat icons created by Rizki Ahmad Fauzi - Flaticon](https://www.flaticon.com/free-icons/voice-chat)
