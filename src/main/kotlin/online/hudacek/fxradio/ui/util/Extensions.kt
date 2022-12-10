@@ -106,19 +106,6 @@ internal fun EventTarget.searchField(
 internal fun EventTarget.searchField(op: (CustomTextField.() -> Unit) = {}): CustomTextField =
     opcr(this, TextFields.createClearableTextField() as CustomTextField, op)
 
-/**
- * Copy Context Menu
- */
-internal fun EventTarget.copyMenu(
-    clipboard: Clipboard,
-    name: String,
-    value: String = ""
-) = contextmenu {
-    item(name).action {
-        clipboard.putString(value)
-    }
-}
-
 internal fun EventTarget.autoUpdatingCopyMenu(
     clipboard: Clipboard,
     menuItemName: String,

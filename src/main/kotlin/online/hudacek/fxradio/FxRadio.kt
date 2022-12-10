@@ -34,7 +34,6 @@ import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
-import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import org.apache.logging.log4j.LogManager
 import tornadofx.App
 import tornadofx.FX

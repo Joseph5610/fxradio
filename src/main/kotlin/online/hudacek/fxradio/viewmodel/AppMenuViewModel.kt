@@ -35,7 +35,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.get
 import tornadofx.property
 
-class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UseNativeMenuBar.value(true)) {
+class AppMenu(usePlatform: Boolean = MacUtils.isMac && Properties.UsePlatformMenuBar.value(true)) {
     var usePlatform: Boolean by property(usePlatform)
 }
 

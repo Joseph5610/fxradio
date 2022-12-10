@@ -40,9 +40,8 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     override fun play(streamUrl: String) {
         stop() //this player should stop itself before playing new stream
 
-        if (MediaPlayer.isMetaDataRefreshEnabled) {
-            metaDataService.restartFor(streamUrl)
-        }
+        metaDataService.restartFor(streamUrl)
+
         scope.launch(Dispatchers.JavaFx) {
             audioComponent.play(streamUrl)
         }
@@ -55,9 +54,7 @@ class HumblePlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.T
     }
 
     override fun stop() {
-        if (MediaPlayer.isMetaDataRefreshEnabled) {
-            metaDataService.cancel()
-        }
+        metaDataService.cancel()
         audioComponent.stop()
     }
 

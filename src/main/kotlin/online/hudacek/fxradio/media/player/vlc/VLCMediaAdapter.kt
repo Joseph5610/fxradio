@@ -20,7 +20,6 @@ package online.hudacek.fxradio.media.player.vlc
 
 import mu.KotlinLogging
 import online.hudacek.fxradio.event.AppEvent
-import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
 import online.hudacek.fxradio.ui.util.formatted
@@ -50,20 +49,18 @@ class VLCMediaAdapter : MediaEventAdapter() {
     }
 
     override fun mediaMetaChanged(media: Media?, metaType: Meta?) {
-        if (MediaPlayer.isMetaDataRefreshEnabled) {
-            media?.meta()?.let {
-                logger.debug { "VLCMetaService retrieved MetaData: ${it.asMetaData()}" }
-                if (it[Meta.NOW_PLAYING] != null
-                    && it[Meta.TITLE] != null
-                ) {
-                    val metaData = StreamMetaData(
-                        it[Meta.TITLE],
-                        it[Meta.NOW_PLAYING]
-                            .replace("\r", "")
-                            .replace("\n", "")
-                    )
-                    appEvent.streamMetaDataUpdates.onNext(metaData)
-                }
+        media?.meta()?.let {
+            logger.debug { "VLCMetaService retrieved MetaData: ${it.asMetaData()}" }
+            if (it[Meta.NOW_PLAYING] != null
+                && it[Meta.TITLE] != null
+            ) {
+                val metaData = StreamMetaData(
+                    it[Meta.TITLE],
+                    it[Meta.NOW_PLAYING]
+                        .replace("\r", "")
+                        .replace("\n", "")
+                )
+                appEvent.streamMetaDataUpdates.onNext(metaData)
             }
         }
     }

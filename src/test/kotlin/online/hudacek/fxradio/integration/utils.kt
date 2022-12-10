@@ -71,7 +71,6 @@ internal fun hasValue(txt: String): Matcher<TextInputControl> {
 }
 
 internal fun visible() = NodeMatchers.isVisible()
-internal fun invisible() = NodeMatchers.isInvisible()
 
 internal inline fun <reified T : Node> FxRobot.find(name: String): T {
     logger.info { "Find element: $name" }
