@@ -36,34 +36,28 @@ open class NSMenu : Component() {
      */
     protected val menuToolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
 
-    protected val isMenuEnabled by lazy { !(app as FxRadio).isAppRunningInTest }
-
     fun appMenu(menuItems: List<MenuItem>) = menu(FxRadio.appName) {
-        if (isMenuEnabled) {
-            menuToolkit.setApplicationMenu(this)
-            items.addAll(menuItems)
-            items.addAll(
-                separator(),
-                menuToolkit.createHideMenuItem(FxRadio.appName),
-                menuToolkit.createHideOthersMenuItem(),
-                menuToolkit.createUnhideAllMenuItem(),
-                separator(),
-                menuToolkit.createQuitMenuItem(FxRadio.appName)
-            )
-        }
+        menuToolkit.setApplicationMenu(this)
+        items.addAll(menuItems)
+        items.addAll(
+            separator(),
+            menuToolkit.createHideMenuItem(FxRadio.appName),
+            menuToolkit.createHideOthersMenuItem(),
+            menuToolkit.createUnhideAllMenuItem(),
+            separator(),
+            menuToolkit.createQuitMenuItem(FxRadio.appName)
+        )
     }
 
     fun windowMenu(name: String) = menu(name) {
-        if (isMenuEnabled) {
-            menuToolkit.autoAddWindowMenuItems(this)
-            items.addAll(
-                menuToolkit.createMinimizeMenuItem(),
-                menuToolkit.createZoomMenuItem(),
-                menuToolkit.createCycleWindowsItem(),
-                separator(),
-                menuToolkit.createBringAllToFrontItem()
-            )
-        }
+        menuToolkit.autoAddWindowMenuItems(this)
+        items.addAll(
+            menuToolkit.createMinimizeMenuItem(),
+            menuToolkit.createZoomMenuItem(),
+            menuToolkit.createCycleWindowsItem(),
+            separator(),
+            menuToolkit.createBringAllToFrontItem()
+        )
     }
 }
 

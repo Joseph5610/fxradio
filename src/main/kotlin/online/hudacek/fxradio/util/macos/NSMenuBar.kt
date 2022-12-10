@@ -27,10 +27,8 @@ class NSMenuBar : NSMenu() {
 
     val menuBar by lazy {
         MenuBar().apply {
-            if (isMenuEnabled) {
-                useSystemMenuBarProperty().value = true
-                menuToolkit.setMenuBar(this)
-            }
+            useSystemMenuBarProperty().value = true
+            menuToolkit.setMenuBar(this)
         }
     }
 }

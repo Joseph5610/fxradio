@@ -26,7 +26,7 @@ import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.style.AccentColor
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.viewmodel.AppAppearanceViewModel
+import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.ServersState
 import online.hudacek.fxradio.viewmodel.ServersViewModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -56,7 +56,7 @@ import tornadofx.vbox
  */
 class PreferencesFragment : BaseFragment() {
 
-    private val appAppearanceViewModel: AppAppearanceViewModel by inject()
+    private val preferencesViewModel: PreferencesViewModel by inject()
     private val serversViewModel: ServersViewModel by inject()
 
     override fun onDock() = serversViewModel.fetchServers()
@@ -82,23 +82,23 @@ class PreferencesFragment : BaseFragment() {
                                     baseColor = c(it.convertToHex())
                                 }
                                 action {
-                                    appAppearanceViewModel.commit()
+                                    preferencesViewModel.commit()
                                 }
                                 tooltip(it.humanName)
                                 addClass(Styles.colorRadioButton)
                             }
                         }
-                        bind(appAppearanceViewModel.accentColorProperty)
+                        bind(preferencesViewModel.accentColorProperty)
 
-                        disableWhen(appAppearanceViewModel.useSystemColorProperty)
+                        disableWhen(preferencesViewModel.useSystemColorProperty)
                     }
                 }
                 field(messages["app.useSystemColor"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     checkbox {
-                        bind(appAppearanceViewModel.useSystemColorProperty)
+                        bind(preferencesViewModel.useSystemColorProperty)
                         action {
-                            appAppearanceViewModel.commit()
+                            preferencesViewModel.commit()
                         }
                     }
                 }
@@ -110,9 +110,23 @@ class PreferencesFragment : BaseFragment() {
                 field(messages["menu.app.darkmode"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     checkbox {
-                        bind(appAppearanceViewModel.darkModeProperty)
+                        bind(preferencesViewModel.darkModeProperty)
                         action {
-                            appAppearanceViewModel.commit()
+                            preferencesViewModel.commit()
+                        }
+                    }
+                }
+            }
+
+            fieldset(messages["app.trayIcon"]) {
+                icon = FontAwesome.Glyph.SQUARE_ALT.make(13.0, isPrimary = false)
+
+                field(messages["app.trayIcon.enable"]) {
+                    labelContainer.alignment = Pos.CENTER_RIGHT
+                    checkbox {
+                        bind(preferencesViewModel.useTrayIconProperty)
+                        action {
+                            preferencesViewModel.commit()
                         }
                     }
                 }

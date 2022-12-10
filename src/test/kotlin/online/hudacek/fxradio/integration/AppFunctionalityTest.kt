@@ -87,6 +87,9 @@ class AppFunctionalityTest {
         val logViewModel = find<LogViewModel>()
         logViewModel.item = Log(Level.INFO)
         logViewModel.commit()
+
+        val preferencesViewModel = find<PreferencesViewModel>()
+        preferencesViewModel.useTrayIconProperty.value = false
     }
 
     @Stop

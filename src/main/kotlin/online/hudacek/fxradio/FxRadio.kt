@@ -34,6 +34,7 @@ import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import org.apache.logging.log4j.LogManager
 import tornadofx.App
 import tornadofx.FX
@@ -68,14 +69,13 @@ open class FxRadio(
     val isAppRunningInTest: Boolean = false
 ) : App(MainView::class, stylesheet) {
 
+    private val trayIcon: TrayIcon by inject()
     private val playerViewModel: PlayerViewModel by inject()
 
     /**
      * override app.config path to ${user.home}/.fxradio
      */
     override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
-
-    private val trayIcon: TrayIcon by lazy { TrayIcon() }
 
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
@@ -102,14 +102,12 @@ open class FxRadio(
             super.start(this)
         }
 
-        if (Properties.UseTrayIcon.value(true) && !isAppRunningInTest) {
-            trayIcon.addIcon()
-        }
-
         if (!Properties.EnableDebugView.value(false)) {
             // Disable built-in tornadofx layout debugger
             FX.layoutDebuggerShortcut = null
         }
+
+        trayIcon.addIcon()
     }
 
     override fun stop() {

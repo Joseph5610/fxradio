@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.view
 
+import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.AboutMenu
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
@@ -44,7 +45,9 @@ class MenuBarView : BaseView() {
     private val fileMenu: FileMenu by inject()
     private val playerMenu: PlayerMenu by inject()
 
-    override val root = if (appMenuViewModel.usePlatformProperty.value) {
+    private val isMenuEnabled by lazy { !(app as FxRadio).isAppRunningInTest }
+
+    override val root = if (appMenuViewModel.usePlatformProperty.value && isMenuEnabled) {
         platformMenuBar()
     } else {
         defaultMenuBar()

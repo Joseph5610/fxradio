@@ -17,24 +17,31 @@
  */
 package online.hudacek.fxradio.ui.view
 
+import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import tornadofx.Component
+import tornadofx.Controller
 import tornadofx.get
 import java.awt.MenuItem
+import java.awt.SystemTray
+import java.awt.TrayIcon
+import javax.swing.SwingUtilities
 
 /**
- * Adds system tray icon
+ * Manages system tray icon
  */
-class TrayIcon : Component() {
+class TrayIcon : Controller() {
 
     private val playerViewModel: PlayerViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
+    private val preferencesViewModel: PreferencesViewModel by inject()
 
+    private var trayIcon: TrayIcon? = null
     private var stationItem: MenuItem? = null
     private var playPauseItem: MenuItem? = null
 
@@ -54,14 +61,29 @@ class TrayIcon : Component() {
                 }
             }
         }
+
+        preferencesViewModel.useTrayIconProperty.toObservableChanges()
+            .map { it.newVal }
+            .subscribe {
+                if (it) {
+                    addIcon()
+                } else {
+                    removeIcon()
+                }
+            }
     }
 
     fun addIcon() = with(app) {
+        if (!preferencesViewModel.useTrayIconProperty.value) return
+
         trayicon(resources.stream("/" + Config.Resources.stageIcon), tooltip = FxRadio.appName) {
+            trayIcon = this
+
             setOnMouseClicked(fxThread = true) {
                 primaryStage.show()
                 primaryStage.toFront()
             }
+
             menu(FxRadio.appName) {
                 item(messages["show"] + " " + FxRadio.appName) {
                     setOnAction(fxThread = true) {
@@ -87,6 +109,12 @@ class TrayIcon : Component() {
                     }
                 }
             }
+        }
+    }
+
+    fun removeIcon() {
+        SwingUtilities.invokeLater {
+            trayIcon?.let { SystemTray.getSystemTray().remove(it) }
         }
     }
 }
