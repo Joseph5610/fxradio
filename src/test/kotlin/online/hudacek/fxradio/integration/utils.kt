@@ -85,7 +85,7 @@ internal inline fun <reified T : Node> FxRobot.findAll(name: String): Set<T> {
 
 internal fun FxRobot.enterText(fieldQuery: String, textToEnter: String) {
     logger.info { "Entering text: $textToEnter" }
-    //Remove existing value
+    // Remove existing value
     doubleClickOn(find(fieldQuery) as TextField)
     press(KeyCode.DELETE)
     write(textToEnter)

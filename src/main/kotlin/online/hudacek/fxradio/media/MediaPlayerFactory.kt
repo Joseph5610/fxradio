@@ -75,6 +75,6 @@ object MediaPlayerFactory {
     private fun String.asPlayerType() = runCatching {
         MediaPlayer.Type.valueOf(this)
     }.onFailure {
-        logger.error(it) { "This playerType is invalid. Using Humble MediaPlayer as fallback!" }
+        logger.error(it) { "This playerType is invalid. Trying to load VLC player instead!" }
     }.getOrDefault(defaultPlayerType)
 }

@@ -112,7 +112,7 @@ class AppFunctionalityTest {
             stations.isVisible && stations.items.size > 0
         }
 
-        //Avoid station names that start with # as it is query locator for ID
+        // Avoid station names that start with # as it is query locator for ID
         val stationToClick = stations.items
             .filter { !it.name.startsWith("#") }
             .filter { it.name != selectedStationViewModel.stationProperty.value.name }

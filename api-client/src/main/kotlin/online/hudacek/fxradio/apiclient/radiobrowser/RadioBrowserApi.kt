@@ -20,15 +20,15 @@ package online.hudacek.fxradio.apiclient.radiobrowser
 
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.ApiDefinition
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDsRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResponse
 import retrofit2.http.Body

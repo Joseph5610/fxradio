@@ -19,7 +19,7 @@
 package online.hudacek.fxradio
 
 /**
- * App configuration values/flags
+ * Static configuration values
  */
 object Config {
 

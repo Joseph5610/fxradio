@@ -30,9 +30,9 @@ class UserAgentInterceptor : Interceptor {
     private val userAgent = "FxRadio/${ApiUtils.version}"
 
     override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
-            chain.request()
-                    .newBuilder()
-                    .header("User-Agent", userAgent)
-                    .build()
+        chain.request()
+            .newBuilder()
+            .header("User-Agent", userAgent)
+            .build()
     )
 }
