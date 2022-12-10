@@ -92,7 +92,7 @@ open class TickerView : BaseView() {
 
         // This is needed to make sure the pane fills up the entire space of whatever we've been put in.
         fun inside(of: Pane) {
-            //I need this guy to autofill to max size
+            // I need this guy to autofill to max size
             root.prefWidthProperty().bind(of.widthProperty())
             root.prefHeightProperty().bind(of.heightProperty())
         }
@@ -104,14 +104,14 @@ open class TickerView : BaseView() {
 
         private fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
 
-        //Fire up the animation process for the ticker
+        // Fire up the animation process for the ticker
         private fun startAnimation() {
-            //If it's already cleared, don't keep checking
+            // If it's already cleared, don't keep checking
             fun lastOneCleared(): Boolean {
-                //Determine if the last entry in the activeQueue has cleared
+                // Determine if the last entry in the activeQueue has cleared
                 val last = activeTicks.last()
                 if (!last.cleared) {
-                    //Only do the math one time, well up to many times, but it might be cleared, and then clean it out
+                    // Only do the math one time, well up to many times, but it might be cleared, and then clean it out
                     val entry = last.entry
                     if (entry.content.layoutBounds.width + entry.content.layoutX + offset <= root.width) {
                         last.cleared = true
@@ -120,17 +120,17 @@ open class TickerView : BaseView() {
                 return last.cleared
             }
 
-            //Keep track of the things we've started, so we can dispose them
+            // Keep track of the things we've started, so we can dispose them
             val subscriptions = hashMapOf<TickerEntry<Node>, Disposable>()
 
-            //Could also update this things speed time so that stuff scrolls faster
+            // Could also update this things speed time so that stuff scrolls faster
             KeyFrame(Duration.millis(35.0), {
-                //There's possible some thread bugs in there, but only on the very first creation
+                // There's possible some thread bugs in there, but only on the very first creation
                 if (activeTicks.isEmpty() || lastOneCleared()) {
                     val newTickerEntry: TickerEntry<Node>? = queuedTicks.poll()
                     if (newTickerEntry != null) {
                         newTickerEntry.content.isVisible = true
-                        //Then just put it into the active queue, so it will start processing like normal
+                        // Then just put it into the active queue, so it will start processing like normal
                         newTickerEntry.content.layoutX = root.prefWidth //Where to start
                         activeTicks += ActiveTick(newTickerEntry)
                         root += newTickerEntry.content //this is where it gets added
@@ -143,26 +143,26 @@ open class TickerView : BaseView() {
                     val textWidth = content.layoutBounds.width
                     val layoutX = content.layoutX
 
-                    //Check to see if it's been animated out.
+                    // Check to see if it's been animated out.
                     if (layoutX <= 0 - textWidth - (2 * offset)) {
-                        //Now I need to figure out how to remove it
+                        // Now I need to figure out how to remove it
                         entry.content.removeFromParent() //Is this legit?
                         activeTicks -= active //no longer here, shouldn't ruin the loop
                         if (entry in subscriptions) {
                             subscriptions.remove(entry)!!.dispose() //This should cancel it
                         }
                         if (entry.reschedule) {
-                            //just stick it back in the queue
+                            // just stick it back in the queue
                             enqueueTickEntry(entry)
                         }
                     } else {
-                        //It's not moved out, so move it a pixel. We could move it some number of pixels
+                        // It's not moved out, so move it a pixel. We could move it some number of pixels
                         content.layoutX = content.layoutX - 1
 
-                        //If there's an observable that we haven't started, fire it up!
+                        // If there's an observable that we haven't started, fire it up!
                         val updateObservable = entry.updateObservable()
                         if (updateObservable != null && entry !in subscriptions) {
-                            //Start up the observable that updates the component, whatever it is
+                            // Start up the observable that updates the component, whatever it is
                             val disposable = updateObservable.subscribe()
                             subscriptions[entry] = disposable
                         }

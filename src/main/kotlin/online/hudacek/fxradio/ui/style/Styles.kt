@@ -61,7 +61,7 @@ class Styles : Stylesheet() {
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
 
-        //For Text() elements
+        // For Text() elements
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val grayTextColor by cssclass()

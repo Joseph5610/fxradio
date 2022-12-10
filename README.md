@@ -1,6 +1,6 @@
 # FXRadio
 
-[![Build](https://github.com/Joseph5610/fxradio-main/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Joseph5610/fxradio-main/actions/workflows/main.yml)
+[![Build](https://github.com/Joseph5610/fxradio/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Joseph5610/fxradio-main/actions/workflows/main.yml)
 
 Internet radio directory desktop app written in [tornadofx](https://tornadofx.io) framework.
 
@@ -16,7 +16,7 @@ The app is using http://radio-browser.info public API
 
 ## Download and run the app
 
-Download the latest release from [Releases](https://github.com/Joseph5610/fxradio-main/releases) page in this repository.
+Download the latest release from [Releases](https://github.com/Joseph5610/fxradio/releases) page in this repository.
 Currently, we provide following installers:
 - .dmg installer for macOS
 - .msi installer for Windows

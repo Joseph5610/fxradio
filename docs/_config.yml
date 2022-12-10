@@ -10,8 +10,8 @@ show_downloads: true
 theme: jekyll-theme-cayman
 
 github:
-    repository_url: "https://github.com/Joseph5610/fxradio-main"
-    release_url: "https://github.com/Joseph5610/fxradio-main/releases"
+    repository_url: "https://github.com/Joseph5610/fxradio"
+    release_url: "https://github.com/Joseph5610/fxradio/releases"
 plugins:
 
 # Exclude from processing.
