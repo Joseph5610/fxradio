@@ -61,12 +61,6 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
     override fun uncaughtException(t: Thread, error: Throwable) {
         log.error(error) { "Uncaught error" }
 
-        if (error.stackTrace.isNotEmpty()) {
-            error.stackTrace[0]?.let {
-                if ("okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:75)" in it.toString()) return
-            }
-        }
-
         if (isCycle(error)) {
             log.info(error) { "Detected cycle handling error, aborting." }
         } else {
