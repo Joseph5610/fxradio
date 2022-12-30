@@ -27,6 +27,7 @@ import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Controller
 import tornadofx.get
+import tornadofx.stringBinding
 import java.awt.MenuItem
 import java.awt.SystemTray
 import java.awt.TrayIcon
@@ -93,7 +94,7 @@ class TrayIcon : Controller() {
                 }
                 addSeparator()
 
-                stationItem = item(messages["player.streamingStopped"]) {
+                stationItem = item(selectedStationViewModel.nameProperty.value) {
                     isEnabled = false
                 }
 
@@ -112,7 +113,7 @@ class TrayIcon : Controller() {
         }
     }
 
-    fun removeIcon() {
+    private fun removeIcon() {
         SwingUtilities.invokeLater {
             trayIcon?.let { SystemTray.getSystemTray().remove(it) }
         }

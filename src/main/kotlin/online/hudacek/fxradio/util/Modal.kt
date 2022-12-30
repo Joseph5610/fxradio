@@ -58,8 +58,8 @@ internal inline fun <reified T : Fragment> Modal<T>.open() {
     val stages = StageHelper.getStages().firstOrNull { it.userData == T::class }
     if (stages == null) {
         find<T>().openModal(stageStyle = style, resizable = resizable).also {
-            // We don't want stage icon in the modal dialog
             it?.userData = T::class
+            // We don't want stage icon in the modal dialog
             it?.icons?.clear()
         }
     }

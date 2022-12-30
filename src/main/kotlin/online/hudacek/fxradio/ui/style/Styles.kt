@@ -20,6 +20,7 @@
 
 package online.hudacek.fxradio.ui.style
 
+import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
@@ -103,7 +104,12 @@ class Styles : Stylesheet() {
             backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
             maxWidth = 280.px
+            minWidth = 280.px
             prefWidth = 280.px
+            alignment = Pos.CENTER
+            prefHeight = 40.px
+            minHeight = 40.px
+            maxHeight = 40.px
         }
 
         tag {

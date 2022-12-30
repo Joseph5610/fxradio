@@ -1,9 +1,3 @@
-/*
- * TickerView
- * Custom view displays currently playing stream title in the player
- * Original Source:
- * https://gitlab.light.kow.is/kowis-projects/deskscreen/-/blob/marquee/src/main/kotlin/is/kow/deskscreen/ticker/TickerView.kt
- */
 package online.hudacek.fxradio.ui.view.player
 
 import com.github.thomasnield.rxkotlinfx.toObservable
@@ -50,6 +44,11 @@ class PlayerTickerView : TickerView() {
     }
 }
 
+/**
+ * TickerView
+ * Custom view displays currently playing stream title in the player
+ * [Original Source](https://gitlab.light.kow.is/kowis-projects/deskscreen/-/blob/marquee/src/main/kotlin/is/kow/deskscreen/ticker/TickerView.kt)
+ */
 open class TickerView : BaseView() {
 
     protected val marqueeFragment = find<MarqueeFragment>()
@@ -70,7 +69,7 @@ open class TickerView : BaseView() {
     class MarqueeFragment : BaseFragment() {
 
         // Amount of space between entries
-        private val offset = 10.0
+        private val offset = 12.0
 
         // This might not need to be threadsafe, only one thing is adding/removing it
         private val activeTicks = ConcurrentLinkedQueue<ActiveTick>()

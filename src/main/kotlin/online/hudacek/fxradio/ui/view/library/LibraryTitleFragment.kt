@@ -60,14 +60,14 @@ class LibraryTitleFragment : BaseFragment() {
             showProperty
                 .toObservable()
                 .subscribe {
-                    if (it)
+                    if (it) {
                         transform(
                             Duration.seconds(0.2), point(0.0, 0.0),
                             angle = 0.0,
                             scale = point(1.0, 1.0),
                             opacity = 1.0
                         )
-                    else {
+                    } else {
                         transform(
                             Duration.seconds(0.2), point(0.0, 0.0),
                             angle = -90.0,
