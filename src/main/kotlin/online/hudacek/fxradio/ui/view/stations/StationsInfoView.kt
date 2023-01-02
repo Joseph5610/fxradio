@@ -52,6 +52,7 @@ import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.paddingAll
+import tornadofx.paddingTop
 import tornadofx.putString
 import tornadofx.separator
 import tornadofx.sizeProperty
@@ -110,7 +111,14 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     tooltip(messages["info.visit.website"])
                 }
 
+                smallLabel(messages["verified"]) {
+                    graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = 13.0, isPrimary = true)
+                    addClass(Styles.tag)
+                    showWhen { selectedStationViewModel.hasExtendedInfoProperty }
+                }
+
                 label(selectedStationViewModel.countryProperty) {
+                    paddingTop = 5.0
                     addClass(Styles.grayLabel)
                 }
             }

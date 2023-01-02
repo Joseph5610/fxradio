@@ -27,6 +27,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.util.DataCellHandler
 import online.hudacek.fxradio.ui.util.DataGridHandler
+import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
@@ -37,6 +38,7 @@ import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.booleanBinding
 import tornadofx.contextmenu
@@ -125,12 +127,14 @@ class StationsDataGridView : BaseView() {
                 }
 
                 label(station.name) {
+                    if (station.hasExtendedInfo) {
+                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = 13.0, isPrimary = true)
+                    }
                     paddingTop = 5
                     style {
                         fontSize = 13.px
                     }
                 }
-
                 smallLabel(station.description)
             }
         }

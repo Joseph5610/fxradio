@@ -20,6 +20,7 @@ package online.hudacek.fxradio.viewmodel
 
 import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty
 import javafx.beans.property.ObjectProperty
@@ -52,6 +53,7 @@ class SelectedStation(station: Station) {
     var clickTrend: Int by property(station.clickTrend)
     var favicon: String? by property(station.favicon)
     var countryState: String? by property(station.state)
+    var hasExtendedInfo: Boolean by property(station.hasExtendedInfo)
     var tags: ObservableList<String> by property(observableListOf(
         station.tags
             .split(",")
@@ -81,6 +83,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val faviconProperty = bind(SelectedStation::favicon) as StringProperty?
     val countryStateProperty = bind(SelectedStation::countryState) as StringProperty?
     val clickTrendProperty = bind(SelectedStation::clickTrend) as IntegerProperty
+    val hasExtendedInfoProperty = bind(SelectedStation::hasExtendedInfo) as BooleanProperty
 
     val stationObservable: Observable<Station> = stationProperty
         .toObservableChangesNonNull()
