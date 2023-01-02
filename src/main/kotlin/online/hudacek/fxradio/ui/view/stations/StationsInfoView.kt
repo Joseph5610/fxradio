@@ -138,6 +138,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
                     createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
                     createInfoLabel("info.clicktrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
+                    createInfoLabel("info.clickcount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
                 }
 
                 vbox {

@@ -43,6 +43,7 @@ data class Station(
     @SerializedName("geo_lat") val geoLat: Double = 0.0,
     @SerializedName("geo_long") val geoLong: Double = 0.0,
     @SerializedName("clicktrend") val clickTrend: Int = 0,
+    @SerializedName("clickcount") val clickCount: Int = 0,
     @SerializedName("languagecodes") val languageCodes: String = "",
     @SerializedName("has_extended_info") val hasExtendedInfo: Boolean = false
 ) : Serializable {

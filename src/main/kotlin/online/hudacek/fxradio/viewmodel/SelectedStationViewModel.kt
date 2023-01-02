@@ -51,6 +51,7 @@ class SelectedStation(station: Station) {
     var votes: Int by property(station.votes)
     var streamUrl: String by property(station.urlResolved)
     var clickTrend: Int by property(station.clickTrend)
+    var clickCount: Int by property(station.clickCount)
     var favicon: String? by property(station.favicon)
     var countryState: String? by property(station.state)
     var hasExtendedInfo: Boolean by property(station.hasExtendedInfo)
@@ -83,6 +84,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val faviconProperty = bind(SelectedStation::favicon) as StringProperty?
     val countryStateProperty = bind(SelectedStation::countryState) as StringProperty?
     val clickTrendProperty = bind(SelectedStation::clickTrend) as IntegerProperty
+    val clickCountProperty = bind(SelectedStation::clickCount) as IntegerProperty
     val hasExtendedInfoProperty = bind(SelectedStation::hasExtendedInfo) as BooleanProperty
 
     val stationObservable: Observable<Station> = stationProperty
@@ -101,6 +103,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
                 it.firstOrNull()?.let { s ->
                     votesProperty.value = s.votes
                     clickTrendProperty.value = s.clickTrend
+                    clickCountProperty.value = s.clickCount
                 }
             }, {
                 logger.debug(it) { "Retrieving additional station data unsuccessful." }
