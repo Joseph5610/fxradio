@@ -77,7 +77,7 @@ class TrayIcon : Controller() {
     fun addIcon() = with(app) {
         if (!preferencesViewModel.useTrayIconProperty.value) return
 
-        trayicon(resources.stream("/" + Config.Resources.stageIcon), tooltip = FxRadio.appName) {
+        trayicon(resources.stream("/" + Config.Resources.trayIcon), tooltip = FxRadio.appName, autoSize = true) {
             trayIcon = this
 
             setOnMouseClicked(fxThread = true) {
