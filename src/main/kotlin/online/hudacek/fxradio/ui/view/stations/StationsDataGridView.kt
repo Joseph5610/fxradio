@@ -59,7 +59,6 @@ import tornadofx.vbox
 private const val CELL_WIDTH = 140.0
 private const val LOGO_SIZE = 100.0
 
-
 /**
  * Main view of stations
  * DataGrid shows radio station logo and name

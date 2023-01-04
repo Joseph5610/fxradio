@@ -51,6 +51,8 @@ import tornadofx.togglegroup
 import tornadofx.tooltip
 import tornadofx.vbox
 
+private const val GLYPH_SIZE = 13.0
+
 /**
  * Change app preferences
  */
@@ -71,7 +73,7 @@ class PreferencesFragment : BaseFragment() {
 
         form {
             fieldset(messages["app.appearance"]) {
-                icon = FontAwesome.Glyph.PAINT_BRUSH.make(13.0, isPrimary = false)
+                icon = FontAwesome.Glyph.PAINT_BRUSH.make(GLYPH_SIZE, isPrimary = false)
                 field(messages["app.accentColor"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     togglegroup {
@@ -105,7 +107,7 @@ class PreferencesFragment : BaseFragment() {
             }
 
             fieldset(messages["app.darkMode"]) {
-                icon = FontAwesome.Glyph.MOON_ALT.make(13.0, isPrimary = false)
+                icon = FontAwesome.Glyph.MOON_ALT.make(GLYPH_SIZE, isPrimary = false)
 
                 field(messages["menu.app.darkmode"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
@@ -119,7 +121,7 @@ class PreferencesFragment : BaseFragment() {
             }
 
             fieldset(messages["app.trayIcon"]) {
-                icon = FontAwesome.Glyph.SQUARE_ALT.make(13.0, isPrimary = false)
+                icon = FontAwesome.Glyph.SQUARE_ALT.make(GLYPH_SIZE, isPrimary = false)
 
                 field(messages["app.trayIcon.enable"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
@@ -133,7 +135,7 @@ class PreferencesFragment : BaseFragment() {
             }
 
             fieldset(messages["menu.app.server"]) {
-                icon = FontAwesome.Glyph.SERVER.make(13.0, isPrimary = false)
+                icon = FontAwesome.Glyph.SERVER.make(GLYPH_SIZE, isPrimary = false)
 
                 field(messages["servers.selected"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT

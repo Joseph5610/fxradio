@@ -15,7 +15,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.0"
 }
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
@@ -29,7 +29,7 @@ val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.0"
 val vlcjVersion = "4.7.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.8.3"
+val flywayVersion = "9.10.2"
 val controlsFxVersion = "8.40.18"
 
 version = "0.10.1"

@@ -73,7 +73,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private val libraryViewModel: LibraryViewModel by inject()
 
     private val likeIcon by lazy {
-        FontAwesome.Glyph.THUMBS_UP.make(12.0) {
+        FontAwesome.Glyph.THUMBS_UP.make(ICON_SIZE) {
             style {
                 textFill = Color.WHITESMOKE
             }

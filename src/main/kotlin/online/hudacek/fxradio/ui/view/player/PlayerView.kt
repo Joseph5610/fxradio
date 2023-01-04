@@ -184,7 +184,7 @@ class PlayerView : BaseView() {
         add(infoGlyph)
 
         if (Properties.EnableDebugView.value(false)) {
-            add(FontAwesome.Glyph.BUG.make(14.0) {
+            add(FontAwesome.Glyph.BUG.make(INFO_GLYPH_SIZE) {
                 onLeftClick {
                     Modal.Debug.open()
                 }
