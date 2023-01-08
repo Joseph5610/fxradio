@@ -18,28 +18,48 @@
 
 package online.hudacek.fxradio.ui.fragment
 
+import javafx.scene.image.Image
 import javafx.scene.layout.Priority
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.usecase.GetCoverArtUseCase
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.fieldset
 import tornadofx.form
+import tornadofx.imageview
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.textarea
 import tornadofx.vbox
 import tornadofx.vgrow
 
-private const val WINDOW_PREF_WIDTH = 600.0
+private const val WINDOW_PREF_WIDTH = 800.0
 
 class DebugFragment : BaseFragment("Debug Window") {
 
     private val viewModel: SelectedStationViewModel by inject()
 
+    private val coverArtUseCase: GetCoverArtUseCase by inject()
+
     override val root = vbox {
-       prefWidth = WINDOW_PREF_WIDTH
+        prefWidth = WINDOW_PREF_WIDTH
+
+        imageview {
+            fitWidth = 100.0
+            fitHeight = 100.0
+            isPreserveRatio = true
+            appEvent.streamMetaDataUpdates
+                .distinct()
+                .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
+                .subscribe({
+                    it.body?.byteStream().use { s ->
+                        image = Image(s)
+                    }
+                }, { image = Image(Config.Resources.waveIcon) })
+        }
 
         form {
             fieldset("Selected Station") {

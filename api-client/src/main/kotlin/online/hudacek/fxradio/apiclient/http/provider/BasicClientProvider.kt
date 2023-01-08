@@ -30,8 +30,8 @@ private val logger = KotlinLogging.logger {}
 /**
  * Defines Connection timeout for the duration of call in seconds
  */
-private const val TIMEOUT_SECS: Long = 20
-private const val MAX_IDLE_CONNECTIONS: Int = 5
+private const val TIMEOUT_SECS: Long = 35
+private const val MAX_IDLE_CONNECTIONS: Int = 7
 
 /**
  * Base OkHttpClient implementation

@@ -21,6 +21,7 @@ package online.hudacek.fxradio
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import online.hudacek.fxradio.FxRadio.Companion.isDarkModePreferred
+import online.hudacek.fxradio.api.MusicBrainzApiProvider
 import online.hudacek.fxradio.api.RadioBrowserApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.persistence.database.Database
@@ -113,6 +114,7 @@ open class FxRadio(
         if (!isAppRunningInTest) {
             playerViewModel.releasePlayer()
             RadioBrowserApiProvider.close()
+            MusicBrainzApiProvider.close()
             HttpClient.close()
             Database.close()
             LogManager.shutdown()

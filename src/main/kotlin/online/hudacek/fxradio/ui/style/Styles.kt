@@ -98,7 +98,7 @@ class Styles : Stylesheet() {
         }
 
         playerStationBox {
-            padding = box(5.0.px)
+            padding = box(3.0.px)
             backgroundRadius += box(4.px)
             borderRadius += box(4.px)
             backgroundColor += c(colors.background)

@@ -35,6 +35,8 @@ object Config {
         const val fallbackApiServerURL = "de1.api.radio-browser.info"
         const val repositoryURL = "https://github.com/Joseph5610/fxradio/"
         const val radioBrowserUrl = "https://radio-browser.info"
+        const val musicBrainzApi = "https://musicbrainz.org/ws/2/"
+        const val coverArtApiUrl = "https://coverartarchive.org/release/"
     }
 
     /**

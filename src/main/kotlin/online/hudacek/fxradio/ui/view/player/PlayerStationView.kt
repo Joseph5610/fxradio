@@ -30,7 +30,7 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.*
 
-private const val LOGO_SIZE = 30.0
+private const val LOGO_SIZE = 33.0
 
 /**
  * Shows now playing song, radio logo, radio name
@@ -54,7 +54,7 @@ class PlayerStationView : BaseView() {
         stationView(selectedStationViewModel.stationProperty, size = LOGO_SIZE)
     }
 
-    override val root = hbox(spacing = 5) {
+    override val root = hbox(spacing = 3) {
         // Radio logo
         add(stationLogo)
 
