@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import javafx.application.Platform
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.util.Modal
@@ -48,7 +49,7 @@ class AboutMenu : BaseMenu(FxRadio.appName) {
             separator(),
             item(messages["menu.app.quit"]) {
                 action {
-                    primaryStage.close()
+                    Platform.exit()
                 }
             }
         ))

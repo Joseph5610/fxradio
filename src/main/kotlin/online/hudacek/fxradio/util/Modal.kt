@@ -37,7 +37,7 @@ import tornadofx.findUIComponents
  * Type parameter should represent the fragment class loaded into the modal window
  */
 sealed class Modal<out T : Fragment>(
-    val style: StageStyle = StageStyle.UNIFIED,
+    val style: StageStyle = StageStyle.DECORATED,
     val resizable: Boolean = false
 ) {
     object AddNewStation : Modal<AddStationFragment>()

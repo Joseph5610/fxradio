@@ -37,8 +37,8 @@ private val logger = KotlinLogging.logger {}
 class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledService<KeyValueBag>() {
 
     init {
-        period = Duration.seconds(50.0) //period between fetching data
-        delay = Duration.seconds(5.0) //initial delay
+        period = Duration.seconds(55.0) //period between fetching data
+        delay = Duration.seconds(10.0) //initial delay
     }
 
     /**
@@ -63,7 +63,7 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
             val deMuxer = Demuxer.make()
             deMuxer.open(streamUrl, null, false, true, null, null)
             val data = deMuxer.metaData
-            deMuxer.close()
+            deMuxer.correctlyClose()
             logger.debug { "HumbleMetaService retrieved MetaData: $data" }
             return data
         }
