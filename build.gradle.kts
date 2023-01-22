@@ -3,6 +3,7 @@ import io.github.fvarrui.javapackager.gradle.PackageTask
 import io.github.fvarrui.javapackager.model.MacConfig
 import io.github.fvarrui.javapackager.model.MacStartup
 import io.github.fvarrui.javapackager.model.Manifest
+import io.github.fvarrui.javapackager.model.WindowsConfig
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -127,6 +128,15 @@ task<PackageTask>("jfxNative") {
         isCodesignApp = false
         backgroundImage = File("src/main/deploy/package/mac/background.png")
     } as Closure<MacConfig>)
+    winConfig(closureOf<WindowsConfig> {
+        isDisableWelcomePage = false
+        isDisableFinishedPage = false
+        isDisableRunAfterInstall = false
+    } as Closure<WindowsConfig>)
     dependsOn("jar")
-    vmArgs = listOf("-Xms256m", "-Xmx2048m", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC")
+    vmArgs = listOf("-Xms256m",
+        "-Xmx2048m",
+        "-XX:+UnlockExperimentalVMOptions",
+        "-XX:+UseG1GC"
+    )
 }
