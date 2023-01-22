@@ -27,6 +27,7 @@ import online.hudacek.fxradio.ui.fragment.DebugFragment
 import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
 import online.hudacek.fxradio.ui.fragment.PreferencesFragment
 import online.hudacek.fxradio.ui.fragment.StatsFragment
+import online.hudacek.fxradio.util.macos.MacUtils
 import tornadofx.FX
 import tornadofx.Fragment
 import tornadofx.find
@@ -59,8 +60,10 @@ internal inline fun <reified T : Fragment> Modal<T>.open() {
     if (stages == null) {
         find<T>().openModal(stageStyle = style, resizable = resizable).also {
             it?.userData = T::class
-            // We don't want stage icon in the modal dialog
-            it?.icons?.clear()
+            // We don't want stage icon in the modal dialog on mac
+            if(MacUtils.isMac) {
+                it?.icons?.clear()
+            }
         }
     }
 }

@@ -74,7 +74,6 @@ internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
 }
 
 internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}) = label(text) {
-    addClass(Styles.boldText)
     addClass(Styles.grayLabel)
     op(this)
 }
