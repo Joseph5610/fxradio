@@ -55,7 +55,7 @@ import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
 private const val VOLUME_GLYPH_SIZE = 14.0
-private const val INFO_GLYPH_SIZE = 14.0
+private const val INFO_GLYPH_SIZE = 16.0
 
 /**
  * Main player view above stations
@@ -83,7 +83,7 @@ class PlayerView : BaseView() {
     private val infoGlyph by lazy {
         FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) {
             id = "stationInfo"
-            paddingAll = 5
+            padding = insets(5, 7, 5, 7)
 
             disableWhen {
                 selectedStationViewModel.stationProperty.booleanBinding {
@@ -98,6 +98,8 @@ class PlayerView : BaseView() {
             shortcut(keyCombination(KeyCode.I)) {
                 toggleInfoPanelState()
             }
+
+            addClass(Styles.playerControlsBorder)
             addClass(Styles.playerControls)
         }
     }
@@ -170,26 +172,18 @@ class PlayerView : BaseView() {
         vgrow = Priority.NEVER
         alignment = Pos.CENTER_LEFT
 
-        //Play/Pause buttons
+        // Play/Pause buttons
         add(playerControls)
 
         region {
             hgrow = Priority.ALWAYS
         }
 
-        //Station info box
+        // Station info box
         add(playerStationView)
 
         // Show station details
         add(infoGlyph)
-
-        if (Properties.EnableDebugView.value(false)) {
-            add(FontAwesome.Glyph.BUG.make(INFO_GLYPH_SIZE) {
-                onLeftClick {
-                    Modal.Debug.open()
-                }
-            })
-        }
 
         region {
             hgrow = Priority.ALWAYS
@@ -201,6 +195,14 @@ class PlayerView : BaseView() {
             add(volumeDownGlyph)
             add(volumeSlider)
             add(volumeUpGlyph)
+        }
+
+        if (Properties.EnableDebugView.value(false)) {
+            add(FontAwesome.Glyph.BUG.make(VOLUME_GLYPH_SIZE, isPrimary = false) {
+                onLeftClick {
+                    Modal.Debug.open()
+                }
+            })
         }
 
         addClass(Styles.playerMainBox)

@@ -89,7 +89,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private val stationLogo by lazy {
         stationView(selectedStationViewModel.stationProperty, LOGO_SIZE)
     }
-    
+
     override fun onDock() {
         selectedStationViewModel.retrieveAdditionalData()
     }
