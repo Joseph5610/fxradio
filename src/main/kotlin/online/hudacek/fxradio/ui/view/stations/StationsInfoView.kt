@@ -89,15 +89,13 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private val stationLogo by lazy {
         stationView(selectedStationViewModel.stationProperty, LOGO_SIZE)
     }
-
-    private val glassEffect = BoxBlur()
-
+    
     override fun onDock() {
         selectedStationViewModel.retrieveAdditionalData()
     }
 
     override val root = stackpane {
-        opacity = 0.99
+        opacity = 0.985
         prefWidth = 250.0
         paddingAll = 10.0
 
