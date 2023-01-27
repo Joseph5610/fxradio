@@ -23,6 +23,7 @@ import com.github.thomasnield.rxkotlinfx.toBinding
 import io.reactivex.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
+import javafx.scene.effect.BoxBlur
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
@@ -56,6 +57,7 @@ import tornadofx.paddingTop
 import tornadofx.putString
 import tornadofx.separator
 import tornadofx.sizeProperty
+import tornadofx.stackpane
 import tornadofx.stringBinding
 import tornadofx.style
 import tornadofx.tooltip
@@ -88,150 +90,156 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         stationView(selectedStationViewModel.stationProperty, LOGO_SIZE)
     }
 
+    private val glassEffect = BoxBlur()
+
     override fun onDock() {
         selectedStationViewModel.retrieveAdditionalData()
     }
 
-    override val root = borderpane {
+    override val root = stackpane {
+        opacity = 0.99
         prefWidth = 250.0
         paddingAll = 10.0
 
-        top {
-            vbox(alignment = Pos.CENTER) {
-                paddingAll = 10.0
+        borderpane {
+            paddingTop = 25.0
+            top {
+                vbox(alignment = Pos.CENTER) {
+                    paddingAll = 10.0
 
-                add(stationLogo)
+                    add(stationLogo)
 
-                hyperlink(selectedStationViewModel.nameProperty) {
-                    action {
-                        app.openUrl(selectedStationViewModel.homePageProperty.value)
+                    hyperlink(selectedStationViewModel.nameProperty) {
+                        action {
+                            app.openUrl(selectedStationViewModel.homePageProperty.value)
+                        }
+                        addClass(Styles.subheader)
+                        addClass(Styles.primaryTextColor)
+                        tooltip(messages["info.visit.website"])
                     }
-                    addClass(Styles.subheader)
-                    addClass(Styles.primaryTextColor)
-                    tooltip(messages["info.visit.website"])
-                }
 
-                smallLabel(messages["verified"]) {
-                    graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = 13.0, isPrimary = true)
-                    addClass(Styles.tag)
-                    showWhen { selectedStationViewModel.hasExtendedInfoProperty }
-                }
+                    smallLabel(messages["verified"]) {
+                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = 13.0, isPrimary = true)
+                        addClass(Styles.tag)
+                        showWhen { selectedStationViewModel.hasExtendedInfoProperty }
+                    }
 
-                label(selectedStationViewModel.countryProperty) {
-                    paddingTop = 5.0
-                    addClass(Styles.grayLabel)
+                    label(selectedStationViewModel.countryProperty) {
+                        paddingTop = 5.0
+                        addClass(Styles.grayLabel)
+                    }
                 }
             }
-        }
 
-        center {
-            vbox {
-                flowpane {
-                    hgap = 5.0
-                    vgap = 5.0
-                    alignment = Pos.CENTER
-                    paddingAll = 5.0
-
-                    createInfoLabel("info.bitrate", selectedStationViewModel.bitrateProperty)?.let { add(it) }
-                    createInfoLabel("info.codec", selectedStationViewModel.codecProperty)?.let { add(it) }
-                    createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
-                    createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
-                    createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
-                    createInfoLabel("info.clicktrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
-                    createInfoLabel("info.clickcount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
-                }
-
+            center {
                 vbox {
-                    smallLabel(messages["info.tags"])
                     flowpane {
                         hgap = 5.0
                         vgap = 5.0
-                        paddingAll = 5.0
                         alignment = Pos.CENTER
-                        bindChildren(selectedStationViewModel.tagsProperty) {
-                            hyperlink(it) {
-                                addClass(Styles.tag)
-                                addClass(Styles.grayLabel)
+                        paddingAll = 5.0
 
-                                action {
-                                    libraryViewModel.stateProperty.value = LibraryState.Search
-                                    searchViewModel.bindQueryProperty.value = it
-                                    searchViewModel.searchByTagProperty.value = true
+                        createInfoLabel("info.bitrate", selectedStationViewModel.bitrateProperty)?.let { add(it) }
+                        createInfoLabel("info.codec", selectedStationViewModel.codecProperty)?.let { add(it) }
+                        createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
+                        createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
+                        createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
+                        createInfoLabel("info.clicktrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
+                        createInfoLabel("info.clickcount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
+                    }
+
+                    vbox {
+                        smallLabel(messages["info.tags"])
+                        flowpane {
+                            hgap = 5.0
+                            vgap = 5.0
+                            paddingAll = 5.0
+                            alignment = Pos.CENTER
+                            bindChildren(selectedStationViewModel.tagsProperty) {
+                                hyperlink(it) {
+                                    addClass(Styles.tag)
+                                    addClass(Styles.grayLabel)
+
+                                    action {
+                                        libraryViewModel.stateProperty.value = LibraryState.Search
+                                        searchViewModel.bindQueryProperty.value = it
+                                        searchViewModel.searchByTagProperty.value = true
+                                    }
                                 }
                             }
                         }
-                    }
-                    showWhen {
-                        selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
+                        showWhen {
+                            selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
+                        }
                     }
                 }
             }
-        }
 
-        bottom {
-            vbox(spacing = 5.0, alignment = Pos.CENTER) {
-                button(messages["copy.stream.url"]) {
-                    graphic = copyIcon
-                    maxWidth = Double.MAX_VALUE
+            bottom {
+                vbox(spacing = 5.0, alignment = Pos.CENTER) {
+                    button(messages["copy.stream.url"]) {
+                        graphic = copyIcon
+                        maxWidth = Double.MAX_VALUE
 
-                    actionEvents()
-                        .map { selectedStationViewModel.stationProperty.value }
-                        .subscribe {
-                            clipboard.putString(it.urlResolved)
+                        actionEvents()
+                            .map { selectedStationViewModel.stationProperty.value }
+                            .subscribe {
+                                clipboard.putString(it.urlResolved)
+                            }
+                    }
+
+                    separator()
+
+                    button(messages["menu.station.favourite"]) {
+                        graphic = favouriteAddIcon
+                        maxWidth = Double.MAX_VALUE
+
+                        actionEvents()
+                            .map { selectedStationViewModel.stationProperty.value }
+                            .filter { it !in favouritesViewModel.stationsProperty }
+                            .subscribe(favouritesViewModel::addFavourite)
+
+                        showWhen {
+                            Observable.combineLatest(
+                                favouritesViewModel.stationsObservable,
+                                selectedStationViewModel.stationObservable
+                            ) { list, station ->
+                                !list.contains(station)
+                            }.toBinding()
                         }
-                }
-
-                separator()
-
-                button(messages["menu.station.favourite"]) {
-                    graphic = favouriteAddIcon
-                    maxWidth = Double.MAX_VALUE
-
-                    actionEvents()
-                        .map { selectedStationViewModel.stationProperty.value }
-                        .filter { it !in favouritesViewModel.stationsProperty }
-                        .subscribe(favouritesViewModel::addFavourite)
-
-                    showWhen {
-                        Observable.combineLatest(
-                            favouritesViewModel.stationsObservable,
-                            selectedStationViewModel.stationObservable
-                        ) { list, station ->
-                            !list.contains(station)
-                        }.toBinding()
                     }
-                }
 
-                button(messages["menu.station.favouriteRemove"]) {
-                    graphic = favouriteRemoveIcon
-                    maxWidth = Double.MAX_VALUE
+                    button(messages["menu.station.favouriteRemove"]) {
+                        graphic = favouriteRemoveIcon
+                        maxWidth = Double.MAX_VALUE
 
-                    actionEvents()
-                        .map { selectedStationViewModel.stationProperty.value }
-                        .filter { it in favouritesViewModel.stationsProperty }
-                        .subscribe(favouritesViewModel::removeFavourite)
+                        actionEvents()
+                            .map { selectedStationViewModel.stationProperty.value }
+                            .filter { it in favouritesViewModel.stationsProperty }
+                            .subscribe(favouritesViewModel::removeFavourite)
 
 
-                    showWhen {
-                        Observable.combineLatest(
-                            favouritesViewModel.stationsObservable,
-                            selectedStationViewModel.stationObservable
-                        ) { list, station ->
-                            list.contains(station)
-                        }.toBinding()
+                        showWhen {
+                            Observable.combineLatest(
+                                favouritesViewModel.stationsObservable,
+                                selectedStationViewModel.stationObservable
+                            ) { list, station ->
+                                list.contains(station)
+                            }.toBinding()
+                        }
                     }
-                }
 
-                button(messages["menu.station.vote"]) {
-                    requestFocusOnSceneAvailable()
-                    graphic = likeIcon
-                    maxWidth = Double.MAX_VALUE
+                    button(messages["menu.station.vote"]) {
+                        requestFocusOnSceneAvailable()
+                        graphic = likeIcon
+                        maxWidth = Double.MAX_VALUE
 
-                    actionEvents()
-                        .map { selectedStationViewModel.stationProperty.value }
-                        .subscribe(appEvent.votedStations)
+                        actionEvents()
+                            .map { selectedStationViewModel.stationProperty.value }
+                            .subscribe(appEvent.votedStations)
 
-                    addClass(Styles.primaryButton)
+                        addClass(Styles.primaryButton)
+                    }
                 }
             }
         }
