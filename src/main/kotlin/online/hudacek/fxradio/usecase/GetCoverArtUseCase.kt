@@ -24,6 +24,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.MusicBrainzApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.musicbrainz.MusicBrainzApi
+import online.hudacek.fxradio.apiclient.musicbrainz.model.Release
 import online.hudacek.fxradio.util.applySchedulersSingle
 
 private const val SCORE_THRESHOLD = 95
@@ -35,7 +36,7 @@ class GetCoverArtUseCase : BaseUseCase<String, Single<Response>>() {
     override fun execute(input: String): Single<Response> = musicBrainzApi.search(input)
         .flatMap {
             val release = it.releases.first { r -> r.score >= SCORE_THRESHOLD }
-            val coverUrl = Config.API.coverArtApiUrl + release.id + "/front"
+            val coverUrl = Config.API.coverArtApiUrl + release.id + "/front-250"
             Single.fromCallable { HttpClient.request(coverUrl) }
         }
         .compose(applySchedulersSingle())

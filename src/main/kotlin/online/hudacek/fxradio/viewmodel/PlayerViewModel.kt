@@ -87,8 +87,8 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
             .flatMapSingle(stationClickUseCase::execute)
             .subscribe({
                 // Update the name of the station
-                trackNameProperty.value = messages["player.noMetaData"]
-                stateProperty.value = PlayerState.Playing(selectedStationViewModel.streamUrlProperty.value)
+                appEvent.streamMetaDataUpdates.onNext(StreamMetaData(it.name, messages["player.noMetaData"]))
+                stateProperty.value = PlayerState.Playing(it.url)
             }, { t ->
                 stateProperty.value = PlayerState.Error(t.localizedMessage)
             })

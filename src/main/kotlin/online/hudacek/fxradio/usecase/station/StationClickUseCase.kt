@@ -34,6 +34,6 @@ class StationClickUseCase : BaseUseCase<Station, Single<ClickResponse>>() {
             .compose(applySchedulersSingle())
             .onErrorResumeNext {
                 // We do not care if this response fails
-                Single.just(ClickResponse(false, it.localizedMessage, input.name))
+                Single.just(ClickResponse(false, it.localizedMessage, input.name, input.urlResolved))
             }
 }

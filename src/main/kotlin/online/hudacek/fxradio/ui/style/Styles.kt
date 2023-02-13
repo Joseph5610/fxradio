@@ -144,13 +144,7 @@ class Styles : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        playerControls {
-            unsafe("-fx-padding", raw("0"))
-            unsafe("-fx-background-insets", raw("0"))
-            unsafe("-fx-background-color", raw("-fx-background"))
-            unsafe("-fx-border-color", raw(colors.transparent))
-            unsafe("-fx-faint-focus-color", raw(colors.transparent))
-        }
+        playerControls {}
 
         playerControlsBorder {
             and(hover) {

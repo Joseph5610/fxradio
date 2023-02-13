@@ -60,7 +60,7 @@ internal inline fun <reified T : Fragment> Modal<T>.open() {
     if (stages == null) {
         find<T>().openModal(stageStyle = style, resizable = resizable).also {
             it?.userData = T::class
-            // We don't want stage icon in the modal dialog on mac
+            // We don't want stage icon in the modal dialog on macOS
             if(MacUtils.isMac) {
                 it?.icons?.clear()
             }

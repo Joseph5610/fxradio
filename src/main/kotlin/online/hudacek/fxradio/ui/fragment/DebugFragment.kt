@@ -42,24 +42,8 @@ class DebugFragment : BaseFragment("Debug Window") {
 
     private val viewModel: SelectedStationViewModel by inject()
 
-    private val coverArtUseCase: GetCoverArtUseCase by inject()
-
     override val root = vbox {
         prefWidth = WINDOW_PREF_WIDTH
-
-        imageview {
-            fitWidth = 100.0
-            fitHeight = 100.0
-            isPreserveRatio = true
-            appEvent.streamMetaDataUpdates
-                .distinct()
-                .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
-                .subscribe({
-                    it.body?.byteStream().use { s ->
-                        image = Image(s)
-                    }
-                }, { image = Image(Config.Resources.waveIcon) })
-        }
 
         form {
             fieldset("Selected Station") {

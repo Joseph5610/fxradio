@@ -120,7 +120,7 @@ open class FxRadio(
             LogManager.shutdown()
         }
 
-        //Save last used window width/height on close of the app to use it on next start
+        // Save last used window width/height on close of the app to use it on next start
         saveProperties(
             mapOf(
                 Properties.WindowWidth to FX.primaryStage.width,

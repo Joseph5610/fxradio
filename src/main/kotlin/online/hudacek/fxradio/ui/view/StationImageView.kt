@@ -38,7 +38,7 @@ private val logger = KotlinLogging.logger {}
  */
 class StationImageView(
     private val stationProperty: Property<Station>,
-    private val size: Double = 15.0
+    size: Double = 15.0
 ) : ImageView(defaultRadioLogo) {
 
     constructor(station: Station, size: Double) : this(objectProperty(station), size)
@@ -65,7 +65,7 @@ class StationImageView(
     /**
      * Loads favicon of [stationProperty] from cache into [image] field asynchronously
      */
-    private fun getStationImage() {
+    fun getStationImage() {
         stationImageCache.load(stationProperty.value).subscribe({
             image = it
             it?.errorProperty()?.toObservable()?.subscribe { isError ->

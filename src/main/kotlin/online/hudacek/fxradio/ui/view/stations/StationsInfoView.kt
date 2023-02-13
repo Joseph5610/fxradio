@@ -23,7 +23,6 @@ import com.github.thomasnield.rxkotlinfx.toBinding
 import io.reactivex.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
-import javafx.scene.effect.BoxBlur
 import javafx.scene.paint.Color
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView

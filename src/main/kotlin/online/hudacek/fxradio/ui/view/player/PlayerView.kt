@@ -26,6 +26,7 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.setOnSpacePressed
+import online.hudacek.fxradio.usecase.GetCoverArtUseCase
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.keyCombination
@@ -47,7 +48,6 @@ import tornadofx.insets
 import tornadofx.objectBinding
 import tornadofx.onChange
 import tornadofx.onLeftClick
-import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
@@ -168,7 +168,7 @@ class PlayerView : BaseView() {
         }
     }
 
-    override val root = hbox(spacing = 10) {
+    override val root = hbox(spacing = 6) {
         vgrow = Priority.NEVER
         alignment = Pos.CENTER_LEFT
 

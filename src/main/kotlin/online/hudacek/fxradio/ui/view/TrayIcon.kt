@@ -27,7 +27,6 @@ import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Controller
 import tornadofx.get
-import tornadofx.stringBinding
 import java.awt.MenuItem
 import java.awt.SystemTray
 import java.awt.TrayIcon

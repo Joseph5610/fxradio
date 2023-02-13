@@ -187,10 +187,10 @@ internal fun EventTarget.field(
         }
     })
 
-fun EventTarget.stationView(station: Station, size: Double, op: ImageView.() -> Unit = {}) =
+fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(station, size), op)
 
-fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: ImageView.() -> Unit = {}) =
+fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(stationProperty, size), op)
 
 internal val Country.flagIcon: FlagIcon?
