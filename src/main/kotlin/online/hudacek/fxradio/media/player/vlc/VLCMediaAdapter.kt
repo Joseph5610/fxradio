@@ -50,7 +50,7 @@ class VLCMediaAdapter : MediaEventAdapter() {
 
     override fun mediaMetaChanged(media: Media?, metaType: Meta?) {
         media?.meta()?.let {
-            logger.debug { "VLCMetaService retrieved MetaData: ${it.asMetaData()}" }
+            logger.info { "VLCMetaService retrieved MetaData: ${it.asMetaData()}" }
             if (it[Meta.NOW_PLAYING] != null
                 && it[Meta.TITLE] != null
             ) {

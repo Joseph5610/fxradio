@@ -34,10 +34,13 @@ class GetCoverArtUseCase : BaseUseCase<String, Single<Response>>() {
     private val musicBrainzApi: MusicBrainzApi by lazy { MusicBrainzApiProvider.provide() }
 
     override fun execute(input: String): Single<Response> = musicBrainzApi.search(input)
-        .flatMap {
+        .map {
             val release = it.releases.first { r -> r.score >= SCORE_THRESHOLD }
             val coverUrl = Config.API.coverArtApiUrl + release.id + "/front-250"
-            Single.fromCallable { HttpClient.request(coverUrl) }
+            ReleaseWithCoverArt(coverUrl, release)
         }
+        .flatMap{ Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
         .compose(applySchedulersSingle())
 }
+
+data class ReleaseWithCoverArt(val coverArtUrl: String, val release: Release)

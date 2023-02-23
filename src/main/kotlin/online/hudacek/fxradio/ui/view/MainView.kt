@@ -22,9 +22,8 @@ import javafx.geometry.Orientation
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.util.set
-import online.hudacek.fxradio.ui.util.customNotificationPane
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.set
 import online.hudacek.fxradio.ui.view.library.LibraryView
 import online.hudacek.fxradio.ui.view.player.PlayerView
 import online.hudacek.fxradio.ui.view.stations.StationsView
@@ -32,6 +31,7 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import tornadofx.addClass
 import tornadofx.controlsfx.content
+import tornadofx.controlsfx.notificationPane
 import tornadofx.hgrow
 import tornadofx.splitpane
 import tornadofx.vbox
@@ -87,7 +87,7 @@ class MainView : BaseView(FxRadio.appName) {
         setPrefSize(800.0, 600.0)
         add(menuBarView)
 
-        customNotificationPane {
+        notificationPane(showFromTop = true) {
             appEvent.appNotification.subscribe { this[it.glyph] = it.title }
 
             content {

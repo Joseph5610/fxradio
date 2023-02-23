@@ -71,8 +71,8 @@ class PlayerStationView : BaseView() {
                 .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
                 .subscribe({
                     if (it.isSuccessful) {
-                        it.body?.byteStream().use { s ->
-                            image = Image(s)
+                        it.body?.byteStream().use { i ->
+                            image = Image(i)
                         }
                     } else {
                         getStationImage()

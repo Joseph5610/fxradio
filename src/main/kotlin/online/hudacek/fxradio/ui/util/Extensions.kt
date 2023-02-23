@@ -146,15 +146,6 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
         managedWhen(expr())
     }
 
-
-/**
- * Notification UI helpers
- */
-internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit) = {}) =
-    notificationPane(showFromTop = true) {
-        op(this)
-    }
-
 /**
  * Custom function for showing notification in NotificationPane.
  * Notification disappears after 5 seconds
