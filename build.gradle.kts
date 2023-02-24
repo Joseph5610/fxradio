@@ -4,7 +4,6 @@ import io.github.fvarrui.javapackager.model.MacConfig
 import io.github.fvarrui.javapackager.model.MacStartup
 import io.github.fvarrui.javapackager.model.Manifest
 import io.github.fvarrui.javapackager.model.WindowsConfig
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -16,13 +15,15 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
+    id("org.openjfx.javafxplugin") version "0.0.13"
+    id("application")
 }
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
 val kotlinCoroutinesVersion = "1.6.4"
-val tornadoFxVersion = "1.7.20"
+val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.19.0"
 val slf4jVersion = "2.0.5"
 val kotlinLoggingVersion = "3.0.4"
@@ -31,9 +32,9 @@ val junitVersion = "5.9.0"
 val vlcjVersion = "4.7.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "9.10.2"
-val controlsFxVersion = "8.40.18"
+val controlsFxVersion = "11.1.2"
 
-version = "0.12.0"
+version = "0.13.0"
 
 val appVersion: String = version as String
 
@@ -43,6 +44,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven(url = "https://jitpack.io")
+        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     dependencies {
@@ -63,12 +65,6 @@ allprojects {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -82,11 +78,12 @@ dependencies {
     implementation("no.tornado:tornadofx:$tornadoFxVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
+    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
 
-    implementation("com.github.thomasnield:rxkotlinfx:2.2.2")
+
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
     implementation("org.nield:rxkotlin-jdbc:0.4.1")
-    implementation("de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.7")
+    implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
 
     // Players
@@ -99,6 +96,21 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
 }
 
+javafx {
+    version = "16"
+    modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
+}
+
+kotlin {
+    jvmToolchain(11)
+}
+
+application {
+    mainClass.set("online.hudacek.fxradio.FxRadioKt")
+    applicationDefaultJvmArgs = listOf(
+        "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+    )
+}
 
 task<PackageTask>("jfxNative") {
     mainClass = "online.hudacek.fxradio.FxRadioKt"

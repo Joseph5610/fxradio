@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.view
 
+import javafx.scene.control.MenuBar
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.AboutMenu
@@ -69,18 +70,5 @@ class MenuBarView : BaseView() {
      * Platform specific menu bar working on macOS
      * used instead of in-app menubar
      */
-    private fun platformMenuBar() = NSMenuBar()
-        .menuBar.apply {
-            NSMenu().apply {
-                appMenu(aboutMenu.aboutMainItems)
-                menus.addAll(
-                    fileMenu.menu,
-                    playerMenu.menu,
-                    favouritesMenu.menu,
-                    historyMenu.menu,
-                    windowMenu(messages["macos.menu.window"]),
-                    helpMenu.menu
-                )
-            }
-        }
+    private fun platformMenuBar() = MenuBar()
 }

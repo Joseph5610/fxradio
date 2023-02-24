@@ -83,7 +83,7 @@ class StationsDataGridView : BaseView() {
             selectionModel.select(selectedStationViewModel.stationProperty.value)
         }
 
-        onUserSelect(1) {
+        onUserSelect {
             if (selectedStationViewModel.item.station != it) {
                 selectedStationViewModel.item = SelectedStation(it)
             }

@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.util.macos
 
-import de.codecentric.centerdevice.MenuToolkit
+import de.jangassen.MenuToolkit
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
@@ -39,25 +39,10 @@ open class NSMenu : Component() {
     fun appMenu(menuItems: List<MenuItem>) = menu(FxRadio.appName) {
         menuToolkit.setApplicationMenu(this)
         items.addAll(menuItems)
-        items.addAll(
-            separator(),
-            menuToolkit.createHideMenuItem(FxRadio.appName),
-            menuToolkit.createHideOthersMenuItem(),
-            menuToolkit.createUnhideAllMenuItem(),
-            separator(),
-            menuToolkit.createQuitMenuItem(FxRadio.appName)
-        )
     }
 
     fun windowMenu(name: String) = menu(name) {
         menuToolkit.autoAddWindowMenuItems(this)
-        items.addAll(
-            menuToolkit.createMinimizeMenuItem(),
-            menuToolkit.createZoomMenuItem(),
-            menuToolkit.createCycleWindowsItem(),
-            separator(),
-            menuToolkit.createBringAllToFrontItem()
-        )
     }
 }
 
