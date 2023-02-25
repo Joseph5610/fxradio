@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.fragment
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
 import javafx.geometry.Pos
 import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
@@ -26,6 +25,7 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.field
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
+import online.hudacek.fxradio.util.actionEvents
 import online.hudacek.fxradio.viewmodel.AddStationModel
 import online.hudacek.fxradio.viewmodel.AddStationViewModel
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel

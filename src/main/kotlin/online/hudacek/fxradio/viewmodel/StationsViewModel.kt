@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import io.reactivex.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
@@ -28,6 +27,7 @@ import online.hudacek.fxradio.usecase.station.GetPopularStationsUseCase
 import online.hudacek.fxradio.usecase.station.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.station.GetTrendingStationsUseCase
 import online.hudacek.fxradio.usecase.station.StationVoteUseCase
+import online.hudacek.fxradio.util.toObservableChanges
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.asObservable
 import tornadofx.get

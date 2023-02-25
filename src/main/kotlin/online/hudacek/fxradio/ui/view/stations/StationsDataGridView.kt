@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.geometry.Pos
 import javafx.scene.input.DragEvent
 import javafx.scene.input.MouseEvent
@@ -31,6 +30,7 @@ import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
+import online.hudacek.fxradio.util.toObservableChanges
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -144,9 +144,7 @@ class StationsDataGridView : BaseView() {
                     is StationsState.Fetched -> true
                     else -> false
                 }
-            }.and(libraryViewModel.stateProperty.booleanBinding {
-                it !is LibraryState.History
-            })
+            }
         }
     }
 }

@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
@@ -29,6 +28,7 @@ import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.usecase.station.StationClickUseCase
 import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.observeOnFx
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome

@@ -39,7 +39,6 @@ private val logger = KotlinLogging.logger {}
 sealed class LibraryState(val key: String) {
     object Favourites : LibraryState("favourites")
     object Search : LibraryState("Search")
-    object History : LibraryState("history")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
     object Popular : LibraryState("topStations")
     object Trending : LibraryState("trendingStations")
@@ -67,7 +66,6 @@ class Library(
             LibraryItem(LibraryState.Popular, FontAwesome.Glyph.THUMBS_UP),
             LibraryItem(LibraryState.Trending, FontAwesome.Glyph.FIRE),
             LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.HEART),
-            LibraryItem(LibraryState.History, FontAwesome.Glyph.HISTORY)
         )
     )
 
@@ -98,14 +96,14 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
         .subscribe({
-            pinnedProperty += it
+            pinnedProperty += country
         }, {
             logger.error(it) { "Exception when performing Pinning!" }
         })
 
     fun unpinCountry(country: Country): Disposable = countryUnpinUseCase.execute(country)
         .subscribe({
-            pinnedProperty -= it
+            pinnedProperty -= country
         }, {
             logger.error(it) { "Exception when performing Unpinning!" }
         })

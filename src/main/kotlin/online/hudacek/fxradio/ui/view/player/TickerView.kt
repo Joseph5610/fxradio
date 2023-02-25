@@ -1,6 +1,5 @@
 package online.hudacek.fxradio.ui.view.player
 
-import com.github.thomasnield.rxkotlinfx.toObservable
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import javafx.animation.Animation
@@ -13,6 +12,7 @@ import javafx.util.Duration
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.addClass
 import tornadofx.fade

@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.ListProperty
@@ -26,6 +25,7 @@ import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.favourites.*
+import online.hudacek.fxradio.util.toObservable
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -58,13 +58,13 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
     }
 
     fun addFavourite(station: Station): Disposable = favouriteAddUseCase.execute(station).subscribe({
-        stationsProperty += it
+        stationsProperty += station
     }, {
         logger.error(it) { "Cannot add ${station.uuid}" }
     })
 
     fun removeFavourite(station: Station): Disposable = favouriteRemoveUseCase.execute(station).subscribe({
-        stationsProperty -= it
+        stationsProperty -= station
     }, {
         logger.error(it) { "Cannot remove ${station.uuid}" }
     })
@@ -78,6 +78,7 @@ class FavouritesViewModel : BaseViewModel<Favourites>(Favourites()) {
 
     override fun onCommit() {
         favouritesUpdateUseCase.execute(stationsProperty).subscribe({}, {
+            logger.error(it) { "Rollbacking execution of favourites update..." }
             // Rollback ViewModel to previous state when update failed
             rollback()
         })

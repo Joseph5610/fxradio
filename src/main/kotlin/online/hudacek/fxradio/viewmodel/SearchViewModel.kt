@@ -18,15 +18,15 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toBinding
-import com.github.thomasnield.rxkotlinfx.toObservable
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.usecase.search.StationSearchUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.toBinding
+import online.hudacek.fxradio.util.toObservable
+import online.hudacek.fxradio.util.toObservableChangesNonNull
 import online.hudacek.fxradio.util.value
 import tornadofx.property
 

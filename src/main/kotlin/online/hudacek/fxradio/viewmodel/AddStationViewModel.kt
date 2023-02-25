@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
@@ -26,6 +25,7 @@ import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.station.StationAddUseCase
+import online.hudacek.fxradio.util.toObservable
 import tornadofx.property
 import tornadofx.stringBinding
 import java.util.*

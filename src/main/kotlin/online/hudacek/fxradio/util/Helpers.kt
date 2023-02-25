@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.util
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.FlowableTransformer
 import io.reactivex.Maybe
 import io.reactivex.MaybeTransformer
 import io.reactivex.ObservableTransformer
@@ -47,6 +47,11 @@ internal fun <T> applySchedulersMaybe(): MaybeTransformer<T, T> = MaybeTransform
 }
 
 internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
+internal fun <T> applySchedulersFlowable(): FlowableTransformer<T, T> = FlowableTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
 }

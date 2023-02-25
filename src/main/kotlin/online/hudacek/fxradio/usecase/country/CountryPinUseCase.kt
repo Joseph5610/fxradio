@@ -18,14 +18,16 @@
 
 package online.hudacek.fxradio.usecase.country
 
+import io.reactivex.Flowable
 import io.reactivex.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.usecase.BaseUseCase
+import online.hudacek.fxradio.util.applySchedulersFlowable
 import online.hudacek.fxradio.util.applySchedulersSingle
 
-class CountryPinUseCase : BaseUseCase<Country, Single<Country>>() {
+class CountryPinUseCase : BaseUseCase<Country, Flowable<Int>>() {
 
-    override fun execute(input: Country): Single<Country> = Tables.pinnedCountries.insert(input)
-        .compose(applySchedulersSingle())
+    override fun execute(input: Country): Flowable<Int> = Tables.pinnedCountries.insert(input)
+        .compose(applySchedulersFlowable())
 }
