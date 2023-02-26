@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
 import online.hudacek.fxradio.util.applySchedulersSingle
 

@@ -32,7 +32,6 @@ import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.toObservableChanges
 import online.hudacek.fxradio.viewmodel.InfoPanelState
-import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -47,6 +46,7 @@ import tornadofx.get
 import tornadofx.item
 import tornadofx.label
 import tornadofx.onHover
+import tornadofx.onLeftClick
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.point
@@ -83,12 +83,6 @@ class StationsDataGridView : BaseView() {
             selectionModel.select(selectedStationViewModel.stationProperty.value)
         }
 
-        onUserSelect {
-            if (selectedStationViewModel.item.station != it) {
-                selectedStationViewModel.item = SelectedStation(it)
-            }
-        }
-
         cellFormat {
             val cellHandler = DataCellHandler(this, this@datagrid)
 
@@ -97,6 +91,14 @@ class StationsDataGridView : BaseView() {
                     scale(Duration.seconds(0.07), point(1.05, 1.05))
                 } else {
                     scale(Duration.seconds(0.07), point(1.0, 1.0))
+                }
+            }
+
+            // Workaround for https://github.com/edvin/tornadofx/issues/1216
+            onLeftClick {
+                selectionModel.select(it)
+                if (selectedStationViewModel.item.station != it) {
+                    selectedStationViewModel.item = SelectedStation(it)
                 }
             }
 

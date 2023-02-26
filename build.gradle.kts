@@ -83,7 +83,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("com.github.davidmoten:rxjava2-jdbc:0.2.12")
+    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.3")
 
     // Players
     implementation("io.humble:humble-video-all:$humbleVersion")
@@ -107,7 +107,16 @@ kotlin {
 application {
     mainClass.set("online.hudacek.fxradio.FxRadioKt")
     applicationDefaultJvmArgs = listOf(
-        "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+        //Tornadofx
+        "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED",
+        "--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED",
+        "--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED",
+        // necessary for ControlsFX
+        "--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED",
+        "--add-opens=javafx.base/com.sun.javafx.collections=ALL-UNNAMED",
+        "--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED",
+        "--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED",
+        "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
     )
 }
 

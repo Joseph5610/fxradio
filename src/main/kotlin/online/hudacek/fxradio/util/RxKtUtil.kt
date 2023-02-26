@@ -1,42 +1,41 @@
 package online.hudacek.fxradio.util
 
-import io.reactivex.*
-import io.reactivex.Observable
-import io.reactivex.rxjavafx.observables.JavaFxObservable
-import io.reactivex.rxjavafx.observers.JavaFxObserver
-import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
+import io.reactivex.rxjava3.core.*
 import javafx.beans.binding.Binding
 import javafx.beans.value.ObservableValue
+import javafx.event.ActionEvent
 import javafx.scene.Node
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.Dialog
 import javafx.scene.control.MenuItem
-import java.util.*
+import org.pdfsam.rxjavafx.observables.JavaFxObservable
+import org.pdfsam.rxjavafx.observers.JavaFxObserver
+import org.pdfsam.rxjavafx.schedulers.JavaFxScheduler
 
 /**
  * Observes the emissions on the JavaFX Thread.
  * This is the same as calling Observable#observeOn(JavaFxScheduler.platform())
  */
-fun <T> Observable<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
+fun <T : Any> Observable<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
 
 /**
  * Observes the emissions on the JavaFX Thread.
  * This is the same as calling Flowable#observeOn(JavaFxScheduler.platform())
  */
-fun <T> Flowable<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
+fun <T : Any> Flowable<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
 
 
 /**
  * Observes the emissions on the JavaFX Thread.
  * This is the same as calling Single#observeOn(JavaFxScheduler.platform())
  */
-fun <T> Single<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
+fun <T : Any> Single<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
 
 /**
  * Observes the emissions on the JavaFX Thread.
  * This is the same as calling Maybe#observeOn(JavaFxScheduler.platform())
  */
-fun <T> Maybe<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
+fun <T : Any> Maybe<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
 
 /**
  * Observes the emissions on the JavaFX Thread.
@@ -49,25 +48,25 @@ fun Completable.observeOnFx() = observeOn(JavaFxScheduler.platform())
  * Instructs the source Observable to emit items on the JavaFX Thread.
  * This is the same as calling Observable#subscribeOn(JavaFxScheduler.platform())
  */
-fun <T> Observable<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
+fun <T : Any> Observable<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
 
 /**
  * Instructs the source Flowable to emit items on the JavaFX Thread.
  * This is the same as calling Flowable#subscribeOn(JavaFxScheduler.platform())
  */
-fun <T> Flowable<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
+fun <T : Any> Flowable<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
 
 /**
  * Observes the emissions on the JavaFX Thread.
  * This is the same as calling Single#subscribeOnFx(JavaFxScheduler.platform())
  */
-fun <T> Single<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
+fun <T : Any> Single<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
 
 /**
  * Observes the emissions on the JavaFX Thread.
  * This is the same as calling Maybe#subscribeOnFx(JavaFxScheduler.platform())
  */
-fun <T> Maybe<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
+fun <T : Any> Maybe<T>.subscribeOnFx() = subscribeOn(JavaFxScheduler.platform())
 
 /**
  * Observes the emissions on the JavaFX Thread.
@@ -116,7 +115,7 @@ fun <T> ObservableValue<T>.toObservableChangesNonNull() = JavaFxObservable.nonNu
  * Creates an observable corresponding to javafx ContextMenu action events.
  * @return An Observable of UI ActionEvents
  */
-fun ContextMenu.actionEvents() = JavaFxObservable.actionEventsOf(this)
+fun ContextMenu.actionEvents(): Observable<ActionEvent> = JavaFxObservable.actionEventsOf(this)
 
 /**
  * Creates an observable corresponding to javafx MenuItem action events.
@@ -124,13 +123,13 @@ fun ContextMenu.actionEvents() = JavaFxObservable.actionEventsOf(this)
  * @param menuItem      The target of the ActionEvents
  * @return An Observable of UI ActionEvents
  */
-fun MenuItem.actionEvents() = JavaFxObservable.actionEventsOf(this)
+fun MenuItem.actionEvents(): Observable<ActionEvent> = JavaFxObservable.actionEventsOf(this)
 
 /**
  * Creates an observable corresponding to javafx Node action events.
  * @return An Observable of UI ActionEvents
  */
-fun Node.actionEvents() = JavaFxObservable.actionEventsOf(this)
+fun Node.actionEvents(): Observable<ActionEvent> = JavaFxObservable.actionEventsOf(this)
 
 /**
  * Emits the response `T` for a given `Dialog<T>`. If no response is provided the Maybe  will be empty.
@@ -140,7 +139,7 @@ fun <T> Dialog<T>.toMaybe() = JavaFxObservable.fromDialog(this)!!
 /**
  * Turns an Observable into a JavaFX Binding. Calling the Binding's dispose() method will handle the disposal.
  */
-fun <T> Observable<T>.toBinding(actionOp: (ObservableBindingSideEffects<T>.() -> Unit)? = null): Binding<T> {
+fun <T : Any> Observable<T>.toBinding(actionOp: (ObservableBindingSideEffects<T>.() -> Unit)? = null): Binding<T> {
     val transformer = actionOp?.let {
         val sideEffects = ObservableBindingSideEffects<T>()
         it.invoke(sideEffects)
@@ -149,7 +148,7 @@ fun <T> Observable<T>.toBinding(actionOp: (ObservableBindingSideEffects<T>.() ->
     return JavaFxObserver.toBinding((transformer?.let { this.compose(it) } ?: this))
 }
 
-class ObservableBindingSideEffects<T> {
+class ObservableBindingSideEffects<T : Any> {
     private var onNextAction: ((T) -> Unit)? = null
     private var onCompleteAction: (() -> Unit)? = null
     private var onErrorAction: ((ex: Throwable) -> Unit)? = null
@@ -167,11 +166,11 @@ class ObservableBindingSideEffects<T> {
     }
 
     internal val transformer: ObservableTransformer<T, T>
-        get() = ObservableTransformer<T, T> { obs ->
+        get() = ObservableTransformer { obs ->
             var withActions: Observable<T> = obs
-            withActions = onNextAction?.let { withActions.doOnNext(onNextAction) } ?: withActions
-            withActions = onCompleteAction?.let { withActions.doOnComplete(onCompleteAction) } ?: withActions
-            withActions = onErrorAction?.let { withActions.doOnError(onErrorAction) } ?: withActions
+            withActions = onNextAction?.let { withActions.doOnNext(onNextAction!!) } ?: withActions
+            withActions = onCompleteAction?.let { withActions.doOnComplete(onCompleteAction!!) } ?: withActions
+            withActions = onErrorAction?.let { withActions.doOnError(onErrorAction!!) } ?: withActions
             withActions
         }
 }

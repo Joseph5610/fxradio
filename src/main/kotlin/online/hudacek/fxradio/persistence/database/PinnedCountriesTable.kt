@@ -19,7 +19,7 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {

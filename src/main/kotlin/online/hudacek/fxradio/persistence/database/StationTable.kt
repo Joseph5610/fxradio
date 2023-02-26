@@ -18,9 +18,9 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import org.davidmoten.rx.jdbc.SelectBuilder
+import org.davidmoten.rxjava3.jdbc.SelectBuilder
 
 /**
  * Common operations on database of stations with different tables (e.g. History, Favourites ..)

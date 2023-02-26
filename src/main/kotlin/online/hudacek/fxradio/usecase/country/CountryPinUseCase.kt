@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.usecase.country
 
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.usecase.BaseUseCase

@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
 import javafx.scene.paint.Color

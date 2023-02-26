@@ -18,18 +18,60 @@
 
 package online.hudacek.fxradio.util.macos
 
+import de.jangassen.MenuToolkit
+import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
+import javafx.scene.control.MenuItem
+import javafx.scene.control.SeparatorMenuItem
+import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.ui.menu.menu
+import tornadofx.Component
+import tornadofx.FX
+import tornadofx.get
 
 /**
  * NSMenu helper for macOS only
  */
-class NSMenuBar : NSMenu() {
+class NSMenuBar : Component() {
+
+    private val tk = MenuToolkit.toolkit(FX.locale)
+
+    private val aboutMenu = menu(FxRadio.appName) {
+        items.addAll(
+            SeparatorMenuItem(),
+            tk.createHideMenuItem(text),
+            tk.createHideOthersMenuItem(),
+            tk.createUnhideAllMenuItem(),
+            SeparatorMenuItem(),
+            tk.createQuitMenuItem(text)
+        )
+        tk.setApplicationMenu(this)
+    }
+
 
     val menuBar by lazy {
         MenuBar().apply {
             useSystemMenuBarProperty().value = true
-            menuToolkit.setMenuBar(this)
         }
+    }
+
+    fun addMenus(vararg menus: Menu) {
+        menuBar.menus.addAll(menus)
+    }
+
+    fun addAboutMenuItems(items: List<MenuItem>) {
+        aboutMenu.items.addAll(0, items)
+    }
+
+    fun windowMenu() = menu(messages["macos.menu.window"]) {
+        items.addAll(
+            tk.createMinimizeMenuItem(),
+            tk.createZoomMenuItem(),
+            tk.createCycleWindowsItem(),
+            SeparatorMenuItem(),
+            tk.createBringAllToFrontItem()
+        )
+        tk.autoAddWindowMenuItems(this)
     }
 }
 

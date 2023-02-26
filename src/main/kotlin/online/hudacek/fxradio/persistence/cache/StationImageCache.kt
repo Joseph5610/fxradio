@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.persistence.cache
 
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Single
 import javafx.scene.image.Image
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
@@ -35,7 +35,7 @@ class StationImageCache : ImageCache() {
      * Retrieves the station image either from local cache or remote url
      */
     override fun load(station: Station): Maybe<Image> = maybeOfNullable(getLocalPath(station))
-        .onErrorResumeNext(getRemote(station))
+        .onErrorResumeNext { getRemote(station) }
         .switchIfEmpty(getRemote(station))
 
     /**
@@ -51,7 +51,7 @@ class StationImageCache : ImageCache() {
                         IllegalArgumentException("Station ${station.uuid} does not have valid icon URL")
                     )
                 }
-            }.flatMapMaybe { response ->
+            }.flatMap { response ->
                 maybeOfNullable(response.body)
                     .map { copyInputStreamIntoFile(it.byteStream(), station.uuid) }
             }.flatMap {

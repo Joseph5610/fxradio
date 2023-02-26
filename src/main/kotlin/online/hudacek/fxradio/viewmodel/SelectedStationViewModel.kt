@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ListProperty

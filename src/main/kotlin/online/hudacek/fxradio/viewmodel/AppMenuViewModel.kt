@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Single
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.event.data.AppNotification
@@ -46,7 +46,7 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
     fun clearCache(): Disposable = confirmAlert(
         messages["cache.clear.confirm"],
         messages["cache.clear.text"].formatted(ImageCache.totalSize)
-    ).flatMapSingleElement {
+    ).flatMapSingle {
         Single.just(ImageCache.clear()).compose(applySchedulersSingle())
     }.subscribe({
         appEvent.appNotification.onNext(AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))

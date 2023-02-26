@@ -18,12 +18,12 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 /**
  * Basic interface for common table operations
  */
-interface Table<T> {
+interface Table<T : Any> {
     /**
      *  Name of the table in SQLite DB
      */

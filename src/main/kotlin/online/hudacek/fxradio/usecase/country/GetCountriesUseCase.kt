@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.usecase.country
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
 import online.hudacek.fxradio.usecase.BaseUseCase

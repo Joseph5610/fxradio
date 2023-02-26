@@ -1,6 +1,6 @@
 package online.hudacek.fxradio.usecase.favourites
 
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javafx.beans.property.ListProperty
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.persistence.database.Tables

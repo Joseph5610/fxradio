@@ -45,6 +45,7 @@ import tornadofx.paddingAll
 import tornadofx.prefWidth
 import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
+import tornadofx.smartResize
 import tornadofx.tableview
 import tornadofx.textarea
 import tornadofx.vbox
@@ -65,11 +66,9 @@ class AttributionsFragment : BaseFragment() {
         requestFocusOnSceneAvailable() // To get rid of the blue box around the table
         tableview(Attributions.list) {
             bindSelected(viewModel)
-
-            columnResizePolicy = SmartResize.POLICY
             readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
             readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
-
+            smartResize()
             onUserSelect {
                 Modal.License.open()
             }

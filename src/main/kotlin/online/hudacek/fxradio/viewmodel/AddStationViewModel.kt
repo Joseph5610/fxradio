@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Maybe
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest

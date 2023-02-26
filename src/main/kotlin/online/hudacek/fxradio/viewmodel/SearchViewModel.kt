@@ -18,22 +18,19 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.usecase.search.StationSearchUseCase
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.save
-import online.hudacek.fxradio.util.toBinding
-import online.hudacek.fxradio.util.toObservable
-import online.hudacek.fxradio.util.toObservableChangesNonNull
-import online.hudacek.fxradio.util.value
+import online.hudacek.fxradio.util.*
 import tornadofx.property
 
 private const val QUERY_LENGTH = 50
 
-class Search(query: String = Properties.SearchQuery.value(""),
-             useTagSearch: Boolean = false) {
+class Search(
+    query: String = Properties.SearchQuery.value(""),
+    useTagSearch: Boolean = false
+) {
     var query: String by property(query)
     var searchByTag: Boolean by property(useTagSearch)
 }
@@ -49,13 +46,13 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
 
     //Search query is limited to 50 chars and trimmed to reduce requests to API
     val queryChanges: Observable<String> = bindQueryProperty
-            .toObservableChangesNonNull()
-            .map { it.newVal }
-            .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
+        .toObservableChangesNonNull()
+        .map { it.newVal }
+        .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
 
     val queryBinding = bindQueryProperty.toObservable()
-            .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
-            .toBinding()
+        .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
+        .toBinding()
 
     fun search() = stationSearchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 

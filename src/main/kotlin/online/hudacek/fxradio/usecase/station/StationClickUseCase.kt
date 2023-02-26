@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.usecase.station
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.BaseUseCase
@@ -30,10 +30,10 @@ import online.hudacek.fxradio.util.applySchedulersSingle
 class StationClickUseCase : BaseUseCase<Station, Single<ClickResponse>>() {
 
     override fun execute(input: Station): Single<ClickResponse> = radioBrowserApi
-            .click(input.uuid)
-            .compose(applySchedulersSingle())
-            .onErrorResumeNext {
-                // We do not care if this response fails
-                Single.just(ClickResponse(false, it.localizedMessage, input.name, input.urlResolved))
-            }
+        .click(input.uuid)
+        .compose(applySchedulersSingle())
+        .onErrorResumeNext {
+            // We do not care if this response fails
+            Single.just(ClickResponse(false, it.localizedMessage, input.name, input.urlResolved))
+        }
 }

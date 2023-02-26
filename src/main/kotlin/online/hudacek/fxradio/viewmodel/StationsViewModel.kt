@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
@@ -129,9 +129,6 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
                 .subscribe(::show, ::handleError)
 
             is LibraryState.Search -> search()
-            else -> {
-                show(observableListOf(Station.dummy))
-            }
         }
     }
 }

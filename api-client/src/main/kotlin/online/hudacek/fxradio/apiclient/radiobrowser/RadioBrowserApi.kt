@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.ApiDefinition
 import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse

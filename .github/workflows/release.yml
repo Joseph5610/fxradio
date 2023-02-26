@@ -35,8 +35,8 @@ jobs:
             - uses: actions/setup-java@v3
               with:
                   distribution: 'zulu'
-                  java-version: '8'
-                  java-package: jdk+fx
+                  java-version: '11'
+                  java-package: jdk
             - run: ./gradlew -i jfxNative
             - name: Find DMG file on filesystem
               id: find-dmg
@@ -63,8 +63,8 @@ jobs:
             - uses: actions/setup-java@v3
               with:
                   distribution: 'zulu'
-                  java-version: '8'
-                  java-package: jdk+fx
+                  java-version: '11'
+                  java-package: jdk
             - run: ./gradlew -i jfxNative
             - name: Find MSI file on filesystem
               id: find-msi

@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import okhttp3.Response
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.MusicBrainzApiProvider
