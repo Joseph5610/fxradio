@@ -33,6 +33,7 @@ import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
+import tornadofx.bindSelected
 import tornadofx.booleanBinding
 import tornadofx.c
 import tornadofx.checkbox
@@ -139,16 +140,17 @@ class PreferencesFragment : BaseFragment() {
 
                 field(messages["servers.selected"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
-                    combobox(
-                        property = serversViewModel.selectedProperty,
-                        values = serversViewModel.availableServersProperty
-                    ) {
-
-                        cellFormat(formatButtonCell = false) {
+                    combobox(values = serversViewModel.availableServersProperty) {
+                        cellFormat {
                             graphic = imageview { image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull() }
                             text = it
                         }
+                        // Workaround for a strange bug...
+                        selectionModel.clearSelection()
+                        selectionModel.select(serversViewModel.selectedProperty.value)
+                        bindSelected(serversViewModel.selectedProperty)
                     }
+
                     showWhen {
                         serversViewModel.stateProperty.booleanBinding {
                             when (it) {

@@ -20,6 +20,7 @@ package online.hudacek.fxradio.ui.view
 
 import javafx.geometry.Orientation
 import javafx.scene.layout.Priority
+import javafx.stage.Window
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
@@ -53,6 +54,13 @@ class MainView : BaseView(FxRadio.appName) {
         with(splitPane) {
             // Workaround for setting correct position of divider after restart of app
             setDividerPositions(windowDividerProperty.get(0.30))
+        }
+
+        primaryStage.setOnCloseRequest { evt ->
+            // prevent window from closing when modals opened
+            if (Window.getWindows().size > 1) {
+                evt.consume()
+            }
         }
     }
 
