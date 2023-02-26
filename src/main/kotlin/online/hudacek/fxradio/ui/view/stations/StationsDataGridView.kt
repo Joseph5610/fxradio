@@ -24,6 +24,8 @@ import javafx.scene.input.MouseEvent
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.item
+import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.util.DataCellHandler
 import online.hudacek.fxradio.ui.util.DataGridHandler
 import online.hudacek.fxradio.ui.util.make
@@ -40,10 +42,8 @@ import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.booleanBinding
-import tornadofx.contextmenu
 import tornadofx.datagrid
 import tornadofx.get
-import tornadofx.item
 import tornadofx.label
 import tornadofx.onHover
 import tornadofx.onLeftClick
@@ -117,11 +117,11 @@ class StationsDataGridView : BaseView() {
                     tooltip(station.name)
                 }
 
-                contextmenu {
-                    item(messages["menu.station.info"]).action {
+                platformContextMenu(listOf(item(messages["menu.station.info"]) {
+                    action {
                         selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
                     }
-                }
+                }))
 
                 stationView(station, LOGO_SIZE) {
                     paddingAll = 5

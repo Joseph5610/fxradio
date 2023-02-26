@@ -18,15 +18,21 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import de.jangassen.MenuToolkit
 import javafx.beans.property.Property
+import javafx.event.EventTarget
+import javafx.scene.Node
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.MouseButton
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.util.macos.MacUtils
 import tornadofx.bind
 import tornadofx.booleanBinding
+import tornadofx.contextmenu
 import tornadofx.disableWhen
 
 /**
@@ -66,4 +72,23 @@ internal fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
     disableWhen(station.booleanBinding {
         it == null || !it.isValid()
     })
+}
+
+internal fun EventTarget.platformContextMenu(menuItems: List<MenuItem>) {
+    if (MacUtils.isMac) {
+        val menu = Menu().apply {
+            items.addAll(menuItems)
+        }
+        if (this is Node) {
+            setOnMouseClicked {
+                if (it.button == MouseButton.SECONDARY) {
+                    MenuToolkit.toolkit().showContextMenu(menu, it)
+                }
+            }
+        }
+    } else {
+        contextmenu {
+            items.addAll(menuItems)
+        }
+    }
 }

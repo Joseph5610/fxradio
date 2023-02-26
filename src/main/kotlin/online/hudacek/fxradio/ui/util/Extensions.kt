@@ -38,6 +38,8 @@ import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.ui.menu.item
+import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.StationImageView
 import org.controlsfx.control.NotificationPane
@@ -50,11 +52,9 @@ import tornadofx.action
 import tornadofx.add
 import tornadofx.addClass
 import tornadofx.bind
-import tornadofx.contextmenu
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.toGlyph
 import tornadofx.field
-import tornadofx.item
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.onChange
@@ -122,7 +122,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
     clipboard: Clipboard,
     menuItemName: String,
     valueToCopy: StringProperty
-) = contextmenu {
+) = platformContextMenu(listOf(
     item(menuItemName) {
         action {
             if (valueToCopy.value != null) {
@@ -136,7 +136,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
             }
         }
     }
-}
+))
 
 internal fun Window.setOnSpacePressed(action: () -> Unit) {
     addEventHandler(KeyEvent.KEY_PRESSED) {
