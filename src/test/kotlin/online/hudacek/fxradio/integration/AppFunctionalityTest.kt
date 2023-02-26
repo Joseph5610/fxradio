@@ -30,18 +30,15 @@ import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.integration.Elements.libraryCountriesFragment
-import online.hudacek.fxradio.integration.Elements.libraryListView
 import online.hudacek.fxradio.integration.Elements.nowPlayingLabel
 import online.hudacek.fxradio.integration.Elements.playerControls
 import online.hudacek.fxradio.integration.Elements.search
 import online.hudacek.fxradio.integration.Elements.stationMessageHeader
 import online.hudacek.fxradio.integration.Elements.stationMessageSubHeader
 import online.hudacek.fxradio.integration.Elements.stationsDataGrid
-import online.hudacek.fxradio.integration.Elements.stationsHistory
 import online.hudacek.fxradio.integration.Elements.volumeMaxIcon
 import online.hudacek.fxradio.integration.Elements.volumeMinIcon
 import online.hudacek.fxradio.integration.Elements.volumeSlider
-import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
@@ -56,7 +53,6 @@ import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import org.testfx.util.WaitForAsyncUtils
 import tornadofx.DataGrid
-import tornadofx.FX
 import tornadofx.find
 import java.util.*
 
@@ -150,44 +146,6 @@ class AppFunctionalityTest {
             .filter { it.countryCode != "RU" }
 
         assertEquals(apiStations.size, appStations.items.size)
-    }
-
-    @Test
-    fun `history tab should show same stations as in database`() {
-        val historyItemIndex = 3
-
-        // Verify app initial state
-        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
-
-        // Find libraries item
-        val libraries = robot.find(libraryListView) as ListView<LibraryItem>
-
-        // Wait until whole app is loaded
-        sleep(2)
-
-        // Click on History item in Library List Item
-        val historyItem = robot.from(libraries)
-            .lookup(libraries.items[historyItemIndex].type.key.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    FX.locale
-                ) else it.toString()
-            })
-            .query<Label>()
-        robot.clickOn(historyItem)
-
-        // Find DataGrid, History List and actual db count
-        val stations = robot.find(stationsDataGrid) as DataGrid<Station>
-        val historydbCount = Tables.history.selectAll().count().blockingGet()
-        val stationsHistory = robot.find(stationsHistory) as ListView<Station>
-
-        // Stations datagrid is not visible in history
-        waitFor(2) { !stations.isVisible }
-
-        // Instead, list of stations is visible
-        waitFor(2) { stationsHistory.isVisible }
-
-        // Verify DB count equals actual list items count
-        assertEquals(historydbCount.toInt(), stationsHistory.items.size)
     }
 
     @Test

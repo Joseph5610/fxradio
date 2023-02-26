@@ -19,31 +19,29 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.util.applySchedulersSingle
-import online.hudacek.fxradio.util.applySchedulers
 
 class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
 
-    override fun selectAll(): Observable<Country> = selectAllQuery()
-            .toObservable {
-                // We do not store the count of stations for pinned countries
-                // so the returned object will have count set to 0 and the number is not displayed in UI
-                Country(it.getString("name"), it.getString("iso3"), 0)
-            }.compose(applySchedulers())
+    override fun selectAll(): Flowable<Country> = selectAllQuery()
+        .get {
+            // We do not store the count of stations for pinned countries
+            // so the returned object will have count set to 0 and the number is not displayed in UI
+            Country(it.getString("name"), it.getString("iso3"), 0)
+        }
 
-    override fun removeAll(): Single<Int> = removeAllQuery().toSingle().compose(applySchedulersSingle())
+    override fun removeAll(): Flowable<Int> = removeAllQuery().counts()
 
-    override fun insert(element: Country): Single<Country> = insertQuery("INSERT INTO $tableName (name, iso3)  " +
-            "VALUES (:name, :iso3)")
-            .parameter("name", element.name)
-            .parameter("iso3", element.iso3166)
-            .toSingle { element }
+    override fun insert(element: Country): Flowable<Int> = database.update(
+        "INSERT INTO $tableName (name, iso3)  " +
+                "VALUES (:name, :iso3)"
+    )
+        .parameter("name", element.name)
+        .parameter("iso3", element.iso3166)
+        .counts()
 
-    override fun remove(element: Country): Single<Country> = removeQuery("DELETE FROM $tableName WHERE name = ?")
-            .parameter(element.name)
-            .toSingle()
-            .map { element }
+    override fun remove(element: Country): Flowable<Int> = database.update("DELETE FROM $tableName WHERE name = ?")
+        .parameter(element.name)
+        .counts()
 }

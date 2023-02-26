@@ -18,8 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
-import com.github.thomasnield.rxkotlinfx.toBinding
 import io.reactivex.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
@@ -33,6 +31,8 @@ import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
+import online.hudacek.fxradio.util.actionEvents
+import online.hudacek.fxradio.util.toBinding
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel

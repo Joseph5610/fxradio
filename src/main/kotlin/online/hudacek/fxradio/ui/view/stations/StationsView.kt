@@ -43,7 +43,6 @@ class StationsView : BaseView() {
     private val messageView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
-    private val historyView: StationsHistoryView by inject()
     private val stationsInfoView: StationsInfoView by inject()
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
@@ -62,7 +61,6 @@ class StationsView : BaseView() {
                 hgrow = Priority.ALWAYS
                 add(messageView)
                 add(dataGridView)
-                add(historyView)
             }
         }
 
@@ -77,7 +75,6 @@ class StationsView : BaseView() {
         }
 
         dataGridView.root.fitToParentHeight()
-        historyView.root.fitToParentHeight()
         addClass(Styles.backgroundWhite)
     }
 }

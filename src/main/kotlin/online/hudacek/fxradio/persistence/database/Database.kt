@@ -19,49 +19,58 @@
 
 package online.hudacek.fxradio.persistence.database
 
+import io.reactivex.schedulers.Schedulers
 import online.hudacek.fxradio.Config
+import org.davidmoten.rx.jdbc.Database
+import org.davidmoten.rx.jdbc.SelectBuilder
+import org.davidmoten.rx.jdbc.UpdateBuilder
+import org.davidmoten.rx.jdbc.pool.Pools
 import org.flywaydb.core.Flyway
-import org.nield.rxkotlinjdbc.execute
-import org.nield.rxkotlinjdbc.insert
-import org.nield.rxkotlinjdbc.select
-import java.sql.Connection
-import java.sql.DriverManager
+import java.util.concurrent.Executors
 
 private val DB_URL = "jdbc:sqlite:${Config.Paths.dbPath}"
+private const val DB_POOLS = 5
 
 /**
  * Database helper class with useful methods to write/read from local sqlite.db
  */
 open class Database(private val tableName: String) {
 
-    fun selectAllQuery() = connection.select("SELECT * FROM $tableName")
+    fun selectAllQuery(): SelectBuilder = database.select("SELECT * FROM $tableName")
 
-    fun removeAllQuery() = connection.execute("DELETE FROM $tableName")
+    fun removeAllQuery(): UpdateBuilder = database.update("DELETE FROM $tableName")
 
-    fun insertQuery(query: String) = connection.insert(query)
-
-    fun removeQuery(query: String) = connection.execute(query)
 
     companion object {
+        // Workaround for https://github.com/davidmoten/rxjava2-jdbc/issues/51
+        private val executor = Executors.newFixedThreadPool(DB_POOLS)
+
+        private val pools = Pools.nonBlocking()
+            .url(DB_URL)
+            .maxPoolSize(DB_POOLS)
+            .scheduler(Schedulers.from(executor))
+            .build()
+
         /**
          * Establishes connection to SQLite db with [DB_URL]
          * Performs create table operation for all tables in [Tables] object
          */
-        internal val connection: Connection by lazy {
-            DriverManager.getConnection(DB_URL).apply {
-                /**
-                 * Apply flyway db migrations
-                 */
-                Flyway.configure().dataSource(DB_URL, null, null).load().also {
-                    it.migrate()
-                }
+        internal val database: Database = Database.from(pools).also {
+            /**
+             * Apply flyway db migrations
+             */
+            Flyway.configure().dataSource(DB_URL, null, null).load().also {
+                it.migrate()
             }
         }
 
         /**
          * Closes connection to DB
          */
-        fun close() = connection.close()
+        fun close() {
+            database.close()
+            executor.shutdownNow()
+        }
     }
 }
 

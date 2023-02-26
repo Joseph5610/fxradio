@@ -18,8 +18,7 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.Flowable
 
 /**
  * Basic interface for common table operations
@@ -30,10 +29,10 @@ interface Table<T> {
      */
     val tableName: String
 
-    fun selectAll(): Observable<T>
-    fun removeAll(): Single<Int>
-    fun insert(element: T): Single<T>
-    fun remove(element: T): Single<T>
+    fun selectAll(): Flowable<T>
+    fun removeAll(): Flowable<Int>
+    fun insert(element: T): Flowable<Int>
+    fun remove(element: T): Flowable<Int>
 }
 
 

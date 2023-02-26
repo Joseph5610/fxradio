@@ -25,7 +25,6 @@ import online.hudacek.fxradio.ui.menu.AboutMenu
 import online.hudacek.fxradio.ui.menu.FavouritesMenu
 import online.hudacek.fxradio.ui.menu.FileMenu
 import online.hudacek.fxradio.ui.menu.HelpMenu
-import online.hudacek.fxradio.ui.menu.HistoryMenu
 import online.hudacek.fxradio.ui.menu.PlayerMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.macos.NSMenu
@@ -40,7 +39,6 @@ class MenuBarView : BaseView() {
     private val appMenuViewModel: AppMenuViewModel by inject()
 
     private val aboutMenu: AboutMenu by inject()
-    private val historyMenu: HistoryMenu by inject()
     private val favouritesMenu: FavouritesMenu by inject()
     private val helpMenu: HelpMenu by inject()
     private val fileMenu: FileMenu by inject()
@@ -60,7 +58,6 @@ class MenuBarView : BaseView() {
             fileMenu.menu,
             playerMenu.menu,
             favouritesMenu.menu,
-            historyMenu.menu,
             helpMenu.menu
         )
         addClass(Styles.mainMenuBox)

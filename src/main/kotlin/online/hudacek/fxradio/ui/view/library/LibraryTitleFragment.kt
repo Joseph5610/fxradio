@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
 import javafx.util.Duration
@@ -26,6 +25,7 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
+import online.hudacek.fxradio.util.toObservable
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
 import tornadofx.hbox

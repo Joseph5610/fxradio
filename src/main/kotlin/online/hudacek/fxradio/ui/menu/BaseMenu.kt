@@ -55,7 +55,6 @@ abstract class BaseMenu(menuTitle: String) : Controller() {
      */
     protected companion object KeyCodes {
         val favouriteView = keyCombination(KeyCode.DIGIT1)
-        val historyView = keyCombination(KeyCode.DIGIT2)
         val play = keyCombination(KeyCode.P)
         val stop = keyCombination(KeyCode.S)
         val newStation = keyCombination(KeyCode.N)

@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservableChangesNonNull
 import io.reactivex.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
@@ -29,6 +28,7 @@ import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.search.StationSearchUUIDUseCase
+import online.hudacek.fxradio.util.toObservableChangesNonNull
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -91,7 +91,6 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
         .toObservableChangesNonNull()
         .map { it.newVal }
         .filter { it.isValid() }
-        .doOnEach(appEvent.stationsHistory) //Send the new history item
 
     /**
      * Retrieve additional station data as some of them might not be known at all times

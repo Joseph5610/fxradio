@@ -17,10 +17,10 @@
  */
 package online.hudacek.fxradio.ui.view
 
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.util.toObservableChanges
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel

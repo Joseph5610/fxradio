@@ -78,13 +78,12 @@ dependencies {
     implementation("no.tornado:tornadofx:$tornadoFxVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
+
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
-
-
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("org.nield:rxkotlin-jdbc:0.4.1")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("com.github.davidmoten:rxjava2-jdbc:0.2.12")
 
     // Players
     implementation("io.humble:humble-video-all:$humbleVersion")
