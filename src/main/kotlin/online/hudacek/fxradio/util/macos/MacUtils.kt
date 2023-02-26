@@ -32,11 +32,11 @@ object MacUtils {
      * Shows macOS native system notification
      */
     fun notification(title: String, subtitle: String) =
-            NSUserNotification().apply {
-                this.title = title
-                this.informativeText = subtitle
-                this.actionButtonTitle = messages["show"]
-            }.show()
+        NSUserNotification().apply {
+            this.title = title
+            this.informativeText = subtitle
+            this.actionButtonTitle = messages["show"]
+        }.show()
 
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"

@@ -38,7 +38,7 @@ enum class AccentColor(
     /**
      * Convert internal representation of accent color into hex
      */
-    fun convertToHex() : String = when (this) {
+    fun convertToHex(): String = when (this) {
         MULTICOLOR -> "#d65458"
         GRAPHITE -> "#8c8c8c"
         RED -> "#e15257"

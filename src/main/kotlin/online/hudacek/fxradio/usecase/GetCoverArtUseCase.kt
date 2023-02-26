@@ -39,7 +39,7 @@ class GetCoverArtUseCase : BaseUseCase<String, Single<Response>>() {
             val coverUrl = Config.API.coverArtApiUrl + release.id + "/front-250"
             ReleaseWithCoverArt(coverUrl, release)
         }
-        .flatMap{ Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
+        .flatMap { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
         .compose(applySchedulersSingle())
 }
 

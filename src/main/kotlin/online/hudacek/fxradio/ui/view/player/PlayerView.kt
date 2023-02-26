@@ -26,7 +26,6 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.setOnSpacePressed
-import online.hudacek.fxradio.usecase.GetCoverArtUseCase
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.keyCombination

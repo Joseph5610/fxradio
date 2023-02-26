@@ -29,7 +29,10 @@ import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.get
+import tornadofx.insets
+import tornadofx.onChange
+import tornadofx.validator
 
 private const val searchGlyphSize = 14.0
 private const val searchMaxLength = 49.0

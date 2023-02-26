@@ -22,9 +22,9 @@ import de.jangassen.MenuToolkit
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
-import javafx.scene.control.SeparatorMenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
+import online.hudacek.fxradio.ui.menu.separator
 import tornadofx.Component
 import tornadofx.FX
 import tornadofx.get
@@ -32,22 +32,24 @@ import tornadofx.get
 /**
  * NSMenu helper for macOS only
  */
-class NSMenuBar : Component() {
+class NSMenuHelper : Component() {
 
     private val tk = MenuToolkit.toolkit(FX.locale)
 
+    /**
+     * macOS style default About Menu
+     */
     private val aboutMenu = menu(FxRadio.appName) {
         items.addAll(
-            SeparatorMenuItem(),
+            separator(),
             tk.createHideMenuItem(text),
             tk.createHideOthersMenuItem(),
             tk.createUnhideAllMenuItem(),
-            SeparatorMenuItem(),
+            separator(),
             tk.createQuitMenuItem(text)
         )
         tk.setApplicationMenu(this)
     }
-
 
     val menuBar by lazy {
         MenuBar().apply {
@@ -55,20 +57,29 @@ class NSMenuBar : Component() {
         }
     }
 
+    /**
+     * Adds menus to the main MenuBar
+     */
     fun addMenus(vararg menus: Menu) {
         menuBar.menus.addAll(menus)
     }
 
+    /**
+     * Adds additional MenuItems into the [aboutMenu]
+     */
     fun addAboutMenuItems(items: List<MenuItem>) {
         aboutMenu.items.addAll(0, items)
     }
 
+    /**
+     * Creates macOS style default Window menu
+     */
     fun windowMenu() = menu(messages["macos.menu.window"]) {
         items.addAll(
             tk.createMinimizeMenuItem(),
             tk.createZoomMenuItem(),
             tk.createCycleWindowsItem(),
-            SeparatorMenuItem(),
+            separator(),
             tk.createBringAllToFrontItem()
         )
         tk.autoAddWindowMenuItems(this)

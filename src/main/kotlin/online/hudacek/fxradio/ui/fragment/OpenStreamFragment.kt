@@ -22,11 +22,22 @@ import javafx.geometry.Pos
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import tornadofx.*
+import tornadofx.ValidationContext
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.button
+import tornadofx.field
+import tornadofx.fieldset
+import tornadofx.form
+import tornadofx.get
+import tornadofx.paddingAll
+import tornadofx.stringProperty
+import tornadofx.textfield
+import tornadofx.vbox
 import java.util.*
 
 private const val WINDOW_PREF_WIDTH = 300.0

@@ -29,7 +29,7 @@ val slf4jVersion = "2.0.5"
 val kotlinLoggingVersion = "3.0.4"
 val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.0"
-val vlcjVersion = "4.7.2"
+val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "9.10.2"
 val controlsFxVersion = "11.1.2"
@@ -96,7 +96,7 @@ dependencies {
 }
 
 javafx {
-    version = "16"
+    version = "19"
     modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
 }
 

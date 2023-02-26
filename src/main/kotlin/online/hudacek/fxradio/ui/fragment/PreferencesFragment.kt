@@ -21,11 +21,11 @@ package online.hudacek.fxradio.ui.fragment
 import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.style.AccentColor
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
-import online.hudacek.fxradio.ui.style.AccentColor
-import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.ServersState
 import online.hudacek.fxradio.viewmodel.ServersViewModel

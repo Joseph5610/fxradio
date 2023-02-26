@@ -36,17 +36,21 @@ internal fun menu(name: String, op: Menu.() -> Unit = {}) = Menu(name).apply {
     op(this)
 }
 
-internal fun item(name: String, keyCode: KeyCodeCombination? = null,
-                  op: MenuItem.() -> Unit = {}) = MenuItem(name).apply {
+internal fun item(
+    name: String, keyCode: KeyCodeCombination? = null,
+    op: MenuItem.() -> Unit = {}
+) = MenuItem(name).apply {
     if (keyCode != null) {
         accelerator = keyCode
     }
     op(this)
 }
 
-internal fun checkMenuItem(name: String, bindProperty: Property<Boolean>? = null,
-                           keyCode: KeyCodeCombination? = null,
-                           op: CheckMenuItem.() -> Unit = {}) = CheckMenuItem(name).apply {
+internal fun checkMenuItem(
+    name: String, bindProperty: Property<Boolean>? = null,
+    keyCode: KeyCodeCombination? = null,
+    op: CheckMenuItem.() -> Unit = {}
+) = CheckMenuItem(name).apply {
     if (keyCode != null) {
         accelerator = keyCode
     }
