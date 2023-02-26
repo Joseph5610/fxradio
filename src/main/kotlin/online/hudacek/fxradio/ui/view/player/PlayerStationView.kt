@@ -20,15 +20,28 @@ package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.image.Image
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.stationView
-import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.usecase.GetCoverArtUseCase
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.borderpane
+import tornadofx.bottom
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.label
+import tornadofx.onHover
+import tornadofx.separator
+import tornadofx.stringBinding
+import tornadofx.tooltip
+import tornadofx.top
+import tornadofx.vbox
 
 private const val LOGO_SIZE = 33.0
 
@@ -36,6 +49,8 @@ private const val LOGO_SIZE = 33.0
  * Shows now playing song, radio logo, radio name
  */
 class PlayerStationView : BaseView() {
+
+    private val coverArtUseCase: GetCoverArtUseCase by inject()
 
     private val viewModel: PlayerViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
@@ -51,7 +66,19 @@ class PlayerStationView : BaseView() {
     }
 
     private val stationLogo by lazy {
-        stationView(selectedStationViewModel.stationProperty, size = LOGO_SIZE)
+        stationView(selectedStationViewModel.stationProperty, size = LOGO_SIZE) {
+            appEvent.streamMetaDataUpdates
+                .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
+                .subscribe({
+                    if (it.isSuccessful) {
+                        it.body?.byteStream().use { i ->
+                            image = Image(i)
+                        }
+                    } else {
+                        getStationImage()
+                    }
+                }, { getStationImage() })
+        }
     }
 
     override val root = hbox(spacing = 3) {

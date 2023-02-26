@@ -18,7 +18,9 @@
 
 package online.hudacek.fxradio.util
 
-import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.FlowableTransformer
+import io.reactivex.Maybe
+import io.reactivex.MaybeTransformer
 import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.schedulers.Schedulers
@@ -39,9 +41,23 @@ internal fun <T> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransf
         .observeOnFx()
 }
 
+internal fun <T> applySchedulersMaybe(): MaybeTransformer<T, T> = MaybeTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
 internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
+}
+
+internal fun <T> applySchedulersFlowable(): FlowableTransformer<T, T> = FlowableTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
+internal fun <T> maybeOfNullable(value: T?): Maybe<T> {
+    return if (value == null) Maybe.empty() else Maybe.just(value)
 }
 
 internal fun reloadStylesheets(isDarkModeProperty: Boolean) {

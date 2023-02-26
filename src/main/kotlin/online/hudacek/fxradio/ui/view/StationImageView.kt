@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view
 
-import com.github.thomasnield.rxkotlinfx.toObservable
 import javafx.beans.property.Property
 import javafx.scene.CacheHint
 import javafx.scene.image.Image
@@ -29,6 +28,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.hasInvalidLogo
 import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.setInvalidLogo
 import online.hudacek.fxradio.persistence.cache.StationImageCache
+import online.hudacek.fxradio.util.toObservable
 import tornadofx.objectProperty
 
 private val logger = KotlinLogging.logger {}
@@ -38,7 +38,7 @@ private val logger = KotlinLogging.logger {}
  */
 class StationImageView(
     private val stationProperty: Property<Station>,
-    private val size: Double = 15.0
+    size: Double = 15.0
 ) : ImageView(defaultRadioLogo) {
 
     constructor(station: Station, size: Double) : this(objectProperty(station), size)
@@ -65,7 +65,7 @@ class StationImageView(
     /**
      * Loads favicon of [stationProperty] from cache into [image] field asynchronously
      */
-    private fun getStationImage() {
+    fun getStationImage() {
         stationImageCache.load(stationProperty.value).subscribe({
             image = it
             it?.errorProperty()?.toObservable()?.subscribe { isError ->

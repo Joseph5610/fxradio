@@ -18,29 +18,28 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulers
-import online.hudacek.fxradio.util.applySchedulersSingle
-import org.nield.rxkotlinjdbc.SelectOperation
+import org.davidmoten.rx.jdbc.SelectBuilder
 
 /**
  * Common operations on database of stations with different tables (e.g. History, Favourites ..)
  */
 abstract class StationTable(override val tableName: String) : Table<Station>, Database(tableName) {
 
-    override fun selectAll(): Observable<Station> = selectAllQuery().toStationObservable()
+    override fun selectAll() = selectAllQuery().asStationFlowable()
 
-    override fun removeAll(): Single<Int> = removeAllQuery().toSingle().compose(applySchedulersSingle())
+    override fun removeAll(): Flowable<Int> = removeAllQuery().counts()
 
-    override fun remove(element: Station): Single<Station> =
-        removeQuery("DELETE FROM $tableName WHERE stationuuid = ?")
+    override fun remove(element: Station): Flowable<Int> =
+        database.update("DELETE FROM $tableName WHERE stationuuid = ?")
             .parameter(element.uuid)
-            .toSingle()
-            .map { element }
+            .counts()
 
-    fun SelectOperation.toStationObservable(): Observable<Station> = toObservable {
+    /**
+     * Map ResultSet to [Station] Flowable
+     */
+    fun SelectBuilder.asStationFlowable(): Flowable<Station> = get {
         Station(
             it.getString("stationuuid"),
             it.getString("name"),
@@ -55,5 +54,5 @@ abstract class StationTable(override val tableName: String) : Table<Station>, Da
             it.getString("codec"),
             it.getInt("bitrate")
         )
-    }.compose(applySchedulers())
+    }
 }

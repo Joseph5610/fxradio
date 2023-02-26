@@ -24,6 +24,7 @@ import javafx.scene.image.Image
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.maybeOfNullable
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -73,12 +74,6 @@ class StationImageCache : ImageCache() {
                 cacheBasePath.resolve(fileName),
                 StandardCopyOption.REPLACE_EXISTING
             )
-        }
-    }
-
-    companion object {
-        private fun <T> maybeOfNullable(value: T?): Maybe<T> {
-            return if (value == null) Maybe.empty() else Maybe.just(value)
         }
     }
 }

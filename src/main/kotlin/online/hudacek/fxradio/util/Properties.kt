@@ -47,7 +47,7 @@ enum class Properties(val key: String) {
     LogLevel("log.level"),
     DarkMode("app.darkmode"),
     UseTrayIcon("app.trayicon"),
-    EnableDebugView("app.debug"); // Not configurable in UI
+    EnableDebugView("app.debug"), // Not configurable in UI
 }
 
 /**

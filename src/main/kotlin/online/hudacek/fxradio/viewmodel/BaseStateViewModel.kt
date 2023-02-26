@@ -18,10 +18,10 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import com.github.thomasnield.rxkotlinfx.toObservable
-import com.github.thomasnield.rxkotlinfx.toObservableChanges
 import io.reactivex.Observable
 import mu.KotlinLogging
+import online.hudacek.fxradio.util.toObservable
+import online.hudacek.fxradio.util.toObservableChanges
 import tornadofx.objectProperty
 
 private val logger = KotlinLogging.logger {}

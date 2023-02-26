@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
 }
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
@@ -33,7 +33,7 @@ val humbleVersion = "0.3.0"
 val flywayVersion = "9.10.2"
 val controlsFxVersion = "8.40.18"
 
-version = "0.11.1"
+version = "0.12.0"
 
 val appVersion: String = version as String
 
@@ -83,11 +83,11 @@ dependencies {
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
-    implementation("com.github.thomasnield:rxkotlinfx:2.2.2")
+    implementation("io.reactivex.rxjava2:rxjavafx:2.2.2")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("org.nield:rxkotlin-jdbc:0.4.1")
-    implementation("de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.7")
+    implementation("de.jangassen:nsmenufx:2.1.8")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("com.github.davidmoten:rxjava2-jdbc:0.2.12")
 
     // Players
     implementation("io.humble:humble-video-all:$humbleVersion")

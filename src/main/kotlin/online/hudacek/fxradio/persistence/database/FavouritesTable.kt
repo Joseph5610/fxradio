@@ -1,17 +1,14 @@
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import org.nield.rxkotlinjdbc.execute
-import org.nield.rxkotlinjdbc.select
 
 class FavouritesTable : StationTable("FAVOURITES") {
 
-    override fun selectAll(): Observable<Station> =
-        connection.select("SELECT * FROM $tableName ORDER BY sorting_order ASC, id ASC;").toStationObservable()
+    override fun selectAll() =
+        database.select("SELECT * FROM $tableName ORDER BY sorting_order ASC, id ASC;").asStationFlowable()
 
-    override fun insert(element: Station): Single<Station> = insertQuery(
+    override fun insert(element: Station): Flowable<Int> = database.update(
         "INSERT INTO $tableName (name, stationuuid, url_resolved, " +
                 "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate, sorting_order) " +
                 "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, " +
@@ -30,12 +27,10 @@ class FavouritesTable : StationTable("FAVOURITES") {
         .parameter("codec", element.codec)
         .parameter("bitrate", element.bitrate)
         .parameter("sorting_order", Int.MAX_VALUE)
-        .toSingle { element }
+        .counts()
 
-    fun updateOrder(station: Station, newOrderId: Int): Single<Station> =
-        connection.execute("UPDATE $tableName SET sorting_order = ? WHERE stationuuid = ?;")
-            .parameter(newOrderId)
-            .parameter(station.uuid)
-            .toSingle()
-            .map { station }
+    fun updateOrder(station: Station, newOrderId: Int): Flowable<Int> =
+        database.update("UPDATE $tableName SET sorting_order = ? WHERE stationuuid = ?;")
+            .parameters(newOrderId, station.uuid)
+            .counts()
 }

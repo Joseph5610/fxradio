@@ -1,6 +1,5 @@
 package online.hudacek.fxradio.util
 
-import com.github.thomasnield.rxkotlinfx.toMaybe
 import io.reactivex.Maybe
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType

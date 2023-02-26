@@ -18,21 +18,20 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
+import javafx.geometry.Side
 import javafx.scene.layout.Priority
+import javafx.util.Duration.millis
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
-import tornadofx.booleanBinding
-import tornadofx.borderpane
-import tornadofx.center
+import tornadofx.controlsfx.hiddensidepane
+import tornadofx.controlsfx.right
 import tornadofx.fitToParentHeight
 import tornadofx.hgrow
+import tornadofx.objectBinding
 import tornadofx.paddingAll
-import tornadofx.right
-import tornadofx.top
 import tornadofx.vbox
 import tornadofx.vgrow
 
@@ -44,41 +43,38 @@ class StationsView : BaseView() {
     private val messageView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
-    private val historyView: StationsHistoryView by inject()
     private val stationsInfoView: StationsInfoView by inject()
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 
-    override val root = borderpane {
+    override val root = hiddensidepane {
         vgrow = Priority.ALWAYS
+        triggerDistance = 0.0
+        animationDuration = millis(100.0)
 
-        top {
+        content = vbox {
+            vgrow = Priority.ALWAYS
             add(headerView)
-        }
-
-        center {
             vbox(spacing = 5.0) {
                 paddingAll = 5.0
+                vgrow = Priority.ALWAYS
                 hgrow = Priority.ALWAYS
                 add(messageView)
                 add(dataGridView)
-                add(historyView)
             }
         }
 
         right {
             add(stationsInfoView)
-            right.showWhen {
-                selectedStationViewModel.stationProperty.booleanBinding {
-                    it?.isValid() == true
-                }.and(selectedStationViewModel.stateProperty.booleanBinding {
-                    it is InfoPanelState.Shown
-                })
-            }
+            pinnedSideProperty().bind(
+                selectedStationViewModel.stateProperty.objectBinding {
+                    if (it is InfoPanelState.Shown) Side.RIGHT
+                    else null
+                }
+            )
         }
 
         dataGridView.root.fitToParentHeight()
-        historyView.root.fitToParentHeight()
         addClass(Styles.backgroundWhite)
     }
 }

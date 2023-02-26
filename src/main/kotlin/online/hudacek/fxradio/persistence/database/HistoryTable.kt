@@ -1,18 +1,17 @@
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import org.nield.rxkotlinjdbc.select
 
 class HistoryTable : StationTable("HISTORY") {
-    override fun selectAll(): Observable<Station> =
-        connection.select("SELECT * FROM $tableName ORDER BY id DESC;").toStationObservable()
+    override fun selectAll(): Flowable<Station> =
+        database.select("SELECT * FROM $tableName ORDER BY id DESC;").asStationFlowable()
 
-    override fun insert(element: Station): Single<Station> = insertQuery(
+    override fun insert(element: Station): Flowable<Int> = database.update(
         "INSERT INTO $tableName (name, stationuuid, url_resolved, " +
                 "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate) " +
-                "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, :favicon, :tags, :codec, :bitrate )"
+                "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language," +
+                " :favicon, :tags, :codec, :bitrate )"
     )
         .parameter("name", element.name)
         .parameter("stationuuid", element.uuid)
@@ -26,5 +25,5 @@ class HistoryTable : StationTable("HISTORY") {
         .parameter("tags", element.tags)
         .parameter("codec", element.codec)
         .parameter("bitrate", element.bitrate)
-        .toSingle { element }
+        .counts()
 }

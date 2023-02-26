@@ -18,9 +18,9 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import com.github.thomasnield.rxkotlinfx.actionEvents
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.AlertHelper.confirmAlert
+import online.hudacek.fxradio.util.actionEvents
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel

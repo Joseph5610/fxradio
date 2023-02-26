@@ -74,7 +74,6 @@ internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
 }
 
 internal fun EventTarget.smallLabel(text: String = "", op: Label.() -> Unit = {}) = label(text) {
-    addClass(Styles.boldText)
     addClass(Styles.grayLabel)
     op(this)
 }
@@ -147,15 +146,6 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
         managedWhen(expr())
     }
 
-
-/**
- * Notification UI helpers
- */
-internal fun EventTarget.customNotificationPane(op: (NotificationPane.() -> Unit) = {}) =
-    notificationPane(showFromTop = true) {
-        op(this)
-    }
-
 /**
  * Custom function for showing notification in NotificationPane.
  * Notification disappears after 5 seconds
@@ -188,10 +178,10 @@ internal fun EventTarget.field(
         }
     })
 
-fun EventTarget.stationView(station: Station, size: Double, op: ImageView.() -> Unit = {}) =
+fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(station, size), op)
 
-fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: ImageView.() -> Unit = {}) =
+fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(stationProperty, size), op)
 
 internal val Country.flagIcon: FlagIcon?
