@@ -107,7 +107,7 @@ javafx {
 application {
     mainClass.set("online.hudacek.fxradio.FxRadioKt")
     applicationDefaultJvmArgs = listOf(
-        //Tornadofx
+        // Tornadofx
         "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED",
         "--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED",
         "--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED",
