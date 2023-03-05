@@ -173,7 +173,7 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
     delay.play()
 }
 
-internal fun String.formatted(replaceWith: Any) = MessageFormat.format(this, replaceWith)
+internal fun String.msgFormat(replaceWith: Any) = MessageFormat.format(this, replaceWith)
 
 internal fun EventTarget.field(
     message: String, prompt: String,

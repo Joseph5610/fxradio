@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("io.github.fvarrui:javapackager:1.6.7")
+        classpath("io.github.fvarrui:javapackager:1.7.0")
     }
 }
 
@@ -63,6 +63,10 @@ allprojects {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
     }
+
+    kotlin {
+        jvmToolchain(17)
+    }
 }
 
 tasks.withType<Test> {
@@ -100,10 +104,6 @@ javafx {
     modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
 }
 
-kotlin {
-    jvmToolchain(11)
-}
-
 application {
     mainClass.set("online.hudacek.fxradio.FxRadioKt")
     applicationDefaultJvmArgs = listOf(
@@ -116,7 +116,7 @@ application {
         "--add-opens=javafx.base/com.sun.javafx.collections=ALL-UNNAMED",
         "--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED",
         "--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED",
-        "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
+        "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED",
     )
 }
 

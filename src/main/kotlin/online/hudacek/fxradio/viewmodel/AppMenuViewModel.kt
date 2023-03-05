@@ -24,7 +24,7 @@ import javafx.beans.property.BooleanProperty
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.persistence.cache.ImageCache
-import online.hudacek.fxradio.ui.util.formatted
+import online.hudacek.fxradio.ui.util.msgFormat
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.util.Properties
@@ -45,7 +45,7 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
 
     fun clearCache(): Disposable = confirmAlert(
         messages["cache.clear.confirm"],
-        messages["cache.clear.text"].formatted(ImageCache.totalSize)
+        messages["cache.clear.text"].msgFormat(ImageCache.totalSize)
     ).flatMapSingle {
         Single.just(ImageCache.clear()).compose(applySchedulersSingle())
     }.subscribe({
