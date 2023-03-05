@@ -18,25 +18,12 @@
 
 package online.hudacek.fxradio.util.macos
 
-import airsquared.JMacNotification.NSUserNotification
 import online.hudacek.fxradio.util.Command
 import org.controlsfx.tools.Platform
-import tornadofx.FX.Companion.messages
-import tornadofx.get
 
 object MacUtils {
 
     val isMac = Platform.getCurrent() == Platform.OSX
-
-    /**
-     * Shows macOS native system notification
-     */
-    fun notification(title: String, subtitle: String) =
-        NSUserNotification().apply {
-            this.title = title
-            this.informativeText = subtitle
-            this.actionButtonTitle = messages["show"]
-        }.show()
 
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"

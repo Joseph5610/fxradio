@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.util.macos
 
 import de.jangassen.MenuToolkit
+import de.jangassen.model.AppearanceMode
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
@@ -34,7 +35,9 @@ import tornadofx.get
  */
 class NSMenuHelper : Component() {
 
-    private val tk = MenuToolkit.toolkit(FX.locale)
+    private val tk = MenuToolkit.toolkit(FX.locale).apply {
+        setAppearanceMode(AppearanceMode.AUTO)
+    }
 
     /**
      * macOS style default About Menu

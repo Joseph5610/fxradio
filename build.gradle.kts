@@ -82,6 +82,7 @@ dependencies {
     implementation("no.tornado:tornadofx:$tornadoFxVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
+    implementation("com.dustinredmond.fxtrayicon:FXTrayIcon:4.0.1")
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
