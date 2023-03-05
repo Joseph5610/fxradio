@@ -4,36 +4,37 @@ import io.github.fvarrui.javapackager.model.MacConfig
 import io.github.fvarrui.javapackager.model.MacStartup
 import io.github.fvarrui.javapackager.model.Manifest
 import io.github.fvarrui.javapackager.model.WindowsConfig
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("io.github.fvarrui:javapackager:1.6.7")
+        classpath("io.github.fvarrui:javapackager:1.7.0")
     }
 }
 
 plugins {
     kotlin("jvm") version "1.8.10"
+    id("org.openjfx.javafxplugin") version "0.0.13"
+    id("application")
 }
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
 val kotlinCoroutinesVersion = "1.6.4"
-val tornadoFxVersion = "1.7.20"
+val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.19.0"
 val slf4jVersion = "2.0.5"
 val kotlinLoggingVersion = "3.0.4"
 val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.0"
-val vlcjVersion = "4.7.2"
+val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "9.10.2"
-val controlsFxVersion = "8.40.18"
+val controlsFxVersion = "11.1.2"
 
-version = "0.12.0"
+version = "0.13.0"
 
 val appVersion: String = version as String
 
@@ -43,6 +44,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven(url = "https://jitpack.io")
+        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     dependencies {
@@ -61,11 +63,9 @@ allprojects {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
     }
-}
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        jvmToolchain(17)
     }
 }
 
@@ -83,11 +83,11 @@ dependencies {
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
-    implementation("io.reactivex.rxjava2:rxjavafx:2.2.2")
+    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("de.jangassen:nsmenufx:2.1.8")
+    implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("com.github.davidmoten:rxjava2-jdbc:0.2.12")
+    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.3")
 
     // Players
     implementation("io.humble:humble-video-all:$humbleVersion")
@@ -99,6 +99,26 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
 }
 
+javafx {
+    version = "19"
+    modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
+}
+
+application {
+    mainClass.set("online.hudacek.fxradio.FxRadioKt")
+    applicationDefaultJvmArgs = listOf(
+        // Tornadofx
+        "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED",
+        "--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED",
+        "--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED",
+        // necessary for ControlsFX
+        "--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED",
+        "--add-opens=javafx.base/com.sun.javafx.collections=ALL-UNNAMED",
+        "--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED",
+        "--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED",
+        "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED",
+    )
+}
 
 task<PackageTask>("jfxNative") {
     mainClass = "online.hudacek.fxradio.FxRadioKt"
@@ -109,9 +129,7 @@ task<PackageTask>("jfxNative") {
     displayName = "FXRadio"
     version = appVersion
     url = "https://hudacek.online/fxradio"
-    isBundleJre = true
     isCustomizedJre = false
-    jrePath = File(System.getProperty("java.home"))
     organizationName = "FXRadio"
     organizationUrl = "https://hudacek.online/fxradio"
     organizationEmail = "fxradio@hudacek.online"

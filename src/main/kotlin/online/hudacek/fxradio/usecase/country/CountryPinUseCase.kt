@@ -18,13 +18,11 @@
 
 package online.hudacek.fxradio.usecase.country
 
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersFlowable
-import online.hudacek.fxradio.util.applySchedulersSingle
 
 class CountryPinUseCase : BaseUseCase<Country, Flowable<Int>>() {
 

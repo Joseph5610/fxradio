@@ -22,7 +22,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.media.StreamUnavailableException
-import online.hudacek.fxradio.ui.util.formatted
+import online.hudacek.fxradio.ui.util.msgFormat
 import tornadofx.FX.Companion.messages
 import tornadofx.find
 import tornadofx.get
@@ -43,7 +43,7 @@ class VLCMediaAdapter : MediaEventAdapter() {
     override fun mediaStateChanged(media: Media?, newState: State) {
         media?.let {
             if (newState == State.ERROR || newState == State.ENDED) throw StreamUnavailableException(
-                messages["player.streamError"].formatted(it.info().mrl())
+                messages["player.streamError"].msgFormat(it.info().mrl())
             )
         }
     }

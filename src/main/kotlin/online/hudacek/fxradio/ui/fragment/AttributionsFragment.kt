@@ -23,16 +23,15 @@ import javafx.scene.layout.Priority
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.showWhen
-import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Attributions
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.Attribution
 import online.hudacek.fxradio.viewmodel.AttributionViewModel
-import tornadofx.SmartResize
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindSelected
@@ -45,6 +44,7 @@ import tornadofx.paddingAll
 import tornadofx.prefWidth
 import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
+import tornadofx.smartResize
 import tornadofx.tableview
 import tornadofx.textarea
 import tornadofx.vbox
@@ -65,11 +65,9 @@ class AttributionsFragment : BaseFragment() {
         requestFocusOnSceneAvailable() // To get rid of the blue box around the table
         tableview(Attributions.list) {
             bindSelected(viewModel)
-
-            columnResizePolicy = SmartResize.POLICY
             readonlyColumn(messages["attributions.name"], Attribution::name).remainingWidth()
             readonlyColumn(messages["attributions.version"], Attribution::version).prefWidth(100)
-
+            smartResize()
             onUserSelect {
                 Modal.License.open()
             }

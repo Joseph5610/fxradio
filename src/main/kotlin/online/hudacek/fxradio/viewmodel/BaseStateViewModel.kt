@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import mu.KotlinLogging
 import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.util.toObservableChanges

@@ -1,6 +1,6 @@
 package online.hudacek.fxradio.apiclient.musicbrainz
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.ApiDefinition
 import online.hudacek.fxradio.apiclient.musicbrainz.model.SearchResult
 import retrofit2.http.GET

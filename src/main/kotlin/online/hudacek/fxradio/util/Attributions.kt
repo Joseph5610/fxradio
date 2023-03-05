@@ -38,7 +38,7 @@ object Attributions {
             Attribution("nsmenufx", "2.1.8", license = Licenses.nsMenuFx),
             Attribution("rxkotlinfx", "2.2.2", license = Licenses.apache20),
             Attribution("sqliteJdbc", "3.40.0.0", license = Licenses.apache20),
-            Attribution("rxjava2-jdbc", "0.2.12", license = Licenses.apache20),
+            Attribution("rxjava3-jdbc", "0.1.3", license = Licenses.apache20),
             Attribution("TickerView", license = Licenses.tickerView),
             Attribution("Application Graphics", license = Licenses.graphics)
         )

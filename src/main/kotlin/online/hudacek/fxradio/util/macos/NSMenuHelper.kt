@@ -18,46 +18,71 @@
 
 package online.hudacek.fxradio.util.macos
 
-import de.codecentric.centerdevice.MenuToolkit
+import de.jangassen.MenuToolkit
+import javafx.scene.control.Menu
+import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
 import tornadofx.Component
 import tornadofx.FX
+import tornadofx.get
 
 /**
  * NSMenu helper for macOS only
  */
-open class NSMenu : Component() {
+class NSMenuHelper : Component() {
+
+    private val tk = MenuToolkit.toolkit(FX.locale)
 
     /**
-     * NSMenu toolkit initialization
+     * macOS style default About Menu
      */
-    protected val menuToolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
-
-    fun appMenu(menuItems: List<MenuItem>) = menu(FxRadio.appName) {
-        menuToolkit.setApplicationMenu(this)
-        items.addAll(menuItems)
+    private val aboutMenu = menu(FxRadio.appName) {
         items.addAll(
             separator(),
-            menuToolkit.createHideMenuItem(FxRadio.appName),
-            menuToolkit.createHideOthersMenuItem(),
-            menuToolkit.createUnhideAllMenuItem(),
+            tk.createHideMenuItem(text),
+            tk.createHideOthersMenuItem(),
+            tk.createUnhideAllMenuItem(),
             separator(),
-            menuToolkit.createQuitMenuItem(FxRadio.appName)
+            tk.createQuitMenuItem(text)
         )
+        tk.setApplicationMenu(this)
     }
 
-    fun windowMenu(name: String) = menu(name) {
-        menuToolkit.autoAddWindowMenuItems(this)
+    val menuBar by lazy {
+        MenuBar().apply {
+            useSystemMenuBarProperty().value = true
+        }
+    }
+
+    /**
+     * Adds menus to the main MenuBar
+     */
+    fun addMenus(vararg menus: Menu) {
+        menuBar.menus.addAll(menus)
+    }
+
+    /**
+     * Adds additional MenuItems into the [aboutMenu]
+     */
+    fun addAboutMenuItems(items: List<MenuItem>) {
+        aboutMenu.items.addAll(0, items)
+    }
+
+    /**
+     * Creates macOS style default Window menu
+     */
+    fun windowMenu() = menu(messages["macos.menu.window"]) {
         items.addAll(
-            menuToolkit.createMinimizeMenuItem(),
-            menuToolkit.createZoomMenuItem(),
-            menuToolkit.createCycleWindowsItem(),
+            tk.createMinimizeMenuItem(),
+            tk.createZoomMenuItem(),
+            tk.createCycleWindowsItem(),
             separator(),
-            menuToolkit.createBringAllToFrontItem()
+            tk.createBringAllToFrontItem()
         )
+        tk.autoAddWindowMenuItems(this)
     }
 }
 

@@ -18,8 +18,9 @@
 
 package online.hudacek.fxradio.util
 
-import com.sun.javafx.stage.StageHelper
+import javafx.stage.Stage
 import javafx.stage.StageStyle
+import javafx.stage.Window
 import online.hudacek.fxradio.ui.fragment.AddStationFragment
 import online.hudacek.fxradio.ui.fragment.AppInfoFragment
 import online.hudacek.fxradio.ui.fragment.AttributionsFragment
@@ -56,12 +57,16 @@ sealed class Modal<out T : Fragment>(
  */
 internal inline fun <reified T : Fragment> Modal<T>.open() {
     // Ensure only one modal of given type is opened
-    val stages = StageHelper.getStages().firstOrNull { it.userData == T::class }
-    if (stages == null) {
+    val stage = Window.getWindows()
+        .filter { Stage::class.java.isInstance(it) }
+        .map { Stage::class.java.cast(it) }
+        .firstOrNull { it.userData == T::class }
+
+    if (stage == null) {
         find<T>().openModal(stageStyle = style, resizable = resizable).also {
             it?.userData = T::class
             // We don't want stage icon in the modal dialog on macOS
-            if(MacUtils.isMac) {
+            if (MacUtils.isMac) {
                 it?.icons?.clear()
             }
         }

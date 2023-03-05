@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.usecase.search
 
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station

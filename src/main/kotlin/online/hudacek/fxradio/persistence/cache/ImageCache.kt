@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.persistence.cache
 
-import io.reactivex.Maybe
+import io.reactivex.rxjava3.core.Maybe
 import javafx.scene.image.Image
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station

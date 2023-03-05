@@ -16,15 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import online.hudacek.fxradio.Config
-import org.davidmoten.rx.jdbc.Database
-import org.davidmoten.rx.jdbc.SelectBuilder
-import org.davidmoten.rx.jdbc.UpdateBuilder
-import org.davidmoten.rx.jdbc.pool.Pools
+import org.davidmoten.rxjava3.jdbc.Database
+import org.davidmoten.rxjava3.jdbc.SelectBuilder
+import org.davidmoten.rxjava3.jdbc.UpdateBuilder
+import org.davidmoten.rxjava3.jdbc.pool.Pools
 import org.flywaydb.core.Flyway
 import java.util.concurrent.Executors
 

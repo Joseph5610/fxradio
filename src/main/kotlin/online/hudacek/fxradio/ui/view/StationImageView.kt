@@ -68,7 +68,7 @@ class StationImageView(
     fun getStationImage() {
         stationImageCache.load(stationProperty.value).subscribe({
             image = it
-            it?.errorProperty()?.toObservable()?.subscribe { isError ->
+            it.errorProperty()?.toObservable()?.subscribe { isError ->
                 if (isError) {
                     logger.trace { "Failed to set image: ${it.exception.message}" }
                     image = defaultRadioLogo

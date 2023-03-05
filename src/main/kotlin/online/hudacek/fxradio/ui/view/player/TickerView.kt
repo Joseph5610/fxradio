@@ -1,7 +1,7 @@
 package online.hudacek.fxradio.ui.view.player
 
-import io.reactivex.Completable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.disposables.Disposable
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline

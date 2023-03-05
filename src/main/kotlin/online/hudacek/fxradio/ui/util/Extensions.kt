@@ -31,7 +31,6 @@ import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
-import javafx.scene.image.ImageView
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -39,6 +38,8 @@ import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.ui.menu.item
+import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.StationImageView
 import org.controlsfx.control.NotificationPane
@@ -46,10 +47,22 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
-import tornadofx.*
+import tornadofx.App
+import tornadofx.action
+import tornadofx.add
+import tornadofx.addClass
+import tornadofx.bind
 import tornadofx.controlsfx.bindAutoCompletion
-import tornadofx.controlsfx.notificationPane
 import tornadofx.controlsfx.toGlyph
+import tornadofx.field
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.onChange
+import tornadofx.opcr
+import tornadofx.putString
+import tornadofx.required
+import tornadofx.textfield
+import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
@@ -109,7 +122,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
     clipboard: Clipboard,
     menuItemName: String,
     valueToCopy: StringProperty
-) = contextmenu {
+) = platformContextMenu(listOf(
     item(menuItemName) {
         action {
             if (valueToCopy.value != null) {
@@ -123,7 +136,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
             }
         }
     }
-}
+))
 
 internal fun Window.setOnSpacePressed(action: () -> Unit) {
     addEventHandler(KeyEvent.KEY_PRESSED) {
@@ -160,7 +173,7 @@ internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: St
     delay.play()
 }
 
-internal fun String.formatted(replaceWith: Any) = MessageFormat.format(this, replaceWith)
+internal fun String.msgFormat(replaceWith: Any) = MessageFormat.format(this, replaceWith)
 
 internal fun EventTarget.field(
     message: String, prompt: String,

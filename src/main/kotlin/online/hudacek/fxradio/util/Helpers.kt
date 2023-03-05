@@ -18,12 +18,12 @@
 
 package online.hudacek.fxradio.util
 
-import io.reactivex.FlowableTransformer
-import io.reactivex.Maybe
-import io.reactivex.MaybeTransformer
-import io.reactivex.ObservableTransformer
-import io.reactivex.SingleTransformer
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.FlowableTransformer
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.MaybeTransformer
+import io.reactivex.rxjava3.core.ObservableTransformer
+import io.reactivex.rxjava3.core.SingleTransformer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
@@ -36,27 +36,27 @@ import tornadofx.importStylesheet
 /**
  * Perform async calls on correct thread
  */
-internal fun <T> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransformer {
+internal fun <T : Any> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
 }
 
-internal fun <T> applySchedulersMaybe(): MaybeTransformer<T, T> = MaybeTransformer {
+internal fun <T : Any> applySchedulersMaybe(): MaybeTransformer<T, T> = MaybeTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
 }
 
-internal fun <T> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
+internal fun <T : Any> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
 }
 
-internal fun <T> applySchedulersFlowable(): FlowableTransformer<T, T> = FlowableTransformer {
+internal fun <T : Any> applySchedulersFlowable(): FlowableTransformer<T, T> = FlowableTransformer {
     it.subscribeOn(Schedulers.io())
         .observeOnFx()
 }
 
-internal fun <T> maybeOfNullable(value: T?): Maybe<T> {
+internal fun <T : Any> maybeOfNullable(value: T?): Maybe<T> {
     return if (value == null) Maybe.empty() else Maybe.just(value)
 }
 

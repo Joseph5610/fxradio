@@ -22,7 +22,7 @@ import online.hudacek.fxradio.event.AppEvent
 import tornadofx.ItemViewModel
 
 abstract class BaseViewModel<Item : Any>(initialItem: Item? = null) :
-        ItemViewModel<Item>(initialValue = initialItem) {
+    ItemViewModel<Item>(initialValue = initialItem) {
 
     protected val appEvent: AppEvent by inject()
 }

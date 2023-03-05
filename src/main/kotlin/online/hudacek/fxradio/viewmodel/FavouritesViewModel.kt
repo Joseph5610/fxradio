@@ -18,13 +18,17 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.usecase.favourites.*
+import online.hudacek.fxradio.usecase.favourites.FavouriteAddUseCase
+import online.hudacek.fxradio.usecase.favourites.FavouriteRemoveUseCase
+import online.hudacek.fxradio.usecase.favourites.FavouriteUpdateUseCase
+import online.hudacek.fxradio.usecase.favourites.FavouritesClearUseCase
+import online.hudacek.fxradio.usecase.favourites.FavouritesGetUseCase
 import online.hudacek.fxradio.util.toObservable
 import tornadofx.observableListOf
 import tornadofx.property

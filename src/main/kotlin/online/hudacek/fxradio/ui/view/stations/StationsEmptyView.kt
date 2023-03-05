@@ -20,9 +20,9 @@ package online.hudacek.fxradio.ui.view.stations
 import javafx.geometry.Pos
 import javafx.scene.text.TextAlignment
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
-import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.viewmodel.StationsState
@@ -115,13 +115,13 @@ class StationsEmptyView : BaseView() {
         glyph {
             paddingAll = 10.0
             viewModel.stateObservable
-                    .subscribe {
-                        graphicProperty().value = when (it) {
-                            is StationsState.Error -> errorGlyph
-                            is StationsState.ShortQuery -> searchGlyph
-                            else -> noResultsGlyph
-                        }
+                .subscribe {
+                    graphicProperty().value = when (it) {
+                        is StationsState.Error -> errorGlyph
+                        is StationsState.ShortQuery -> searchGlyph
+                        else -> noResultsGlyph
                     }
+                }
         }
     }
 

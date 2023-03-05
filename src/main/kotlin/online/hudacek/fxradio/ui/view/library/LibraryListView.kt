@@ -20,13 +20,19 @@ package online.hudacek.fxradio.ui.view.library
 
 import javafx.scene.layout.VBox
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.util.make
-import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.ListViewHandler
+import online.hudacek.fxradio.ui.util.make
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.addClass
+import tornadofx.doubleBinding
+import tornadofx.get
+import tornadofx.insets
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
 
 private const val GLYPH_SIZE = 14.0
 

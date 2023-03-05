@@ -1,6 +1,6 @@
 package online.hudacek.fxradio.util
 
-import io.reactivex.Maybe
+import io.reactivex.rxjava3.core.Maybe
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.stage.Window

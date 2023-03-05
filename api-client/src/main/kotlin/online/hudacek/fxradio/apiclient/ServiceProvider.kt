@@ -21,7 +21,7 @@ package online.hudacek.fxradio.apiclient
 import online.hudacek.fxradio.apiclient.http.provider.BasicClientProvider
 import online.hudacek.fxradio.apiclient.http.provider.HttpClientProvider
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
@@ -37,7 +37,7 @@ class ServiceProvider(
      */
     val retrofit: Retrofit
         get() = Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(baseUrl)
             .client(httpClientProvider.client)
