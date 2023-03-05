@@ -34,7 +34,6 @@ import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.toObservableChanges
 import online.hudacek.fxradio.viewmodel.InfoPanelState
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
@@ -67,7 +66,6 @@ class StationsDataGridView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
-    private val libraryViewModel: LibraryViewModel by inject()
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"

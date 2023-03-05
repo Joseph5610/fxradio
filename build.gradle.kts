@@ -101,7 +101,7 @@ dependencies {
 }
 
 javafx {
-    version = "19"
+    version = "19.0.2.1"
     modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
 }
 
