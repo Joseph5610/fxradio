@@ -129,9 +129,7 @@ task<PackageTask>("jfxNative") {
     displayName = "FXRadio"
     version = appVersion
     url = "https://hudacek.online/fxradio"
-    isBundleJre = true
     isCustomizedJre = false
-    jrePath = File(System.getProperty("java.home"))
     organizationName = "FXRadio"
     organizationUrl = "https://hudacek.online/fxradio"
     organizationEmail = "fxradio@hudacek.online"
