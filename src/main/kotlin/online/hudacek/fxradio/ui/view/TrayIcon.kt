@@ -17,21 +17,20 @@
  */
 package online.hudacek.fxradio.ui.view
 
-import com.dustinredmond.fxtrayicon.FXTrayIcon
-import javafx.scene.control.MenuItem
-import javafx.scene.image.Image
+import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.toObservable
+import online.hudacek.fxradio.util.toObservableChanges
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Controller
 import tornadofx.get
-
-private const val ICON_SIZE = 64
+import java.awt.MenuItem
+import java.awt.SystemTray
+import java.awt.TrayIcon
+import javax.swing.SwingUtilities
 
 /**
  * Manages system tray icon
@@ -42,56 +41,80 @@ class TrayIcon : Controller() {
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val preferencesViewModel: PreferencesViewModel by inject()
 
-    private val stationMenuItem = MenuItem(Station.dummy.name).apply {
-        isDisable = true
-    }
-
-    private val playMenuItem = MenuItem("Play/Stop").apply {
-        setOnAction {
-            playerViewModel.togglePlayerState()
-        }
-    }
-
-    private val fxTrayIcon by lazy {
-        FXTrayIcon.Builder(primaryStage, Image(Config.Resources.trayIcon), ICON_SIZE, ICON_SIZE)
-            .applicationTitle(messages["show"] + " " + FxRadio.appName)
-            .separator()
-            .menuItem(stationMenuItem)
-            .menuItem(playMenuItem)
-            .separator()
-            .addExitMenuItem(messages["exit"])
-            .build()
-    }
+    private var trayIcon: TrayIcon? = null
+    private var stationItem: MenuItem? = null
+    private var playPauseItem: MenuItem? = null
 
     init {
         selectedStationViewModel.stationObservable.subscribe {
-            stationMenuItem.text = it.name
+            stationItem?.let { mi ->
+                mi.label = it.name
+            }
         }
 
         playerViewModel.stateObservable.subscribe {
-            playMenuItem.let { mi ->
-                mi.text = if (it is PlayerState.Playing) {
+            playPauseItem?.let { mi ->
+                mi.label = if (it is PlayerState.Playing) {
                     messages["menu.player.stop"]
                 } else {
                     messages["menu.player.start"]
                 }
             }
         }
-    }
 
-
-    /**
-     * Add/remove TrayIcon based on user preference
-     */
-    fun create() {
-        if (!FXTrayIcon.isSupported()) return
-        preferencesViewModel.useTrayIconProperty.toObservable()
+        preferencesViewModel.useTrayIconProperty.toObservableChanges()
+            .map { it.newVal }
             .subscribe {
                 if (it) {
-                    fxTrayIcon.show()
+                    createIcon()
                 } else {
-                    fxTrayIcon.hide()
+                    removeIcon()
                 }
             }
+    }
+
+    fun createIcon() = with(app) {
+        if (!preferencesViewModel.useTrayIconProperty.value) return
+
+        trayicon(resources.stream("/" + Config.Resources.trayIcon), tooltip = FxRadio.appName, autoSize = true) {
+            trayIcon = this
+
+            setOnMouseClicked(fxThread = true) {
+                primaryStage.show()
+                primaryStage.toFront()
+            }
+
+            menu(FxRadio.appName) {
+                item(messages["show"] + " " + FxRadio.appName) {
+                    setOnAction(fxThread = true) {
+                        primaryStage.show()
+                        primaryStage.toFront()
+                    }
+                }
+                addSeparator()
+
+                stationItem = item(selectedStationViewModel.nameProperty.value) {
+                    isEnabled = false
+                }
+
+                playPauseItem = item("Play/Stop") {
+                    setOnAction(fxThread = true) {
+                        playerViewModel.togglePlayerState()
+                    }
+                }
+                addSeparator()
+                item(messages["exit"]) {
+                    setOnAction(fxThread = true) {
+                        Platform.exit()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeIcon() {
+        SwingUtilities.invokeLater {
+            trayIcon?.let { SystemTray.getSystemTray().remove(it) }
+        }
     }
 }

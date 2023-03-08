@@ -22,6 +22,7 @@ import javafx.geometry.Pos
 import javafx.scene.input.DragEvent
 import javafx.scene.input.MouseEvent
 import javafx.util.Duration
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.item
@@ -81,6 +82,10 @@ class StationsDataGridView : BaseView() {
             selectionModel.select(selectedStationViewModel.stationProperty.value)
         }
 
+        onUserSelect {
+           selectStation(it)
+        }
+
         cellFormat {
             val cellHandler = DataCellHandler(this, this@datagrid)
 
@@ -95,9 +100,7 @@ class StationsDataGridView : BaseView() {
             // Workaround for https://github.com/edvin/tornadofx/issues/1216
             onLeftClick {
                 selectionModel.select(it)
-                if (selectedStationViewModel.item.station != it) {
-                    selectedStationViewModel.item = SelectedStation(it)
-                }
+                selectStation(it)
             }
 
             addEventFilter(MouseEvent.DRAG_DETECTED, cellHandler::onDragDetected)
@@ -145,6 +148,12 @@ class StationsDataGridView : BaseView() {
                     else -> false
                 }
             }
+        }
+    }
+
+    private fun selectStation(station: Station) {
+        if (selectedStationViewModel.item.station != station) {
+            selectedStationViewModel.item = SelectedStation(station)
         }
     }
 }

@@ -106,7 +106,7 @@ open class FxRadio(
             // Disable built-in tornadofx layout debugger
             FX.layoutDebuggerShortcut = null
         }
-        trayIcon.create()
+        trayIcon.createIcon()
     }
 
     override fun stop() {
