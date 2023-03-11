@@ -13,7 +13,7 @@
           <option value="run" />
         </list>
       </option>
-      <option name="vmOptions" value="-Xms256m -Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC --add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED" />
+      <option name="vmOptions" value="-Xms256m -Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>

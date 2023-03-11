@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.util
 
-import griffon.javafx.support.flagicons.FlagIcon
 import javafx.animation.PauseTransition
 import javafx.beans.property.ListProperty
 import javafx.beans.property.Property
@@ -31,6 +30,7 @@ import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
+import javafx.scene.image.Image
 import javafx.scene.input.Clipboard
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -197,5 +197,7 @@ fun EventTarget.stationView(station: Station, size: Double, op: StationImageView
 fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(stationProperty, size), op)
 
-internal val Country.flagIcon: FlagIcon?
-    get() = runCatching { FlagIcon(iso3166) }.getOrNull()
+internal val Country.flagIcon: Image?
+    get() = runCatching { flagIcon(iso3166) }.getOrNull()
+
+internal fun flagIcon(iso3166: String) = Image("/flags/$iso3166.png", true)

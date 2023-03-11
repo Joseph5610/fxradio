@@ -76,9 +76,6 @@ tasks.withType<Test> {
 dependencies {
     implementation(project(":api-client"))
 
-    // Local JAR files
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
     implementation("no.tornado:tornadofx:$tornadoFxVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
