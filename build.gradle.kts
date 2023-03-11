@@ -84,7 +84,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.3")
+    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4")
 
     // Players
     implementation("io.humble:humble-video-all:$humbleVersion")
@@ -149,7 +149,8 @@ task<PackageTask>("jfxNative") {
         isDisableRunAfterInstall = false
     } as Closure<WindowsConfig>)
     dependsOn("jar")
-    vmArgs = listOf("-Xms256m",
+    vmArgs = listOf(
+        "-Xms256m",
         "-Xmx2048m",
         "-XX:+UnlockExperimentalVMOptions",
         "-XX:+UseG1GC"
