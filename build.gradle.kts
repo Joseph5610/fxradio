@@ -52,7 +52,7 @@ allprojects {
         implementation(platform(kotlin("bom")))
 
         // Use the Kotlin JDK 8 standard library.
-        implementation(kotlin("stdlib-jdk8"))
+        implementation(kotlin("stdlib"))
 
         implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
         implementation("org.slf4j:slf4j-api:$slf4jVersion")
@@ -82,9 +82,15 @@ dependencies {
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("de.jangassen:nsmenufx:3.1.0")
+    implementation("de.jangassen:nsmenufx:3.1.0") {
+        exclude("net.java.dev.jna", "jna")
+    }
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4")
+    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
+        exclude("com.google.code.findbugs", "jsr305")
+        exclude("com.google.code.findbugs", "annotations")
+        exclude("net.jcip", "jcip-annotations")
+    }
 
     // Players
     implementation("io.humble:humble-video-all:$humbleVersion")
