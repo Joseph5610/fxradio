@@ -21,6 +21,7 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.geometry.Pos
 import javafx.scene.input.KeyCode
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.searchField
@@ -73,6 +74,7 @@ class LibrarySearchView : BaseView() {
                 else -> null
             }
         }
+        platformContextMenu(contextMenu.items)
     }
 
     private fun setSearchState() {

@@ -20,7 +20,6 @@ package online.hudacek.fxradio.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
-import online.hudacek.fxradio.media.player.humble.HumblePlayerImpl
 import online.hudacek.fxradio.media.player.vlc.VLCPlayerImpl
 import online.hudacek.fxradio.util.AlertHelper
 import online.hudacek.fxradio.util.Properties
@@ -40,7 +39,7 @@ object MediaPlayerFactory {
         logger.info { "MediaPlayer $player is initializing..." }
         return when (player.asPlayerType()) {
             MediaPlayer.Type.VLC -> tryLoadVLCPlayer()
-            MediaPlayer.Type.Humble -> HumblePlayerImpl()
+            MediaPlayer.Type.Humble -> throw RuntimeException("Unsupporte!")
         }
     }
 
@@ -52,7 +51,7 @@ object MediaPlayerFactory {
         val currentPlayer = Properties.Player.value(defaultPlayerType.name)
         return when (currentPlayer.asPlayerType()) {
             MediaPlayer.Type.Humble -> tryLoadVLCPlayer()
-            MediaPlayer.Type.VLC -> HumblePlayerImpl()
+            MediaPlayer.Type.VLC -> throw RuntimeException("Unsupported!")
         }
     }
 
@@ -67,7 +66,7 @@ object MediaPlayerFactory {
         Platform.runLater {
             AlertHelper.vlcMissingAlert()
         }
-    }.getOrDefault(HumblePlayerImpl())
+    }.getOrThrow()
 
     /**
      * Helper for loading of playerType from app.properties file

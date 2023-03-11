@@ -15,6 +15,7 @@ class ListViewHandler<T>(private val listView: ListView<T>) {
                     key.consume()
                 } else {
                     clearSelection()
+                    key.consume()
                 }
             }
         }

@@ -54,6 +54,8 @@ class LibraryCountriesFragment : BaseFragment() {
 
     private val countriesProperty: ListProperty<Country> by param()
 
+    private val name: String by param()
+
     override fun onDock() {
         viewModel.stateObservable.subscribe {
             if (it !is LibraryState.SelectedCountry) {
@@ -67,7 +69,7 @@ class LibraryCountriesFragment : BaseFragment() {
     }
 
     override val root = listview(countriesProperty) {
-        id = "libraryCountriesFragment"
+        id = name
 
         fitToParentHeight()
 

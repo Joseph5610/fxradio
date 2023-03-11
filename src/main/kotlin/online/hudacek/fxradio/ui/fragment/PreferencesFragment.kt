@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.ui.fragment
 
-import griffon.javafx.support.flagicons.FlagIcon
 import javafx.geometry.Pos
+import javafx.scene.image.Image
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.AccentColor
 import online.hudacek.fxradio.ui.style.Styles
@@ -142,7 +142,7 @@ class PreferencesFragment : BaseFragment() {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     combobox(values = serversViewModel.availableServersProperty) {
                         cellFormat {
-                            graphic = imageview { image = runCatching { FlagIcon(it.substring(0, 2)) }.getOrNull() }
+                            graphic = imageview { image = runCatching { Image("/flags/${it.substring(0, 2)}.png") }.getOrNull() }
                             text = it
                         }
                         // Workaround for a strange bug...

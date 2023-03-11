@@ -89,7 +89,8 @@ class LibraryView : BaseView() {
                 vbox {
                     add(
                         find<LibraryCountriesFragment>(
-                            params = mapOf("countriesProperty" to viewModel.pinnedProperty)
+                            params = mapOf("countriesProperty" to viewModel.pinnedProperty,
+                                "name" to "libraryPinnedFragment")
                         )
                     )
 
@@ -115,7 +116,8 @@ class LibraryView : BaseView() {
                     vgrow = Priority.ALWAYS
                     add(
                         find<LibraryCountriesFragment>(
-                            params = mapOf("countriesProperty" to viewModel.countriesProperty)
+                            params = mapOf("countriesProperty" to viewModel.countriesProperty,
+                                "name" to "libraryCountriesFragment")
                         )
                     )
                     prefHeightProperty().bind(this@center.heightProperty().minus(10.0))

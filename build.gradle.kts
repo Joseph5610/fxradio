@@ -18,6 +18,7 @@ plugins {
     kotlin("jvm") version "1.8.10"
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("application")
+    id("org.javamodularity.moduleplugin") version "1.8.12"
 }
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
@@ -85,12 +86,16 @@ dependencies {
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("de.jangassen:nsmenufx:3.1.0")
+    implementation("de.jangassen:nsmenufx:3.1.0") {
+        exclude("net.java.dev.jna", "jna")
+    }
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.3")
+    implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
+        exclude("com.google.code.findbugs", "jsr305")
+        exclude("net.jcip", "jcip-annotations")
+    }
 
     // Players
-    implementation("io.humble:humble-video-all:$humbleVersion")
     implementation("uk.co.caprica:vlcj:$vlcjVersion")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
@@ -105,6 +110,7 @@ javafx {
 }
 
 application {
+    mainModule.set("fxradio")
     mainClass.set("online.hudacek.fxradio.FxRadioKt")
     applicationDefaultJvmArgs = listOf(
         // Tornadofx
@@ -152,7 +158,8 @@ task<PackageTask>("jfxNative") {
         isDisableRunAfterInstall = false
     } as Closure<WindowsConfig>)
     dependsOn("jar")
-    vmArgs = listOf("-Xms256m",
+    vmArgs = listOf(
+        "-Xms256m",
         "-Xmx2048m",
         "-XX:+UnlockExperimentalVMOptions",
         "-XX:+UseG1GC"

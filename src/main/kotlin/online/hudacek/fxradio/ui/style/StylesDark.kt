@@ -279,6 +279,7 @@ class StylesDark : Stylesheet() {
         }
 
         scrollBar {
+
             backgroundColor += c(colors.transparent)
             borderColor += box(c(colors.transparent))
 
@@ -366,7 +367,6 @@ class StylesDark : Stylesheet() {
         }
 
         slider {
-
             thumb {
                 unsafe("-fx-color", raw("whitesmoke"))
             }

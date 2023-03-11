@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.geometry.Pos
+import javafx.scene.control.ScrollBar
 import javafx.scene.input.DragEvent
 import javafx.scene.input.MouseEvent
 import javafx.util.Duration
