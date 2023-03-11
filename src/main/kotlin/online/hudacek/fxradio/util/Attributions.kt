@@ -33,7 +33,7 @@ object Attributions {
             Attribution("Retrofit HTTP client", "2.9.0", Licenses.retrofit),
             Attribution("slf4j-api", "2.0.5", Licenses.sl4fj),
             Attribution("log4j", "2.19.0", Licenses.apache20),
-            Attribution("kotlin-logging", "3.0.4", Licenses.apache20),
+            Attribution("kotlin-logging", "3.0.5", Licenses.apache20),
             Attribution("FlagIcon", "1.1.0", Licenses.apache20),
             Attribution("nsmenufx", "2.1.8", license = Licenses.nsMenuFx),
             Attribution("rxkotlinfx", "2.2.2", license = Licenses.apache20),
