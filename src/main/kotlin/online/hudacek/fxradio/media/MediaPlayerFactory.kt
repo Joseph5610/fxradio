@@ -20,6 +20,7 @@ package online.hudacek.fxradio.media
 
 import javafx.application.Platform
 import mu.KotlinLogging
+import online.hudacek.fxradio.media.player.experimental.FxPlayerImpl
 import online.hudacek.fxradio.media.player.humble.HumblePlayerImpl
 import online.hudacek.fxradio.media.player.vlc.VLCPlayerImpl
 import online.hudacek.fxradio.util.AlertHelper
@@ -41,6 +42,7 @@ object MediaPlayerFactory {
         return when (player.asPlayerType()) {
             MediaPlayer.Type.VLC -> tryLoadVLCPlayer()
             MediaPlayer.Type.Humble -> HumblePlayerImpl()
+            MediaPlayer.Type.FX -> FxPlayerImpl()
         }
     }
 
@@ -53,6 +55,7 @@ object MediaPlayerFactory {
         return when (currentPlayer.asPlayerType()) {
             MediaPlayer.Type.Humble -> tryLoadVLCPlayer()
             MediaPlayer.Type.VLC -> HumblePlayerImpl()
+            else -> tryLoadVLCPlayer()
         }
     }
 

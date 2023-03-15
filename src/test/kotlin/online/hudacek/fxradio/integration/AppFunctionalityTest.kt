@@ -64,7 +64,7 @@ private val logger = KotlinLogging.logger {}
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @ExtendWith(ApplicationExtension::class)
-@DisplayName("Basic functionality tests for the FXRadio application")
+@DisplayName("Basic functionality tests")
 class AppFunctionalityTest {
 
     private val robot: FxRobot = FxRobot()

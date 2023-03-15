@@ -27,7 +27,7 @@ interface MediaPlayer {
      * Supported types of player
      */
     enum class Type {
-        Humble, VLC
+        Humble, VLC, FX
     }
 
     val playerType: Type
