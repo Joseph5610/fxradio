@@ -23,6 +23,8 @@ import javafx.geometry.Pos
 import javafx.scene.layout.VBox
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.menu.item
+import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.flagIcon
@@ -30,20 +32,17 @@ import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.action
 import tornadofx.addClass
-import tornadofx.booleanBinding
-import tornadofx.contextmenu
 import tornadofx.doubleBinding
 import tornadofx.fitToParentHeight
 import tornadofx.get
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.insets
-import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.onUserSelect
 import tornadofx.selectedItem
-import tornadofx.visibleWhen
+import tornadofx.stringBinding
 
 /**
  * Custom listview fragment for countries
@@ -99,29 +98,25 @@ class LibraryCountriesFragment : BaseFragment() {
                     }
                 }
 
-                contextmenu {
-                    item(messages["pin"]) {
-                        visibleWhen {
-                            viewModel.pinnedProperty.booleanBinding { property ->
-                                !property?.contains(it)!!
-                            }
+                platformContextMenu(
+                    listOf(item(messages["pin"]) {
+                        val itemName = viewModel.pinnedProperty.stringBinding { l ->
+                            if (l?.contains(it)!!)
+                                messages["unpin"]
+                            else
+                                messages["pin"]
                         }
-                        action {
-                            viewModel.pinCountry(it)
-                        }
-                    }
+                        textProperty().bind(itemName)
 
-                    item(messages["unpin"]) {
-                        visibleWhen {
-                            viewModel.pinnedProperty.booleanBinding { property ->
-                                property?.contains(it)!!
+                        action {
+                            if (viewModel.pinnedProperty.contains(it)) {
+                                viewModel.unpinCountry(it)
+                            } else {
+                                viewModel.pinCountry(it)
                             }
                         }
-                        action {
-                            viewModel.unpinCountry(it)
-                        }
-                    }
-                }
+                    })
+                )
             }
         }
         cellFormat {

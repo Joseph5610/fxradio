@@ -24,7 +24,7 @@ apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
-val log4jVersion = "2.19.0"
+val log4jVersion = "2.20.0"
 val slf4jVersion = "2.0.5"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.16-alpha"

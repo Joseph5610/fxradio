@@ -29,7 +29,9 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.MouseButton
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.value
 import tornadofx.bind
 import tornadofx.booleanBinding
 import tornadofx.contextmenu
@@ -75,7 +77,7 @@ internal fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
 }
 
 internal fun EventTarget.platformContextMenu(menuItems: List<MenuItem>) {
-    if (MacUtils.isMac) {
+    if (MacUtils.isMac && Properties.UsePlatformMenus.value(true)) {
         val menu = Menu().apply {
             items.addAll(menuItems)
         }

@@ -29,7 +29,7 @@ private val logger = KotlinLogging.logger {}
  * Keys for values stored in app.properties
  */
 enum class Properties(val key: String) {
-    UsePlatformMenuBar("menu.native"), // Not configurable in UI
+    UsePlatformMenus("menu.native"), // Not configurable in UI
     Volume("player.volume"),
     Player("player.type"),
     PlayerAnimated("player.animate"),
