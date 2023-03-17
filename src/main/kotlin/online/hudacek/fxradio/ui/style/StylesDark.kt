@@ -119,9 +119,9 @@ class StylesDark : Stylesheet() {
             borderRadius += box(4.px)
             backgroundColor += c(colors.playerBox)
             borderColor += box(c(colors.backgroundBorder))
-            maxWidth = 280.px
-            minWidth = 280.px
-            prefWidth = 280.px
+            maxWidth = 300.px
+            minWidth = 300.px
+            prefWidth = 300.px
             alignment = Pos.CENTER
             prefHeight = 40.px
             minHeight = 40.px
@@ -472,6 +472,8 @@ class StylesDark : Stylesheet() {
         }
 
         colorRadioButton {
+            baseColor = c(colors.primary)
+            textFill = c(colors.label)
             and(selected) {
                 radio {
                     dot {

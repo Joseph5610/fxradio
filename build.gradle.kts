@@ -96,6 +96,8 @@ dependencies {
     implementation("io.humble:humble-video-all:$humbleVersion")
     implementation("uk.co.caprica:vlcj:$vlcjVersion")
 
+    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.8")
+
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")

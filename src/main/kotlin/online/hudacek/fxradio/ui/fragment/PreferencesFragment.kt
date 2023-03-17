@@ -112,11 +112,20 @@ class PreferencesFragment : BaseFragment() {
 
                 field(messages["menu.app.darkmode"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
-                    checkbox {
-                        bind(preferencesViewModel.darkModeProperty)
-                        action {
-                            preferencesViewModel.commit()
+                    togglegroup {
+                        radiobutton(messages["menu.app.light"], value = false, group = this) {
+                            action {
+                                preferencesViewModel.commit()
+                            }
+                            addClass(Styles.colorRadioButton)
                         }
+                        radiobutton(messages["menu.app.dark"], value = true, group = this) {
+                            action {
+                                preferencesViewModel.commit()
+                            }
+                            addClass(Styles.colorRadioButton)
+                        }
+                        bind(preferencesViewModel.darkModeProperty)
                     }
                 }
             }

@@ -20,14 +20,17 @@ package online.hudacek.fxradio.ui.view.library
 
 import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
+import javafx.scene.text.Font
 import javafx.util.Duration
 import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.util.toObservable
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
+import tornadofx.addClass
 import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.onLeftClick
@@ -82,6 +85,7 @@ class LibraryTitleFragment : BaseFragment() {
     override val root = hbox {
         smallLabel(libraryTitle) {
             paddingLeft = 10.0
+            addClass(Styles.boldText)
         }
         region { hgrow = Priority.ALWAYS }
         vbox {

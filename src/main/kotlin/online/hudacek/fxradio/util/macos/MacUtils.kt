@@ -18,6 +18,8 @@
 
 package online.hudacek.fxradio.util.macos
 
+import de.jangassen.jfa.appkit.NSAppearance
+import de.jangassen.jfa.appkit.NSApplication
 import online.hudacek.fxradio.util.Command
 import org.controlsfx.tools.Platform
 
@@ -25,9 +27,29 @@ object MacUtils {
 
     val isMac = Platform.getCurrent() == Platform.OSX
 
+    private val darkAppearance by lazy {
+        NSAppearance.appearanceNamed(NSAppearance.NSAppearanceName.NSAppearanceNameVibrantDark)
+    }
+
+    private val lightAppearance by lazy {
+        NSAppearance.appearanceNamed(NSAppearance.NSAppearanceName.NSAppearanceNameVibrantLight)
+    }
+
     val isSystemDarkMode: Boolean
         get() = Command("defaults read -g AppleInterfaceStyle").exec() == "Dark"
 
     val systemAccentColor: Int
         get() = Command("defaults read -g AppleAccentColor").exec().toIntOrNull() ?: Int.MIN_VALUE
+
+
+    fun setAppearance(isDark: Boolean) {
+        if (!isMac) return
+        NSApplication.sharedApplication().setAppearance(
+            if (isDark) {
+                darkAppearance
+            } else {
+                lightAppearance
+            }
+        )
+    }
 }

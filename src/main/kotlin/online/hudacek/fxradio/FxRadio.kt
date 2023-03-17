@@ -35,6 +35,7 @@ import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import org.apache.logging.log4j.LogManager
 import tornadofx.App
 import tornadofx.FX
@@ -71,6 +72,7 @@ open class FxRadio(
 
     private val trayIcon: TrayIcon by inject()
     private val playerViewModel: PlayerViewModel by inject()
+    private val preferencesViewModel: PreferencesViewModel by inject()
 
     /**
      * override app.config path to ${user.home}/.fxradio
@@ -106,7 +108,9 @@ open class FxRadio(
             // Disable built-in tornadofx layout debugger
             FX.layoutDebuggerShortcut = null
         }
+
         trayIcon.createIcon()
+        MacUtils.setAppearance(preferencesViewModel.darkModeProperty.value)
     }
 
     override fun stop() {
