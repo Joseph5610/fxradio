@@ -6,11 +6,11 @@ import tornadofx.Component
 /**
  * Helper class to load flag icons
  */
-class FlagIcon(isoCountryCode: String) : Component() {
+class FlagIcon(isoCountryCode: String) {
 
-    private val flagPath = "/flags/$isoCountryCode.png"
+    private val flagPath = "/flags/${isoCountryCode.lowercase()}.png"
 
     fun get(): Image? = runCatching {
-        Image(app.resources.stream(flagPath))
+        Image(FlagIcon::class.java.getResourceAsStream(flagPath))
     }.getOrNull()
 }
