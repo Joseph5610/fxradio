@@ -47,22 +47,9 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
-import tornadofx.App
-import tornadofx.action
-import tornadofx.add
-import tornadofx.addClass
-import tornadofx.bind
+import tornadofx.*
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.toGlyph
-import tornadofx.field
-import tornadofx.label
-import tornadofx.managedWhen
-import tornadofx.onChange
-import tornadofx.opcr
-import tornadofx.putString
-import tornadofx.required
-import tornadofx.textfield
-import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
@@ -198,6 +185,4 @@ fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op
     opcr(this, StationImageView(stationProperty, size), op)
 
 internal val Country.flagIcon: Image?
-    get() = runCatching { flagIcon(iso3166) }.getOrNull()
-
-internal fun flagIcon(iso3166: String) = Image("/flags/$iso3166.png", true)
+    get() = FlagIcon(iso3166).get()
