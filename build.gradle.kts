@@ -4,6 +4,8 @@ import io.github.fvarrui.javapackager.model.MacConfig
 import io.github.fvarrui.javapackager.model.MacStartup
 import io.github.fvarrui.javapackager.model.Manifest
 import io.github.fvarrui.javapackager.model.WindowsConfig
+import org.gradle.internal.os.OperatingSystem
+
 
 buildscript {
     repositories {
@@ -93,7 +95,17 @@ dependencies {
     }
 
     // Players
-    implementation("io.humble:humble-video-all:$humbleVersion")
+    val os = OperatingSystem.current()
+    implementation("io.humble:humble-video-noarch:$humbleVersion")
+    if (os.isMacOsX) {
+        implementation("io.humble:humble-video-arch-x86_64-apple-darwin18:$humbleVersion")
+    } else if (os.isWindows) {
+        implementation("io.humble:humble-video-arch-x86_64-w64-mingw32:$humbleVersion")
+        implementation("io.humble:humble-video-arch-i686-w64-mingw32:$humbleVersion")
+    } else if (os.isLinux) {
+        implementation("io.humble:humble-video-arch-i686-pc-linux-gnu6:$humbleVersion")
+        implementation("io.humble:humble-video-arch-x86_64-pc-linux-gnu6:$humbleVersion")
+    }
     implementation("uk.co.caprica:vlcj:$vlcjVersion")
 
     implementation("com.github.Dansoftowner:jSystemThemeDetector:3.8") {

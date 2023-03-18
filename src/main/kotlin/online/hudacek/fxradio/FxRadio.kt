@@ -49,8 +49,8 @@ import java.nio.file.Paths
 import java.time.Year
 import kotlin.reflect.KClass
 
-private const val WINDOW_MIN_WIDTH = 600.0
-private const val WINDOW_MIN_HEIGHT = 400.0
+private const val WINDOW_MIN_WIDTH = 800.0
+private const val WINDOW_MIN_HEIGHT = 600.0
 
 /**
  * Load app in Dark Mode
