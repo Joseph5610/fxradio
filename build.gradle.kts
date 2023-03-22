@@ -30,13 +30,13 @@ val log4jVersion = "2.20.0"
 val slf4jVersion = "2.0.5"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.16-alpha"
-val junitVersion = "5.9.0"
+val junitVersion = "5.9.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.10.2"
+val flywayVersion = "9.16.0"
 val controlsFxVersion = "11.1.2"
 
-version = "0.13.0"
+version = "0.14.0"
 
 val appVersion: String = version as String
 
@@ -83,10 +83,8 @@ dependencies {
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
-    implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("de.jangassen:nsmenufx:3.1.0") {
-        exclude("net.java.dev.jna", "jna")
-    }
+    implementation("org.xerial:sqlite-jdbc:3.40.1.0")
+    implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
         exclude("com.google.code.findbugs", "jsr305")
@@ -108,9 +106,7 @@ dependencies {
     }
     implementation("uk.co.caprica:vlcj:$vlcjVersion")
 
-    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.8") {
-        exclude("net.java.dev.jna", "jna")
-    }
+    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.8")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
@@ -118,8 +114,15 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
 }
 
+configurations {
+    all {
+        exclude(group = "net.java.dev.jna", module = "jna")
+        exclude(group = "net.java.dev.jna", module = "jna-platform")
+    }
+}
+
 javafx {
-    version = "19.0.2.1"
+    version = "20"
     modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
 }
 
