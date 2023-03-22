@@ -56,8 +56,6 @@ class AddStationModel(
 
 class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
 
-    private val isoCountries = Locale.getISOCountries()
-
     private val stationAddUseCase: StationAddUseCase by inject()
 
     val nameProperty = bind(AddStationModel::name) as StringProperty
@@ -103,4 +101,8 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
         languageProperty.value,
         tagsProperty.value
     )
+
+    companion object {
+        private val isoCountries = Locale.getISOCountries()
+    }
 }

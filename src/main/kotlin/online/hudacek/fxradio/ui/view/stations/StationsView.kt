@@ -50,7 +50,7 @@ class StationsView : BaseView() {
     override val root = hiddensidepane {
         vgrow = Priority.ALWAYS
         triggerDistance = 0.0
-        animationDuration = millis(100.0)
+        animationDuration = millis(150.0)
 
         content = vbox {
             vgrow = Priority.ALWAYS

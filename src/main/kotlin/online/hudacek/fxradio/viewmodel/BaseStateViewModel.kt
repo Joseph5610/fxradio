@@ -50,9 +50,6 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item, in
 
     }
 
-    /**
-     * Called on every new state
-     */
     protected open fun onError(throwable: Throwable) {
 
     }
