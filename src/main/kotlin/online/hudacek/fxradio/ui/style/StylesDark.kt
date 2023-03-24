@@ -26,7 +26,6 @@ import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
-
 /**
  * Dark mode CSS classes used around the app
  */
@@ -90,14 +89,21 @@ class StylesDark : Stylesheet() {
 
         checkBox {
             box {
-                baseColor = c(colors.backgroundSelected)
+                backgroundColor += c(colors.backgroundSelected)
                 backgroundRadius += box(3.px)
                 borderRadius += box(3.px)
+                accentColor = c(colors.primary, 0.2)
+                backgroundInsets += box(0.px)
+                borderInsets += box(0.px)
+                and(focused) {
+                    borderColor += box(c(colors.primary, 0.6))
+                    faintFocusColor = c("${colors.primary}22")
+                }
             }
 
             and(selected) {
                 box {
-                    baseColor = c(colors.primary)
+                    backgroundColor += c(colors.primary)
                 }
                 mark {
                     backgroundColor += Color.WHITE
@@ -172,18 +178,32 @@ class StylesDark : Stylesheet() {
         }
 
         button {
-            baseColor = c(colors.backgroundSelected)
+            backgroundColor += c(colors.backgroundSelected)
+            borderColor += box(c(colors.backgroundSelected + "22"))
             minWidth = 75.px
+            maxHeight = 25.px
             minHeight = 25.px
-            fontSize = 12.px
+            prefHeight = 25.px
+            fontSize = 11.px
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
-            padding = box(5.px, 10.px, 5.px, 10.px)
+            padding = box(0.px)
             textFill = c(colors.label)
+            backgroundInsets += box(0.px)
+            borderInsets += box(0.px)
+            and(pressed) {
+                opacity = 0.8
+            }
+            accentColor = c(colors.primary, 0.2)
+            and(focused) {
+                borderColor += box(c(colors.primary, 0.6))
+                faintFocusColor = c("${colors.primary}22")
+            }
         }
 
         primaryButton {
-            baseColor = c(colors.primary)
+            backgroundColor += c(colors.primary)
+            borderColor += box(c(colors.primary + "22"))
             textFill = Color.WHITESMOKE
         }
 
@@ -490,12 +510,26 @@ class StylesDark : Stylesheet() {
         }
 
         comboBox {
-            baseColor = c(colors.backgroundBorder)
+            backgroundColor += c(colors.backgroundBorder)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
+            backgroundInsets += box(0.px)
+            borderInsets += box(0.px)
+            and(pressed) {
+                opacity = 0.8
+            }
+            accentColor = c(colors.primary, 0.2)
+            and(focused) {
+                borderColor += box(c(colors.primary, 0.6))
+                faintFocusColor = c("${colors.primary}22")
+            }
 
             arrow {
                 backgroundColor += c(colors.primary)
+            }
+
+            listCell {
+                textFill = c(colors.label)
             }
 
             comboBoxPopup {
