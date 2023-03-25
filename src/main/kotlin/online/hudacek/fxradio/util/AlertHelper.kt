@@ -2,9 +2,12 @@ package online.hudacek.fxradio.util
 
 import io.reactivex.rxjava3.core.Maybe
 import javafx.scene.control.Alert
+import javafx.scene.control.Button
 import javafx.scene.control.ButtonType
 import javafx.stage.Window
+import online.hudacek.fxradio.ui.style.Styles
 import tornadofx.FX
+import tornadofx.addClass
 import tornadofx.get
 import tornadofx.warning
 
@@ -25,6 +28,11 @@ object AlertHelper {
         title?.let { alert.title = it }
         alert.headerText = header
         owner?.also { alert.initOwner(it) }
+        val okButton: Button? =
+            alert.dialogPane.lookupButton(alert.buttonTypes.firstOrNull { it == ButtonType.OK }) as Button?
+        okButton?.let {
+            it.addClass(Styles.primaryButton)
+        }
         return alert.toMaybe()
             .defaultIfEmpty(ButtonType.CANCEL)
             .filter { it == ButtonType.OK }

@@ -47,9 +47,22 @@ import org.controlsfx.control.textfield.CustomTextField
 import org.controlsfx.control.textfield.TextFields
 import org.controlsfx.glyphfont.FontAwesome
 import org.controlsfx.glyphfont.Glyph
-import tornadofx.*
+import tornadofx.App
+import tornadofx.action
+import tornadofx.add
+import tornadofx.addClass
+import tornadofx.bind
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.toGlyph
+import tornadofx.field
+import tornadofx.label
+import tornadofx.managedWhen
+import tornadofx.onChange
+import tornadofx.opcr
+import tornadofx.putString
+import tornadofx.required
+import tornadofx.textfield
+import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 

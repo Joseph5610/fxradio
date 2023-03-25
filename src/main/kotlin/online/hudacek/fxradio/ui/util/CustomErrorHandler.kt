@@ -70,7 +70,11 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             if (!event.consumed) {
                 event.consume()
                 runLater {
-                    showErrorDialog(error)
+                    try {
+                        showErrorDialog(error)
+                    } catch (e: Exception) {
+                        log.error(e) { "CRITICAL ERROR, unable to show the error dialog!" }
+                    }
                 }
             }
         }
