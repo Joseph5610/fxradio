@@ -266,6 +266,7 @@ class Styles : Stylesheet() {
         tableView {
             tableRowCell {
                 and(selected) {
+                    unsafe("-fx-table-cell-border-color", raw(colors.primary))
                     backgroundColor += c(colors.primary)
                 }
             }

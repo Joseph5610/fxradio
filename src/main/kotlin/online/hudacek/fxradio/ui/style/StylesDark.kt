@@ -293,7 +293,9 @@ class StylesDark : Stylesheet() {
             baseColor = c(colors.backgroundSelected)
             tableRowCell {
                 and(selected) {
+                    unsafe("-fx-table-cell-border-color", raw(colors.backgroundSelected))
                     backgroundColor += c(colors.backgroundSelected)
+                    backgroundInsets += box(0.px)
                 }
             }
         }
