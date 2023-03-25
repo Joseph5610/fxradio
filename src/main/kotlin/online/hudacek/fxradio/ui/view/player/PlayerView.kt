@@ -99,7 +99,6 @@ class PlayerView : BaseView() {
             }
 
             addClass(Styles.playerControlsBorder)
-            addClass(Styles.playerControls)
         }
     }
 
@@ -109,7 +108,6 @@ class PlayerView : BaseView() {
             onLeftClick {
                 volumeSlider.value = volumeSlider.min
             }
-            addClass(Styles.playerControls)
         }
     }
 
@@ -120,7 +118,6 @@ class PlayerView : BaseView() {
             onLeftClick {
                 volumeSlider.value = volumeSlider.max
             }
-            addClass(Styles.playerControls)
         }
     }
 
@@ -147,7 +144,6 @@ class PlayerView : BaseView() {
             }
 
             addClass(Styles.playerControlsBorder)
-            addClass(Styles.playerControls)
         }
     }
 

@@ -39,8 +39,6 @@ class StylesDark : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
-
-        val playerControls by cssclass()
         val playerControlsBorder by cssclass()
 
         val libraryListView by cssclass()
@@ -85,31 +83,6 @@ class StylesDark : Stylesheet() {
         label {
             textFill = c(colors.label)
             fontSmoothingType = FontSmoothingType.GRAY
-        }
-
-        checkBox {
-            box {
-                backgroundColor += c(colors.backgroundSelected)
-                backgroundRadius += box(3.px)
-                borderRadius += box(3.px)
-                accentColor = c(colors.primary, 0.2)
-                backgroundInsets += box(0.px)
-                borderInsets += box(0.px)
-                and(focused) {
-                    borderColor += box(c(colors.primary, 0.6))
-                    faintFocusColor = c("${colors.primary}22")
-                }
-            }
-
-            and(selected) {
-                box {
-                    backgroundColor += c(colors.primary)
-                }
-                mark {
-                    backgroundColor += Color.WHITE
-                }
-            }
-            textFill = c(colors.label)
         }
 
         playerMainBox {
@@ -162,8 +135,6 @@ class StylesDark : Stylesheet() {
             fill = c(colors.primary)
             textFill = c(colors.primary)
         }
-
-        playerControls {}
 
         playerControlsBorder {
             and(hover) {
@@ -298,6 +269,31 @@ class StylesDark : Stylesheet() {
                     backgroundInsets += box(0.px)
                 }
             }
+        }
+
+        checkBox {
+            box {
+                backgroundColor += c(colors.backgroundSelected)
+                backgroundRadius += box(3.px)
+                borderRadius += box(3.px)
+                accentColor = c(colors.primary, 0.2)
+                backgroundInsets += box(0.px)
+                borderInsets += box(0.px)
+                and(focused) {
+                    borderColor += box(c(colors.primary, 0.6))
+                    faintFocusColor = c("${colors.primary}22")
+                }
+            }
+
+            and(selected) {
+                box {
+                    backgroundColor += c(colors.primary)
+                }
+                mark {
+                    backgroundColor += Color.WHITE
+                }
+            }
+            textFill = c(colors.label)
         }
 
         scrollBar {

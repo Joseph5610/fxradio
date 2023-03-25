@@ -39,8 +39,6 @@ class Styles : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
-
-        val playerControls by cssclass()
         val playerControlsBorder by cssclass()
 
         val libraryListView by cssclass()
@@ -143,8 +141,6 @@ class Styles : Stylesheet() {
         grayTextColor {
             textFill = c(colors.grayLabel)
         }
-
-        playerControls {}
 
         playerControlsBorder {
             and(hover) {
@@ -253,10 +249,6 @@ class Styles : Stylesheet() {
 
         backgroundWhite {
             backgroundColor += Color.WHITE
-        }
-
-        mainMenuBox {
-
         }
 
         // ===================================================================
