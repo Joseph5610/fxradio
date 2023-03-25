@@ -34,8 +34,8 @@ import tornadofx.insets
 import tornadofx.onChange
 import tornadofx.validator
 
-private const val searchGlyphSize = 14.0
-private const val searchMaxLength = 49.0
+private const val SEARCH_GLYPH_SIZE = 14.0
+private const val SEARCH_MAX_LENGTH = 49.0
 
 /**
  * Search input field view
@@ -48,7 +48,7 @@ class LibrarySearchView : BaseView() {
     override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
         id = "search"
 
-        left = FontAwesome.Glyph.SEARCH.make(searchGlyphSize, isPrimary = false) {
+        left = FontAwesome.Glyph.SEARCH.make(SEARCH_GLYPH_SIZE, isPrimary = false) {
             alignment = Pos.CENTER
             padding = insets(5, 9)
         }
@@ -69,7 +69,7 @@ class LibrarySearchView : BaseView() {
 
         validator {
             when {
-                it != null && it.length >= searchMaxLength -> error(messages["field.max.length"])
+                it != null && it.length >= SEARCH_MAX_LENGTH -> error(messages["field.max.length"])
                 else -> null
             }
         }

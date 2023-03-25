@@ -58,8 +58,7 @@ sealed class Modal<out T : Fragment>(
 internal inline fun <reified T : Fragment> Modal<T>.open() {
     // Ensure only one modal of given type is opened
     val stage = Window.getWindows()
-        .filter { Stage::class.java.isInstance(it) }
-        .map { Stage::class.java.cast(it) }
+        .filterIsInstance<Stage>()
         .firstOrNull { it.userData == T::class }
 
     if (stage == null) {

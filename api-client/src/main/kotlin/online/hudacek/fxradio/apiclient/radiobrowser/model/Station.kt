@@ -21,7 +21,7 @@ package online.hudacek.fxradio.apiclient.radiobrowser.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-private const val dummyStationUrl = "https://hudacek.online"
+private const val DUMMY_STATION_URL = "https://hudacek.online"
 
 /**
  * Station data class
@@ -60,7 +60,7 @@ data class Station(
 
     companion object {
         val dummy by lazy {
-            Station("0", "Nothing playing", dummyStationUrl, dummyStationUrl, null)
+            Station("0", "Nothing playing", DUMMY_STATION_URL, DUMMY_STATION_URL, null)
         }
     }
 }

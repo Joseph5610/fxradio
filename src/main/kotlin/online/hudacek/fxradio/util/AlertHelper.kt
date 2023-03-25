@@ -11,9 +11,9 @@ import tornadofx.warning
 object AlertHelper {
 
     /**
-     * Shows when VLC player is missing
+     * Shows warning when VLC player is missing
      */
-    fun vlcMissingAlert() = warning(FX.messages["player.vlc.missing"], FX.messages["player.vlc.missing.description"])
+    fun vlcMissingWarning() = warning(FX.messages["player.vlc.missing"], FX.messages["player.vlc.missing.description"])
 
     /**
      * Shows confirmation alert dialog

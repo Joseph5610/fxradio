@@ -27,7 +27,6 @@ import org.davidmoten.rxjava3.jdbc.pool.Pools
 import org.flywaydb.core.Flyway
 import java.util.concurrent.Executors
 
-private val DB_URL = "jdbc:sqlite:${Config.Paths.dbPath}"
 private const val DB_POOLS = 5
 
 /**
@@ -35,30 +34,33 @@ private const val DB_POOLS = 5
  */
 open class Database(private val tableName: String) {
 
+
     fun selectAllQuery(): SelectBuilder = database.select("SELECT * FROM $tableName")
 
     fun removeAllQuery(): UpdateBuilder = database.update("DELETE FROM $tableName")
 
 
     companion object {
+        private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
+
         // Workaround for https://github.com/davidmoten/rxjava2-jdbc/issues/51
         private val executor = Executors.newFixedThreadPool(DB_POOLS)
 
         private val pools = Pools.nonBlocking()
-            .url(DB_URL)
+            .url(dbUrl)
             .maxPoolSize(DB_POOLS)
             .scheduler(Schedulers.from(executor))
             .build()
 
         /**
-         * Establishes connection to SQLite db with [DB_URL]
+         * Establishes connection to SQLite db with [dbUrl]
          * Performs create table operation for all tables in [Tables] object
          */
         internal val database: Database = Database.from(pools).also {
             /**
              * Apply flyway db migrations
              */
-            Flyway.configure().dataSource(DB_URL, null, null).load().also {
+            Flyway.configure().dataSource(dbUrl, null, null).load().also {
                 it.migrate()
             }
         }

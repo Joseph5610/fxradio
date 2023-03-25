@@ -37,18 +37,36 @@ class NSMenuHelper : Component() {
     private val tk by lazy { MenuToolkit.toolkit(FX.locale) }
 
     /**
-     * macOS style default About Menu
+     * macOS default Application Menu
      */
-    private val aboutMenu = menu(FxRadio.appName) {
-        items.addAll(
-            separator(),
-            tk.createHideMenuItem(text),
-            tk.createHideOthersMenuItem(),
-            tk.createUnhideAllMenuItem(),
-            separator(),
-            tk.createQuitMenuItem(text)
-        )
-        tk.setApplicationMenu(this)
+    private val appMenu by lazy {
+        menu(FxRadio.appName) {
+            items.addAll(
+                separator(),
+                tk.createHideMenuItem(text),
+                tk.createHideOthersMenuItem(),
+                tk.createUnhideAllMenuItem(),
+                separator(),
+                tk.createQuitMenuItem(text)
+            )
+            tk.setApplicationMenu(this)
+        }
+    }
+
+    /**
+     * Creates macOS style default Window menu
+     */
+    val windowMenu by lazy {
+        menu(messages["macos.menu.window"]) {
+            items.addAll(
+                tk.createMinimizeMenuItem(),
+                tk.createZoomMenuItem(),
+                tk.createCycleWindowsItem(),
+                separator(),
+                tk.createBringAllToFrontItem()
+            )
+            tk.autoAddWindowMenuItems(this)
+        }
     }
 
     val menuBar by lazy {
@@ -65,24 +83,10 @@ class NSMenuHelper : Component() {
     }
 
     /**
-     * Adds additional MenuItems into the [aboutMenu]
+     * Adds additional MenuItems into the [appMenu]
      */
-    fun addAboutMenuItems(items: List<MenuItem>) {
-        aboutMenu.items.addAll(0, items)
-    }
-
-    /**
-     * Creates macOS style default Window menu
-     */
-    fun windowMenu() = menu(messages["macos.menu.window"]) {
-        items.addAll(
-            tk.createMinimizeMenuItem(),
-            tk.createZoomMenuItem(),
-            tk.createCycleWindowsItem(),
-            separator(),
-            tk.createBringAllToFrontItem()
-        )
-        tk.autoAddWindowMenuItems(this)
+    fun addAppMenuItems(items: List<MenuItem>) {
+        appMenu.items.addAll(0, items)
     }
 }
 

@@ -70,9 +70,9 @@ class MenuBarView : BaseView() {
             fileMenu.menu,
             playerMenu.menu,
             favouritesMenu.menu,
-            windowMenu(),
+            windowMenu,
             helpMenu.menu
         )
-        addAboutMenuItems(aboutMenu.aboutMainItems)
+        addAppMenuItems(aboutMenu.aboutMainItems)
     }.menuBar
 }

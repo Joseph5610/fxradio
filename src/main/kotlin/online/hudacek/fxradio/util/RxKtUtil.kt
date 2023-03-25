@@ -1,3 +1,21 @@
+/*
+ *     FXRadio - Internet radio directory
+ *     Copyright (C) 2020  hudacek.online
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package online.hudacek.fxradio.util
 
 import io.reactivex.rxjava3.core.*
@@ -120,7 +138,6 @@ fun ContextMenu.actionEvents(): Observable<ActionEvent> = JavaFxObservable.actio
 /**
  * Creates an observable corresponding to javafx MenuItem action events.
  *
- * @param menuItem      The target of the ActionEvents
  * @return An Observable of UI ActionEvents
  */
 fun MenuItem.actionEvents(): Observable<ActionEvent> = JavaFxObservable.actionEventsOf(this)
@@ -153,15 +170,15 @@ class ObservableBindingSideEffects<T : Any> {
     private var onCompleteAction: (() -> Unit)? = null
     private var onErrorAction: ((ex: Throwable) -> Unit)? = null
 
-    fun onNext(onNext: (T) -> Unit): Unit {
+    fun onNext(onNext: (T) -> Unit) {
         onNextAction = onNext
     }
 
-    fun onComplete(onComplete: () -> Unit): Unit {
+    fun onComplete(onComplete: () -> Unit) {
         onCompleteAction = onComplete
     }
 
-    fun onError(onError: (ex: Throwable) -> Unit): Unit {
+    fun onError(onError: (ex: Throwable) -> Unit) {
         onErrorAction = onError
     }
 

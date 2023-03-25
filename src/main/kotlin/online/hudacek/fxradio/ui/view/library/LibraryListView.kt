@@ -39,6 +39,7 @@ private const val GLYPH_SIZE = 14.0
 class LibraryListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
+
     override fun onDock() {
         // React to changes of library not from by clicking on list item
         viewModel.stateObservable.subscribe {

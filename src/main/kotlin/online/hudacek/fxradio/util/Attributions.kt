@@ -26,18 +26,17 @@ object Attributions {
 
     val list by lazy {
         observableListOf(
-            Attribution("tornadofx", "1.7.20", Licenses.apache20),
-            Attribution("controlsfx", "8.40.18", Licenses.controlsfx),
-            Attribution("vlcj", "4.7.2", Licenses.gpl3),
+            Attribution("tornadofx", "2.0.0-SNAPSHOT", Licenses.apache20),
+            Attribution("controlsfx", "11.1.2", Licenses.controlsfx),
+            Attribution("vlcj", "4.8.2", Licenses.gpl3),
             Attribution("humble video", "0.3.0", Licenses.agpl3),
             Attribution("Retrofit HTTP client", "2.9.0", Licenses.retrofit),
             Attribution("slf4j-api", "2.0.5", Licenses.sl4fj),
-            Attribution("log4j", "2.19.0", Licenses.apache20),
+            Attribution("log4j", "2.20.0", Licenses.apache20),
             Attribution("kotlin-logging", "3.0.5", Licenses.apache20),
-            Attribution("FlagIcon", "1.1.0", Licenses.apache20),
-            Attribution("nsmenufx", "2.1.8", license = Licenses.nsMenuFx),
-            Attribution("rxkotlinfx", "2.2.2", license = Licenses.apache20),
-            Attribution("sqliteJdbc", "3.40.0.0", license = Licenses.apache20),
+            Attribution("nsmenufx", "3.1.10", license = Licenses.nsMenuFx),
+            Attribution("rxjavafx", "3.0.2", license = Licenses.apache20),
+            Attribution("sqliteJdbc", "3.40.1.0", license = Licenses.apache20),
             Attribution("rxjava3-jdbc", "0.1.3", license = Licenses.apache20),
             Attribution("TickerView", license = Licenses.tickerView),
             Attribution("Application Graphics", license = Licenses.graphics)
@@ -47,7 +46,8 @@ object Attributions {
     private object Licenses {
         val graphics = License(
             content = "macOS install disk background: Designed by xb100 / Freepik\n\n" +
-                    "Voice chat icons created by Rizki Ahmad Fauzi - Flaticon"
+                    "Voice chat icons created by Rizki Ahmad Fauzi - Flaticon\n\n" +
+                    "Flag Icons based on https://github.com/griffon-legacy/griffon-countries-javafx-plugin"
         )
         val retrofit = License(
             "Apache License 2.0", "Copyright 2013 Square, Inc.\n" +

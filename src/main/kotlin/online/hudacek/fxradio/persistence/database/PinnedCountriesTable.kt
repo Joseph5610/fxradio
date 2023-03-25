@@ -33,13 +33,11 @@ class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Co
 
     override fun removeAll(): Flowable<Int> = removeAllQuery().counts()
 
-    override fun insert(element: Country): Flowable<Int> = database.update(
-        "INSERT INTO $tableName (name, iso3)  " +
-                "VALUES (:name, :iso3)"
-    )
-        .parameter("name", element.name)
-        .parameter("iso3", element.iso3166)
-        .counts()
+    override fun insert(element: Country): Flowable<Int> =
+        database.update("INSERT INTO $tableName (name, iso3) VALUES (:name, :iso3)")
+            .parameter("name", element.name)
+            .parameter("iso3", element.iso3166)
+            .counts()
 
     override fun remove(element: Country): Flowable<Int> = database.update("DELETE FROM $tableName WHERE name = ?")
         .parameter(element.name)

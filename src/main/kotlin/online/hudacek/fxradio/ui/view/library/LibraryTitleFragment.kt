@@ -20,7 +20,6 @@ package online.hudacek.fxradio.ui.view.library
 
 import javafx.beans.property.BooleanProperty
 import javafx.scene.layout.Priority
-import javafx.scene.text.Font
 import javafx.util.Duration
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
@@ -51,6 +50,10 @@ class LibraryTitleFragment : BaseFragment() {
     private val libraryTitle: String by param()
     private val showProperty: BooleanProperty by param()
 
+    private val originalScale = point(1.0, 1.0)
+    private val destination = point(0.0, 0.0)
+    private val duration: Duration = Duration.seconds(0.2)
+
     private val showIcon: Glyph by lazy {
         FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE, isPrimary = false) {
             paddingLeft = 10.0
@@ -65,16 +68,18 @@ class LibraryTitleFragment : BaseFragment() {
                 .subscribe {
                     if (it) {
                         transform(
-                            Duration.seconds(0.2), point(0.0, 0.0),
+                            time = duration,
+                            destination = destination,
                             angle = 0.0,
-                            scale = point(1.0, 1.0),
+                            scale = originalScale,
                             opacity = 1.0
                         )
                     } else {
                         transform(
-                            Duration.seconds(0.2), point(0.0, 0.0),
+                            time = duration,
+                            destination = destination,
                             angle = -90.0,
-                            scale = point(1.0, 1.0),
+                            scale = originalScale,
                             opacity = 1.0
                         )
                     }

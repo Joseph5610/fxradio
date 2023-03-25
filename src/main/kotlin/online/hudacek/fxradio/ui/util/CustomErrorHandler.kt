@@ -94,7 +94,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
 
         Alert(ERROR).apply {
             initOwner(primaryStage)
-            title = error.message ?: "An error occured"
+            title = error.message ?: "An error occurred"
             isResizable = true
             headerText = if (error.stackTrace.isNullOrEmpty()) "Error" else "Error in " + error.stackTrace[0].toString()
             dialogPane.content = VBox().apply {

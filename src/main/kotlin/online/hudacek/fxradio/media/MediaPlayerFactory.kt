@@ -68,7 +68,7 @@ object MediaPlayerFactory {
     }.onFailure {
         logger.error(it) { "Exception when initializing VLC Player!" }
         Platform.runLater {
-            AlertHelper.vlcMissingAlert()
+            AlertHelper.vlcMissingWarning()
         }
     }.getOrDefault(HumblePlayerImpl())
 
