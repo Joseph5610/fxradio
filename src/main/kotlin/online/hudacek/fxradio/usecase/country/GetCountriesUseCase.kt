@@ -45,7 +45,7 @@ class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
     private fun getCountryNameFromISO(iso3166: String?): String? {
         val countryCode: String? = isoCountries.firstOrNull { it == iso3166 }
         return if (countryCode != null) {
-            Locale("", countryCode).displayName
+            Locale.Builder().setRegion(countryCode).build().displayName
         } else {
             null
         }

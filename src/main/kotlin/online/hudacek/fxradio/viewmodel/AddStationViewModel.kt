@@ -71,7 +71,7 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
 
     // Find Country Code from countryProperty value
     private val countryCodeProperty = countryProperty.stringBinding { countryName ->
-        isoCountries.find { Locale("", it).displayCountry == countryName }
+        isoCountries.find { Locale.Builder().setRegion(it).build().displayCountry == countryName }
     }
 
     fun addNewStation(): Maybe<Station> =

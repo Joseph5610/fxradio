@@ -45,7 +45,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/FXRadio.app/
 ```
 # Build
 
-App requires Java 17 and JavaFX 19 to build and run.
+App requires Java 19 and JavaFX 19 to build and run.
 
 > We recommend using IntelliJ IDEA as IDE for this project. 
 
