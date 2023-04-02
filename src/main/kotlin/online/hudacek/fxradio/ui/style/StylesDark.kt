@@ -24,7 +24,14 @@ import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.FXVisibility
+import tornadofx.InternalWindow
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.c
+import tornadofx.cssclass
+import tornadofx.em
+import tornadofx.px
 
 /**
  * Dark mode CSS classes used around the app
@@ -72,6 +79,9 @@ class StylesDark : Stylesheet() {
         val notificationPane by cssclass()
 
         val colorRadioButton by cssclass()
+
+        val autoCompletePopup by cssclass()
+
     }
 
     init {
@@ -569,6 +579,35 @@ class StylesDark : Stylesheet() {
                 backgroundColor += c(colors.background)
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
+            }
+        }
+
+        autoCompletePopup {
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.backgroundBorder))
+            padding = box(0.px)
+            backgroundInsets += box(0.px)
+            unsafe("-fx-control-inner-background", raw(colors.background))
+            unsafe("-fx-accent", raw(colors.primary))
+            unsafe("-fx-selection-bar-non-focused", raw(colors.backgroundSelected))
+            listView {
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
+                backgroundInsets += box(0.px)
+                padding = box(0.px)
+                virtualFlow {
+                    clippedContainer {
+                        sheet {
+                            listCell {
+                                fontSize = 12.px
+                                prefHeight = 30.px
+                                backgroundColor += c(colors.background)
+                                padding = box(6.px, 10.px, 6.px, 10.px)
+                                textFill = c(colors.label)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -70,7 +70,6 @@ fun <T : Any> Maybe<T>.observeOnFx() = observeOn(JavaFxScheduler.platform())
  */
 fun Completable.observeOnFx() = observeOn(JavaFxScheduler.platform())
 
-
 /**
  * Instructs the source Observable to emit items on the JavaFX Thread.
  * This is the same as calling Observable#subscribeOn(JavaFxScheduler.platform())

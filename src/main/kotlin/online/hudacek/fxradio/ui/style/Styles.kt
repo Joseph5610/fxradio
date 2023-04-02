@@ -73,6 +73,8 @@ class Styles : Stylesheet() {
         val glyphIcon by cssclass()
 
         val colorRadioButton by cssclass()
+
+        val autoCompletePopup by cssclass()
     }
 
     init {
@@ -494,6 +496,35 @@ class Styles : Stylesheet() {
             InternalWindow.Styles.floatingWindowContent {
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
+            }
+        }
+
+        StylesDark.autoCompletePopup {
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.backgroundBorder))
+            padding = box(0.px)
+            backgroundInsets += box(0.px)
+            unsafe("-fx-control-inner-background", raw(colors.background))
+            unsafe("-fx-accent", raw(colors.primary))
+            unsafe("-fx-selection-bar-non-focused", raw(colors.backgroundSelected))
+            listView {
+                backgroundColor += c(colors.background)
+                borderColor += box(c(colors.backgroundBorder))
+                backgroundInsets += box(0.px)
+                padding = box(0.px)
+                virtualFlow {
+                    clippedContainer {
+                        sheet {
+                            listCell {
+                                fontSize = 12.px
+                                prefHeight = 30.px
+                                backgroundColor += c(colors.background)
+                                padding = box(6.px, 10.px, 6.px, 10.px)
+                                textFill = c(colors.label)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -149,13 +149,6 @@ class AddStationFragment : BaseFragment() {
                 }
 
                 hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
-                    button(messages["add.cleanupForm"]) {
-                        enableWhen(viewModel.dirty)
-                        action {
-                            viewModel.rollback()
-                        }
-                    }
-
                     button(messages["cancel"]) {
                         isCancelButton = true
                         action {
