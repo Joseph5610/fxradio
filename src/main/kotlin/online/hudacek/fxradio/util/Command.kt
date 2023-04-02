@@ -18,12 +18,20 @@
 
 package online.hudacek.fxradio.util
 
-/**
- * Execute OS command
- */
-class Command(private val command: String) {
+import mu.KotlinLogging
 
-    fun exec() = Runtime.getRuntime().exec(command).result
+private val logger = KotlinLogging.logger {}
+
+/**
+ * Execute local command
+ */
+class Command(command: String) {
+
+    private val commands = command.split(" ").toTypedArray()
+
+    fun exec() = Runtime.getRuntime().exec(commands, null, null).also {
+        logger.debug { "Executed local command: ${commands.joinToString()}" }
+    }.result
 
     /**
      * Parse result of command to string
@@ -37,5 +45,7 @@ class Command(private val command: String) {
                     }
                 }
             }
-        }.toString()
+        }.toString().also {
+            logger.debug { "Command Result: $it" }
+        }
 }

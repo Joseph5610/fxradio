@@ -22,6 +22,8 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 import tornadofx.Component
+import tornadofx.FX
+import tornadofx.importStylesheet
 
 class LightAppearance : Appearance() {
     override val background = "#E9E9E9"
@@ -73,6 +75,22 @@ abstract class Appearance : Component() {
                 }
             }
             return AccentColor.values().first { it.colorCode == systemColorCode }
+        }
+
+        /**
+         * Reload app css styles
+         */
+        fun reloadStylesheets(isDarkModeProperty: Boolean) {
+            val scene = FX.primaryStage.scene
+            FX.stylesheets.clear()
+            scene.stylesheets.clear()
+
+            if (isDarkModeProperty) {
+                importStylesheet(StylesDark::class)
+            } else {
+                importStylesheet(Styles::class)
+            }
+            FX.applyStylesheetsTo(scene)
         }
     }
 }

@@ -18,7 +18,16 @@
 
 package online.hudacek.fxradio.util
 
-import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.FlowableTransformer
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.MaybeTransformer
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableTransformer
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.core.SingleTransformer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javafx.beans.binding.Binding
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
@@ -191,3 +200,28 @@ class ObservableBindingSideEffects<T : Any> {
             withActions
         }
 }
+
+/**
+ * Perform async calls on correct thread
+ */
+fun <T : Any> applySchedulersSingle(): SingleTransformer<T, T> = SingleTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
+fun <T : Any> applySchedulersMaybe(): MaybeTransformer<T, T> = MaybeTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
+fun <T : Any> applySchedulers(): ObservableTransformer<T, T> = ObservableTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
+fun <T : Any> applySchedulersFlowable(): FlowableTransformer<T, T> = FlowableTransformer {
+    it.subscribeOn(Schedulers.io())
+        .observeOnFx()
+}
+
+fun <T : Any> maybeOfNullable(value: T?): Maybe<T> = if (value == null) Maybe.empty() else Maybe.just(value)

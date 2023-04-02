@@ -21,7 +21,7 @@ package online.hudacek.fxradio.ui.menu
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
 import online.hudacek.fxradio.event.AppEvent
-import online.hudacek.fxradio.util.keyCombination
+import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.viewmodel.AppMenuViewModel
 import tornadofx.Controller
 import tornadofx.get

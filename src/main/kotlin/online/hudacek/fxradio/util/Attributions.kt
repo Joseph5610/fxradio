@@ -31,7 +31,7 @@ object Attributions {
             Attribution("vlcj", "4.8.2", Licenses.gpl3),
             Attribution("humble video", "0.3.0", Licenses.agpl3),
             Attribution("Retrofit HTTP client", "2.9.0", Licenses.retrofit),
-            Attribution("slf4j-api", "2.0.5", Licenses.sl4fj),
+            Attribution("slf4j-api", "2.0.6", Licenses.sl4fj),
             Attribution("log4j", "2.20.0", Licenses.apache20),
             Attribution("kotlin-logging", "3.0.5", Licenses.apache20),
             Attribution("nsmenufx", "3.1.10", license = Licenses.nsMenuFx),

@@ -26,7 +26,6 @@ import online.hudacek.fxradio.ui.style.Appearance
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
-import online.hudacek.fxradio.util.reloadStylesheets
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.value
 import tornadofx.booleanProperty
@@ -63,7 +62,7 @@ class PreferencesViewModel : BaseViewModel<Preferences>(Preferences()) {
         }
         Properties.UseTrayIcon.save(useTrayIconProperty.value)
         Properties.DarkMode.save(darkModeProperty.value)
-        reloadStylesheets(darkModeProperty.value)
+        Appearance.reloadStylesheets(darkModeProperty.value)
         MacUtils.setAppearance(darkModeProperty.value)
     }
 }
