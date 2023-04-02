@@ -30,9 +30,7 @@ object AlertHelper {
         owner?.also { alert.initOwner(it) }
         val okButton: Button? =
             alert.dialogPane.lookupButton(alert.buttonTypes.firstOrNull { it == ButtonType.OK }) as Button?
-        okButton?.let {
-            it.addClass(Styles.primaryButton)
-        }
+        okButton?.addClass(Styles.primaryButton)
         return alert.toMaybe()
             .defaultIfEmpty(ButtonType.CANCEL)
             .filter { it == ButtonType.OK }
