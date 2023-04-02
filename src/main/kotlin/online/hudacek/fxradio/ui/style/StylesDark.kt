@@ -454,6 +454,7 @@ class StylesDark : Stylesheet() {
 
         textField {
             backgroundColor += c(colors.playerBox)
+            borderColor += box(c(colors.playerBox, 0.6))
             textFill = Color.WHITESMOKE
             promptTextFill = Color.GRAY
             backgroundRadius += box(6.px)

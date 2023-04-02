@@ -23,7 +23,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 object ApiUtils {
 
     val version: String by lazy {
-        ApiUtils::class.java.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
+        javaClass.getPackage().implementationVersion ?: "0.0-DEVELOPMENT"
     }
 
     fun isValidUrl(url: String) = url.toHttpUrlOrNull() != null
