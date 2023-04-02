@@ -499,7 +499,7 @@ class Styles : Stylesheet() {
             }
         }
 
-        StylesDark.autoCompletePopup {
+        autoCompletePopup {
             backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
             padding = box(0.px)
