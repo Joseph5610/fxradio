@@ -1,9 +1,7 @@
 import groovy.lang.Closure
 import io.github.fvarrui.javapackager.gradle.PackageTask
-import io.github.fvarrui.javapackager.model.MacConfig
-import io.github.fvarrui.javapackager.model.MacStartup
+import io.github.fvarrui.javapackager.model.*
 import io.github.fvarrui.javapackager.model.Manifest
-import io.github.fvarrui.javapackager.model.WindowsConfig
 import org.gradle.internal.os.OperatingSystem
 
 
@@ -169,9 +167,17 @@ task<PackageTask>("jfxNative") {
         backgroundImage = File("src/main/deploy/package/mac/background.png")
     } as Closure<MacConfig>)
     winConfig(closureOf<WindowsConfig> {
+        isGenerateSetup = false
+        isGenerateMsi = true
+        setupMode = SetupMode.askTheUser
+        productVersion = appVersion
+        fileVersion = appVersion
+        isDisableDirPage = false
+        isDisableProgramGroupPage = false
         isDisableWelcomePage = false
         isDisableFinishedPage = false
         isDisableRunAfterInstall = false
+        isRemoveOldLibs = true
     } as Closure<WindowsConfig>)
     dependsOn("jar")
     vmArgs = listOf(
