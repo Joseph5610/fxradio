@@ -59,9 +59,6 @@ class HumbleAudioComponent {
 
                     var rawAudio: ByteBuffer? = null
 
-                    //Log audio format
-                    logger.debug { audioFrame?.format }
-
                     setVolume(lastTriedVolumeChange)
 
                     val packet = MediaPacket.make()
@@ -86,7 +83,7 @@ class HumbleAudioComponent {
                             rawAudio = converter.toJavaAudio(rawAudio, samples)
                             audioFrame?.play(rawAudio)
                         }
-                    } while (samples.isComplete)
+                    } while (samples.isComplete && isActive)
                 }
             } catch (e: Exception) {
                 deMuxer.correctlyClose()
@@ -100,8 +97,8 @@ class HumbleAudioComponent {
     fun setVolume(newVolume: Double) {
         lastTriedVolumeChange = newVolume
 
-        //Dirty hack, since the api does not provide direct access to field,
-        //we use reflection to get access to line field to change volume
+        // Dirty hack, since the api does not provide direct access to field,
+        // we use reflection to get access to line field to change volume
         AudioFrame::class.memberProperties
             .filter { it.name == "mLine" }[0].apply {
             isAccessible = true

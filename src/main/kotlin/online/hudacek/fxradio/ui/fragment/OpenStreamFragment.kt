@@ -20,6 +20,7 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.apiclient.ApiUtils
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
@@ -75,7 +76,7 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
         }
 
         val validator = context.addValidator(textField, textField.textProperty()) {
-            if (it == null || it.trim().length < 5) error(messages["field.min.length"]) else null
+            if (it == null || !ApiUtils.isValidUrl(it)) error(messages["field.invalid.url"]) else null
         }
 
         vbox(alignment = Pos.CENTER_RIGHT) {

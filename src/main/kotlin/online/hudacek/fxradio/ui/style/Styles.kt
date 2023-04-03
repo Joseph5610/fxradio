@@ -24,7 +24,14 @@ import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontSmoothingType
 import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.FXVisibility
+import tornadofx.InternalWindow
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.c
+import tornadofx.cssclass
+import tornadofx.em
+import tornadofx.px
 
 /**
  * Type-safe CSS classes used around the app
@@ -103,9 +110,8 @@ class Styles : Stylesheet() {
             borderRadius += box(4.px)
             backgroundColor += c(colors.background)
             borderColor += box(c(colors.backgroundBorder))
-            maxWidth = 300.px
-            minWidth = 300.px
-            prefWidth = 300.px
+            maxWidth = 290.px
+            prefWidth = 290.px
             alignment = Pos.CENTER
             prefHeight = 40.px
             minHeight = 40.px
@@ -504,6 +510,8 @@ class Styles : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
             padding = box(0.px)
             backgroundInsets += box(0.px)
+            backgroundRadius += box(4.px)
+            borderRadius += box(4.px)
             unsafe("-fx-control-inner-background", raw(colors.background))
             unsafe("-fx-accent", raw(colors.primary))
             unsafe("-fx-selection-bar-non-focused", raw(colors.backgroundSelected))

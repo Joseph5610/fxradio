@@ -46,6 +46,7 @@ import tornadofx.hbox
 import tornadofx.listProperty
 import tornadofx.observableListOf
 import tornadofx.validator
+import java.util.Locale
 
 class AddStationFragment : BaseFragment() {
 
@@ -56,6 +57,13 @@ class AddStationFragment : BaseFragment() {
     // List of Countries for autocomplete
     private val countriesListProperty = listProperty<String>(observableListOf()).apply {
         bind(libraryViewModel.countriesProperty) { c -> c.name }
+    }
+
+    // List of Languages for autocomplete
+    private val languagesProperty = listProperty<String>(observableListOf()).apply {
+        bind(libraryViewModel.countriesProperty) {
+            c -> Locale.of(c.iso3166).displayLanguage
+        }
     }
 
     override fun onDock() {
@@ -123,7 +131,7 @@ class AddStationFragment : BaseFragment() {
 
                     field(
                         messages["add.language"], messages["add.language.prompt"],
-                        viewModel.languageProperty, isRequired = true, countriesListProperty
+                        viewModel.languageProperty, isRequired = true, languagesProperty
                     ) { field ->
                         field.validator {
                             if (!validate(it, 150)) error(messages["field.invalid.length"])

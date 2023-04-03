@@ -81,7 +81,6 @@ class StylesDark : Stylesheet() {
         val colorRadioButton by cssclass()
 
         val autoCompletePopup by cssclass()
-
     }
 
     init {
@@ -108,9 +107,8 @@ class StylesDark : Stylesheet() {
             borderRadius += box(4.px)
             backgroundColor += c(colors.playerBox)
             borderColor += box(c(colors.backgroundBorder))
-            maxWidth = 300.px
-            minWidth = 300.px
-            prefWidth = 300.px
+            maxWidth = 290.px
+            prefWidth = 290.px
             alignment = Pos.CENTER
             prefHeight = 40.px
             minHeight = 40.px
@@ -587,6 +585,8 @@ class StylesDark : Stylesheet() {
             borderColor += box(c(colors.backgroundBorder))
             padding = box(0.px)
             backgroundInsets += box(0.px)
+            backgroundRadius += box(4.px)
+            borderRadius += box(4.px)
             unsafe("-fx-control-inner-background", raw(colors.background))
             unsafe("-fx-accent", raw(colors.primary))
             unsafe("-fx-selection-bar-non-focused", raw(colors.backgroundSelected))
