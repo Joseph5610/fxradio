@@ -90,6 +90,9 @@ class LibraryView : BaseView() {
                         )
                     )
 
+                    showWhen {
+                        viewModel.pinnedProperty.emptyProperty().not()
+                    }
                 }
 
                 vbox {

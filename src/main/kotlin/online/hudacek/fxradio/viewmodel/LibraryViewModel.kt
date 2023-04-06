@@ -94,7 +94,6 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val showLibraryProperty = bind(Library::showLibrary) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
-    //Internal only, contains unedited search query
     val countriesQueryProperty = bind(Library::countriesQuery) as StringProperty
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
