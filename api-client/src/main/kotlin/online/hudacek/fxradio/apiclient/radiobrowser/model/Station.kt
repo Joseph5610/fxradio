@@ -78,5 +78,8 @@ val Station.description: String
         }
     }
 
+val Station.isIgnoredStation: Boolean
+    get() = (countryCode == "RU" || countryCode == "BY")
+
 private fun String.capitals() =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }

@@ -21,6 +21,7 @@ package online.hudacek.fxradio.usecase.station
 import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
@@ -35,7 +36,7 @@ class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
         .getAllStations(AllStationsRequest(order = ORDER_BY_TREND))
         .compose(applySchedulersSingle())
         .flattenAsObservable { it }
-        .filter { it.countryCode != "RU" }
+        .filter { !it.isIgnoredStation }
         .map { it.copy(name = it.name.trim()) }
         .toList()
 }
