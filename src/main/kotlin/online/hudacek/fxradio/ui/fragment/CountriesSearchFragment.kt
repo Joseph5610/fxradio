@@ -20,7 +20,6 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
@@ -32,23 +31,7 @@ import online.hudacek.fxradio.ui.util.searchField
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
-import tornadofx.get
-import tornadofx.hbox
-import tornadofx.hgrow
-import tornadofx.imageview
-import tornadofx.insets
-import tornadofx.label
-import tornadofx.listview
-import tornadofx.onChange
-import tornadofx.onLeftClick
-import tornadofx.paddingAll
-import tornadofx.region
-import tornadofx.selectedItem
-import tornadofx.stringBinding
-import tornadofx.vbox
+import tornadofx.*
 
 private const val SEARCH_GLYPH_SIZE = 14.0
 
@@ -56,7 +39,7 @@ class CountriesSearchFragment : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    private val filteredCountriesList = viewModel.countriesProperty.filtered { _: Country? -> true }
+    private val filteredCountriesList = viewModel.countriesProperty.filtered { _ -> true }
 
     override val root = vbox {
         vbox {
@@ -71,7 +54,7 @@ class CountriesSearchFragment : BaseFragment() {
                     if (it.isNullOrEmpty()) {
                         filteredCountriesList.setPredicate { _ -> true }
                     } else {
-                        filteredCountriesList.setPredicate { c -> c.name.contains(it) }
+                        filteredCountriesList.setPredicate { c -> c.name.contains(it, ignoreCase = true) }
                     }
                 }
             }
