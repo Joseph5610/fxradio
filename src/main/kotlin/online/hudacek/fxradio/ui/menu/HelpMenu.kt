@@ -22,6 +22,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.openWindow
 import tornadofx.action
 import tornadofx.get
 
@@ -34,7 +35,7 @@ class HelpMenu : BaseMenu("menu.help") {
     override val menuItems = listOf(
         item(messages["menu.app.attributions"]) {
             action {
-                Modal.Attributions.open()
+                Modal.Attributions.openWindow()
             }
         },
         item(messages["menu.help.openhomepage"], KeyCodes.openWebsite) {

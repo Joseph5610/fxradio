@@ -23,6 +23,7 @@ import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.util.Modal
@@ -31,6 +32,7 @@ import tornadofx.action
 import tornadofx.addClass
 import tornadofx.button
 import tornadofx.get
+import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.label
 import tornadofx.paddingAll
@@ -76,14 +78,14 @@ class AppInfoFragment : BaseFragment() {
             smallLabel("${FxRadio.copyright} ${FxRadio.author}")
         }
 
-        vbox(alignment = Pos.CENTER_RIGHT) {
+        vbox(alignment = Pos.CENTER) {
             paddingAll = 10.0
 
-            button(messages["menu.app.attributions"]) {
+            hyperlink(messages["about.datasource"]) {
                 action {
-                    Modal.Attributions.open()
+                    app.openUrl(Config.API.radioBrowserUrl)
                 }
-                addClass(Styles.primaryButton)
+                addClass(Styles.grayLabel)
             }
         }
         addClass(Styles.backgroundWhiteSmoke)

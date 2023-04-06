@@ -41,6 +41,7 @@ import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.onUserSelect
 import tornadofx.paddingAll
+import tornadofx.paddingTop
 import tornadofx.prefWidth
 import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
@@ -73,16 +74,8 @@ class AttributionsFragment : BaseFragment() {
             }
         }
 
-        vbox(alignment = Pos.CENTER) {
-            hyperlink(messages["about.datasource"]) {
-                action {
-                    app.openUrl(Config.API.radioBrowserUrl)
-                }
-                addClass(Styles.grayLabel)
-            }
-        }
-
         vbox(alignment = Pos.CENTER_RIGHT) {
+            paddingTop = 10.0
             button(messages["close"]) {
                 isCancelButton = true
                 action {
