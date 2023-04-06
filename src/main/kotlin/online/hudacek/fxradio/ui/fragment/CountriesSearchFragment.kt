@@ -20,7 +20,6 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import javafx.scene.paint.Color
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.menu.item
@@ -33,36 +32,14 @@ import online.hudacek.fxradio.ui.util.searchField
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.button
+import tornadofx.*
 import tornadofx.controlsfx.glyph
-import tornadofx.get
-import tornadofx.hbox
-import tornadofx.hgrow
-import tornadofx.imageview
-import tornadofx.insets
-import tornadofx.label
-import tornadofx.listview
-import tornadofx.objectBinding
-import tornadofx.onChange
-import tornadofx.onLeftClick
-import tornadofx.paddingAll
-import tornadofx.region
-import tornadofx.selectedItem
-import tornadofx.stringBinding
-import tornadofx.style
-import tornadofx.vbox
 
 private const val GLYPH_SIZE = 14.0
 
 class CountriesSearchFragment : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
-
-    private val filteredCountriesList by lazy {
-        viewModel.countriesProperty.filtered { _ -> true }
-    }
 
     override val root = vbox {
         vbox {
@@ -72,18 +49,12 @@ class CountriesSearchFragment : BaseFragment() {
                     alignment = Pos.CENTER
                     padding = insets(5, 9)
                 }
-
-                textProperty().onChange {
-                    if (it.isNullOrEmpty()) {
-                        filteredCountriesList.setPredicate { _ -> true }
-                    } else {
-                        filteredCountriesList.setPredicate { c -> c.name.contains(it, ignoreCase = true) }
-                    }
-                }
             }
         }
 
-        listview(filteredCountriesList) {
+        listview<Country> {
+            viewModel.filteredCountriesList.bindTo(this)
+
             id = "countriesSearchFragment"
             title = messages["countries"]
             setPrefSize(400.0, 400.0)
@@ -100,12 +71,12 @@ class CountriesSearchFragment : BaseFragment() {
 
                     label(it.name.split("(")[0])
 
-                    region {
-                        hgrow = Priority.ALWAYS
+                    label("${it.stationCount} ${messages["stations"]}") {
+                        addClass(Styles.listItemTag)
                     }
 
-                    label("${it.stationCount}") {
-                        addClass(Styles.listItemTag)
+                    region {
+                        hgrow = Priority.ALWAYS
                     }
 
                     glyph {
@@ -115,11 +86,7 @@ class CountriesSearchFragment : BaseFragment() {
                             else
                                 FontAwesome.Glyph.BOOKMARK_ALT
 
-                            fa.make(GLYPH_SIZE) {
-                                style {
-                                    textFill = Color.WHITESMOKE
-                                }
-                            }
+                            fa.make(GLYPH_SIZE)
                         }
                         graphicProperty().bind(graphic)
                         setOnMouseClicked { _ ->

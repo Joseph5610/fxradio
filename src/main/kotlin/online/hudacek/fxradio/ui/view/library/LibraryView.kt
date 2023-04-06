@@ -136,9 +136,7 @@ class LibraryView : BaseView() {
 
                     cellCache {
                         label(it) {
-                            graphic = FontAwesome.Glyph.FLAG.make(GLYPH_SIZE, isPrimary = true) {
-                                minWidth = 15.0
-                            }
+                            graphic = FontAwesome.Glyph.GLOBE.make(GLYPH_SIZE, isPrimary = true)
                         }
                     }
 

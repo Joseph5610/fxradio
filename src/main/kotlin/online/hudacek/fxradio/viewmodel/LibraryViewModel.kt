@@ -32,6 +32,7 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.SortedFilteredList
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -95,6 +96,14 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
 
     val countriesQueryProperty = bind(Library::countriesQuery) as StringProperty
+
+    val filteredCountriesList by lazy {
+        SortedFilteredList(countriesProperty).apply {
+            filterWhen(countriesQueryProperty) { prop, item ->
+                item.name.contains(prop, ignoreCase = true)
+            }
+        }
+    }
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
         .subscribe({
