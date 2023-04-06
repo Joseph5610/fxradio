@@ -24,10 +24,12 @@ import javafx.stage.Window
 import online.hudacek.fxradio.ui.fragment.AddStationFragment
 import online.hudacek.fxradio.ui.fragment.AppInfoFragment
 import online.hudacek.fxradio.ui.fragment.AttributionsFragment
+import online.hudacek.fxradio.ui.fragment.CountriesSearchFragment
 import online.hudacek.fxradio.ui.fragment.DebugFragment
 import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
 import online.hudacek.fxradio.ui.fragment.PreferencesFragment
 import online.hudacek.fxradio.ui.fragment.StatsFragment
+import online.hudacek.fxradio.ui.view.library.LibraryCountriesFragment
 import online.hudacek.fxradio.util.macos.MacUtils
 import tornadofx.FX
 import tornadofx.Fragment
@@ -50,6 +52,7 @@ sealed class Modal<out T : Fragment>(
     object License : Modal<AttributionsFragment.LicenseFragment>()
     object Preferences : Modal<PreferencesFragment>()
     object OpenStream : Modal<OpenStreamFragment>()
+    object Countries: Modal<CountriesSearchFragment>()
 }
 
 /**

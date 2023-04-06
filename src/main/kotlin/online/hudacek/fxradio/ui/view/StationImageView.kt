@@ -22,6 +22,7 @@ import javafx.beans.property.Property
 import javafx.scene.CacheHint
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.paint.Color
 import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
@@ -30,6 +31,7 @@ import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.setInvalid
 import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.util.toObservable
 import tornadofx.objectProperty
+import kotlin.math.roundToInt
 
 private val logger = KotlinLogging.logger {}
 
@@ -50,6 +52,7 @@ class StationImageView(
         isPreserveRatio = true
         fitWidth = size
         fitHeight = size
+        image = defaultRadioLogo
 
         // Subscribe to property changes
         stationProperty.toObservable().subscribe {
@@ -79,6 +82,26 @@ class StationImageView(
             stationProperty.value.setInvalidLogo()
             logger.trace { "Failed to load image: ${it.message}" }
         })
+    }
+
+    /**
+     * Retrieve dominant color of current station image
+     */
+    fun getDominantColor(): Color {
+        val pr = image.pixelReader
+        val colCount: MutableMap<Color, Long> = hashMapOf()
+
+        for (x in 0 until image.width.roundToInt()) {
+            for (y in 0 until image.height.roundToInt()) {
+                val col = pr.getColor(x, y)
+                if (colCount.containsKey(col)) {
+                    colCount[col] = colCount[col]!! + 1
+                } else {
+                    colCount[col] = 1L
+                }
+            }
+        }
+        return colCount.maxBy { it.value }.key
     }
 
     companion object {

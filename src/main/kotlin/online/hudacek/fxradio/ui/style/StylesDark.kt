@@ -106,7 +106,7 @@ class StylesDark : Stylesheet() {
             backgroundRadius += box(4.px)
             borderRadius += box(4.px)
             backgroundColor += c(colors.playerBox)
-            borderColor += box(c(colors.backgroundBorder))
+            borderColor += box(c(colors.playerBox))
             maxWidth = 290.px
             prefWidth = 290.px
             alignment = Pos.CENTER
@@ -236,9 +236,11 @@ class StylesDark : Stylesheet() {
             borderRadius += box(6.px)
             and(odd) {
                 backgroundColor += c(colors.transparent)
+                borderColor += box(c(colors.transparent))
             }
             and(even) {
                 backgroundColor += c(colors.background)
+                borderColor += box(c(colors.background))
             }
             and(selected) {
                 borderColor += box(c(colors.primary))
@@ -566,7 +568,7 @@ class StylesDark : Stylesheet() {
             InternalWindow.Styles.top {
                 backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
                 borderRadius += box(6.px, 6.px, 0.px, 0.px)
-                backgroundColor += c(colors.background)
+                backgroundColor += c("#262625")
             }
 
             InternalWindow.Styles.closebutton {
@@ -574,7 +576,7 @@ class StylesDark : Stylesheet() {
             }
 
             InternalWindow.Styles.floatingWindowContent {
-                backgroundColor += c(colors.background)
+                backgroundColor += c("#262625")
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }

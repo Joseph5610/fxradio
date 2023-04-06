@@ -77,7 +77,6 @@ class LibraryListView : BaseView() {
             }
         }
 
-        showWhen { viewModel.showLibraryProperty }
         onUserSelect(1) {
             viewModel.stateProperty.value = it.type
         }

@@ -19,23 +19,23 @@
 package online.hudacek.fxradio.ui.view.library
 
 import javafx.geometry.Pos
-import javafx.scene.layout.Priority
+import javafx.scene.Node
+import javafx.scene.layout.VBox
+import javafx.util.Duration
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.ListViewHandler
+import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.openInternalWindow
+import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.borderpane
-import tornadofx.center
-import tornadofx.get
-import tornadofx.hyperlink
-import tornadofx.insets
-import tornadofx.minus
-import tornadofx.top
-import tornadofx.vbox
-import tornadofx.vgrow
+import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.*
+
+private const val GLYPH_SIZE = 14.0
 
 class LibraryView : BaseView() {
 
@@ -70,7 +70,15 @@ class LibraryView : BaseView() {
                     )
                 )
 
-                add(libraryListView)
+                vbox {
+                    add(libraryListView)
+
+                    viewModel.showLibraryProperty
+                        .toObservable()
+                        .subscribe {
+                            customFade(it)
+                        }
+                }
 
                 vbox {
                     add(
@@ -81,24 +89,25 @@ class LibraryView : BaseView() {
                             )
                         )
                     )
-                    showWhen {
-                        viewModel.pinnedProperty.emptyProperty().not()
-                    }
+
                 }
 
                 vbox {
+                    maxHeight = 450.0
+
                     add(
                         find<LibraryCountriesFragment>(
                             params = mapOf("countriesProperty" to viewModel.pinnedProperty)
                         )
                     )
 
-                    showWhen {
-                        viewModel.pinnedProperty.emptyProperty().not().and(viewModel.showPinnedProperty)
-                    }
+                    viewModel.showPinnedProperty
+                        .toObservable()
+                        .subscribe {
+                            customFade(it)
+                        }
                 }
             }
-
         }
 
         center {
@@ -106,23 +115,36 @@ class LibraryView : BaseView() {
                 add(
                     find<LibraryTitleFragment>(
                         params = mapOf(
-                            "libraryTitle" to messages["countries"],
-                            "showProperty" to viewModel.showCountriesProperty
+                            "libraryTitle" to messages["directory"],
+                            "showProperty" to null
                         )
                     )
                 )
-                vbox {
-                    vgrow = Priority.ALWAYS
-                    add(
-                        find<LibraryCountriesFragment>(
-                            params = mapOf("countriesProperty" to viewModel.countriesProperty)
-                        )
-                    )
-                    prefHeightProperty().bind(this@center.heightProperty().minus(10.0))
 
-                    showWhen {
-                        viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
+                val item = observableListOf(messages["see.all.countries"])
+                listview(item) {
+                    VBox.setMargin(this, insets(6))
+                    val handler = ListViewHandler(this)
+                    setOnKeyPressed(handler::handle)
+
+                    cellFormat {
+                        addClass(Styles.libraryListItem)
                     }
+
+                    cellCache {
+                        label(it) {
+                            graphic = FontAwesome.Glyph.FLAG.make(GLYPH_SIZE, isPrimary = true) {
+                                minWidth = 15.0
+                            }
+                        }
+                    }
+
+                    onUserSelect(1) {
+                        Modal.Countries.openInternalWindow()
+                        selectionModel.clearSelection()
+                    }
+
+                    addClass(Styles.libraryListView)
                 }
 
                 vbox(alignment = Pos.CENTER) {
@@ -131,7 +153,7 @@ class LibraryView : BaseView() {
                         action { viewModel.getCountries() }
 
                         showWhen {
-                            viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
+                            viewModel.countriesProperty.emptyProperty()
                         }
                         addClass(Styles.primaryTextColor)
                     }
@@ -139,5 +161,24 @@ class LibraryView : BaseView() {
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
+    }
+
+    /**
+     * fades in/out the library listviews when respective showProperty is changed
+     */
+    private fun Node.customFade(fadeIn: Boolean) {
+        val duration = Duration.seconds(0.4)
+        if (fadeIn) {
+            show()
+            fade(duration, 1.0)
+        } else {
+            fade(duration, 0.0) {
+                setOnFinished {
+                    hide()
+                }
+            }
+        }
+        // save the current state
+        viewModel.commit()
     }
 }

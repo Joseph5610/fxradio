@@ -66,7 +66,7 @@ class LibraryCountriesFragment : BaseFragment() {
          * Set min/max size of listview based on its items size
          */
         prefHeightProperty().bind(countriesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10.0 else 30.0
+            if (it != null) it.size * 30.0 + 15.0 else 10.0
         })
 
         cellCache {
@@ -77,14 +77,6 @@ class LibraryCountriesFragment : BaseFragment() {
                 }
 
                 label(it.name.split("(")[0])
-
-                // Do not show count of stations for pinned stations, they would always show 0
-                // as we do not store this in DB
-                if (it.stationCount > 0) {
-                    label("${it.stationCount}") {
-                        addClass(Styles.listItemTag)
-                    }
-                }
 
                 platformContextMenu(
                     listOf(item(messages["pin"]) {

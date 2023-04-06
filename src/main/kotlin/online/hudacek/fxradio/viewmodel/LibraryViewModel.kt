@@ -21,6 +21,7 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.rxjava3.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
+import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
@@ -50,8 +51,8 @@ class Library(
     countries: ObservableList<Country> = observableListOf(),
     pinned: ObservableList<Country> = observableListOf(),
     showLibrary: Boolean = Properties.ShowLibrary.value(true),
-    showCountries: Boolean = Properties.ShowCountries.value(true),
-    showPinned: Boolean = Properties.ShowPinnedCountries.value(true)
+    showPinned: Boolean = Properties.ShowPinnedCountries.value(true),
+    countriesQuery: String = ""
 ) {
 
     // Countries shown in Countries ListView
@@ -70,8 +71,8 @@ class Library(
     )
 
     var showLibrary: Boolean by property(showLibrary)
-    var showCountries: Boolean by property(showCountries)
     var showPinned: Boolean by property(showPinned)
+    var countriesQuery: String by property(countriesQuery)
 }
 
 /**
@@ -91,8 +92,10 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val pinnedProperty = bind(Library::pinned) as ListProperty
 
     val showLibraryProperty = bind(Library::showLibrary) as BooleanProperty
-    val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
+
+    //Internal only, contains unedited search query
+    val countriesQueryProperty = bind(Library::countriesQuery) as StringProperty
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
         .subscribe({
@@ -117,7 +120,6 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     override fun onCommit() {
         app.saveProperties(
             mapOf(
-                Properties.ShowCountries to showCountriesProperty.value,
                 Properties.ShowLibrary to showLibraryProperty.value,
                 Properties.ShowPinnedCountries to showPinnedProperty.value
             )

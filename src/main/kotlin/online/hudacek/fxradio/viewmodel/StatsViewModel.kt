@@ -44,7 +44,7 @@ class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats(), StatsState
 
     private val getStatsUseCase: GetStatsUseCase by inject()
 
-    val statsListProperty = bind(Stats::statsList) as ListProperty
+    val statsListProperty by lazy { bind(Stats::statsList) as ListProperty }
 
     fun fetchStats() {
         stateProperty.value = StatsState.Loading
