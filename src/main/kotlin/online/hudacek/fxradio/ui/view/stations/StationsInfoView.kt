@@ -86,7 +86,9 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private val favouriteRemoveIcon by lazy { FontAwesome.Glyph.HEART_ALT.make(ICON_SIZE, isPrimary = false) }
 
     private val stationLogo by lazy {
-        stationView(selectedStationViewModel.stationProperty, LOGO_SIZE)
+        stationView(selectedStationViewModel.stationObservable, LOGO_SIZE) {
+            subscribe()
+        }
     }
 
     override fun onDock() {

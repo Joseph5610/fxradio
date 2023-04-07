@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.usecase
 
 import io.reactivex.rxjava3.core.Single
+import mu.KotlinLogging
 import okhttp3.Response
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.MusicBrainzApiProvider
@@ -26,6 +27,8 @@ import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.musicbrainz.MusicBrainzApi
 import online.hudacek.fxradio.apiclient.musicbrainz.model.Release
 import online.hudacek.fxradio.util.applySchedulersSingle
+
+private val logger = KotlinLogging.logger {}
 
 private const val SCORE_THRESHOLD = 95
 private const val ART_PATH = "/front-250"
@@ -44,6 +47,7 @@ class GetCoverArtUseCase : BaseUseCase<String, Single<Response>>() {
             val coverUrl = Config.API.coverArtApiUrl + release.id + ART_PATH
             ReleaseWithCoverArt(coverUrl, release)
         }
+        .doOnSuccess { logger.debug { "Requesting CoverArt: ${it.coverArtUrl}" } }
         .flatMap { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
         .compose(applySchedulersSingle())
 }

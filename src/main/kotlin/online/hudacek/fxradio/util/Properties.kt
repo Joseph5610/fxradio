@@ -37,7 +37,6 @@ enum class Properties(val key: String) {
     SearchQuery("search.query"),
     WindowDivider("windowDivider"),
     ShowLibrary("window.showLibrary"),
-    ShowCountries("window.showCountries"),
     ShowPinnedCountries("window.showPinned"),
     WindowWidth("window.width"),
     WindowHeight("window.height"),

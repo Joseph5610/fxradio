@@ -126,6 +126,7 @@ class StationsDataGridView : BaseView() {
 
                 stationView(station, LOGO_SIZE) {
                     paddingAll = 5
+                    subscribe()
                 }
 
                 label(station.name) {

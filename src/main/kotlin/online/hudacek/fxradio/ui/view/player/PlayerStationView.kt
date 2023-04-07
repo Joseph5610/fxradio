@@ -36,6 +36,7 @@ import tornadofx.bottom
 import tornadofx.get
 import tornadofx.hbox
 import tornadofx.label
+import tornadofx.objectBinding
 import tornadofx.onHover
 import tornadofx.separator
 import tornadofx.stringBinding
@@ -65,19 +66,23 @@ class PlayerStationView : BaseView() {
         }
     }
 
+    private val coverArtObservable = appEvent.streamMetaDataUpdates
+        .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
+
     private val stationLogo by lazy {
-        stationView(selectedStationViewModel.stationProperty, size = LOGO_SIZE) {
-            appEvent.streamMetaDataUpdates
-                .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
-                .subscribe({
-                    if (it.isSuccessful) {
-                        it.body?.byteStream().use { i ->
+        // This view Shows cover art of currently playing song if available,
+        // If not, it shows the station logo
+        stationView(selectedStationViewModel.stationObservable, size = LOGO_SIZE) {
+            coverArtObservable.withLatestFrom(imageObservable) { r, i -> Pair(r, i) }
+                .subscribe {
+                    if (it.first.isSuccessful) {
+                        it.first.body?.byteStream().use { i ->
                             image = Image(i)
                         }
                     } else {
-                        getStationImage()
+                        image = it.second
                     }
-                }, { getStationImage() })
+                }
         }
     }
 

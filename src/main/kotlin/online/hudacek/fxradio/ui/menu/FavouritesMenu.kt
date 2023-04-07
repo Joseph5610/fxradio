@@ -53,7 +53,9 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     // For some reason macOS native menu does not respect
                     // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = stationView(it, 15.0)
+                        graphic = stationView(it, 15.0) {
+                            subscribe()
+                        }
                     }
                     action {
                         selectedStationViewModel.item = SelectedStation(it)

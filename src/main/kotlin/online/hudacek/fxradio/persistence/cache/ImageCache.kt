@@ -66,7 +66,7 @@ abstract class ImageCache {
         }
 
         /**
-         * Removes cache directory with all its contents and recreates it afterwards
+         * Removes cache directory with all its contents and recreates it afterward
          */
         fun clear() = cacheBasePath.deleteRecursively().also { createCacheDirectory() }
 

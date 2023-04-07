@@ -18,12 +18,35 @@
 
 package online.hudacek.fxradio.ui.util
 
+import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import javafx.scene.paint.Color
 import online.hudacek.fxradio.util.macos.MacUtils
+import kotlin.math.roundToInt
 
 internal fun keyCombination(keyCode: KeyCode) =
     KeyCodeCombination(keyCode, if (MacUtils.isMac) KeyCombination.META_DOWN else KeyCombination.CONTROL_DOWN)
+
+/**
+ * Retrieve dominant color from [ImageView]
+ */
+internal fun ImageView.getDominantColor(): Color {
+    val pr = image.pixelReader
+    val colCount: MutableMap<Color, Long> = hashMapOf()
+
+    for (x in 0 until image.width.roundToInt()) {
+        for (y in 0 until image.height.roundToInt()) {
+            val col = pr.getColor(x, y)
+            if (colCount.containsKey(col)) {
+                colCount[col] = colCount[col]!! + 1
+            } else {
+                colCount[col] = 1L
+            }
+        }
+    }
+    return colCount.maxBy { it.value }.key
+}
 
 

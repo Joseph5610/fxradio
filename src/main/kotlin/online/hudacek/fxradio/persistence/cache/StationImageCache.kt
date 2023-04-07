@@ -21,6 +21,7 @@ package online.hudacek.fxradio.persistence.cache
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import javafx.scene.image.Image
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulersSingle
@@ -28,15 +29,18 @@ import online.hudacek.fxradio.util.maybeOfNullable
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.absolutePathString
 
 class StationImageCache : ImageCache() {
+
+    val defaultStationLogo by lazy { Image(Config.Resources.waveIcon) }
 
     /**
      * Retrieves the station image either from local cache or remote url
      */
     override fun load(station: Station): Maybe<Image> = maybeOfNullable(getLocalPath(station))
-        .onErrorResumeNext { getRemote(station) }
         .switchIfEmpty(getRemote(station))
+        .onErrorResumeNext { Maybe.just(defaultStationLogo) }
 
     /**
      * Downloads and stores remote image file into local cache
@@ -62,7 +66,7 @@ class StationImageCache : ImageCache() {
      * Gets Image for [station] from local cache
      */
     private fun getLocalPath(station: Station) = if (station.isCached) {
-        Image("file:" + cacheBasePath.resolve(station.uuid).toFile().absolutePath, true)
+        Image("file:" + cacheBasePath.resolve(station.uuid).absolutePathString(), true)
     } else {
         null
     }

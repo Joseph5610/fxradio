@@ -140,7 +140,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
             mapOf(
                 Properties.Player to mediaPlayerProperty.value.playerType,
                 Properties.PlayerAnimated to animateProperty.value,
-                Properties.Volume to volumeProperty.value
+                Properties.Volume to volumeProperty.value,
             )
         )
     }

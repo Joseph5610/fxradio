@@ -32,8 +32,24 @@ import online.hudacek.fxradio.ui.util.searchField
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.button
 import tornadofx.controlsfx.glyph
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.hgrow
+import tornadofx.imageview
+import tornadofx.insets
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.objectBinding
+import tornadofx.onLeftClick
+import tornadofx.paddingAll
+import tornadofx.region
+import tornadofx.selectedItem
+import tornadofx.stringBinding
+import tornadofx.vbox
 
 private const val GLYPH_SIZE = 14.0
 
@@ -42,6 +58,8 @@ class CountriesSearchFragment : BaseFragment() {
     private val viewModel: LibraryViewModel by inject()
 
     override val root = vbox {
+        title = messages["countries"]
+
         vbox {
             paddingAll = 10.0
             searchField(messages["search"], viewModel.countriesQueryProperty) {
@@ -56,7 +74,6 @@ class CountriesSearchFragment : BaseFragment() {
             viewModel.filteredCountriesList.bindTo(this)
 
             id = "countriesSearchFragment"
-            title = messages["countries"]
             setPrefSize(400.0, 400.0)
 
             val handler = ListViewHandler(this)

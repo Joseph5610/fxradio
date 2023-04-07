@@ -19,7 +19,6 @@
 package online.hudacek.fxradio.ui.fragment
 
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -47,18 +46,6 @@ class DebugFragment : BaseFragment("Debug Window") {
                     vgrow = Priority.ALWAYS
                     isWrapText = true
                     prefHeight = 150.0
-                }
-            }
-            fieldset("Stations with invalid logo") {
-                listview(InvalidStationsHolder.invalidLogoStations) {
-                    prefHeight = 150.0
-                    cellFormat {
-                        graphic = vbox {
-                            label(it.name)
-                        }
-                        addClass(Styles.decoratedListItem)
-                    }
-                    addClass(Styles.decoratedListView)
                 }
             }
         }
