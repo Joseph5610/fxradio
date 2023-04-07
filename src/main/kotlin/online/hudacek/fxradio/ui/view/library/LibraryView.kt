@@ -126,6 +126,7 @@ class LibraryView : BaseView() {
 
                 val item = observableListOf(messages["see.all.countries"])
                 listview(item) {
+                    id = "libraryDirectoryView"
                     VBox.setMargin(this, insets(6))
                     val handler = ListViewHandler(this)
                     setOnKeyPressed(handler::handle)

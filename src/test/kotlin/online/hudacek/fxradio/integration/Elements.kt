@@ -22,7 +22,7 @@ package online.hudacek.fxradio.integration
 object Elements {
     const val nowPlayingLabel = "#nowStreaming"
     const val stationsDataGrid = "#stations"
-    const val libraryListView = "#libraryListView"
+    const val libraryDirectoryView = "#libraryDirectoryView"
     const val libraryCountriesFragment = "#libraryCountriesFragment"
     const val volumeMinIcon = "#volumeMinIcon"
     const val volumeMaxIcon = "#volumeMaxIcon"
@@ -31,4 +31,5 @@ object Elements {
     const val search = "#search"
     const val stationMessageHeader = "#stationMessageHeader"
     const val stationMessageSubHeader = "#stationMessageSubHeader"
+    const val countriesSearchFragment = "#countriesSearchFragment"
 }

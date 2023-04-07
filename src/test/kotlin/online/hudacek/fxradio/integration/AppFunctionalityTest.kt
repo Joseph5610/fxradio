@@ -29,7 +29,10 @@ import online.hudacek.fxradio.apiclient.ServiceProvider
 import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
+import online.hudacek.fxradio.integration.Elements.countriesSearchFragment
 import online.hudacek.fxradio.integration.Elements.libraryCountriesFragment
+import online.hudacek.fxradio.integration.Elements.libraryDirectoryView
 import online.hudacek.fxradio.integration.Elements.nowPlayingLabel
 import online.hudacek.fxradio.integration.Elements.playerControls
 import online.hudacek.fxradio.integration.Elements.search
@@ -40,6 +43,7 @@ import online.hudacek.fxradio.integration.Elements.volumeMaxIcon
 import online.hudacek.fxradio.integration.Elements.volumeMinIcon
 import online.hudacek.fxradio.integration.Elements.volumeSlider
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.usecase.country.GetCountriesUseCase
 import online.hudacek.fxradio.viewmodel.*
 import org.apache.logging.log4j.Level
 import org.controlsfx.glyphfont.Glyph
@@ -143,7 +147,7 @@ class AppFunctionalityTest {
 
         // Get results from API
         val apiStations = service.getTopVotedStations().blockingGet()
-            .filter { it.countryCode != "RU" }
+            .filter { !it.isIgnoredStation }
 
         assertEquals(apiStations.size, appStations.items.size)
     }
@@ -227,5 +231,30 @@ class AppFunctionalityTest {
             .lookup("TestPinnedCountryName")
             .queryAll<Label>()
         waitFor(2) { items.size == 0 }
+    }
+
+    @Test
+    fun `verify directory button opens internal window`() {
+        // Verify app initial state
+        verifyThat(nowPlayingLabel, hasLabel("Streaming stopped"))
+
+        // Verify browse Directory item is present
+        val browseDirectory = robot.find(libraryDirectoryView) as ListView<String>
+        waitFor(2) { browseDirectory.items.size == 1 }
+
+        // Open directory window
+        robot.interact {
+            val directoryItem = robot.from(browseDirectory)
+                .lookup(browseDirectory.items[0])
+                .query<Label>()
+            robot.clickOn(directoryItem)
+        }
+
+        // verify Countries Window is open
+        val countriesInternalWindow = robot.find(countriesSearchFragment) as ListView<Country>
+
+        // verify list of countries is correctly populated
+        val countries = find<GetCountriesUseCase>().execute(Unit).count().blockingGet()
+        waitFor(2) { countriesInternalWindow.items.size == countries.toInt() }
     }
 }
