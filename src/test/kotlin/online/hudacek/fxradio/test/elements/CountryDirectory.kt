@@ -3,19 +3,20 @@ package online.hudacek.fxradio.test.elements
 import javafx.scene.control.Label
 import javafx.scene.control.ListView
 import online.hudacek.fxradio.test.util.find
-import online.hudacek.fxradio.test.util.waitFor
+import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
+import org.testfx.matcher.control.ListViewMatchers
 
-class DirectoryListView(private val robot: FxRobot) {
+class CountryDirectory(private val robot: FxRobot) {
 
     private val libraryDirectoryView = "#libraryDirectoryView"
 
     fun waitForElement() = apply {
-        waitFor(2) { getListViewElement().items.size == 1 }
+        verifyThat(libraryDirectoryView, ListViewMatchers.hasItems(1))
     }
 
     fun openBrowseAllCountries() = apply {
-        val browseDirectory = getListViewElement()
+        val browseDirectory = robot.find<ListView<String>>(libraryDirectoryView)
         robot.interact {
             val directoryItem = robot.from(browseDirectory)
                 .lookup(browseDirectory.items[0])
@@ -23,7 +24,4 @@ class DirectoryListView(private val robot: FxRobot) {
             robot.clickOn(directoryItem)
         }
     }
-
-    private fun getListViewElement() = robot.find(libraryDirectoryView) as ListView<String>
-
 }

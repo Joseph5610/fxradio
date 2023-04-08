@@ -1,15 +1,12 @@
 package online.hudacek.fxradio.test.elements
 
-import javafx.scene.control.ListView
 import javafx.scene.input.KeyCode
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.test.util.find
 import online.hudacek.fxradio.test.util.visible
-import online.hudacek.fxradio.test.util.waitFor
 import org.testfx.api.FxAssert.verifyThat
 import org.testfx.api.FxRobot
+import org.testfx.matcher.control.ListViewMatchers
 
-class CountriesSearchFragment(private val robot: FxRobot) {
+class CountrySearch(private val robot: FxRobot) {
 
     private val countriesSearchFragment = "#countriesSearchFragment"
 
@@ -18,8 +15,7 @@ class CountriesSearchFragment(private val robot: FxRobot) {
     }
 
     fun verifyListViewHasSize(expectedSize: Int) = apply {
-        val listView = robot.find(countriesSearchFragment) as ListView<Country>
-        waitFor(2) { listView.items.size == expectedSize }
+        verifyThat(countriesSearchFragment, ListViewMatchers.hasItems(expectedSize))
     }
 
     fun closeWindow() = apply {

@@ -22,7 +22,7 @@ class Player(private val robot: FxRobot) {
     }
 
     fun stopStream() = apply {
-        val stopButton = robot.find(playerControls) as Glyph
+        val stopButton = robot.find<Glyph>(playerControls)
         robot.clickOn(stopButton)
     }
 
@@ -40,7 +40,7 @@ class Player(private val robot: FxRobot) {
     }
 
     fun verifySliderValueChanged(expected: Double) = apply {
-        val slider = robot.find(volumeSlider) as Slider
+        val slider = robot.find<Slider>(volumeSlider)
         waitFor(2) { slider.value == expected }
     }
 }

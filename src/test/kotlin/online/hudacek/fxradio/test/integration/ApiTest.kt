@@ -6,7 +6,6 @@ import online.hudacek.fxradio.apiclient.ServiceProvider
 import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.test.elements.StationsDataGrid
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.testfx.framework.junit5.Start
@@ -34,6 +33,6 @@ class ApiTest : BaseTest() {
             .filter { !it.isIgnoredStation }
 
         // Verify API and app results are the same
-        assertEquals(apiStations.size, stationsDataGrid.getDataGridElement().items.size)
+        stationsDataGrid.verifyNumberOfItems(apiStations.size)
     }
 }

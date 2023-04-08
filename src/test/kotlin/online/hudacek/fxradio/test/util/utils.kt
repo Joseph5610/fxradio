@@ -73,7 +73,6 @@ internal fun visible() = NodeMatchers.isVisible()
 
 internal fun hidden() = NodeMatchers.isInvisible()
 
-
 internal inline fun <reified T : Node> FxRobot.find(name: String): T {
     logger.info { "Find element: $name" }
     return lookup(name).query() as T

@@ -21,8 +21,8 @@ package online.hudacek.fxradio.test.integration
 import javafx.stage.Stage
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.test.elements.CountriesSearchFragment
-import online.hudacek.fxradio.test.elements.DirectoryListView
+import online.hudacek.fxradio.test.elements.CountrySearch
+import online.hudacek.fxradio.test.elements.CountryDirectory
 import online.hudacek.fxradio.test.elements.PinnedCountries
 import online.hudacek.fxradio.test.elements.Player
 import online.hudacek.fxradio.test.elements.StationSearch
@@ -107,12 +107,12 @@ class LibraryTest : BaseTest() {
 
     @Test
     fun `verify directory button opens internal window`() {
-        val countriesSearchFragment = CountriesSearchFragment(robot)
+        val countrySearch = CountrySearch(robot)
         try {
             // Verify app initial state
             Player(robot).waitForStatusHasText("Streaming stopped")
 
-            DirectoryListView(robot)
+            CountryDirectory(robot)
                 // Verify browse Directory item is present
                 .waitForElement()
                 // Open directory window
@@ -121,11 +121,11 @@ class LibraryTest : BaseTest() {
             val expectedCountriesSize = find<GetCountriesUseCase>().execute(Unit).count().blockingGet()
 
             // Verify Countries Window is open
-            countriesSearchFragment.waitForElement()
+            countrySearch.waitForElement()
                 // Verify list of countries is correctly populated
                 .verifyListViewHasSize(expectedSize = expectedCountriesSize.toInt())
         } finally {
-            countriesSearchFragment.closeWindow()
+            countrySearch.closeWindow()
         }
     }
 }
