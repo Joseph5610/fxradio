@@ -37,17 +37,14 @@ import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.App
-import tornadofx.FX
-import tornadofx.Stylesheet
-import tornadofx.launch
-import tornadofx.setStageIcon
-import tornadofx.stylesheet
+import tornadofx.*
 import java.io.FileInputStream
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Year
 import kotlin.reflect.KClass
+
 
 private const val WINDOW_MIN_WIDTH = 800.0
 private const val WINDOW_MIN_HEIGHT = 600.0
@@ -74,10 +71,17 @@ open class FxRadio(
     private val playerViewModel: PlayerViewModel by inject()
     private val preferencesViewModel: PreferencesViewModel by inject()
 
+    private val basePathInTest by lazy { "fxradio_test_${System.currentTimeMillis()}" }
+
     /**
      * override app.config path to ${user.home}/.fxradio
      */
-    override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
+    override val configBasePath: Path = if (isAppRunningInTest) {
+        Files.createTempDirectory(basePathInTest)
+    } else {
+        Paths.get(Config.Paths.confDirPath)
+    }
+
 
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
