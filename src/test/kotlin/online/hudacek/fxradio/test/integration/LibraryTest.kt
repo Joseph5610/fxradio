@@ -112,12 +112,11 @@ class LibraryTest : BaseTest() {
             // Verify app initial state
             Player(robot).waitForStatusHasText("Streaming stopped")
 
-            // Verify browse Directory item is present
-            val directoryListView = DirectoryListView(robot)
-            val listView = directoryListView.waitForElement()
-
-            // Open directory window
-            directoryListView.openBrowseAllCountries(listView)
+            DirectoryListView(robot)
+                // Verify browse Directory item is present
+                .waitForElement()
+                // Open directory window
+                .openBrowseAllCountries()
 
             val expectedCountriesSize = find<GetCountriesUseCase>().execute(Unit).count().blockingGet()
 

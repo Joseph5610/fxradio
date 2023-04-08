@@ -8,6 +8,7 @@ import online.hudacek.fxradio.test.util.waitFor
 import org.testfx.api.FxRobot
 
 class PinnedCountries(private val robot: FxRobot) {
+
     private val libraryCountriesFragment = "#libraryCountriesFragment"
 
     fun verifyPinnedCountryExists(): Label = robot.from(getListViewElement()[0])

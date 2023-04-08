@@ -22,5 +22,7 @@ class CountriesSearchFragment(private val robot: FxRobot) {
         waitFor(2) { listView.items.size == expectedSize }
     }
 
-    fun closeWindow() = robot.press(KeyCode.ESCAPE)
+    fun closeWindow() = apply {
+        robot.press(KeyCode.ESCAPE)
+    }
 }
