@@ -126,6 +126,7 @@ class StationsEmptyView : BaseView() {
     }
 
     override val root = vbox(alignment = Pos.CENTER) {
+        id = "stationsEmptyView"
         paddingTop = 120.0
 
         add(graphic)

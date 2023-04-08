@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.integration
+package online.hudacek.fxradio.test.util
 
 import javafx.scene.Node
 import javafx.scene.control.Labeled
@@ -35,8 +35,7 @@ import org.testfx.matcher.control.TextMatchers
 import org.testfx.util.WaitForAsyncUtils
 import java.util.concurrent.TimeUnit
 
-//Test utils methods
-private val logger = KotlinLogging.logger("TestUtils")
+private val logger = KotlinLogging.logger { }
 
 /**
  * Wait some time for action to finish
@@ -72,6 +71,9 @@ internal fun hasValue(txt: String): Matcher<TextInputControl> {
 
 internal fun visible() = NodeMatchers.isVisible()
 
+internal fun hidden() = NodeMatchers.isInvisible()
+
+
 internal inline fun <reified T : Node> FxRobot.find(name: String): T {
     logger.info { "Find element: $name" }
     return lookup(name).query() as T
@@ -89,3 +91,11 @@ internal fun FxRobot.enterText(fieldQuery: String, textToEnter: String) {
     press(KeyCode.DELETE)
     write(textToEnter)
 }
+
+internal fun FxRobot.clearField(fieldQuery: String) {
+    // Remove existing value
+    doubleClickOn(find(fieldQuery) as TextField)
+    press(KeyCode.DELETE)
+    press(KeyCode.ENTER)
+}
+
