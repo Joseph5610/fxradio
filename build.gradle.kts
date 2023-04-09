@@ -116,12 +116,15 @@ configurations {
     all {
         exclude(group = "net.java.dev.jna", module = "jna")
         exclude(group = "net.java.dev.jna", module = "jna-platform")
+        exclude(group = "org.openjfx", module = "javafx-web")
+        exclude(group = "org.openjfx", module = "javafx-swing")
+        exclude(group = "org.openjfx", module = "javafx-fxml")
     }
 }
 
 javafx {
     version = "20"
-    modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
+    modules = mutableListOf("javafx.controls", "javafx.media")
 }
 
 application {

@@ -37,7 +37,12 @@ import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import org.apache.logging.log4j.LogManager
-import tornadofx.*
+import tornadofx.App
+import tornadofx.FX
+import tornadofx.Stylesheet
+import tornadofx.launch
+import tornadofx.setStageIcon
+import tornadofx.stylesheet
 import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Path
