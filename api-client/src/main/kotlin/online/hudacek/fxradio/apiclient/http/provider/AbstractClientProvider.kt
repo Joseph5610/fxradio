@@ -18,25 +18,20 @@
 
 package online.hudacek.fxradio.apiclient.http.provider
 
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.dnsoverhttps.DnsOverHttps
 import java.net.InetAddress
 
-private const val GOOGLE_DNS = "https://dns.google/dns-query"
-
-abstract class HttpClientProvider {
+/**
+ * Base OkHttpClient provider
+ */
+abstract class AbstractClientProvider {
 
     abstract val client: OkHttpClient
 
-    private val dnsClient by lazy {
-        DnsOverHttps.Builder().client(client)
-            .url(GOOGLE_DNS.toHttpUrl())
-            .includeIPv6(false)
-            .build()
-    }
+    abstract val dnsClient: DnsOverHttps
 
     /**
      * Default implementation of closing the OkHttpClient
@@ -50,6 +45,9 @@ abstract class HttpClientProvider {
         dnsClient.lookup(hostname).sortedBy { it.canonicalHostName }
     }.getOrDefault(emptyList())
 
+    /**
+     * Execute HTTP request to [url]
+     */
     fun request(url: String): Response = client.newCall(buildRequest(url)).execute()
 
     /**

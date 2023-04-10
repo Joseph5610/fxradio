@@ -20,7 +20,7 @@ package online.hudacek.fxradio.apiclient.http
 
 import mu.KotlinLogging
 import okhttp3.Response
-import online.hudacek.fxradio.apiclient.http.provider.BasicClientProvider
+import online.hudacek.fxradio.apiclient.http.provider.CachingClientProvider
 import java.net.InetAddress
 
 private val logger = KotlinLogging.logger {}
@@ -32,7 +32,7 @@ private val logger = KotlinLogging.logger {}
 object HttpClient {
 
     // Uses default HTTP client
-    private val clientProvider by lazy { BasicClientProvider() }
+    private val clientProvider by lazy { CachingClientProvider() }
 
     /**
      * Performs DNS lookup for [address]

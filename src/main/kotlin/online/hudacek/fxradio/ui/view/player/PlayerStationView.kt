@@ -33,10 +33,12 @@ import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.borderpane
 import tornadofx.bottom
+import tornadofx.controlsfx.popover
+import tornadofx.controlsfx.showPopover
 import tornadofx.get
 import tornadofx.hbox
+import tornadofx.imageview
 import tornadofx.label
-import tornadofx.objectBinding
 import tornadofx.onHover
 import tornadofx.separator
 import tornadofx.stringBinding
@@ -73,6 +75,19 @@ class PlayerStationView : BaseView() {
         // This view Shows cover art of currently playing song if available,
         // If not, it shows the station logo
         stationView(selectedStationViewModel.stationObservable, size = LOGO_SIZE) {
+            popover {
+                vbox {
+                    imageview(imageProperty()) {
+                        isPreserveRatio = true
+                        fitWidth = 190.0
+                        fitHeight = 190.0
+                    }
+                    addClass(Styles.backgroundWhiteSmoke)
+                }
+            }
+            setOnMouseClicked {
+               showPopover()
+            }
             coverArtObservable.withLatestFrom(imageObservable) { r, i -> Pair(r, i) }
                 .subscribe {
                     if (it.first.isSuccessful) {

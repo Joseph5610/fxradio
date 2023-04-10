@@ -21,7 +21,9 @@ package online.hudacek.fxradio.apiclient.http.provider
 import mu.KotlinLogging
 import okhttp3.Cache
 import okhttp3.ConnectionPool
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.dnsoverhttps.DnsOverHttps
 import okhttp3.logging.HttpLoggingInterceptor
 import online.hudacek.fxradio.apiclient.http.interceptor.CacheInterceptor
 import online.hudacek.fxradio.apiclient.http.interceptor.UserAgentInterceptor
@@ -30,18 +32,16 @@ import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
-/**
- * Defines Connection timeout for the duration of call in seconds
- */
+// Defines Connection timeout for the duration of call in seconds
 private const val TIMEOUT_SECS: Long = 45
 private const val MAX_IDLE_CONNECTIONS: Int = 7
 private const val MAX_CACHE_SIZE = 100L * 1024L * 1024L  // 100 MiB
 private const val CACHE_BASE_DIR = "fxradio-http-cache"
+private const val GOOGLE_DNS = "https://dns.google/dns-query"
 
-/**
- * Base OkHttpClient implementation
- */
-class BasicClientProvider : HttpClientProvider() {
+class CachingClientProvider(
+    cacheParentDirectory: String = System.getProperty("java.io.tmpdir")
+) : AbstractClientProvider() {
 
     /**
      * Defines the limits for the active connections
@@ -57,7 +57,7 @@ class BasicClientProvider : HttpClientProvider() {
             // Http requests are logged only on trace app logger level
             level = HttpLoggingInterceptor.Level.BODY
 
-            //Do not show sensitive information
+            // Do not show sensitive information
             redactHeader("Authorization")
             redactHeader("Cookie")
         }
@@ -66,12 +66,19 @@ class BasicClientProvider : HttpClientProvider() {
      * Construct http client with custom user agent, connection pool and timeouts
      */
     override val client: OkHttpClient = OkHttpClient.Builder()
-        // The whole call should not take longer than 20 seconds
+        // The whole call should not take longer than TIMEOUT_SECS
         .callTimeout(TIMEOUT_SECS, TimeUnit.SECONDS)
-        .cache(Cache(File(System.getProperty("java.io.tmpdir") , CACHE_BASE_DIR), MAX_CACHE_SIZE))
+        .cache(Cache(File(cacheParentDirectory, CACHE_BASE_DIR), MAX_CACHE_SIZE))
         .addNetworkInterceptor(UserAgentInterceptor())
         .addNetworkInterceptor(CacheInterceptor())
         .connectionPool(connectionPool)
         .addInterceptor(loggerInterceptor)
         .build()
+
+    override val dnsClient: DnsOverHttps by lazy {
+        DnsOverHttps.Builder().client(client)
+            .url(GOOGLE_DNS.toHttpUrl())
+            .includeIPv6(false)
+            .build()
+    }
 }

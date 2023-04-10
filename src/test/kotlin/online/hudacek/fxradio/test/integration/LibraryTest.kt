@@ -37,10 +37,6 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-/**
- * Basic functionality test
- * macOS: enable IntelliJ in Settings > Privacy > Accessibility to make it work
- */
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @DisplayName("Library tests")
 class LibraryTest : BaseTest() {

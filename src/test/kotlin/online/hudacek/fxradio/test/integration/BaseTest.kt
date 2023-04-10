@@ -12,6 +12,10 @@ import org.testfx.api.FxRobot
 import org.testfx.framework.junit5.ApplicationExtension
 import tornadofx.find
 
+/**
+ * to make tests work on macOS:
+ * allow IntelliJ IDEA in System Settings > Privacy > Accessibility
+ */
 @ExtendWith(ApplicationExtension::class)
 abstract class BaseTest {
 
