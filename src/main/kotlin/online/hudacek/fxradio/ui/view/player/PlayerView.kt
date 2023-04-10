@@ -29,7 +29,7 @@ import online.hudacek.fxradio.ui.util.setOnSpacePressed
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.ui.util.keyCombination
-import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.openWindow
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
@@ -195,7 +195,7 @@ class PlayerView : BaseView() {
         if (Properties.EnableDebugView.value(false)) {
             add(FontAwesome.Glyph.BUG.make(VOLUME_GLYPH_SIZE, isPrimary = false) {
                 onLeftClick {
-                    Modal.Debug.open()
+                    Modal.Debug.openWindow()
                 }
             })
         }

@@ -26,11 +26,8 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.smallLabel
-import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.open
 import tornadofx.action
 import tornadofx.addClass
-import tornadofx.button
 import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.imageview

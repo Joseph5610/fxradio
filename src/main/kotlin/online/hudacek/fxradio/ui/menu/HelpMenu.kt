@@ -21,7 +21,6 @@ package online.hudacek.fxradio.ui.menu
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.open
 import online.hudacek.fxradio.util.openWindow
 import tornadofx.action
 import tornadofx.get
@@ -38,7 +37,7 @@ class HelpMenu : BaseMenu("menu.help") {
                 Modal.Attributions.openWindow()
             }
         },
-        item(messages["menu.help.openhomepage"], KeyCodes.openWebsite) {
+        item(messages["menu.help.openWebsite"], KeyCodes.openWebsite) {
             action {
                 appMenuViewModel.openWebsite()
             }
@@ -46,7 +45,7 @@ class HelpMenu : BaseMenu("menu.help") {
         separator(),
         item(messages["menu.help.stats"]) {
             action {
-                Modal.Stats.open()
+                Modal.Stats.openWindow()
             }
         },
         item(messages["menu.help.clearCache"]) {

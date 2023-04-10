@@ -81,7 +81,7 @@ class AddStationFragment : BaseFragment() {
                     requestFocusOnSceneAvailable()
 
                     field(
-                        messages["add.name"], "My Radio Station",
+                        messages["add.name"],  messages["add.station.prompt"],
                         viewModel.nameProperty, isRequired = true
                     ) { field ->
                         field.validator {

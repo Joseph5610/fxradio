@@ -110,7 +110,7 @@ class PreferencesFragment : BaseFragment() {
             fieldset(messages["app.darkMode"]) {
                 icon = FontAwesome.Glyph.MOON_ALT.make(GLYPH_SIZE, isPrimary = false)
 
-                field(messages["menu.app.darkmode"]) {
+                field(messages["menu.app.darkMode"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     togglegroup {
                         radiobutton(messages["menu.app.light"], value = false, group = this) {

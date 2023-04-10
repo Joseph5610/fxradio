@@ -24,7 +24,7 @@ import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.openWindow
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -95,7 +95,7 @@ class StationsEmptyView : BaseView() {
             paddingTop = 10.0
             id = "stationMessageConnectionHelpMsg"
 
-            action { Modal.Preferences.open() }
+            action { Modal.Preferences.openWindow() }
             paddingTop = 5.0
 
             showWhen {

@@ -520,6 +520,7 @@ class StylesDark : Stylesheet() {
 
         comboBox {
             backgroundColor += c(colors.backgroundBorder)
+            borderColor += box(c(colors.backgroundBorder))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             backgroundInsets += box(0.px)
