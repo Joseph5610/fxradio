@@ -23,7 +23,7 @@ class ApiTest : BaseTest() {
     fun stop() = stopApp()
 
     @Test
-    fun `App shows the same top voted stations as received via API calls`() {
+    fun `App should show the same top voted stations as received via API`() {
         // Wait for stations to load
         val stationsDataGrid = StationsDataGrid(robot)
             .waitForElement()

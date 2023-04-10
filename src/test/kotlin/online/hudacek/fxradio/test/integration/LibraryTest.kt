@@ -49,7 +49,7 @@ class LibraryTest : BaseTest() {
 
     @Test
     @Order(1)
-    fun `search should show correct results`() {
+    fun `Search should show correct results`() {
         val stationSearch = StationSearch(robot)
         try {
             // Verify app initial state
@@ -73,7 +73,7 @@ class LibraryTest : BaseTest() {
     }
 
     @Test
-    fun `pinned country should appear in pinned list`() {
+    fun `Pinned country should appear in pinned list`() {
         // Verify app initial state
         Player(robot).waitForStatusHasText("Streaming stopped")
 
@@ -102,7 +102,7 @@ class LibraryTest : BaseTest() {
     }
 
     @Test
-    fun `verify directory button opens internal window`() {
+    fun `Directory button should open list of countries`() {
         val countrySearch = CountrySearch(robot)
         try {
             // Verify app initial state

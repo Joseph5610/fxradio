@@ -23,7 +23,7 @@ class PlayerTest : BaseTest() {
 
     @Test
     @Order(1)
-    fun `app should play and pause selected station`() {
+    fun `App should play and pause selected station`() {
         // Verify app initial state
         val playerElement = Player(robot)
         playerElement.waitForStatusHasText("Streaming stopped")
@@ -52,7 +52,7 @@ class PlayerTest : BaseTest() {
     }
 
     @Test
-    fun `click on volume icons should change slider value`() {
+    fun `Click on volume icons should change slider value`() {
         val sliderMinValueExpected = -35.0
         val sliderMaxValueExpected = 1.0
 
