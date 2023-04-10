@@ -9,8 +9,8 @@ Internet radio directory desktop app written in [tornadofx](https://tornadofx.io
 Play thousands of radio stations from all around the world. 
 
 The app is using VLCLib, so we recommend installing VLC player for the best experience. 
-If the VLC Player is not present on your system, the app will use ffmpeg library to play the audio. 
-However, ffmpeg implementation is not perfect at the moment, and some stations might sound broken or not play at all.
+If the VLC Player is not installed, the app will use [humble-video](https://github.com/artclarke/humble-video) library to play the audio. 
+However, some stations might sound broken or not play at all with this player.
 
 The app is using http://radio-browser.info API
 
