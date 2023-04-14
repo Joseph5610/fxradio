@@ -25,8 +25,6 @@ import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.addClass
 import tornadofx.fieldset
 import tornadofx.form
-import tornadofx.label
-import tornadofx.listview
 import tornadofx.textarea
 import tornadofx.vbox
 import tornadofx.vgrow

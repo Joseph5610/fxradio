@@ -83,7 +83,7 @@ class StationsDataGridView : BaseView() {
         }
 
         onUserSelect {
-           selectStation(it)
+            selectStation(it)
         }
 
         cellFormat {

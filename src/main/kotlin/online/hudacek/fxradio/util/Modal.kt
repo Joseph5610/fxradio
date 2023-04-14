@@ -21,7 +21,14 @@ package online.hudacek.fxradio.util
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.stage.Window
-import online.hudacek.fxradio.ui.fragment.*
+import online.hudacek.fxradio.ui.fragment.AddStationFragment
+import online.hudacek.fxradio.ui.fragment.AppInfoFragment
+import online.hudacek.fxradio.ui.fragment.AttributionsFragment
+import online.hudacek.fxradio.ui.fragment.CountriesSearchFragment
+import online.hudacek.fxradio.ui.fragment.DebugFragment
+import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
+import online.hudacek.fxradio.ui.fragment.PreferencesFragment
+import online.hudacek.fxradio.ui.fragment.StatsFragment
 import online.hudacek.fxradio.util.macos.MacUtils
 import tornadofx.FX
 import tornadofx.Fragment

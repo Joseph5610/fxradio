@@ -61,8 +61,8 @@ class AddStationFragment : BaseFragment() {
 
     // List of Languages for autocomplete
     private val languagesProperty = listProperty<String>(observableListOf()).apply {
-        bind(libraryViewModel.countriesProperty) {
-            c -> Locale.of(c.iso3166).displayLanguage
+        bind(libraryViewModel.countriesProperty) { c ->
+            Locale.of(c.iso3166).displayLanguage
         }
     }
 
@@ -81,7 +81,7 @@ class AddStationFragment : BaseFragment() {
                     requestFocusOnSceneAvailable()
 
                     field(
-                        messages["add.name"],  messages["add.station.prompt"],
+                        messages["add.name"], messages["add.station.prompt"],
                         viewModel.nameProperty, isRequired = true
                     ) { field ->
                         field.validator {

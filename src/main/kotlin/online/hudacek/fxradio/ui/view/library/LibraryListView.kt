@@ -23,7 +23,6 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.make
-import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.addClass

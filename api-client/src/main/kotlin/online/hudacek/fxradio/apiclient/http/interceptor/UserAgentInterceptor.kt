@@ -20,7 +20,6 @@ package online.hudacek.fxradio.apiclient.http.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import online.hudacek.fxradio.apiclient.ApiUtils
 
 class UserAgentInterceptor : Interceptor {
 

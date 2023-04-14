@@ -21,8 +21,8 @@ package online.hudacek.fxradio.test.integration
 import javafx.stage.Stage
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.test.elements.CountrySearch
 import online.hudacek.fxradio.test.elements.CountryDirectory
+import online.hudacek.fxradio.test.elements.CountrySearch
 import online.hudacek.fxradio.test.elements.PinnedCountries
 import online.hudacek.fxradio.test.elements.Player
 import online.hudacek.fxradio.test.elements.StationSearch

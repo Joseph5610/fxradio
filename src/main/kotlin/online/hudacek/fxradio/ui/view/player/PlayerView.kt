@@ -23,12 +23,12 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.setOnSpacePressed
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.util.openWindow
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.InfoPanelState

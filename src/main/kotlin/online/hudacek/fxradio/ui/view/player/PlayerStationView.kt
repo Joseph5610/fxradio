@@ -86,7 +86,7 @@ class PlayerStationView : BaseView() {
                 }
             }
             setOnMouseClicked {
-               showPopover()
+                showPopover()
             }
             coverArtObservable.withLatestFrom(imageObservable) { r, i -> Pair(r, i) }
                 .subscribe {
