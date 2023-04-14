@@ -118,7 +118,7 @@ open class FxRadio(
             FX.layoutDebuggerShortcut = null
         }
 
-        trayIcon.createIcon()
+        trayIcon.subscribe()
         MacUtils.setAppearance(preferencesViewModel.darkModeProperty.value)
     }
 

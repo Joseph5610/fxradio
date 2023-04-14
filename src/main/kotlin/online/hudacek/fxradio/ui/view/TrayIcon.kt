@@ -20,14 +20,13 @@ package online.hudacek.fxradio.ui.view
 import javafx.application.Platform
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
-import online.hudacek.fxradio.util.toObservableChanges
+import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Controller
 import tornadofx.get
-import java.awt.MenuItem
 import java.awt.SystemTray
 import java.awt.TrayIcon
 import javax.swing.SwingUtilities
@@ -42,62 +41,40 @@ class TrayIcon : Controller() {
     private val preferencesViewModel: PreferencesViewModel by inject()
 
     private var trayIcon: TrayIcon? = null
-    private var stationItem: MenuItem? = null
-    private var playPauseItem: MenuItem? = null
 
-    init {
-        selectedStationViewModel.stationObservable.subscribe {
-            stationItem?.let { mi ->
-                mi.label = it.name
-            }
-        }
+    private val showIconObservable = preferencesViewModel.useTrayIconProperty.toObservable()
 
-        playerViewModel.stateObservable.subscribe {
-            playPauseItem?.let { mi ->
-                mi.label = if (it is PlayerState.Playing) {
-                    messages["menu.player.stop"]
-                } else {
-                    messages["menu.player.start"]
-                }
-            }
-        }
-
-        preferencesViewModel.useTrayIconProperty.toObservableChanges()
-            .map { it.newVal }
-            .subscribe {
-                if (it) {
-                    createIcon()
-                } else {
-                    removeIcon()
-                }
-            }
-    }
-
-    fun createIcon() = with(app) {
-        if (!preferencesViewModel.useTrayIconProperty.value) return
-
-        trayicon(resources.stream("/" + Config.Resources.trayIcon), tooltip = FxRadio.appName, autoSize = true) {
+    private fun createIcon() = with(app) {
+        trayicon(resources.stream(Config.Resources.trayIcon), tooltip = FxRadio.appName, autoSize = true) {
             trayIcon = this
 
             setOnMouseClicked(fxThread = true) {
-                primaryStage.show()
-                primaryStage.toFront()
+                showPrimaryStage()
             }
 
             menu(FxRadio.appName) {
                 item(messages["show"] + " " + FxRadio.appName) {
                     setOnAction(fxThread = true) {
-                        primaryStage.show()
-                        primaryStage.toFront()
+                        showPrimaryStage()
                     }
                 }
                 addSeparator()
 
-                stationItem = item(selectedStationViewModel.nameProperty.value) {
+                item(selectedStationViewModel.nameProperty.value) {
+                    selectedStationViewModel.stationObservable.subscribe {
+                        label = it.name
+                    }
                     isEnabled = false
                 }
 
-                playPauseItem = item("Play/Stop") {
+                item("Play/Stop") {
+                    playerViewModel.stateObservable.subscribe {
+                        label = if (it is PlayerState.Playing) {
+                            messages["menu.player.stop"]
+                        } else {
+                            messages["menu.player.start"]
+                        }
+                    }
                     setOnAction(fxThread = true) {
                         playerViewModel.togglePlayerState()
                     }
@@ -115,6 +92,19 @@ class TrayIcon : Controller() {
     private fun removeIcon() {
         SwingUtilities.invokeLater {
             trayIcon?.let { SystemTray.getSystemTray().remove(it) }
+        }
+    }
+
+    private fun showPrimaryStage() {
+        primaryStage.show()
+        primaryStage.toFront()
+    }
+
+    fun subscribe() = showIconObservable.subscribe {
+        if (it) {
+            createIcon()
+        } else {
+            removeIcon()
         }
     }
 }

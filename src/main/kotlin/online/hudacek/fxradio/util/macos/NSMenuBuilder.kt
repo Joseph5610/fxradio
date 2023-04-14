@@ -25,14 +25,12 @@ import javafx.scene.control.MenuItem
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
-import tornadofx.Component
 import tornadofx.FX
-import tornadofx.get
 
 /**
  * NSMenu helper for macOS only
  */
-class NSMenuHelper : Component() {
+class NSMenuBuilder {
 
     private val tk by lazy { MenuToolkit.toolkit(FX.locale) }
 
@@ -53,23 +51,7 @@ class NSMenuHelper : Component() {
         }
     }
 
-    /**
-     * Creates macOS style default Window menu
-     */
-    val windowMenu by lazy {
-        menu(messages["macos.menu.window"]) {
-            items.addAll(
-                tk.createMinimizeMenuItem(),
-                tk.createZoomMenuItem(),
-                tk.createCycleWindowsItem(),
-                separator(),
-                tk.createBringAllToFrontItem()
-            )
-            tk.autoAddWindowMenuItems(this)
-        }
-    }
-
-    val menuBar by lazy {
+    private val menuBar by lazy {
         MenuBar().apply {
             useSystemMenuBarProperty().value = true
         }
@@ -78,15 +60,33 @@ class NSMenuHelper : Component() {
     /**
      * Adds menus to the main MenuBar
      */
-    fun addMenus(vararg menus: Menu) {
+    fun addMenus(vararg menus: Menu) = apply {
         menuBar.menus.addAll(menus)
+    }
+
+    /**
+     * Creates macOS style default Window menu
+     */
+    fun addWindowMenu(name: String) = apply {
+        val menu = menu(name) {
+            items.addAll(
+                tk.createMinimizeMenuItem(),
+                tk.createZoomMenuItem(),
+                tk.createCycleWindowsItem(),
+                separator(),
+                tk.createBringAllToFrontItem()
+            )
+        }
+        tk.autoAddWindowMenuItems(menu)
+        menuBar.menus.add(menuBar.menus.size - 1, menu)
     }
 
     /**
      * Adds additional MenuItems into the [appMenu]
      */
-    fun addAppMenuItems(items: List<MenuItem>) {
+    fun addAppMenuItems(items: List<MenuItem>) = apply {
         appMenu.items.addAll(0, items)
     }
-}
 
+    fun build() = menuBar
+}

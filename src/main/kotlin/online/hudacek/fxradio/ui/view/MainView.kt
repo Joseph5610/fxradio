@@ -83,7 +83,7 @@ class MainView : BaseView(FxRadio.appName) {
 
             // Constrains width of left pane
             libraryView.root.minWidthProperty().bind(widthProperty().divide(6))
-            libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
+            libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.22))
 
             // Remove 1px border from SplitPane
             addClass(Styles.noBorder)
