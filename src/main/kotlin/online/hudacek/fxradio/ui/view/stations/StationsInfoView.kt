@@ -22,7 +22,6 @@ import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
@@ -39,7 +38,6 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.FX
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -66,7 +64,7 @@ import tornadofx.vbox
 private const val LOGO_SIZE = 60.0
 private const val ICON_SIZE = 12.0
 
-class StationsInfoView : BaseView(FxRadio.appName) {
+class StationsInfoView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
@@ -247,7 +245,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                 it.ifEmpty { messages["unknown"] }
             } else it
             messages[key] + ": " + value.toString()
-                .replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase(FX.locale) else c.toString() }
+                .replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase() else c.toString() }
         }) {
             addClass(Styles.grayLabel)
             addClass(Styles.tag)

@@ -4,7 +4,6 @@ import io.github.fvarrui.javapackager.model.*
 import io.github.fvarrui.javapackager.model.Manifest
 import org.gradle.internal.os.OperatingSystem
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -15,7 +14,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "1.8.20"
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("application")
 }
@@ -65,7 +64,10 @@ allprojects {
     }
 
     kotlin {
-        jvmToolchain(19)
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(19))
+            vendor.set(JvmVendorSpec.AZUL)
+        }
     }
 }
 

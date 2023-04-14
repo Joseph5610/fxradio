@@ -56,10 +56,10 @@ class MainView : BaseView(FxRadio.appName) {
             setDividerPositions(windowDividerProperty.get(0.30))
         }
 
-        primaryStage.setOnCloseRequest { evt ->
+        primaryStage.setOnCloseRequest { e ->
             // prevent window from closing when modals opened
             if (Window.getWindows().size > 1) {
-                evt.consume()
+                e.consume()
             }
         }
     }
@@ -96,6 +96,7 @@ class MainView : BaseView(FxRadio.appName) {
         add(menuBarView)
 
         notificationPane(showFromTop = true) {
+            isCloseButtonVisible = false
             appEvent.appNotification.subscribe { this[it.glyph] = it.title }
 
             content {

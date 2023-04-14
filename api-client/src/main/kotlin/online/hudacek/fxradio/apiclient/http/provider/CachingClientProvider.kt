@@ -81,4 +81,10 @@ class CachingClientProvider(
             .includeIPv6(false)
             .build()
     }
+
+
+    override fun close() {
+        client.cache?.close()
+        super.close()
+    }
 }

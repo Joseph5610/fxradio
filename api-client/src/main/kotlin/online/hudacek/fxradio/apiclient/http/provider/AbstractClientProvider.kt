@@ -36,7 +36,7 @@ abstract class AbstractClientProvider {
     /**
      * Default implementation of closing the OkHttpClient
      */
-    fun close() {
+    open fun close() {
         client.dispatcher.executorService.shutdownNow()
         client.connectionPool.evictAll()
     }
