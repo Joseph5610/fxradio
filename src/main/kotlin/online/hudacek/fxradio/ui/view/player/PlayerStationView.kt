@@ -21,6 +21,7 @@ package online.hudacek.fxradio.ui.view.player
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.image.Image
+import mu.KotlinLogging
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.autoUpdatingCopyMenu
@@ -46,6 +47,8 @@ import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
 
+private val logger = KotlinLogging.logger {}
+
 private const val LOGO_SIZE = 33.0
 
 /**
@@ -69,7 +72,7 @@ class PlayerStationView : BaseView() {
     }
 
     private val coverArtObservable = appEvent.streamMetaDataUpdates
-        .flatMapSingle { coverArtUseCase.execute(it.nowPlaying) }
+        .flatMapMaybe { coverArtUseCase.execute(it.nowPlaying) }
 
     private val stationLogo by lazy {
         // This view Shows cover art of currently playing song if available,
@@ -88,8 +91,10 @@ class PlayerStationView : BaseView() {
             setOnMouseClicked {
                 showPopover()
             }
-            coverArtObservable.withLatestFrom(imageObservable) { r, i -> Pair(r, i) }
-                .subscribe {
+
+            coverArtObservable
+                .withLatestFrom(imageObservable) { r, i -> Pair(r, i) }
+                .subscribe({
                     if (it.first.isSuccessful) {
                         it.first.body?.byteStream().use { i ->
                             image = Image(i)
@@ -97,7 +102,9 @@ class PlayerStationView : BaseView() {
                     } else {
                         image = it.second
                     }
-                }
+                }, {
+                   logger.error(it) { "Failed to retrieve cover art! "}
+                })
         }
     }
 

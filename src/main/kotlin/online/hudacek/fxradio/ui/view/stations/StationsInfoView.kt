@@ -38,6 +38,7 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.FX
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -60,6 +61,7 @@ import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
+import java.util.*
 
 private const val LOGO_SIZE = 60.0
 private const val ICON_SIZE = 12.0
@@ -87,6 +89,10 @@ class StationsInfoView : BaseView() {
         stationView(selectedStationViewModel.stationObservable, LOGO_SIZE) {
             subscribe()
         }
+    }
+
+    private val stationNameBinding = selectedStationViewModel.countryCodeProperty.stringBinding {
+        Locale.of("", it).displayName
     }
 
     override fun onDock() {
@@ -118,7 +124,7 @@ class StationsInfoView : BaseView() {
                     showWhen { selectedStationViewModel.hasExtendedInfoProperty }
                 }
 
-                label(selectedStationViewModel.countryProperty) {
+                label(stationNameBinding) {
                     paddingTop = 5.0
                     addClass(Styles.grayLabel)
                 }

@@ -18,11 +18,14 @@
 
 package online.hudacek.fxradio.media.player.vlc
 
+import javafx.application.Platform
 import mu.KotlinLogging
 import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.media.StreamMetaData
-import online.hudacek.fxradio.media.StreamUnavailableException
 import online.hudacek.fxradio.ui.util.msgFormat
+import online.hudacek.fxradio.viewmodel.PlayerState
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import tornadofx.FX
 import tornadofx.FX.Companion.messages
 import tornadofx.find
 import tornadofx.get
@@ -42,9 +45,12 @@ class VLCMediaAdapter : MediaEventAdapter() {
 
     override fun mediaStateChanged(media: Media?, newState: State) {
         media?.let {
-            if (newState == State.ERROR || newState == State.ENDED) throw StreamUnavailableException(
-                messages["player.streamError"].msgFormat(it.info().mrl())
-            )
+            if (newState == State.ERROR || newState == State.ENDED) {
+                Platform.runLater {
+                    val errorMessage = messages["player.streamError"].msgFormat(it.info().mrl())
+                    find<PlayerViewModel>().stateProperty.value = PlayerState.Error(errorMessage)
+                }
+            }
         }
     }
 

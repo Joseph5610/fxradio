@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.layout.VBox
 import javafx.util.Duration
@@ -33,14 +32,12 @@ import online.hudacek.fxradio.util.openInternalWindow
 import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
 import tornadofx.addClass
 import tornadofx.borderpane
 import tornadofx.center
 import tornadofx.fade
 import tornadofx.get
 import tornadofx.hide
-import tornadofx.hyperlink
 import tornadofx.insets
 import tornadofx.label
 import tornadofx.listview
@@ -58,6 +55,7 @@ class LibraryView : BaseView() {
 
     private val librarySearchView: LibrarySearchView by inject()
     private val libraryListView: LibraryListView by inject()
+    private val libraryPinnedListView: LibraryPinnedListView by inject()
 
     override fun onDock() {
         Tables.pinnedCountries
@@ -65,7 +63,6 @@ class LibraryView : BaseView() {
             .subscribe {
                 viewModel.pinnedProperty += it
             }
-        viewModel.getCountries()
     }
 
     override val root = borderpane {
@@ -113,11 +110,7 @@ class LibraryView : BaseView() {
                 vbox {
                     maxHeight = 450.0
 
-                    add(
-                        find<LibraryCountriesFragment>(
-                            params = mapOf("countriesProperty" to viewModel.pinnedProperty)
-                        )
-                    )
+                    add(libraryPinnedListView)
 
                     viewModel.showPinnedProperty
                         .toObservable()
@@ -139,7 +132,7 @@ class LibraryView : BaseView() {
                     )
                 )
 
-                val item = observableListOf(messages["see.all.countries"])
+                val item = observableListOf(messages["directory.all.countries"])
                 listview(item) {
                     id = "libraryDirectoryView"
                     VBox.setMargin(this, insets(6))
@@ -156,24 +149,12 @@ class LibraryView : BaseView() {
                         }
                     }
 
-                    onUserSelect(1) {
+                    onUserSelect(clickCount = 1) {
                         Modal.Countries.openInternalWindow()
                         selectionModel.clearSelection()
                     }
 
                     addClass(Styles.libraryListView)
-                }
-
-                vbox(alignment = Pos.CENTER) {
-                    hyperlink(messages["downloadRetry"]) {
-
-                        action { viewModel.getCountries() }
-
-                        showWhen {
-                            viewModel.countriesProperty.emptyProperty()
-                        }
-                        addClass(Styles.primaryTextColor)
-                    }
                 }
             }
         }

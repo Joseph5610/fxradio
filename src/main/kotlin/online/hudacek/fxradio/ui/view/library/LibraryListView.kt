@@ -74,7 +74,7 @@ class LibraryListView : BaseView() {
             }
         }
 
-        onUserSelect(1) {
+        onUserSelect(clickCount = 1) {
             viewModel.stateProperty.value = it.type
         }
 

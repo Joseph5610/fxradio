@@ -29,6 +29,7 @@ import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.flagIcon
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.searchField
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import org.controlsfx.glyphfont.FontAwesome
@@ -57,15 +58,27 @@ class CountriesSearchFragment : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 
+    override fun onDock() {
+        if (viewModel.countriesProperty.isEmpty()) {
+            viewModel.getCountries()
+        }
+    }
+
     override val root = vbox {
         title = messages["countries"]
 
-        vbox {
+        vbox(spacing = 10.0) {
             paddingAll = 10.0
             searchField(messages["search"], viewModel.countriesQueryProperty) {
                 left = FontAwesome.Glyph.SEARCH.make(GLYPH_SIZE, isPrimary = false) {
                     alignment = Pos.CENTER
                     padding = insets(5, 9)
+                }
+            }
+
+            label(messages["directory.error"]) {
+                showWhen {
+                    viewModel.countriesProperty.emptyProperty()
                 }
             }
         }

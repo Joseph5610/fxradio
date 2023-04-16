@@ -31,8 +31,10 @@ abstract class BaseStateViewModel<Item : Any, State : Any>(initialItem: Item, in
 
     val stateProperty by lazy { objectProperty(initialState) }
 
-    val stateObservable: Observable<State> = stateProperty.toObservable(initialState)
-        .doOnNext { logger.debug { "State Change: $it" } }
+    val stateObservable: Observable<State> by lazy {
+        stateProperty.toObservable(initialState)
+            .doOnNext { logger.debug { "State Change: $it" } }
+    }
 
     val stateChangeObservable: Observable<State> = stateProperty.toObservableChanges()
         .doOnNext { logger.debug { "State Change from ${it.oldVal} to ${it.newVal}" } }

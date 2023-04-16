@@ -26,9 +26,12 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.station.StationAddUseCase
 import online.hudacek.fxradio.util.toObservable
+import tornadofx.FX
 import tornadofx.property
 import tornadofx.stringBinding
 import java.util.*
+
+private const val US_LANGUAGE = "en_US"
 
 /**
  * Stores entered information into the form in [online.hudacek.fxradio.ui.fragment.AddStationFragment]
@@ -71,7 +74,19 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
 
     // Find Country Code from countryProperty value
     private val countryCodeProperty = countryProperty.stringBinding { countryName ->
-        isoCountries.find { Locale.of("", it).displayCountry == countryName }
+        isoCountries.find { Locale.of(FX.locale.language, it).displayCountry == countryName }
+    }
+
+    // Translate local country and language to US locale
+    private val usCountryName = countryCodeProperty.stringBinding { cc ->
+        Locale.of(FX.locale.language, cc).getDisplayCountry(usLocale)
+    }
+
+    private val usLanguageName = languageProperty.stringBinding { l ->
+        isoLanguages
+            .map { Locale.of(it) }
+            .find { it.displayLanguage == l }
+            ?.getDisplayLanguage(usLocale)
     }
 
     fun addNewStation(): Maybe<Station> =
@@ -85,8 +100,8 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
                     homepage = homePageProperty.value,
                     favicon = faviconProperty.value,
                     countryCode = countryCodeProperty.value,
-                    country = countryProperty.value,
-                    language = languageProperty.value,
+                    country = usCountryName.value,
+                    language = usLanguageName.value,
                     tags = tagsProperty.value
                 )
             }
@@ -97,12 +112,14 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
         homePageProperty.value,
         faviconProperty.value,
         countryCodeProperty.value,
-        countryProperty.value,
-        languageProperty.value,
+        usCountryName.value,
+        usLanguageName.value,
         tagsProperty.value
     )
 
     companion object {
+        private val usLocale = Locale.forLanguageTag(US_LANGUAGE)
         private val isoCountries = Locale.getISOCountries()
+        private val isoLanguages = Locale.getISOLanguages()
     }
 }

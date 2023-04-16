@@ -18,11 +18,9 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
@@ -43,15 +41,14 @@ import tornadofx.listview
 import tornadofx.onUserSelect
 import tornadofx.selectedItem
 import tornadofx.stringBinding
+import java.util.*
 
 /**
- * Custom listview fragment for countries
+ * Custom listview view for pinned countries
  */
-class LibraryCountriesFragment : BaseFragment() {
+class LibraryPinnedListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
-
-    private val countriesProperty: ListProperty<Country> by param()
 
     override fun onDock() {
         viewModel.stateObservable.subscribe {
@@ -65,8 +62,8 @@ class LibraryCountriesFragment : BaseFragment() {
         }
     }
 
-    override val root = listview(countriesProperty) {
-        id = "libraryCountriesFragment"
+    override val root = listview(viewModel.pinnedProperty) {
+        id = "libraryCountriesView"
 
         fitToParentHeight()
 
@@ -77,18 +74,19 @@ class LibraryCountriesFragment : BaseFragment() {
         /**
          * Set min/max size of listview based on its items size
          */
-        prefHeightProperty().bind(countriesProperty.doubleBinding {
+        prefHeightProperty().bind(viewModel.pinnedProperty.doubleBinding {
             if (it != null) it.size * 30.0 + 15.0 else 10.0
         })
 
         cellCache {
             hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
+                val countryName = Locale.of("", it.iso3166).displayName
 
                 imageview {
                     image = it.flagIcon
                 }
 
-                label(it.name.split("(")[0])
+                label(countryName)
 
                 platformContextMenu(
                     listOf(item(messages["pin"]) {

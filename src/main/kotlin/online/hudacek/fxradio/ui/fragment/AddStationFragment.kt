@@ -69,6 +69,11 @@ class AddStationFragment : BaseFragment() {
     override fun onDock() {
         // Recheck ViewModel validity when reopening fragment
         viewModel.validate(focusFirstError = false)
+
+        // Download list of countries if it was not downloaded previously
+        if (libraryViewModel.countriesProperty.isEmpty()) {
+            libraryViewModel.getCountries()
+        }
     }
 
     override val root = notificationPane(showFromTop = true) {

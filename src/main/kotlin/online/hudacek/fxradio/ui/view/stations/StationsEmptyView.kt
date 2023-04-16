@@ -23,12 +23,11 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
-import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.openWindow
+import online.hudacek.fxradio.util.actionEvents
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
 import tornadofx.addClass
 import tornadofx.booleanBinding
 import tornadofx.controlsfx.glyph
@@ -49,6 +48,7 @@ private const val GLYPH_SIZE = 50.0
 class StationsEmptyView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE, isPrimary = false) }
     private val errorGlyph by lazy { FontAwesome.Glyph.WARNING.make(size = GLYPH_SIZE, isPrimary = false) }
@@ -92,11 +92,14 @@ class StationsEmptyView : BaseView() {
 
     private val connectionHelpMessage by lazy {
         hyperlink(messages["connectionErrorDesc"]) {
-            paddingTop = 10.0
             id = "stationMessageConnectionHelpMsg"
-
-            action { Modal.Preferences.openWindow() }
             paddingTop = 5.0
+
+            actionEvents()
+                .withLatestFrom(libraryViewModel.stateObservable) { _, s -> s }
+                .subscribe {
+                    viewModel.handleNewLibraryState(it)
+                }
 
             showWhen {
                 viewModel.stateProperty.booleanBinding {
@@ -106,7 +109,6 @@ class StationsEmptyView : BaseView() {
                     }
                 }
             }
-
             addClass(Styles.grayLabel)
         }
     }

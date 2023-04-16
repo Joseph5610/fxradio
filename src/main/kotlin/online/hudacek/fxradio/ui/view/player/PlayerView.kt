@@ -163,9 +163,8 @@ class PlayerView : BaseView() {
         }
     }
 
-    override val root = hbox(spacing = 6) {
+    override val root = hbox(spacing = 6, alignment = Pos.CENTER_LEFT) {
         vgrow = Priority.NEVER
-        alignment = Pos.CENTER_LEFT
 
         // Play/Pause buttons
         add(playerControls)
@@ -185,8 +184,7 @@ class PlayerView : BaseView() {
         }
 
         //Volume controls
-        hbox {
-            alignment = Pos.CENTER
+        hbox(alignment = Pos.CENTER) {
             add(volumeDownGlyph)
             add(volumeSlider)
             add(volumeUpGlyph)

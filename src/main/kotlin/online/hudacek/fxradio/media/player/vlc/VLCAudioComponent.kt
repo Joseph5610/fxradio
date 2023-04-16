@@ -67,12 +67,14 @@ class VLCAudioComponent {
             if (newVolume.toInt() == 0) {
                 do {
                     player.mediaPlayer().audio().isMute = true
-                } while (!player.mediaPlayer().audio().isMute)
+                } while (player.mediaPlayer().status().isPlayable && !player.mediaPlayer().audio().isMute)
             } else {
                 player.mediaPlayer().audio().isMute = false
                 do {
                     player.mediaPlayer().audio().setVolume(newVolume.toInt())
-                } while (player.mediaPlayer().audio().volume() != newVolume.toInt())
+                } while (player.mediaPlayer().status().isPlayable && (player.mediaPlayer().audio()
+                        .volume() != newVolume.toInt())
+                )
             }
         }
     }

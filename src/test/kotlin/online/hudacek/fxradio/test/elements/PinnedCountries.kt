@@ -9,10 +9,10 @@ import org.testfx.api.FxRobot
 
 class PinnedCountries(private val robot: FxRobot) {
 
-    private val libraryCountriesFragment = "#libraryCountriesFragment"
+    private val libraryCountriesView = "#libraryCountriesView"
 
     private val listViewElement: ListView<Country>
-        get() = robot.find(libraryCountriesFragment)
+        get() = robot.find(libraryCountriesView)
 
     fun verifyPinnedCountryExists(): Label = robot.from(listViewElement)
         .lookup("TestPinnedCountryName")
