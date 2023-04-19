@@ -102,6 +102,5 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
         urlResolved = streamUrlProperty.value,
         homepage = streamUrlProperty.value,
         favicon = null,
-        tags = messages["menu.stream.stationTag"]
     )
 }

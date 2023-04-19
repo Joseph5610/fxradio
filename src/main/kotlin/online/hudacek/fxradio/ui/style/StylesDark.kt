@@ -145,8 +145,12 @@ class StylesDark : Stylesheet() {
         }
 
         playerControlsBorder {
+            backgroundRadius += box(6.px)
+            backgroundColor += c(colors.background)
             and(hover) {
-                backgroundRadius += box(6.px)
+                backgroundColor += c(colors.grayLabel + "22")
+            }
+            and(selected) {
                 backgroundColor += c(colors.grayLabel + "22")
             }
         }

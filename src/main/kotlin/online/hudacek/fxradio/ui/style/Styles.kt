@@ -151,8 +151,12 @@ class Styles : Stylesheet() {
         }
 
         playerControlsBorder {
+            backgroundRadius += box(6.px)
+            backgroundColor += Color.WHITESMOKE
             and(hover) {
-                backgroundRadius += box(6.px)
+                backgroundColor += c(colors.background)
+            }
+            and(selected) {
                 backgroundColor += c(colors.background)
             }
         }

@@ -40,6 +40,7 @@ class StationImageCache : ImageCache() {
      */
     override fun load(station: Station): Maybe<Image> = maybeOfNullable(getLocalPath(station))
         .switchIfEmpty(getRemote(station))
+        .switchIfEmpty(Maybe.just(defaultStationLogo)) // if favicon is null, use default
         .onErrorResumeNext { Maybe.just(defaultStationLogo) }
 
     /**

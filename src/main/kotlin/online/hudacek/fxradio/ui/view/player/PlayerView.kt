@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
+import javafx.scene.control.ToggleGroup
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
@@ -50,6 +51,7 @@ import tornadofx.onLeftClick
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
+import tornadofx.togglebutton
 import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
@@ -79,9 +81,10 @@ class PlayerView : BaseView() {
         }
     }
 
-    private val infoGlyph by lazy {
-        FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) {
+    private val infoToggleButton by lazy {
+        togglebutton(group = ToggleGroup(), selectFirst = false) {
             id = "stationInfo"
+            graphic = FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE)
             padding = insets(5, 7, 5, 7)
 
             disableWhen {
@@ -90,12 +93,16 @@ class PlayerView : BaseView() {
                 }
             }
 
-            onLeftClick {
-                toggleInfoPanelState()
-            }
+            selectedStationViewModel.stateProperty.bind(selectedProperty().objectBinding {
+                if (it == true) {
+                    InfoPanelState.Shown
+                } else {
+                    InfoPanelState.Hidden
+                }
+            })
 
             shortcut(keyCombination(KeyCode.I)) {
-                toggleInfoPanelState()
+                isSelected = !isSelected
             }
 
             addClass(Styles.playerControlsBorder)
@@ -177,7 +184,7 @@ class PlayerView : BaseView() {
         add(playerStationView)
 
         // Show station details
-        add(infoGlyph)
+        add(infoToggleButton)
 
         region {
             hgrow = Priority.ALWAYS
@@ -207,15 +214,5 @@ class PlayerView : BaseView() {
             viewModel.togglePlayerState()
         }
         viewModel.initializePlayer()
-    }
-
-    private fun toggleInfoPanelState() {
-        selectedStationViewModel.stateProperty.apply {
-            value = if (value == InfoPanelState.Shown) {
-                InfoPanelState.Hidden
-            } else {
-                InfoPanelState.Shown
-            }
-        }
     }
 }
