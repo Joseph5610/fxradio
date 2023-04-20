@@ -49,7 +49,7 @@ class PreferencesViewModel : BaseViewModel<Preferences>(Preferences()) {
     val darkModeProperty by lazy { bind(Preferences::isDarkMode) as BooleanProperty }
     val useTrayIconProperty by lazy { bind(Preferences::useTrayIcon) as BooleanProperty }
     val accentColorProperty by lazy { bind(Preferences::accentColor) as ObjectProperty }
-    val useSystemColorProperty = booleanProperty(!Property(Properties.AccentColor).isPresent && !MacUtils.isMac)
+    val useSystemColorProperty = booleanProperty(!Property(Properties.AccentColor).isPresent && MacUtils.isMac)
 
 
     // Save and Live reload styles

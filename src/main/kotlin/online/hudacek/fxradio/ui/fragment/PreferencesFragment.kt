@@ -26,6 +26,7 @@ import online.hudacek.fxradio.ui.util.FlagIcon
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
+import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.ServersState
 import online.hudacek.fxradio.viewmodel.ServersViewModel
@@ -35,6 +36,7 @@ import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.bindSelected
 import tornadofx.booleanBinding
+import tornadofx.booleanProperty
 import tornadofx.c
 import tornadofx.checkbox
 import tornadofx.combobox
@@ -103,6 +105,9 @@ class PreferencesFragment : BaseFragment() {
                         action {
                             preferencesViewModel.commit()
                         }
+                    }
+                    showWhen {
+                        booleanProperty(MacUtils.isMac)
                     }
                 }
             }
