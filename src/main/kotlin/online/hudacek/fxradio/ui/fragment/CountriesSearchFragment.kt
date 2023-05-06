@@ -25,7 +25,6 @@ import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.flagIcon
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.searchField
@@ -58,18 +57,12 @@ class CountriesSearchFragment : BaseFragment() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    override fun onDock() {
-        if (viewModel.countriesProperty.isEmpty()) {
-            viewModel.getCountries()
-        }
-    }
-
     override val root = vbox {
         title = messages["countries"]
 
         vbox(spacing = 10.0) {
             paddingAll = 10.0
-            searchField(messages["search"], viewModel.countriesQueryProperty) {
+            searchField(messages["search.prompt"], viewModel.countriesQueryProperty) {
                 left = FontAwesome.Glyph.SEARCH.make(GLYPH_SIZE, isPrimary = false) {
                     alignment = Pos.CENTER
                     padding = insets(5, 9)
@@ -88,9 +81,6 @@ class CountriesSearchFragment : BaseFragment() {
 
             id = "countriesSearchFragment"
             setPrefSize(400.0, 400.0)
-
-            val handler = ListViewHandler(this)
-            setOnKeyPressed(handler::handle)
 
             cellCache {
                 hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
@@ -125,12 +115,12 @@ class CountriesSearchFragment : BaseFragment() {
                     }
 
                     platformContextMenu(
-                        listOf(item(messages["pin"]) {
+                        listOf(item(messages["pinned.pin"]) {
                             val itemName = viewModel.pinnedProperty.stringBinding { l ->
                                 if (l?.contains(it)!!)
-                                    messages["unpin"]
+                                    messages["pinned.unpin"]
                                 else
-                                    messages["pin"]
+                                    messages["pinned.pin"]
                             }
                             textProperty().bind(itemName)
 
@@ -169,10 +159,12 @@ class CountriesSearchFragment : BaseFragment() {
     }
 
     private fun togglePin(country: Country) {
-        if (viewModel.pinnedProperty.contains(country)) {
-            viewModel.unpinCountry(country)
-        } else {
-            viewModel.pinCountry(country)
+        with(viewModel) {
+            if (pinnedProperty.contains(country)) {
+                unpinCountry(country)
+            } else {
+                pinCountry(country)
+            }
         }
     }
 }

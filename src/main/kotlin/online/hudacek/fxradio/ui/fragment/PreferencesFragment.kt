@@ -64,23 +64,17 @@ class PreferencesFragment : BaseFragment() {
     private val preferencesViewModel: PreferencesViewModel by inject()
     private val serversViewModel: ServersViewModel by inject()
 
-    override fun onDock() = serversViewModel.fetchServers()
-
-    override fun onUndock() {
-        serversViewModel.commit()
-    }
-
     override val root = vbox {
-        title = messages["app.preferences"]
+        title = messages["preferences.title"]
         paddingAll = 5.0
 
         form {
-            fieldset(messages["app.appearance"]) {
+            fieldset(messages["preferences.appearance"]) {
                 icon = FontAwesome.Glyph.PAINT_BRUSH.make(GLYPH_SIZE, isPrimary = false)
-                field(messages["app.accentColor"]) {
+                field(messages["preferences.accentColor"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     togglegroup {
-                        AccentColor.values().forEach {
+                        AccentColor.values.forEach {
                             radiobutton(text = "", value = it, group = this) {
                                 userData = it
                                 style {
@@ -89,7 +83,7 @@ class PreferencesFragment : BaseFragment() {
                                 action {
                                     preferencesViewModel.commit()
                                 }
-                                tooltip(it.humanName)
+                                tooltip(messages[it.colorCodeKey])
                                 addClass(Styles.colorRadioButton)
                             }
                         }
@@ -98,7 +92,7 @@ class PreferencesFragment : BaseFragment() {
                         disableWhen(preferencesViewModel.useSystemColorProperty)
                     }
                 }
-                field(messages["app.useSystemColor"]) {
+                field(messages["preferences.accentColor.system"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     checkbox {
                         bind(preferencesViewModel.useSystemColorProperty)
@@ -112,19 +106,19 @@ class PreferencesFragment : BaseFragment() {
                 }
             }
 
-            fieldset(messages["app.darkMode"]) {
+            fieldset(messages["preferences.theme.title"]) {
                 icon = FontAwesome.Glyph.MOON_ALT.make(GLYPH_SIZE, isPrimary = false)
 
-                field(messages["menu.app.darkMode"]) {
+                field(messages["preferences.theme.select"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     togglegroup {
-                        radiobutton(messages["menu.app.light"], value = false, group = this) {
+                        radiobutton(messages["preferences.theme.light"], value = false, group = this) {
                             action {
                                 preferencesViewModel.commit()
                             }
                             addClass(Styles.colorRadioButton)
                         }
-                        radiobutton(messages["menu.app.dark"], value = true, group = this) {
+                        radiobutton(messages["preferences.theme.dark"], value = true, group = this) {
                             action {
                                 preferencesViewModel.commit()
                             }
@@ -135,7 +129,7 @@ class PreferencesFragment : BaseFragment() {
                 }
             }
 
-            fieldset(messages["app.trayIcon"]) {
+            fieldset(messages["app.trayIcon.title"]) {
                 icon = FontAwesome.Glyph.SQUARE_ALT.make(GLYPH_SIZE, isPrimary = false)
 
                 field(messages["app.trayIcon.enable"]) {
@@ -149,10 +143,10 @@ class PreferencesFragment : BaseFragment() {
                 }
             }
 
-            fieldset(messages["menu.app.server"]) {
+            fieldset(messages["preferences.servers.title"]) {
                 icon = FontAwesome.Glyph.SERVER.make(GLYPH_SIZE, isPrimary = false)
 
-                field(messages["servers.selected"]) {
+                field(messages["preferences.servers.selected"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     combobox(values = serversViewModel.availableServersProperty) {
                         cellFormat {
@@ -176,7 +170,7 @@ class PreferencesFragment : BaseFragment() {
                 }
 
                 vbox(alignment = Pos.CENTER) {
-                    hyperlink(messages["servers.notAvailable"]) {
+                    hyperlink(messages["preferences.servers.notAvailable"]) {
                         addClass(Styles.grayLabel)
                         action {
                             serversViewModel.fetchServers()
@@ -191,12 +185,18 @@ class PreferencesFragment : BaseFragment() {
                         }
                     }
 
-                    smallLabel(messages["servers.restartNeeded"]) {
+                    smallLabel(messages["preferences.servers.restartNeeded"]) {
                         paddingAll = 5.0
                     }
                 }
             }
         }
         addClass(Styles.backgroundWhite)
+    }
+
+    override fun onDock() = serversViewModel.fetchServers()
+
+    override fun onUndock() {
+        serversViewModel.commit()
     }
 }

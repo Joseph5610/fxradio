@@ -122,7 +122,7 @@ class StationsDataGridView : BaseView() {
                     action {
                         appEvent.votedStations.onNext(station)
                     }
-                }, item(messages["copy.stream.url"]) {
+                }, item(messages["copy.streamUrl"]) {
                     action {
                         clipboard.putString(station.urlResolved)
                     }

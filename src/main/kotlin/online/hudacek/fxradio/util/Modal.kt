@@ -103,6 +103,6 @@ internal inline fun <reified T : Fragment> Modal<T>.openWindow() {
     }
 }
 
-private inline fun <reified T : Fragment> findOpenStage() = Window.getWindows()
-    .filterIsInstance<Stage>()
-    .firstOrNull { it.userData == T::class }
+private inline fun <reified T : Fragment> findOpenStage() = findStages().firstOrNull { it.userData == T::class }
+
+private fun findStages() = Window.getWindows().filterIsInstance<Stage>()

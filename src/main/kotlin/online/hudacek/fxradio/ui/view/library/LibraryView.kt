@@ -24,7 +24,6 @@ import javafx.util.Duration
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.util.Modal
@@ -57,12 +56,29 @@ class LibraryView : BaseView() {
     private val libraryListView: LibraryListView by inject()
     private val libraryPinnedListView: LibraryPinnedListView by inject()
 
-    override fun onDock() {
-        Tables.pinnedCountries
-            .selectAll()
-            .subscribe {
-                viewModel.pinnedProperty += it
+    private val directoryListView by lazy {
+        listview(observableListOf(messages["directory.browseAll"])) {
+            id = "libraryDirectoryView"
+            prefHeight = 40.0
+            VBox.setMargin(this, insets(6))
+
+            cellFormat {
+                addClass(Styles.libraryListItem)
             }
+
+            cellCache {
+                label(it) {
+                    graphic = FontAwesome.Glyph.GLOBE.make(GLYPH_SIZE, isPrimary = true)
+                }
+            }
+
+            onUserSelect(clickCount = 1) {
+                Modal.Countries.openInternalWindow()
+                selectionModel.clearSelection()
+            }
+
+            addClass(Styles.libraryListView)
+        }
     }
 
     override val root = borderpane {
@@ -96,7 +112,7 @@ class LibraryView : BaseView() {
                     add(
                         find<LibraryTitleFragment>(
                             params = mapOf(
-                                "libraryTitle" to messages["pinned"],
+                                "libraryTitle" to messages["pinned.title"],
                                 "showProperty" to viewModel.showPinnedProperty
                             )
                         )
@@ -126,39 +142,27 @@ class LibraryView : BaseView() {
                 add(
                     find<LibraryTitleFragment>(
                         params = mapOf(
-                            "libraryTitle" to messages["directory"],
+                            "libraryTitle" to messages["directory.title"],
                             "showProperty" to null
                         )
                     )
                 )
 
-                val item = observableListOf(messages["directory.all.countries"])
-                listview(item) {
-                    id = "libraryDirectoryView"
-                    VBox.setMargin(this, insets(6))
-                    val handler = ListViewHandler(this)
-                    setOnKeyPressed(handler::handle)
-
-                    cellFormat {
-                        addClass(Styles.libraryListItem)
-                    }
-
-                    cellCache {
-                        label(it) {
-                            graphic = FontAwesome.Glyph.GLOBE.make(GLYPH_SIZE, isPrimary = true)
-                        }
-                    }
-
-                    onUserSelect(clickCount = 1) {
-                        Modal.Countries.openInternalWindow()
-                        selectionModel.clearSelection()
-                    }
-
-                    addClass(Styles.libraryListView)
-                }
+                add(directoryListView)
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
+    }
+
+    override fun onDock() {
+        // Download list of countries
+        viewModel.getCountries()
+
+        Tables.pinnedCountries
+            .selectAll()
+            .subscribe {
+                viewModel.pinnedProperty += it
+            }
     }
 
     /**

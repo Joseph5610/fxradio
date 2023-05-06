@@ -21,7 +21,6 @@ package online.hudacek.fxradio.util
 import mu.KotlinLogging
 import tornadofx.App
 import tornadofx.Component
-import tornadofx.ConfigProperties
 
 private val logger = KotlinLogging.logger {}
 
@@ -52,30 +51,26 @@ enum class Properties(val key: String) {
 /**
  * Creates app configuration for property key [Properties]
  */
-class Property(property: Properties, appConfig: ConfigProperties? = null) : Component() {
-
-    val actualConfig = appConfig ?: app.config
+class Property(property: Properties) : Component() {
 
     // Extracts value
     val key by lazy { property.key }
 
     val isPresent: Boolean
         // runCatching handles situations where config or key fields are throwing NPE
-        get() = runCatching { actualConfig.keys.any { it == key } }.getOrDefault(false)
+        get() = runCatching { app.config.keys.any { it == key } }.getOrDefault(false)
 
     inline fun <reified T> get(): T {
         return when (T::class) {
-            Boolean::class -> actualConfig.boolean(key) as T
-            Double::class -> actualConfig.double(key) as T
-            Int::class -> actualConfig.int(key) as T
-            String::class -> actualConfig.string(key) as T
+            Boolean::class -> app.config.boolean(key) as T
+            Double::class -> app.config.double(key) as T
+            Int::class -> app.config.int(key) as T
+            String::class -> app.config.string(key) as T
             else -> {
                 throw IllegalArgumentException("${T::class} is not supported argument!")
             }
         }
     }
-
-    inline fun <reified T> getOrNull(): T? = runCatching { get<T>() }.getOrNull()
 
     /**
      * Return the value from the config based on key
@@ -83,10 +78,10 @@ class Property(property: Properties, appConfig: ConfigProperties? = null) : Comp
      */
     inline fun <reified T> get(defaultValue: T): T {
         return when (T::class) {
-            Boolean::class -> (actualConfig.boolean(key, defaultValue as Boolean)) as T
-            Double::class -> actualConfig.double(key, defaultValue as Double) as T
-            Int::class -> actualConfig.int(key, defaultValue as Int) as T
-            String::class -> actualConfig.string(key, defaultValue as String) as T
+            Boolean::class -> (app.config.boolean(key, defaultValue as Boolean)) as T
+            Double::class -> app.config.double(key, defaultValue as Double) as T
+            Int::class -> app.config.int(key, defaultValue as Int) as T
+            String::class -> app.config.string(key, defaultValue as String) as T
             else -> {
                 defaultValue
             }
@@ -95,7 +90,7 @@ class Property(property: Properties, appConfig: ConfigProperties? = null) : Comp
 
     fun <T> save(newValue: T) {
         logger.info { "Saving $key: $newValue " }
-        with(actualConfig) {
+        with(app.config) {
             set(key to newValue)
             save()
         }
@@ -103,14 +98,15 @@ class Property(property: Properties, appConfig: ConfigProperties? = null) : Comp
 
     fun remove() {
         logger.info { "Remove value for key: $key " }
-        with(actualConfig) {
+        with(app.config) {
             remove(key)
             save()
         }
     }
 }
 
-fun App.saveProperties(keyValueMap: Map<Properties, Any>) {
+fun App.saveProperties(op: () -> Map<Properties, Any> = { mapOf() }) {
+    val keyValueMap = op()
     logger.info { "Saving ${keyValueMap.keys}, ${keyValueMap.values} " }
     with(config) {
         keyValueMap.forEach {

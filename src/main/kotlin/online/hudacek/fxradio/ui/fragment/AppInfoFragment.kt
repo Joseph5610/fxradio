@@ -66,7 +66,7 @@ class AppInfoFragment : BaseFragment() {
                 }
             }
 
-            smallLabel(FxRadio.appDesc) {
+            smallLabel(messages["about.appDescription"]) {
                 style {
                     paddingBottom = 10.0
                 }
@@ -78,7 +78,7 @@ class AppInfoFragment : BaseFragment() {
         vbox(alignment = Pos.CENTER) {
             paddingAll = 10.0
 
-            hyperlink(messages["about.datasource"]) {
+            hyperlink(messages["about.dataSource"]) {
                 action {
                     app.openUrl(Config.API.radioBrowserUrl)
                 }

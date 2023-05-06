@@ -23,9 +23,11 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.media.player.experimental.FxPlayerImpl
 import online.hudacek.fxradio.media.player.humble.HumblePlayerImpl
 import online.hudacek.fxradio.media.player.vlc.VLCPlayerImpl
-import online.hudacek.fxradio.util.AlertHelper
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.value
+import tornadofx.FX.Companion.messages
+import tornadofx.get
+import tornadofx.warning
 
 private val logger = KotlinLogging.logger {}
 
@@ -68,7 +70,7 @@ object MediaPlayerFactory {
     }.onFailure {
         logger.error(it) { "Exception when initializing VLC Player!" }
         Platform.runLater {
-            AlertHelper.vlcMissingWarning()
+            warning(messages["player.vlc.missing.title"], messages["player.vlc.missing.description"])
         }
     }.getOrDefault(HumblePlayerImpl())
 

@@ -26,8 +26,8 @@ import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.persistence.cache.ImageCache
 import online.hudacek.fxradio.ui.util.msgFormat
 import online.hudacek.fxradio.ui.util.openUrl
-import online.hudacek.fxradio.util.AlertHelper.confirmAlert
 import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.RxAlert.confirm
 import online.hudacek.fxradio.util.applySchedulersSingle
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.value
@@ -43,9 +43,9 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
 
     val usePlatformProperty = bind(AppMenu::usePlatform) as BooleanProperty
 
-    fun clearCache(): Disposable = confirmAlert(
-        messages["cache.clear.confirm"],
-        messages["cache.clear.text"].msgFormat(ImageCache.totalSize)
+    fun clearCache(): Disposable = confirm(
+        messages["cache.clear.title"],
+        messages["cache.clear.description"].msgFormat(ImageCache.totalSize)
     ).flatMapSingle {
         Single.just(ImageCache.clear()).compose(applySchedulersSingle())
     }.subscribe({

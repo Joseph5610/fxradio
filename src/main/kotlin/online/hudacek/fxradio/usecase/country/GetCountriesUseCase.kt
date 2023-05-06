@@ -23,7 +23,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredCountry
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
-import java.util.*
+import java.util.Locale
 
 
 /**

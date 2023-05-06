@@ -36,7 +36,7 @@ private val logger = KotlinLogging.logger {}
 class StationImageView(
     private val stationObservable: Observable<Station>,
     size: Double = 15.0,
-) : ImageView(stationImageCache.defaultStationLogo) {
+) : ImageView(StationImageCache.defaultStationLogo) {
 
     private val imagePropertyObservable = imageProperty().toObservable()
 
@@ -53,7 +53,7 @@ class StationImageView(
             .subscribe { isError ->
                 if (isError) {
                     logger.trace { "Failed to set image: ${image.exception.message}" }
-                    image = stationImageCache.defaultStationLogo
+                    image = StationImageCache.defaultStationLogo
                 }
             }
     }
@@ -71,7 +71,7 @@ class StationImageView(
     fun subscribe(): Disposable = imageObservable.subscribe({
         image = it
     }, {
-        image = stationImageCache.defaultStationLogo
+        image = StationImageCache.defaultStationLogo
         logger.trace { "Failed to load image: ${it.message}" }
     })
 

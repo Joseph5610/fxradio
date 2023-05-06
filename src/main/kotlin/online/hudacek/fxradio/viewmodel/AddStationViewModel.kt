@@ -29,7 +29,7 @@ import online.hudacek.fxradio.util.toObservable
 import tornadofx.FX
 import tornadofx.property
 import tornadofx.stringBinding
-import java.util.*
+import java.util.Locale
 
 private const val US_LANGUAGE = "en_US"
 

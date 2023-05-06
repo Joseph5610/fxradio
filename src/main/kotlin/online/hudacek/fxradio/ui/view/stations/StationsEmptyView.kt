@@ -56,8 +56,8 @@ class StationsEmptyView : BaseView() {
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            is StationsState.Error -> messages["connectionError"]
-            is StationsState.ShortQuery -> messages["searchingLibrary"]
+            is StationsState.Error -> messages["connectionError.title"]
+            is StationsState.ShortQuery -> messages["search.empty.title"]
             else -> messages["noResults"]
         }
     }
@@ -65,7 +65,7 @@ class StationsEmptyView : BaseView() {
     private val subHeaderProperty = viewModel.stateProperty.stringBinding {
         when (it) {
             is StationsState.Error -> it.cause
-            is StationsState.ShortQuery -> messages["searchingLibraryDesc"]
+            is StationsState.ShortQuery -> messages["search.empty.description"]
             else -> ""
         }
     }
@@ -84,14 +84,14 @@ class StationsEmptyView : BaseView() {
     // Description of a message, shown only if relevant
     private val subHeader by lazy {
         label(subHeaderProperty) {
-            paddingTop = 5.0
             id = "stationMessageSubHeader"
+            paddingTop = 5.0
             addClass(Styles.grayLabel)
         }
     }
 
     private val connectionHelpMessage by lazy {
-        hyperlink(messages["connectionErrorDesc"]) {
+        hyperlink(messages["connectionError.description"]) {
             id = "stationMessageConnectionHelpMsg"
             paddingTop = 5.0
 

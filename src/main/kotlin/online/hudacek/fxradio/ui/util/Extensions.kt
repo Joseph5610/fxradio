@@ -192,10 +192,10 @@ internal fun EventTarget.field(
         }
     })
 
-fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
+internal fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(Observable.just(station), size), op)
 
-fun EventTarget.stationView(
+internal fun EventTarget.stationView(
     stationObservable: Observable<Station>,
     size: Double,
     op: StationImageView.() -> Unit = {}

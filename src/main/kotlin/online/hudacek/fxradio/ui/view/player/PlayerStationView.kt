@@ -22,12 +22,18 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.image.Image
 import mu.KotlinLogging
+import online.hudacek.fxradio.media.StreamMetaData
+import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.usecase.GetCoverArtUseCase
+import online.hudacek.fxradio.util.Properties
+import online.hudacek.fxradio.util.observeOnFx
+import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -40,12 +46,17 @@ import tornadofx.get
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.label
+import tornadofx.listview
 import tornadofx.onHover
+import tornadofx.onLeftClick
+import tornadofx.onUserSelect
+import tornadofx.putString
 import tornadofx.separator
 import tornadofx.stringBinding
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
+import java.time.format.DateTimeFormatter
 
 private val logger = KotlinLogging.logger {}
 
@@ -79,6 +90,7 @@ class PlayerStationView : BaseView() {
         // If not, it shows the station logo
         stationView(selectedStationViewModel.stationObservable, size = LOGO_SIZE) {
             popover {
+                isDetachable = false
                 vbox {
                     imageview(imageProperty()) {
                         isPreserveRatio = true
@@ -103,7 +115,7 @@ class PlayerStationView : BaseView() {
                         image = it.second
                     }
                 }, {
-                   logger.error(it) { "Failed to retrieve cover art! "}
+                    logger.error(it) { "Failed to retrieve cover art! " }
                 })
         }
     }
@@ -121,6 +133,61 @@ class PlayerStationView : BaseView() {
             top {
                 autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {
+
+                    if(Properties.EnableDebugView.value(false)) {
+                        onLeftClick {
+                            showPopover()
+                        }
+
+                        popover {
+                            isDetachable = false
+                            vbox {
+                                prefWidth = 350.0
+                                maxWidth = 350.0
+                                listview<StreamMetaData> {
+                                    cellFormat {
+                                        addClass(Styles.decoratedListItem)
+                                    }
+
+                                    onUserSelect {
+                                        clipboard.putString(it.nowPlaying)
+                                        hide()
+                                    }
+
+                                    cellCache {
+                                        hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
+                                            imageview(StationImageCache.defaultStationLogo) {
+                                                isPreserveRatio = true
+                                                fitWidth = LOGO_SIZE
+                                                fitHeight = LOGO_SIZE
+
+                                                coverArtUseCase.execute(it.nowPlaying)
+                                                    .subscribe {
+                                                        if (it.isSuccessful) {
+                                                            it.body?.byteStream().use { i ->
+                                                                image = Image(i)
+                                                            }
+                                                        }
+                                                    }
+                                            }
+                                            vbox {
+                                                label(it.nowPlaying)
+                                                smallLabel(it.timestamp.format(formatter) + " | " + it.stationName)
+                                            }
+                                        }
+                                    }
+
+                                    appEvent.streamMetaDataUpdates
+                                        .observeOnFx()
+                                        .subscribe {
+                                            items.add(0, it)
+                                        }
+                                    addClass(Styles.decoratedListView)
+                                }
+                                addClass(Styles.backgroundWhite)
+                            }
+                        }
+                    }
 
                     // Dynamic ticker for station name
                     add(tickerView)
@@ -149,5 +216,9 @@ class PlayerStationView : BaseView() {
             }
         }
         addClass(Styles.playerStationBox)
+    }
+
+    companion object {
+        private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     }
 }

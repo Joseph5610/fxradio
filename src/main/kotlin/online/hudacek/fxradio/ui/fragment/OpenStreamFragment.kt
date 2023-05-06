@@ -31,6 +31,7 @@ import tornadofx.ValidationContext
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.button
+import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
 import tornadofx.form
@@ -39,7 +40,7 @@ import tornadofx.paddingAll
 import tornadofx.stringProperty
 import tornadofx.textfield
 import tornadofx.vbox
-import java.util.*
+import java.util.UUID
 
 private const val WINDOW_PREF_WIDTH = 300.0
 
@@ -52,8 +53,6 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
 
     private val streamUrlProperty = stringProperty()
 
-    private val context = ValidationContext()
-
     private val textField by lazy {
         textfield(streamUrlProperty) {
             requestFocusOnSceneAvailable()
@@ -62,22 +61,22 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
 
     override val root = vbox {
         prefWidth = WINDOW_PREF_WIDTH
-        title = messages["menu.stream.title"]
+        title = messages["openStream.title"]
         paddingAll = 15.0
 
         vbox(alignment = Pos.CENTER) {
             form {
                 fieldset {
-                    field(messages["menu.stream.url"]) {
+                    field(messages["openStream.url"]) {
                         add(textField)
                     }
                 }
             }
         }
 
-        val validator = context.addValidator(textField, textField.textProperty()) {
+        val validator = ValidationContext().addValidator(textField, textField.textProperty()) {
             if (it == null || !ApiUtils.isValidUrl(it)) error(messages["field.invalid.url"]) else null
-        }
+        }.also { it.validate() }
 
         vbox(alignment = Pos.CENTER_RIGHT) {
             button(messages["open"]) {
@@ -87,6 +86,7 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
                         close()
                     }
                 }
+                enableWhen { validator.valid }
                 addClass(Styles.primaryButton)
             }
         }
@@ -98,7 +98,7 @@ class OpenStreamFragment : BaseFragment(FxRadio.appName) {
      */
     private fun createStreamStation() = Station(
         UUID.randomUUID().toString(),
-        name = messages["menu.stream.stationName"],
+        name = messages["openStream.stationName"],
         urlResolved = streamUrlProperty.value,
         homepage = streamUrlProperty.value,
         favicon = null,

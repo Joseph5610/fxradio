@@ -27,6 +27,7 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.Property
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.save
+import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import tornadofx.booleanProperty
 import tornadofx.property
@@ -60,8 +61,12 @@ class PreferencesViewModel : BaseViewModel<Preferences>(Preferences()) {
         } else {
             Properties.AccentColor.save(accentColorProperty.value.colorCode)
         }
-        Properties.UseTrayIcon.save(useTrayIconProperty.value)
-        Properties.DarkMode.save(darkModeProperty.value)
+        app.saveProperties {
+            mapOf(
+                Properties.UseTrayIcon to useTrayIconProperty.value,
+                Properties.DarkMode to darkModeProperty.value
+            )
+        }
         Appearance.reloadStylesheets(darkModeProperty.value)
         MacUtils.setAppearance(darkModeProperty.value)
     }

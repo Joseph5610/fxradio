@@ -55,6 +55,7 @@ class StationsSearchButtonView : BaseView() {
             properties["tornadofx.toggleGroupValue"] = true
             addClass(Styles.segmentedButton)
         }
+
         toggleGroup.bind(viewModel.searchByTagProperty)
 
         showWhen {

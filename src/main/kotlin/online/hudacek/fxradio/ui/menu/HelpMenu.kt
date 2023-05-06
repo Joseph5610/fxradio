@@ -55,7 +55,7 @@ class HelpMenu : BaseMenu("menu.help") {
         },
         logMenu.menu,
         separator(),
-        item(messages["menu.help.logs"], KeyCodes.openLogs) {
+        item(messages["menu.help.openLogs"], KeyCodes.openLogs) {
             action {
                 app.openUrl(logsFolderPath)
             }

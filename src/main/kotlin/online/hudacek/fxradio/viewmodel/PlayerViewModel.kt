@@ -76,7 +76,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
          * Emitted when new song starts playing or other metadata of stream changes
          */
         appEvent.streamMetaDataUpdates
-            .map { m -> StreamMetaData(m.stationName.trim(), m.nowPlaying.trim()) }
+            .map { it.copy(stationName = it.stationName.trim(), nowPlaying = it.nowPlaying.trim()) }
             .filter { it.nowPlaying.length > 1 }
             .observeOnFx()
             .subscribe {
@@ -87,7 +87,12 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
             .flatMapSingle(stationClickUseCase::execute)
             .subscribe({
                 // Update the name of the station
-                appEvent.streamMetaDataUpdates.onNext(StreamMetaData(it.name, messages["player.noMetaData"]))
+                appEvent.streamMetaDataUpdates.onNext(
+                    StreamMetaData(
+                        stationName = it.name,
+                        nowPlaying = messages["player.unknownTrack"]
+                    )
+                )
                 stateProperty.value = PlayerState.Playing(it.url)
             }, { t ->
                 stateProperty.value = PlayerState.Error(t.localizedMessage)
@@ -136,13 +141,13 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
      * Save player related key/values to app.properties file
      */
     override fun onCommit() {
-        app.saveProperties(
+        app.saveProperties {
             mapOf(
                 Properties.Player to mediaPlayerProperty.value.playerType,
                 Properties.PlayerAnimated to animateProperty.value,
                 Properties.Volume to volumeProperty.value,
             )
-        )
+        }
     }
 }
 

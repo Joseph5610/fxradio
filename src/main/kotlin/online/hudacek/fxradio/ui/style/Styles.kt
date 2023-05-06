@@ -15,7 +15,6 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @file:Suppress("MagicNumber")
 
 package online.hudacek.fxradio.ui.style
@@ -46,7 +45,7 @@ class Styles : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
-        val playerControlsBorder by cssclass()
+        val playerControls by cssclass()
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
@@ -67,7 +66,6 @@ class Styles : Stylesheet() {
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
 
-        // For Text() elements
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val grayTextColor by cssclass()
@@ -150,9 +148,16 @@ class Styles : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        playerControlsBorder {
+        playerControls {
             backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             backgroundColor += Color.WHITESMOKE
+            borderColor += box(Color.WHITESMOKE)
+            backgroundInsets += box(0.px)
+            borderInsets += box(0.px)
+            and(focused) {
+                borderColor += box(c(colors.grayLabel + "22"))
+            }
             and(hover) {
                 backgroundColor += c(colors.background)
             }
@@ -187,6 +192,7 @@ class Styles : Stylesheet() {
         }
 
         libraryListView {
+            borderRadius += box(6.px)
             backgroundColor += Color.WHITESMOKE
             borderColor += box(Color.WHITESMOKE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)

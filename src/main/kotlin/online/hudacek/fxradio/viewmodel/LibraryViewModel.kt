@@ -40,7 +40,7 @@ private val logger = KotlinLogging.logger {}
 
 sealed class LibraryState(val key: String) {
     object Favourites : LibraryState("favourites")
-    object Search : LibraryState("Search")
+    object Search : LibraryState("search.results")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
     object Popular : LibraryState("topStations")
     object Trending : LibraryState("trendingStations")
@@ -126,11 +126,11 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     })
 
     override fun onCommit() {
-        app.saveProperties(
+        app.saveProperties {
             mapOf(
                 Properties.ShowLibrary to showLibraryProperty.value,
                 Properties.ShowPinnedCountries to showPinnedProperty.value
             )
-        )
+        }
     }
 }

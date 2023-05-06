@@ -21,11 +21,8 @@ package online.hudacek.fxradio.test.integration
 import javafx.stage.Stage
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.test.elements.CountryDirectory
-import online.hudacek.fxradio.test.elements.CountrySearch
-import online.hudacek.fxradio.test.elements.PinnedCountries
+import online.hudacek.fxradio.test.elements.*
 import online.hudacek.fxradio.test.elements.Player
-import online.hudacek.fxradio.test.elements.StationSearch
 import online.hudacek.fxradio.test.util.sleep
 import online.hudacek.fxradio.usecase.country.GetCountriesUseCase
 import online.hudacek.fxradio.viewmodel.*
@@ -33,7 +30,6 @@ import org.junit.jupiter.api.*
 import org.testfx.framework.junit5.Start
 import org.testfx.framework.junit5.Stop
 import tornadofx.find
-import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -77,9 +73,10 @@ class LibraryTest : BaseTest() {
         // Verify app initial state
         Player(robot).waitForStatusHasText("Streaming stopped")
 
+        val testCountry = Country("TestPinnedCountryName", "AF", 250)
+
         // Simulate add country to pinned list
         robot.interact {
-            val testCountry = Country("TestPinnedCountryName", "AF", 250)
             val library = find<LibraryViewModel>()
             logger.info { "Pin country $testCountry" }
             library.pinCountry(testCountry)
@@ -88,13 +85,13 @@ class LibraryTest : BaseTest() {
         val pinnedCountries = PinnedCountries(robot)
 
         // Find "TestPinnedCountryName" in the list of items
-        val pinnedCountry = pinnedCountries.verifyPinnedCountryExists()
+        pinnedCountries.verifyPinnedCountryExists()
 
         // Simulate remove country to pinned list
         robot.interact {
             val library = find<LibraryViewModel>()
-            logger.info { "Unpin item: $pinnedCountry" }
-            library.unpinCountry(Country(pinnedCountry.text, "AF", 250))
+            logger.info { "Unpin item: $testCountry" }
+            library.unpinCountry(testCountry)
         }
 
         // Check there is no item with this label in the app

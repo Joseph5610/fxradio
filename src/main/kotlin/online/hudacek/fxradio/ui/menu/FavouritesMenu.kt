@@ -19,7 +19,7 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.ui.util.stationView
-import online.hudacek.fxradio.util.AlertHelper.confirmAlert
+import online.hudacek.fxradio.util.RxAlert.confirm
 import online.hudacek.fxradio.util.actionEvents
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
@@ -70,7 +70,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
             }
 
             actionEvents()
-                .flatMapMaybe { confirmAlert(messages["database.clear.confirm"], messages["database.clear.text"]) }
+                .flatMapMaybe { confirm(messages["database.clear.title"], messages["database.clear.description"]) }
                 .subscribe {
                     favouritesViewModel.cleanupFavourites()
                 }

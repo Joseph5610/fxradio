@@ -9,5 +9,5 @@ import retrofit2.http.Query
 interface MusicBrainzApi : ApiDefinition {
 
     @GET("release")
-    fun search(@Query("query") query: String, @Query("fmt") fmt: String = "json"): Single<SearchResult>
+    fun getReleases(@Query("query") query: String, @Query("fmt") fmt: String = "json"): Single<SearchResult>
 }

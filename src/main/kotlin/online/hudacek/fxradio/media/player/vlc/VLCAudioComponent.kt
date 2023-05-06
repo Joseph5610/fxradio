@@ -25,10 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
-import uk.co.caprica.vlcj.log.LogEventListener
 import uk.co.caprica.vlcj.log.LogLevel
-import uk.co.caprica.vlcj.log.NativeLog
-import uk.co.caprica.vlcj.media.MediaEventListener
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
 private val logger = KotlinLogging.logger {}
@@ -39,42 +36,43 @@ private val logger = KotlinLogging.logger {}
  */
 class VLCAudioComponent {
 
+    private val mainScope = MainScope()
+
+    private val vlcLogListener = VLCLogListener()
+
+    private val vlcMediaAdapter = VLCMediaAdapter()
+
     /**
      * Init VLC player with no-video argument since we do not have video player view in the app
      */
-    private val playerArgs = listOf(
-        "--quiet",
-        "--intf=dummy",
-        "--no-video"
-    )
-
-    private val player = AudioPlayerComponent(MediaPlayerFactory(playerArgs))
-
-    private val mainScope = MainScope()
-
-    private lateinit var nativeLog: NativeLog
-
-    fun play(streamUrl: String) {
-        player.mediaPlayer().media().play(streamUrl)
+    private val player = AudioPlayerComponent(MediaPlayerFactory(playerArgs)).apply {
+        mediaPlayer().events().addMediaEventListener(vlcMediaAdapter)
     }
+
+    private val nativeLog = player.mediaPlayerFactory().application().newLog().apply {
+        level = LogLevel.DEBUG
+    }.also { it.addLogListener(vlcLogListener) }
+
+    fun play(streamUrl: String) = player.mediaPlayer().media().play(streamUrl)
 
     fun setVolume(newVolume: Double) = mainScope.launch {
         withContext(Dispatchers.IO) {
             delay(500L)
-            logger.trace { "Setting volume to $newVolume" }
 
             // Workaround for a very strange VLC bug probably only on Ventura? ...
-            if (newVolume.toInt() == 0) {
-                do {
-                    player.mediaPlayer().audio().isMute = true
-                } while (player.mediaPlayer().status().isPlayable && !player.mediaPlayer().audio().isMute)
-            } else {
-                player.mediaPlayer().audio().isMute = false
-                do {
-                    player.mediaPlayer().audio().setVolume(newVolume.toInt())
-                } while (player.mediaPlayer().status().isPlayable && (player.mediaPlayer().audio()
-                        .volume() != newVolume.toInt())
-                )
+            with(player) {
+                if (newVolume.toInt() == 0) {
+                    do {
+                        mediaPlayer().audio().isMute = true
+                    } while (mediaPlayer().status().isPlayable && !mediaPlayer().audio().isMute)
+                } else {
+                    mediaPlayer().audio().isMute = false
+                    do {
+                        mediaPlayer().audio().setVolume(newVolume.toInt())
+                    } while (mediaPlayer().status().isPlayable &&
+                        (mediaPlayer().audio().volume() != newVolume.toInt())
+                    )
+                }
             }
         }
     }
@@ -89,23 +87,24 @@ class VLCAudioComponent {
         }
     }.onFailure { logger.error(it) { "Can't cancel playing..." } }
 
-    fun attachMediaListener(listener: MediaEventListener) =
-        player.mediaPlayer().events().addMediaEventListener(listener)
+    fun release() = with(player) {
+        mediaPlayer().events().removeMediaEventListener(vlcMediaAdapter)
 
-    fun removeMediaListener(listener: MediaEventListener) =
-        player.mediaPlayer().events().removeMediaEventListener(listener)
-
-    fun attachLogListener(listener: LogEventListener, level: LogLevel = LogLevel.NOTICE) = player.let {
-        nativeLog = it.mediaPlayerFactory().application().newLog().apply {
-            this.level = level
-            addLogListener(listener)
+        // Clean up NativeLog
+        with(nativeLog) {
+            removeLogListener(vlcLogListener)
+            release()
         }
+
+        // Release Player Component
+        release()
     }
 
-    fun releaseLogListener(listener: LogEventListener) {
-        nativeLog.removeLogListener(listener)
-        nativeLog.release()
+    companion object {
+        private val playerArgs = listOf(
+            "--quiet",
+            "--intf=dummy",
+            "--no-video"
+        )
     }
-
-    fun release() = player.release()
 }

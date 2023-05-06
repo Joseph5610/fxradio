@@ -76,12 +76,12 @@ class CachingClientProvider(
         .build()
 
     override val dnsClient: DnsOverHttps by lazy {
-        DnsOverHttps.Builder().client(client)
+        DnsOverHttps.Builder()
+            .client(client)
             .url(GOOGLE_DNS.toHttpUrl())
             .includeIPv6(false)
             .build()
     }
-
 
     override fun close() {
         client.cache?.close()

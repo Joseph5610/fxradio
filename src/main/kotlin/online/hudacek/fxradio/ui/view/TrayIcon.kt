@@ -27,7 +27,7 @@ import online.hudacek.fxradio.viewmodel.PreferencesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.Controller
 import tornadofx.get
-import java.awt.SystemTray
+import java.awt.SystemTray.getSystemTray
 import java.awt.TrayIcon
 import javax.swing.SwingUtilities
 
@@ -91,7 +91,7 @@ class TrayIcon : Controller() {
 
     private fun removeIcon() {
         SwingUtilities.invokeLater {
-            trayIcon?.let { SystemTray.getSystemTray().remove(it) }
+            trayIcon?.let { getSystemTray().remove(it) }
         }
     }
 

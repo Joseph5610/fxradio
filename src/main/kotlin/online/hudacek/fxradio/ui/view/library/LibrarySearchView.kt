@@ -45,7 +45,7 @@ class LibrarySearchView : BaseView() {
     private val viewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
+    override val root = searchField(messages["search.prompt"], viewModel.bindQueryProperty) {
         id = "search"
 
         left = FontAwesome.Glyph.SEARCH.make(SEARCH_GLYPH_SIZE, isPrimary = false) {

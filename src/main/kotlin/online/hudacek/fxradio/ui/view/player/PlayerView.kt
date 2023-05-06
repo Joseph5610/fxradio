@@ -105,7 +105,7 @@ class PlayerView : BaseView() {
                 isSelected = !isSelected
             }
 
-            addClass(Styles.playerControlsBorder)
+            addClass(Styles.playerControls)
         }
     }
 
@@ -150,7 +150,7 @@ class PlayerView : BaseView() {
                 viewModel.togglePlayerState()
             }
 
-            addClass(Styles.playerControlsBorder)
+            addClass(Styles.playerControls)
         }
     }
 

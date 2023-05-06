@@ -31,7 +31,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.style.Styles
-import tornadofx.FX
+import tornadofx.FX.Companion.application
 import tornadofx.FX.Companion.primaryStage
 import tornadofx.add
 import tornadofx.addClass
@@ -86,7 +86,7 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
 
     private fun showErrorDialog(error: Throwable) {
         val cause = Label(if (error.cause != null) error.cause?.message else "").apply {
-            style = "-fx-font-weight: bold"
+            addClass(Styles.boldText)
         }
 
         val textarea = TextArea().apply {
@@ -116,13 +116,11 @@ class CustomErrorHandler : Thread.UncaughtExceptionHandler {
             if (result.get().buttonData == ButtonBar.ButtonData.HELP) {
                 val titleQuery = URLEncoder.encode("[${FxRadio.version}] $error", "UTF-8")
                 val bodyQuery = URLEncoder.encode(textarea.text, "UTF-8")
-                FX.application.hostServices.showDocument("$ISSUE_URL$titleQuery&body=$bodyQuery")
+                application.hostServices.showDocument("$ISSUE_URL$titleQuery&body=$bodyQuery")
             }
 
             if (result.get().buttonData == ButtonBar.ButtonData.HELP_2) {
-                Clipboard.getSystemClipboard().apply {
-                    putString(textarea.text)
-                }
+                Clipboard.getSystemClipboard().putString(textarea.text)
             }
         }
     }

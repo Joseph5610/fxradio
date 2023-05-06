@@ -1,6 +1,9 @@
 import groovy.lang.Closure
 import io.github.fvarrui.javapackager.gradle.PackageTask
-import io.github.fvarrui.javapackager.model.*
+import io.github.fvarrui.javapackager.model.MacConfig
+import io.github.fvarrui.javapackager.model.MacStartup
+import io.github.fvarrui.javapackager.model.SetupMode
+import io.github.fvarrui.javapackager.model.WindowsConfig
 import io.github.fvarrui.javapackager.model.Manifest
 import org.gradle.internal.os.OperatingSystem
 
@@ -24,13 +27,13 @@ apply(plugin = "io.github.fvarrui.javapackager.plugin")
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.20.0"
-val slf4jVersion = "2.0.6"
+val slf4jVersion = "2.0.7"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.16-alpha"
-val junitVersion = "5.9.2"
+val junitVersion = "5.9.3"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.16.0"
+val flywayVersion = "9.16.3"
 val controlsFxVersion = "11.1.2"
 
 version = "0.15.0"
@@ -83,7 +86,7 @@ dependencies {
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
-    implementation("org.xerial:sqlite-jdbc:3.40.1.0")
+    implementation("org.xerial:sqlite-jdbc:3.41.2.1")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
@@ -125,7 +128,7 @@ configurations {
 }
 
 javafx {
-    version = "20"
+    version = "20.0.1"
     modules = mutableListOf("javafx.controls", "javafx.media")
 }
 

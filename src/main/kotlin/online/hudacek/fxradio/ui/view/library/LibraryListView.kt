@@ -21,7 +21,6 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.scene.layout.VBox
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -39,29 +38,13 @@ class LibraryListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    override fun onDock() {
-        // React to changes of library not from by clicking on list item
-        viewModel.stateObservable.subscribe {
-            if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
-                root.selectionModel.clearSelection()
-            } else {
-                val selectedListItem = root.items.find { list -> list.type == it }
-                selectedListItem?.let { item ->
-                    root.selectionModel.select(item)
-                }
-            }
-        }
-    }
-
     override val root = listview(viewModel.librariesProperty) {
         id = "libraryListView"
 
         VBox.setMargin(this, insets(6))
-        val handler = ListViewHandler(this)
-        setOnKeyPressed(handler::handle)
 
         prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10 else 30.0
+            if (it != null) it.size * 30.0 + 10 else 10.0
         })
 
         cellFormat {
@@ -79,5 +62,19 @@ class LibraryListView : BaseView() {
         }
 
         addClass(Styles.libraryListView)
+    }
+
+    override fun onDock() {
+        // React to changes of library not from by clicking on list item
+        viewModel.stateObservable.subscribe {
+            if (it is LibraryState.SelectedCountry || it is LibraryState.Search) {
+                root.selectionModel.clearSelection()
+            } else {
+                val selectedListItem = root.items.find { list -> list.type == it }
+                selectedListItem?.let { item ->
+                    root.selectionModel.select(item)
+                }
+            }
+        }
     }
 }

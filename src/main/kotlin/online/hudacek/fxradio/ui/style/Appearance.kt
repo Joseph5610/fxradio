@@ -43,8 +43,7 @@ class DarkAppearance : Appearance() {
 
 abstract class Appearance : Component() {
 
-    val primary: String
-        get() = getAccentColor().convertToHex()
+    val primary = getAccentColor().convertToHex()
 
     val transparent = "transparent"
     val playerBox = "#464646"
@@ -55,26 +54,25 @@ abstract class Appearance : Component() {
     abstract val label: String
     abstract val grayLabel: String
 
-
     companion object {
+
+        private val accentProperty = Property(Properties.AccentColor)
+
         /**
          * Detects color from system accent color
          */
         fun getAccentColor(): AccentColor {
-            val accentProperty = Property(Properties.AccentColor)
             // Use accent color from app.property file
-            val systemColorCode: Int = if (accentProperty.isPresent) {
-                accentProperty.get()
-            } else {
+            val systemColorCode: Int = accentProperty.get(
+                // Fallback - Use system accent color on macOS
                 if (MacUtils.isMac) {
-                    // Use system accent color
                     MacUtils.systemAccentColor
                 } else {
-                    // Fallback primary color for non-mac OS
+                    // Fallback - primary color for non-mac OS
                     AccentColor.MULTICOLOR.colorCode
                 }
-            }
-            return AccentColor.values().first { it.colorCode == systemColorCode }
+            )
+            return AccentColor.values.first { it.colorCode == systemColorCode }
         }
 
         /**

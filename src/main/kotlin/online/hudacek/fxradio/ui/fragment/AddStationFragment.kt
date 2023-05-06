@@ -61,19 +61,7 @@ class AddStationFragment : BaseFragment() {
 
     // List of Languages for autocomplete
     private val languagesProperty = listProperty<String>(observableListOf()).apply {
-        bind(libraryViewModel.countriesProperty) { c ->
-            Locale.of(c.iso3166).displayLanguage
-        }
-    }
-
-    override fun onDock() {
-        // Recheck ViewModel validity when reopening fragment
-        viewModel.validate(focusFirstError = false)
-
-        // Download list of countries if it was not downloaded previously
-        if (libraryViewModel.countriesProperty.isEmpty()) {
-            libraryViewModel.getCountries()
-        }
+        bind(libraryViewModel.countriesProperty) { c -> Locale.of(c.iso3166).displayLanguage }
     }
 
     override val root = notificationPane(showFromTop = true) {
@@ -83,12 +71,11 @@ class AddStationFragment : BaseFragment() {
         content {
             form {
                 fieldset {
-                    requestFocusOnSceneAvailable()
-
                     field(
                         messages["add.name"], messages["add.station.prompt"],
                         viewModel.nameProperty, isRequired = true
                     ) { field ->
+                        field.requestFocusOnSceneAvailable()
                         field.validator {
                             if (!validate(it, 400)) error(messages["field.invalid.length"])
                             else null
@@ -184,6 +171,11 @@ class AddStationFragment : BaseFragment() {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
+    override fun onDock() {
+        // Recheck ViewModel validity when reopening fragment
+        viewModel.validate(focusFirstError = false)
+    }
+
     private fun validate(property: String?, maxValue: Int) = property?.length in 0 until maxValue
 
     private fun save(newStation: Station) {
@@ -196,7 +188,6 @@ class AddStationFragment : BaseFragment() {
 
         // Cleanup view model
         viewModel.item = AddStationModel()
-
         close()
     }
 }

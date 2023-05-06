@@ -24,7 +24,6 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.flagIcon
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
@@ -41,7 +40,7 @@ import tornadofx.listview
 import tornadofx.onUserSelect
 import tornadofx.selectedItem
 import tornadofx.stringBinding
-import java.util.*
+import java.util.Locale
 
 /**
  * Custom listview view for pinned countries
@@ -50,32 +49,18 @@ class LibraryPinnedListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    override fun onDock() {
-        viewModel.stateObservable.subscribe {
-            if (it !is LibraryState.SelectedCountry) {
-                root.selectionModel.clearSelection()
-            } else {
-                if (it.country.iso3166 != root.selectedItem?.iso3166) {
-                    root.selectionModel.clearSelection()
-                }
-            }
-        }
-    }
-
     override val root = listview(viewModel.pinnedProperty) {
         id = "libraryCountriesView"
 
         fitToParentHeight()
 
         VBox.setMargin(this, insets(6))
-        val handler = ListViewHandler(this)
-        setOnKeyPressed(handler::handle)
 
         /**
          * Set min/max size of listview based on its items size
          */
         prefHeightProperty().bind(viewModel.pinnedProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 15.0 else 10.0
+            if (it != null) it.size * 30.0 + 10.0 else 10.0
         })
 
         cellCache {
@@ -89,12 +74,12 @@ class LibraryPinnedListView : BaseView() {
                 label(countryName)
 
                 platformContextMenu(
-                    listOf(item(messages["pin"]) {
+                    listOf(item(messages["pinned.pin"]) {
                         val itemName = viewModel.pinnedProperty.stringBinding { l ->
                             if (l?.contains(it)!!)
-                                messages["unpin"]
+                                messages["pinned.unpin"]
                             else
-                                messages["pin"]
+                                messages["pinned.pin"]
                         }
                         textProperty().bind(itemName)
 
@@ -109,6 +94,7 @@ class LibraryPinnedListView : BaseView() {
                 )
             }
         }
+
         cellFormat {
             addClass(Styles.libraryListItem)
         }
@@ -118,5 +104,17 @@ class LibraryPinnedListView : BaseView() {
         }
 
         addClass(Styles.libraryListView)
+    }
+
+    override fun onDock() {
+        viewModel.stateObservable.subscribe {
+            if (it !is LibraryState.SelectedCountry) {
+                root.selectionModel.clearSelection()
+            } else {
+                if (it.country.iso3166 != root.selectedItem?.iso3166) {
+                    root.selectionModel.clearSelection()
+                }
+            }
+        }
     }
 }

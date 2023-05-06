@@ -15,7 +15,6 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @file:Suppress("MagicNumber")
 
 package online.hudacek.fxradio.ui.style
@@ -46,7 +45,7 @@ class StylesDark : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
-        val playerControlsBorder by cssclass()
+        val playerControls by cssclass()
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
@@ -68,7 +67,6 @@ class StylesDark : Stylesheet() {
 
         val mainMenuBox by cssclass()
 
-        //for Text()
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
@@ -144,9 +142,16 @@ class StylesDark : Stylesheet() {
             textFill = c(colors.primary)
         }
 
-        playerControlsBorder {
+        playerControls {
             backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
             backgroundColor += c(colors.background)
+            borderColor += box(c(colors.background))
+            backgroundInsets += box(0.px)
+            borderInsets += box(0.px)
+            and(focused) {
+                borderColor += box(c(colors.grayLabel + "22"))
+            }
             and(hover) {
                 backgroundColor += c(colors.grayLabel + "22")
             }
@@ -196,6 +201,7 @@ class StylesDark : Stylesheet() {
         }
 
         libraryListView {
+            borderRadius += box(6.px)
             backgroundColor += c(colors.background)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
@@ -293,10 +299,6 @@ class StylesDark : Stylesheet() {
                 accentColor = c(colors.primary, 0.2)
                 backgroundInsets += box(0.px)
                 borderInsets += box(0.px)
-                and(focused) {
-                    borderColor += box(c(colors.primary, 0.6))
-                    faintFocusColor = c("${colors.primary}22")
-                }
             }
 
             and(selected) {

@@ -33,7 +33,7 @@ class FileMenu : BaseMenu("menu.file") {
             }
         },
         separator(),
-        item(messages["menu.stream"], KeyCodes.openStream) {
+        item(messages["menu.openStream"], KeyCodes.openStream) {
             action {
                 Modal.OpenStream.open()
             }

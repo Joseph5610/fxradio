@@ -6,6 +6,9 @@ import javafx.scene.input.KeyCode.TAB
 import javafx.scene.input.KeyEvent
 import tornadofx.DataGrid
 
+/**
+ * Basic keyword navigation support for DataGrid
+ */
 class DataGridHandler<T>(private val dataGrid: DataGrid<T>) {
 
     fun handle(key: KeyEvent) {

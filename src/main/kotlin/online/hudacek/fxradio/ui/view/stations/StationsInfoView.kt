@@ -26,7 +26,6 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.openUrl
-import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
@@ -38,7 +37,6 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.FX
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -61,7 +59,7 @@ import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
-import java.util.*
+import java.util.Locale
 
 private const val LOGO_SIZE = 60.0
 private const val ICON_SIZE = 12.0
@@ -95,10 +93,6 @@ class StationsInfoView : BaseView() {
         Locale.of("", it).displayName
     }
 
-    override fun onDock() {
-        selectedStationViewModel.retrieveAdditionalData()
-    }
-
     override val root = borderpane {
         opacity = 0.985
         prefWidth = 250.0
@@ -115,7 +109,7 @@ class StationsInfoView : BaseView() {
                     }
                     addClass(Styles.subheader)
                     addClass(Styles.primaryTextColor)
-                    tooltip(messages["info.visit.website"])
+                    tooltip(messages["info.visitWebsite"])
                 }
 
                 smallLabel(messages["verified"]) {
@@ -177,8 +171,7 @@ class StationsInfoView : BaseView() {
 
         bottom {
             vbox(spacing = 5.0, alignment = Pos.CENTER) {
-                button(messages["copy.stream.url"]) {
-                    graphic = copyIcon
+                button(messages["copy.streamUrl"], graphic = copyIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -190,8 +183,7 @@ class StationsInfoView : BaseView() {
 
                 separator()
 
-                button(messages["menu.station.favourite"]) {
-                    graphic = favouriteAddIcon
+                button(messages["menu.station.favourite"], graphic = favouriteAddIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -209,8 +201,7 @@ class StationsInfoView : BaseView() {
                     }
                 }
 
-                button(messages["menu.station.favouriteRemove"]) {
-                    graphic = favouriteRemoveIcon
+                button(messages["menu.station.favouriteRemove"], graphic = favouriteRemoveIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -229,9 +220,7 @@ class StationsInfoView : BaseView() {
                     }
                 }
 
-                button(messages["menu.station.vote"]) {
-                    requestFocusOnSceneAvailable()
-                    graphic = likeIcon
+                button(messages["menu.station.vote"], graphic = likeIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -243,6 +232,10 @@ class StationsInfoView : BaseView() {
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
+    }
+
+    override fun onDock() {
+        selectedStationViewModel.retrieveAdditionalData()
     }
 
     private fun createInfoLabel(key: String, valueProperty: Property<*>?) = valueProperty?.let { p ->

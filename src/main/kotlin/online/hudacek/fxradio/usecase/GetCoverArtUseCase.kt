@@ -35,13 +35,13 @@ private const val SCORE_THRESHOLD = 95
 private const val ART_PATH = "/front-250"
 
 /**
- * Retrieve Cover ART for currently playing song (if stream metadata is provided)
+ * Retrieve Cover Art for currently playing song (if stream metadata is provided)
  */
 class GetCoverArtUseCase : BaseUseCase<String, Maybe<Response>>() {
 
     private val musicBrainzApi: MusicBrainzApi by lazy { MusicBrainzApiProvider.provide() }
 
-    override fun execute(input: String): Maybe<Response> = musicBrainzApi.search(input)
+    override fun execute(input: String): Maybe<Response> = musicBrainzApi.getReleases(input)
         .map {
             // Take only the most probable candidate for cover art
             val release = it.releases.first { r -> r.score >= SCORE_THRESHOLD }

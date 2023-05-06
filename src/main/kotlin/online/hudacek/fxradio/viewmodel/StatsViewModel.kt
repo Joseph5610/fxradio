@@ -62,13 +62,13 @@ class StatsViewModel : BaseStateViewModel<Stats, StatsState>(Stats(), StatsState
     }
 
     private fun StatsResponse.convertToList() = observableListOf(
-        "${messages["stats.software_version"]}: $supportedVersion",
+        "${messages["stats.softwareVersion"]}: $supportedVersion",
         "${messages["stats.status"]}: $status",
         "${messages["stats.stations"]}: $stations",
-        "${messages["stats.stations_broken"]}: $stationsBroken",
+        "${messages["stats.stationsBroken"]}: $stationsBroken",
         "${messages["stats.tags"]}: $tags",
-        "${messages["stats.clicks_last_hour"]}: $clicksLastHour",
-        "${messages["stats.clicks_last_day"]}: $clicksLastDay",
+        "${messages["stats.clicksLastHour"]}: $clicksLastHour",
+        "${messages["stats.clicksLastDay"]}: $clicksLastDay",
         "${messages["stats.languages"]}: $languages",
         "${messages["stats.countries"]}: $countries"
     )
