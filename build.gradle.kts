@@ -12,7 +12,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("io.github.fvarrui:javapackager:1.7.0")
+        classpath("io.github.fvarrui:javapackager:1.7.2")
     }
 }
 
@@ -36,7 +36,7 @@ val humbleVersion = "0.3.0"
 val flywayVersion = "9.16.3"
 val controlsFxVersion = "11.1.2"
 
-version = "0.15.0"
+version = "0.16.0"
 
 val appVersion: String = version as String
 
