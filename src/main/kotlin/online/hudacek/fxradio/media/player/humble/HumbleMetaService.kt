@@ -30,6 +30,9 @@ import tornadofx.find
 
 private val logger = KotlinLogging.logger {}
 
+private const val STREAM_NOW_PLAYING_KEY = "StreamTitle"
+private const val STREAM_STATION_NAME_KEY = "icy-name"
+
 /**
  * Service that regularly fetches
  * new stream MetaData Information from [streamUrl]
@@ -37,8 +40,8 @@ private val logger = KotlinLogging.logger {}
 class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledService<KeyValueBag>() {
 
     init {
-        period = Duration.seconds(55.0) //period between fetching data
-        delay = Duration.seconds(10.0) //initial delay
+        period = Duration.seconds(55.0) // Period between fetching data
+        delay = Duration.seconds(10.0) // Initial delay
     }
 
     /**
@@ -50,15 +53,12 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
     }
 
     override fun createTask(): Task<KeyValueBag> = FetchDataTask()
-
-    private inner class FetchDataTask : Task<KeyValueBag>() {
-        private val streamNowPlayingKey = "StreamTitle"
-        private val streamStationName = "icy-name"
+    inner class FetchDataTask : Task<KeyValueBag>() {
 
         private val appEvent = find<AppEvent>()
 
         override fun call(): KeyValueBag {
-            if (streamUrl.isEmpty()) throw IllegalArgumentException("streamUrl should not be empty.")
+            require(streamUrl.isNotEmpty()) { "streamUrl should not be empty." }
 
             val deMuxer = Demuxer.make()
             deMuxer.open(streamUrl, null, false, true, null, null)
@@ -72,10 +72,13 @@ class HumbleMetaDataService(private var streamUrl: String = "") : ScheduledServi
          * Gets MetaData values from DeMuxer and fires event with the new data
          */
         override fun succeeded() {
-            if (value.getValue(streamStationName) != null && value.getValue(streamNowPlayingKey) != null) {
-                //Send new MetaData event if stream metadata values are present
-                val mediaMeta = StreamMetaData(value.getValue(streamStationName), value.getValue(streamNowPlayingKey))
-                appEvent.streamMetaDataUpdates.onNext(mediaMeta)
+            if (value.getValue(STREAM_STATION_NAME_KEY) != null && value.getValue(STREAM_NOW_PLAYING_KEY) != null) {
+                // Send new MetaData event if stream metadata values are present
+                val metaData = StreamMetaData(
+                    stationName = value.getValue(STREAM_STATION_NAME_KEY),
+                    nowPlaying = value.getValue(STREAM_NOW_PLAYING_KEY)
+                )
+                appEvent.streamMetaDataUpdates.onNext(metaData)
             }
         }
 

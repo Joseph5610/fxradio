@@ -20,10 +20,10 @@ package online.hudacek.fxradio.usecase.country
 
 import io.reactivex.rxjava3.core.Observable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.apiclient.radiobrowser.model.isRussia
+import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredCountry
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
-import java.util.*
+import java.util.Locale
 
 
 /**
@@ -36,7 +36,7 @@ class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
     override fun execute(input: Unit): Observable<Country> = radioBrowserApi
         .getCountries()
         .compose(applySchedulersSingle())
-        .flattenAsObservable { it.filter { c -> !c.isRussia } }
+        .flattenAsObservable { it.filter { c -> !c.isIgnoredCountry } }
         .filter { it.stationCount != 0 }
         .map { it.copy(name = getCountryNameFromISO(it.iso3166) ?: it.name) }
         .sorted(Comparator.comparing(Country::name))

@@ -18,30 +18,27 @@
 
 package online.hudacek.fxradio.ui.view
 
-import javafx.beans.property.Property
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
 import javafx.scene.CacheHint
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.hasInvalidLogo
-import online.hudacek.fxradio.persistence.cache.InvalidStationsHolder.setInvalidLogo
 import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.util.toObservable
-import tornadofx.objectProperty
 
 private val logger = KotlinLogging.logger {}
 
 /**
- * Custom ImageView for station logos
+ * Custom ImageView for station favicons
  */
 class StationImageView(
-    private val stationProperty: Property<Station>,
-    size: Double = 15.0
-) : ImageView(defaultRadioLogo) {
+    private val stationObservable: Observable<Station>,
+    size: Double = 15.0,
+) : ImageView(StationImageCache.defaultStationLogo) {
 
-    constructor(station: Station, size: Double) : this(objectProperty(station), size)
+    private val imagePropertyObservable = imageProperty().toObservable()
 
     init {
         // Set basic image properties
@@ -51,40 +48,34 @@ class StationImageView(
         fitWidth = size
         fitHeight = size
 
-        // Subscribe to property changes
-        stationProperty.toObservable().subscribe {
-            // Ignore images previously marked as invalid
-            if (it.hasInvalidLogo()) {
-                image = defaultRadioLogo
-            } else {
-                getStationImage()
+        // Handles cases when image is correct but JavaFX is unable to render it
+        imagePropertyObservable.flatMap { it.errorProperty().toObservable() }
+            .subscribe { isError ->
+                if (isError) {
+                    logger.trace { "Failed to set image: ${image.exception.message}" }
+                    image = StationImageCache.defaultStationLogo
+                }
             }
-        }
     }
 
     /**
-     * Loads favicon of [stationProperty] from cache into [image] field asynchronously
+     * Maps currently playing station to its logo from cache
      */
-    fun getStationImage() {
-        stationImageCache.load(stationProperty.value).subscribe({
-            image = it
-            it.errorProperty()?.toObservable()?.subscribe { isError ->
-                if (isError) {
-                    logger.trace { "Failed to set image: ${it.exception.message}" }
-                    image = defaultRadioLogo
-                    stationProperty.value.setInvalidLogo()
-                }
-            }
-        }, {
-            stationProperty.value.setInvalidLogo()
-            logger.trace { "Failed to load image: ${it.message}" }
-        })
+    val imageObservable: Observable<Image> by lazy {
+        stationObservable.flatMapMaybe { stationImageCache.load(it) }
     }
 
+    /**
+     * Subscribe to start emits of station logos
+     */
+    fun subscribe(): Disposable = imageObservable.subscribe({
+        image = it
+    }, {
+        image = StationImageCache.defaultStationLogo
+        logger.trace { "Failed to load image: ${it.message}" }
+    })
+
     companion object {
-
-        private val defaultRadioLogo by lazy { Image(Config.Resources.waveIcon) }
-
         private val stationImageCache by lazy { StationImageCache() }
     }
 }

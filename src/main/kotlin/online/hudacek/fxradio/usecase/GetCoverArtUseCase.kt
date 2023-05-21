@@ -18,7 +18,9 @@
 
 package online.hudacek.fxradio.usecase
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
+import mu.KotlinLogging
 import okhttp3.Response
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.api.MusicBrainzApiProvider
@@ -27,25 +29,29 @@ import online.hudacek.fxradio.apiclient.musicbrainz.MusicBrainzApi
 import online.hudacek.fxradio.apiclient.musicbrainz.model.Release
 import online.hudacek.fxradio.util.applySchedulersSingle
 
+private val logger = KotlinLogging.logger {}
+
 private const val SCORE_THRESHOLD = 95
 private const val ART_PATH = "/front-250"
 
 /**
- * Retrieve Cover ART for currently playing song (if stream metadata is provided)
+ * Retrieve Cover Art for currently playing song (if stream metadata is provided)
  */
-class GetCoverArtUseCase : BaseUseCase<String, Single<Response>>() {
+class GetCoverArtUseCase : BaseUseCase<String, Maybe<Response>>() {
 
     private val musicBrainzApi: MusicBrainzApi by lazy { MusicBrainzApiProvider.provide() }
 
-    override fun execute(input: String): Single<Response> = musicBrainzApi.search(input)
+    override fun execute(input: String): Maybe<Response> = musicBrainzApi.getReleases(input)
         .map {
             // Take only the most probable candidate for cover art
             val release = it.releases.first { r -> r.score >= SCORE_THRESHOLD }
             val coverUrl = Config.API.coverArtApiUrl + release.id + ART_PATH
             ReleaseWithCoverArt(coverUrl, release)
         }
+        .doOnSuccess { logger.debug { "Requesting CoverArt: ${it.coverArtUrl}" } }
         .flatMap { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
         .compose(applySchedulersSingle())
+        .onErrorComplete()
 }
 
 data class ReleaseWithCoverArt(val coverArtUrl: String, val release: Release)

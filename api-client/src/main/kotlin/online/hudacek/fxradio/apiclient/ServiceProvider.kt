@@ -18,8 +18,8 @@
 
 package online.hudacek.fxradio.apiclient
 
-import online.hudacek.fxradio.apiclient.http.provider.BasicClientProvider
-import online.hudacek.fxradio.apiclient.http.provider.HttpClientProvider
+import online.hudacek.fxradio.apiclient.http.provider.AbstractClientProvider
+import online.hudacek.fxradio.apiclient.http.provider.CachingClientProvider
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -29,18 +29,18 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class ServiceProvider(
     private val baseUrl: String,
-    private val httpClientProvider: HttpClientProvider = BasicClientProvider()
+    private val abstractClientProvider: AbstractClientProvider = CachingClientProvider()
 ) {
 
     /**
-     * Retrofit client instance for [baseUrl] with custom [httpClientProvider]
+     * Retrofit client instance for [baseUrl] with custom [abstractClientProvider]
      */
     val retrofit: Retrofit
         get() = Retrofit.Builder()
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(baseUrl)
-            .client(httpClientProvider.client)
+            .client(abstractClientProvider.client)
             .build()
 
     /**
@@ -48,5 +48,5 @@ class ServiceProvider(
      */
     inline fun <reified T : ApiDefinition> create(): T = retrofit.create(T::class.java)
 
-    fun close() = httpClientProvider.close()
+    fun close() = abstractClientProvider.close()
 }

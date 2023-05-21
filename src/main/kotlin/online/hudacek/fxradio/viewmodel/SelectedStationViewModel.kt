@@ -46,6 +46,7 @@ class SelectedStation(station: Station) {
     var name: String by property(station.name)
     var country: String by property(station.country)
     var language: String by property(station.language)
+    var countryCode: String by property(station.countryCode)
     var codec: String by property(station.codec)
     var bitrate: Int by property(station.bitrate)
     var votes: Int by property(station.votes)
@@ -60,6 +61,7 @@ class SelectedStation(station: Station) {
             .split(",")
             .map { tag -> tag.trim() }
             .filter { tag -> tag.isNotEmpty() }
+            .take(15) // Max amount of tags to show inside StationsInfoView
     ))
     var homePage: String by property(station.homepage)
 }
@@ -75,6 +77,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val uuidProperty = bind(SelectedStation::uuid) as StringProperty
     val homePageProperty = bind(SelectedStation::homePage) as StringProperty
     val nameProperty = bind(SelectedStation::name) as StringProperty
+    val countryCodeProperty = bind(SelectedStation::countryCode) as StringProperty
     val codecProperty = bind(SelectedStation::codec) as StringProperty
     val bitrateProperty = bind(SelectedStation::bitrate) as IntegerProperty
     val languageProperty = bind(SelectedStation::language) as StringProperty

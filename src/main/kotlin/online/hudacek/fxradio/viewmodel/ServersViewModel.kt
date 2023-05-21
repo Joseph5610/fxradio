@@ -32,8 +32,8 @@ import tornadofx.property
 sealed class ServersState(val key: String = "") {
     object Loading : ServersState("loading")
     data class Fetched(val servers: List<String>) : ServersState()
-    object NoServersAvailable : ServersState("servers.notAvailable")
-    data class Error(val cause: String) : ServersState("servers.error")
+    object NoServersAvailable : ServersState("preferences.servers.notAvailable")
+    data class Error(val cause: String) : ServersState("preferences.servers.error")
 }
 
 class Servers(

@@ -36,7 +36,7 @@ class Log(level: Level = Level.valueOf(Properties.LogLevel.value("INFO"))) {
  * Used in [online.hudacek.fxradio.ui.view.MenuBarView]
  */
 class LogViewModel : BaseViewModel<Log>(Log()) {
-    val levelProperty = bind(Log::level) as ObjectProperty
+    val levelProperty by lazy { bind(Log::level) as ObjectProperty }
 
     init {
         //Init correct log level after view model creation

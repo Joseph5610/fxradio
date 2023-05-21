@@ -29,15 +29,11 @@ private val logger = KotlinLogging.logger {}
  */
 class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.VLC) : MediaPlayer {
 
-    private val vlcMediaAdapter by lazy { VLCMediaAdapter() }
-    private val vlcLogListener by lazy { VLCLogListener() }
+    private val vlcAudioComponent = VLCAudioComponent()
 
-    private val vlcAudioComponent = VLCAudioComponent().apply {
-        attachLogListener(vlcLogListener)
-        attachMediaListener(vlcMediaAdapter)
+    override fun play(streamUrl: String) {
+        vlcAudioComponent.play(streamUrl)
     }
-
-    override fun play(streamUrl: String) = vlcAudioComponent.play(streamUrl)
 
     override fun changeVolume(newVolume: Double) {
         // Recalculate humble player volume levels to VLC
@@ -47,6 +43,7 @@ class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type
             } else {
                 (newVolume + 65) * 1.1
             }
+        logger.trace { "Setting volume to $vlcVolume" }
         vlcAudioComponent.setVolume(vlcVolume)
     }
 
@@ -56,10 +53,6 @@ class VLCPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type
 
     override fun release() {
         logger.info { "Releasing VLC player..." }
-        with(vlcAudioComponent) {
-            releaseLogListener(vlcLogListener)
-            removeMediaListener(vlcMediaAdapter)
-            release()
-        }
+        vlcAudioComponent.release()
     }
 }

@@ -18,24 +18,35 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import javafx.geometry.Pos
-import javafx.scene.layout.Priority
+import javafx.scene.Node
+import javafx.scene.layout.VBox
+import javafx.util.Duration
 import online.hudacek.fxradio.persistence.database.Tables
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
+import online.hudacek.fxradio.util.Modal
+import online.hudacek.fxradio.util.openInternalWindow
+import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.action
+import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.addClass
 import tornadofx.borderpane
 import tornadofx.center
+import tornadofx.fade
 import tornadofx.get
-import tornadofx.hyperlink
+import tornadofx.hide
 import tornadofx.insets
-import tornadofx.minus
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.observableListOf
+import tornadofx.onUserSelect
+import tornadofx.show
 import tornadofx.top
 import tornadofx.vbox
-import tornadofx.vgrow
+
+private const val GLYPH_SIZE = 14.0
 
 class LibraryView : BaseView() {
 
@@ -43,14 +54,31 @@ class LibraryView : BaseView() {
 
     private val librarySearchView: LibrarySearchView by inject()
     private val libraryListView: LibraryListView by inject()
+    private val libraryPinnedListView: LibraryPinnedListView by inject()
 
-    override fun onDock() {
-        Tables.pinnedCountries
-            .selectAll()
-            .subscribe {
-                viewModel.pinnedProperty += it
+    private val directoryListView by lazy {
+        listview(observableListOf(messages["directory.browseAll"])) {
+            id = "libraryDirectoryView"
+            prefHeight = 40.0
+            VBox.setMargin(this, insets(6))
+
+            cellFormat {
+                addClass(Styles.libraryListItem)
             }
-        viewModel.getCountries()
+
+            cellCache {
+                label(it) {
+                    graphic = FontAwesome.Glyph.GLOBE.make(GLYPH_SIZE, isPrimary = true)
+                }
+            }
+
+            onUserSelect(clickCount = 1) {
+                Modal.Countries.openInternalWindow()
+                selectionModel.clearSelection()
+            }
+
+            addClass(Styles.libraryListView)
+        }
     }
 
     override val root = borderpane {
@@ -70,35 +98,43 @@ class LibraryView : BaseView() {
                     )
                 )
 
-                add(libraryListView)
+                vbox {
+                    add(libraryListView)
+
+                    viewModel.showLibraryProperty
+                        .toObservable()
+                        .subscribe {
+                            customFade(it)
+                        }
+                }
 
                 vbox {
                     add(
                         find<LibraryTitleFragment>(
                             params = mapOf(
-                                "libraryTitle" to messages["pinned"],
+                                "libraryTitle" to messages["pinned.title"],
                                 "showProperty" to viewModel.showPinnedProperty
                             )
                         )
                     )
+
                     showWhen {
                         viewModel.pinnedProperty.emptyProperty().not()
                     }
                 }
 
                 vbox {
-                    add(
-                        find<LibraryCountriesFragment>(
-                            params = mapOf("countriesProperty" to viewModel.pinnedProperty)
-                        )
-                    )
+                    maxHeight = 450.0
 
-                    showWhen {
-                        viewModel.pinnedProperty.emptyProperty().not().and(viewModel.showPinnedProperty)
-                    }
+                    add(libraryPinnedListView)
+
+                    viewModel.showPinnedProperty
+                        .toObservable()
+                        .subscribe {
+                            customFade(it)
+                        }
                 }
             }
-
         }
 
         center {
@@ -106,38 +142,45 @@ class LibraryView : BaseView() {
                 add(
                     find<LibraryTitleFragment>(
                         params = mapOf(
-                            "libraryTitle" to messages["countries"],
-                            "showProperty" to viewModel.showCountriesProperty
+                            "libraryTitle" to messages["directory.title"],
+                            "showProperty" to null
                         )
                     )
                 )
-                vbox {
-                    vgrow = Priority.ALWAYS
-                    add(
-                        find<LibraryCountriesFragment>(
-                            params = mapOf("countriesProperty" to viewModel.countriesProperty)
-                        )
-                    )
-                    prefHeightProperty().bind(this@center.heightProperty().minus(10.0))
 
-                    showWhen {
-                        viewModel.countriesProperty.emptyProperty().not().and(viewModel.showCountriesProperty)
-                    }
-                }
-
-                vbox(alignment = Pos.CENTER) {
-                    hyperlink(messages["downloadRetry"]) {
-
-                        action { viewModel.getCountries() }
-
-                        showWhen {
-                            viewModel.countriesProperty.emptyProperty().and(viewModel.showCountriesProperty)
-                        }
-                        addClass(Styles.primaryTextColor)
-                    }
-                }
+                add(directoryListView)
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
+    }
+
+    override fun onDock() {
+        // Download list of countries
+        viewModel.getCountries()
+
+        Tables.pinnedCountries
+            .selectAll()
+            .subscribe {
+                viewModel.pinnedProperty += it
+            }
+    }
+
+    /**
+     * fades in/out the library listviews when respective showProperty is changed
+     */
+    private fun Node.customFade(fadeIn: Boolean) {
+        val duration = Duration.seconds(0.4)
+        if (fadeIn) {
+            show()
+            fade(duration, 1.0)
+        } else {
+            fade(duration, 0.0) {
+                setOnFinished {
+                    hide()
+                }
+            }
+        }
+        // save the current state
+        viewModel.commit()
     }
 }

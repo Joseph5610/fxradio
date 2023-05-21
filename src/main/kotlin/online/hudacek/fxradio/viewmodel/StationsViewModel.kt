@@ -63,7 +63,8 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     val stationsProperty = bind(Stations::stations) as ListProperty
 
     init {
-        libraryViewModel.stateObservable.subscribe(::handleNewLibraryState)
+        libraryViewModel.stateObservable
+            .subscribe(::handleNewLibraryState)
 
         searchViewModel.searchByTagProperty.toObservableChanges().subscribe { search() }
 
@@ -113,7 +114,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         stateProperty.value = StationsState.Error(throwable.toString())
     }
 
-    private fun handleNewLibraryState(newState: LibraryState) {
+    fun handleNewLibraryState(newState: LibraryState) {
         when (newState) {
             is LibraryState.SelectedCountry -> getStationsByCountryUseCase
                 .execute(newState.country)

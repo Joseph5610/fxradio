@@ -50,25 +50,6 @@ class MainView : BaseView(FxRadio.appName) {
     private val menuBarView: MenuBarView by inject()
     private val libraryView: LibraryView by inject()
 
-    override fun onDock() {
-        with(splitPane) {
-            // Workaround for setting correct position of divider after restart of app
-            setDividerPositions(windowDividerProperty.get(0.30))
-        }
-
-        primaryStage.setOnCloseRequest { evt ->
-            // prevent window from closing when modals opened
-            if (Window.getWindows().size > 1) {
-                evt.consume()
-            }
-        }
-    }
-
-    override fun onUndock() {
-        // Save divider position before closing the app
-        windowDividerProperty.save(splitPane.dividers[0].position)
-    }
-
     // Right pane of the app (Player + Stations)
     private val rightPane by lazy {
         vbox {
@@ -83,7 +64,7 @@ class MainView : BaseView(FxRadio.appName) {
 
             // Constrains width of left pane
             libraryView.root.minWidthProperty().bind(widthProperty().divide(6))
-            libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.35))
+            libraryView.root.maxWidthProperty().bind(widthProperty().multiply(0.22))
 
             // Remove 1px border from SplitPane
             addClass(Styles.noBorder)
@@ -91,11 +72,11 @@ class MainView : BaseView(FxRadio.appName) {
     }
 
     override val root = vbox {
-
         setPrefSize(800.0, 600.0)
         add(menuBarView)
 
         notificationPane(showFromTop = true) {
+            isCloseButtonVisible = false
             appEvent.appNotification.subscribe { this[it.glyph] = it.title }
 
             content {
@@ -106,5 +87,27 @@ class MainView : BaseView(FxRadio.appName) {
                 }
             }
         }
+    }
+
+    override fun onDock() {
+        with(splitPane) {
+            // Workaround for setting correct position of divider after restart of app
+            setDividerPositions(windowDividerProperty.get(0.30))
+        }
+
+        primaryStage.setOnCloseRequest { e ->
+            // Prevent window from closing when more windows are opened
+            Window.getWindows().let {
+                if (it.size > 1) {
+                    it.last().requestFocus()
+                    e.consume()
+                }
+            }
+        }
+    }
+
+    override fun onUndock() {
+        // Save divider position before closing the app
+        windowDividerProperty.save(splitPane.dividers[0].position)
     }
 }

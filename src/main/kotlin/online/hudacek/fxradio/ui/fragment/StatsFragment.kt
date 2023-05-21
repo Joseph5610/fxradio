@@ -47,8 +47,6 @@ class StatsFragment : BaseFragment() {
     private val serversViewModel: ServersViewModel by inject()
     private val viewModel: StatsViewModel by inject()
 
-    override fun onDock() = viewModel.fetchStats()
-
     private val labelTextProperty = viewModel.stateProperty.stringBinding {
         when (it) {
             is StatsState.Loading -> {
@@ -114,4 +112,6 @@ class StatsFragment : BaseFragment() {
         }
         addClass(Styles.backgroundWhite)
     }
+
+    override fun onDock() = viewModel.fetchStats()
 }

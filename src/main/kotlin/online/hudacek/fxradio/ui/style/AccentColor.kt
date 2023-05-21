@@ -23,23 +23,23 @@ package online.hudacek.fxradio.ui.style
  */
 enum class AccentColor(
     val colorCode: Int,
-    val humanName: String,
+    val colorCodeKey: String,
 ) {
-    MULTICOLOR(Int.MIN_VALUE, "App Default"),
-    GRAPHITE(-1, "Graphite"),
-    RED(0, "Red"),
-    ORANGE(1, "Orange"),
-    YELLOW(2, "Yellow"),
-    GREEN(3, "Green"),
-    BLUE(4, "Blue"),
-    PURPLE(5, "Purple"),
-    PINK(6, "Pink");
+    MULTICOLOR(Int.MIN_VALUE, "colors.default"),
+    GRAPHITE(-1, "colors.graphite"),
+    RED(0, "colors.red"),
+    ORANGE(1, "colors.orange"),
+    YELLOW(2, "colors.yellow"),
+    GREEN(3, "colors.green"),
+    BLUE(4, "colors.blue"),
+    PURPLE(5, "colors.purple"),
+    PINK(6, "colors.pink");
 
     /**
      * Convert internal representation of accent color into hex
      */
     fun convertToHex(): String = when (this) {
-        MULTICOLOR -> "#d65458"
+        MULTICOLOR -> "#962cff"
         GRAPHITE -> "#8c8c8c"
         RED -> "#e15257"
         ORANGE -> "#f6821c"
@@ -48,6 +48,10 @@ enum class AccentColor(
         BLUE -> "#007aff"
         PURPLE -> "#a550a7"
         PINK -> "#f750bb"
+    }
+
+    companion object {
+        val values = values().asList()
     }
 }
 

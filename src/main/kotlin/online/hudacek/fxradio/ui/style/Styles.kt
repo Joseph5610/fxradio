@@ -15,7 +15,6 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @file:Suppress("MagicNumber")
 
 package online.hudacek.fxradio.ui.style
@@ -46,7 +45,7 @@ class Styles : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
-        val playerControlsBorder by cssclass()
+        val playerControls by cssclass()
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
@@ -67,7 +66,6 @@ class Styles : Stylesheet() {
         val backgroundWhite by cssclass()
         val backgroundWhiteSmoke by cssclass()
 
-        // For Text() elements
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val grayTextColor by cssclass()
@@ -109,7 +107,7 @@ class Styles : Stylesheet() {
             backgroundRadius += box(4.px)
             borderRadius += box(4.px)
             backgroundColor += c(colors.background)
-            borderColor += box(c(colors.backgroundBorder))
+            borderColor += box(c(colors.background))
             maxWidth = 290.px
             prefWidth = 290.px
             alignment = Pos.CENTER
@@ -150,9 +148,20 @@ class Styles : Stylesheet() {
             textFill = c(colors.grayLabel)
         }
 
-        playerControlsBorder {
+        playerControls {
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            backgroundColor += Color.WHITESMOKE
+            borderColor += box(Color.WHITESMOKE)
+            backgroundInsets += box(0.px)
+            borderInsets += box(0.px)
+            and(focused) {
+                borderColor += box(c(colors.grayLabel + "22"))
+            }
             and(hover) {
-                backgroundRadius += box(6.px)
+                backgroundColor += c(colors.background)
+            }
+            and(selected) {
                 backgroundColor += c(colors.background)
             }
         }
@@ -183,6 +192,7 @@ class Styles : Stylesheet() {
         }
 
         libraryListView {
+            borderRadius += box(6.px)
             backgroundColor += Color.WHITESMOKE
             borderColor += box(Color.WHITESMOKE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
@@ -237,9 +247,12 @@ class Styles : Stylesheet() {
             borderRadius += box(6.px)
             and(odd) {
                 backgroundColor += Color.WHITE
+                borderColor += box(Color.WHITE)
+
             }
             and(even) {
                 backgroundColor += Color.WHITESMOKE
+                borderColor += box(Color.WHITESMOKE)
             }
             and(selected) {
                 borderColor += box(c(colors.primary))
@@ -493,6 +506,7 @@ class Styles : Stylesheet() {
             InternalWindow.Styles.top {
                 backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
                 borderRadius += box(6.px, 6.px, 0.px, 0.px)
+                backgroundColor += Color.WHITE
             }
 
             InternalWindow.Styles.closebutton {
@@ -500,6 +514,7 @@ class Styles : Stylesheet() {
             }
 
             InternalWindow.Styles.floatingWindowContent {
+                backgroundColor += Color.WHITE
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }

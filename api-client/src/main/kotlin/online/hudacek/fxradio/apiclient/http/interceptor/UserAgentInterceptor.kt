@@ -20,14 +20,13 @@ package online.hudacek.fxradio.apiclient.http.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import online.hudacek.fxradio.apiclient.ApiUtils
 
 class UserAgentInterceptor : Interceptor {
 
     /**
      * Defines what is app sending as a User Agent string
      */
-    private val userAgent = "FxRadio/${ApiUtils.version}"
+    private val userAgent = "FxRadio"
 
     override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(
         chain.request()

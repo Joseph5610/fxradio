@@ -2,22 +2,22 @@ import groovy.lang.Closure
 import io.github.fvarrui.javapackager.gradle.PackageTask
 import io.github.fvarrui.javapackager.model.MacConfig
 import io.github.fvarrui.javapackager.model.MacStartup
-import io.github.fvarrui.javapackager.model.Manifest
+import io.github.fvarrui.javapackager.model.SetupMode
 import io.github.fvarrui.javapackager.model.WindowsConfig
+import io.github.fvarrui.javapackager.model.Manifest
 import org.gradle.internal.os.OperatingSystem
-
 
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("io.github.fvarrui:javapackager:1.7.0")
+        classpath("io.github.fvarrui:javapackager:1.7.2")
     }
 }
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "1.8.20"
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("application")
 }
@@ -27,16 +27,16 @@ apply(plugin = "io.github.fvarrui.javapackager.plugin")
 val kotlinCoroutinesVersion = "1.6.4"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.20.0"
-val slf4jVersion = "2.0.6"
+val slf4jVersion = "2.0.7"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.16-alpha"
-val junitVersion = "5.9.2"
+val junitVersion = "5.9.3"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.16.0"
+val flywayVersion = "9.16.3"
 val controlsFxVersion = "11.1.2"
 
-version = "0.14.0"
+version = "0.16.0"
 
 val appVersion: String = version as String
 
@@ -67,7 +67,10 @@ allprojects {
     }
 
     kotlin {
-        jvmToolchain(19)
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(19))
+            vendor.set(JvmVendorSpec.AZUL)
+        }
     }
 }
 
@@ -83,7 +86,7 @@ dependencies {
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
-    implementation("org.xerial:sqlite-jdbc:3.40.1.0")
+    implementation("org.xerial:sqlite-jdbc:3.41.2.1")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
@@ -118,12 +121,15 @@ configurations {
     all {
         exclude(group = "net.java.dev.jna", module = "jna")
         exclude(group = "net.java.dev.jna", module = "jna-platform")
+        exclude(group = "org.openjfx", module = "javafx-web")
+        exclude(group = "org.openjfx", module = "javafx-swing")
+        exclude(group = "org.openjfx", module = "javafx-fxml")
     }
 }
 
 javafx {
-    version = "20"
-    modules = mutableListOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.swing", "javafx.web")
+    version = "20.0.1"
+    modules = mutableListOf("javafx.controls", "javafx.media")
 }
 
 application {
@@ -169,9 +175,17 @@ task<PackageTask>("jfxNative") {
         backgroundImage = File("src/main/deploy/package/mac/background.png")
     } as Closure<MacConfig>)
     winConfig(closureOf<WindowsConfig> {
+        isGenerateSetup = false
+        isGenerateMsi = true
+        setupMode = SetupMode.askTheUser
+        productVersion = appVersion
+        fileVersion = appVersion
+        isDisableDirPage = false
+        isDisableProgramGroupPage = false
         isDisableWelcomePage = false
         isDisableFinishedPage = false
         isDisableRunAfterInstall = false
+        isRemoveOldLibs = true
     } as Closure<WindowsConfig>)
     dependsOn("jar")
     vmArgs = listOf(

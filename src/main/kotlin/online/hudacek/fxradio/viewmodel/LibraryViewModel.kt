@@ -21,6 +21,7 @@ package online.hudacek.fxradio.viewmodel
 import io.reactivex.rxjava3.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ListProperty
+import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
@@ -31,6 +32,7 @@ import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.SortedFilteredList
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -38,7 +40,7 @@ private val logger = KotlinLogging.logger {}
 
 sealed class LibraryState(val key: String) {
     object Favourites : LibraryState("favourites")
-    object Search : LibraryState("Search")
+    object Search : LibraryState("search.results")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
     object Popular : LibraryState("topStations")
     object Trending : LibraryState("trendingStations")
@@ -50,8 +52,8 @@ class Library(
     countries: ObservableList<Country> = observableListOf(),
     pinned: ObservableList<Country> = observableListOf(),
     showLibrary: Boolean = Properties.ShowLibrary.value(true),
-    showCountries: Boolean = Properties.ShowCountries.value(true),
-    showPinned: Boolean = Properties.ShowPinnedCountries.value(true)
+    showPinned: Boolean = Properties.ShowPinnedCountries.value(true),
+    countriesQuery: String = ""
 ) {
 
     // Countries shown in Countries ListView
@@ -70,8 +72,8 @@ class Library(
     )
 
     var showLibrary: Boolean by property(showLibrary)
-    var showCountries: Boolean by property(showCountries)
     var showPinned: Boolean by property(showPinned)
+    var countriesQuery: String by property(countriesQuery)
 }
 
 /**
@@ -91,8 +93,17 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     val pinnedProperty = bind(Library::pinned) as ListProperty
 
     val showLibraryProperty = bind(Library::showLibrary) as BooleanProperty
-    val showCountriesProperty = bind(Library::showCountries) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
+
+    val countriesQueryProperty = bind(Library::countriesQuery) as StringProperty
+
+    val filteredCountriesList by lazy {
+        SortedFilteredList(countriesProperty).apply {
+            filterWhen(countriesQueryProperty) { prop, item ->
+                item.name.contains(prop, ignoreCase = true)
+            }
+        }
+    }
 
     fun pinCountry(country: Country): Disposable = countryPinUseCase.execute(country)
         .subscribe({
@@ -115,12 +126,11 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
     })
 
     override fun onCommit() {
-        app.saveProperties(
+        app.saveProperties {
             mapOf(
-                Properties.ShowCountries to showCountriesProperty.value,
                 Properties.ShowLibrary to showLibraryProperty.value,
                 Properties.ShowPinnedCountries to showPinnedProperty.value
             )
-        )
+        }
     }
 }

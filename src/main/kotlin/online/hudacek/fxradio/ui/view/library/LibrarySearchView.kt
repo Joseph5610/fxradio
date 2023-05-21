@@ -21,10 +21,10 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.geometry.Pos
 import javafx.scene.input.KeyCode
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.searchField
-import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
@@ -45,7 +45,7 @@ class LibrarySearchView : BaseView() {
     private val viewModel: SearchViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
 
-    override val root = searchField(messages["search"], viewModel.bindQueryProperty) {
+    override val root = searchField(messages["search.prompt"], viewModel.bindQueryProperty) {
         id = "search"
 
         left = FontAwesome.Glyph.SEARCH.make(SEARCH_GLYPH_SIZE, isPrimary = false) {

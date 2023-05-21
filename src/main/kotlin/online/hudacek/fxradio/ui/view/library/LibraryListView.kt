@@ -21,9 +21,7 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.scene.layout.VBox
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.make
-import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import tornadofx.addClass
@@ -40,6 +38,32 @@ class LibraryListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
 
+    override val root = listview(viewModel.librariesProperty) {
+        id = "libraryListView"
+
+        VBox.setMargin(this, insets(6))
+
+        prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
+            if (it != null) it.size * 30.0 + 10 else 10.0
+        })
+
+        cellFormat {
+            addClass(Styles.libraryListItem)
+        }
+
+        cellCache {
+            label(messages[it.type.key]) {
+                graphic = it.glyph.make(GLYPH_SIZE, isPrimary = true)
+            }
+        }
+
+        onUserSelect(clickCount = 1) {
+            viewModel.stateProperty.value = it.type
+        }
+
+        addClass(Styles.libraryListView)
+    }
+
     override fun onDock() {
         // React to changes of library not from by clicking on list item
         viewModel.stateObservable.subscribe {
@@ -52,36 +76,5 @@ class LibraryListView : BaseView() {
                 }
             }
         }
-    }
-
-    override val root = listview(viewModel.librariesProperty) {
-        id = "libraryListView"
-
-        VBox.setMargin(this, insets(6))
-        val handler = ListViewHandler(this)
-        setOnKeyPressed(handler::handle)
-
-        prefHeightProperty().bind(viewModel.librariesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10 else 30.0
-        })
-
-        cellFormat {
-            addClass(Styles.libraryListItem)
-        }
-
-        cellCache {
-            label(messages[it.type.key]) {
-                graphic = it.glyph.make(GLYPH_SIZE, isPrimary = true) {
-                    minWidth = 15.0
-                }
-            }
-        }
-
-        showWhen { viewModel.showLibraryProperty }
-        onUserSelect(1) {
-            viewModel.stateProperty.value = it.type
-        }
-
-        addClass(Styles.libraryListView)
     }
 }

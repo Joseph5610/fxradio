@@ -32,7 +32,6 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.deleteRecursively
-import kotlin.io.path.exists
 import kotlin.io.path.fileSize
 import kotlin.io.path.getLastModifiedTime
 import kotlin.io.path.isDirectory
@@ -51,22 +50,22 @@ private const val MAX_CACHED_WEEKS = 3L
 @OptIn(ExperimentalPathApi::class)
 abstract class ImageCache {
 
+    init {
+        // Prepare cache directory
+        createCacheDirectory()
+
+        // Delete too old images
+        removeOldRecords()
+    }
+
     abstract fun load(station: Station): Maybe<Image>
 
     companion object {
 
-        internal val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
-
-        init {
-            // Prepare cache directory
-            createCacheDirectory()
-
-            // Delete too old images
-            removeOldRecords()
-        }
+        val cacheBasePath: Path = Paths.get(Config.Paths.cacheDirPath)
 
         /**
-         * Removes cache directory with all its contents and recreates it afterwards
+         * Removes cache directory with all its contents and recreates it afterward
          */
         fun clear() = cacheBasePath.deleteRecursively().also { createCacheDirectory() }
 
@@ -78,9 +77,6 @@ abstract class ImageCache {
                 .walk()
                 .map { it.fileSize() }
                 .sum() / 1e+6).roundToInt()
-
-        val Station.isCached: Boolean
-            get() = cacheBasePath.resolve(uuid).exists()
 
         private fun createCacheDirectory() {
             if (!cacheBasePath.isDirectory()) {

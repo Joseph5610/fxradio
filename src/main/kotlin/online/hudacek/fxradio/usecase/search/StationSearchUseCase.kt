@@ -22,6 +22,7 @@ import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
@@ -40,6 +41,6 @@ class StationSearchUseCase : BaseUseCase<Pair<Boolean, String>, Single<List<Stat
     }
         .compose(applySchedulersSingle())
         .flattenAsObservable { it }
-        .filter { it.countryCode != "RU" }
+        .filter { !it.isIgnoredStation }
         .toList()
 }

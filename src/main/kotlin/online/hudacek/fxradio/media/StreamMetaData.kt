@@ -18,7 +18,13 @@
 
 package online.hudacek.fxradio.media
 
+import java.time.LocalDateTime
+
 /**
  * Data class for metadata change event holding current station name / stream title
  */
-data class StreamMetaData(val stationName: String, val nowPlaying: String)
+data class StreamMetaData(
+    val timestamp: LocalDateTime = LocalDateTime.now(),
+    val stationName: String,
+    val nowPlaying: String
+)

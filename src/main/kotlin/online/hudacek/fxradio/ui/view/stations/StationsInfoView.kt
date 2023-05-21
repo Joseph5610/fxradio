@@ -22,12 +22,10 @@ import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
-import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.openUrl
-import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
@@ -39,7 +37,6 @@ import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.FX
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bindChildren
@@ -62,11 +59,12 @@ import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
+import java.util.Locale
 
 private const val LOGO_SIZE = 60.0
 private const val ICON_SIZE = 12.0
 
-class StationsInfoView : BaseView(FxRadio.appName) {
+class StationsInfoView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
@@ -86,11 +84,13 @@ class StationsInfoView : BaseView(FxRadio.appName) {
     private val favouriteRemoveIcon by lazy { FontAwesome.Glyph.HEART_ALT.make(ICON_SIZE, isPrimary = false) }
 
     private val stationLogo by lazy {
-        stationView(selectedStationViewModel.stationProperty, LOGO_SIZE)
+        stationView(selectedStationViewModel.stationObservable, LOGO_SIZE) {
+            subscribe()
+        }
     }
 
-    override fun onDock() {
-        selectedStationViewModel.retrieveAdditionalData()
+    private val stationNameBinding = selectedStationViewModel.countryCodeProperty.stringBinding {
+        Locale.of("", it).displayName
     }
 
     override val root = borderpane {
@@ -109,7 +109,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     }
                     addClass(Styles.subheader)
                     addClass(Styles.primaryTextColor)
-                    tooltip(messages["info.visit.website"])
+                    tooltip(messages["info.visitWebsite"])
                 }
 
                 smallLabel(messages["verified"]) {
@@ -118,7 +118,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     showWhen { selectedStationViewModel.hasExtendedInfoProperty }
                 }
 
-                label(selectedStationViewModel.countryProperty) {
+                label(stationNameBinding) {
                     paddingTop = 5.0
                     addClass(Styles.grayLabel)
                 }
@@ -138,8 +138,8 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
                     createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
                     createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
-                    createInfoLabel("info.clicktrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
-                    createInfoLabel("info.clickcount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
+                    createInfoLabel("info.clickTrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
+                    createInfoLabel("info.clickCount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
                 }
 
                 vbox {
@@ -171,8 +171,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
         bottom {
             vbox(spacing = 5.0, alignment = Pos.CENTER) {
-                button(messages["copy.stream.url"]) {
-                    graphic = copyIcon
+                button(messages["copy.streamUrl"], graphic = copyIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -184,8 +183,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
 
                 separator()
 
-                button(messages["menu.station.favourite"]) {
-                    graphic = favouriteAddIcon
+                button(messages["menu.station.favourite"], graphic = favouriteAddIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -203,8 +201,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     }
                 }
 
-                button(messages["menu.station.favouriteRemove"]) {
-                    graphic = favouriteRemoveIcon
+                button(messages["menu.station.favouriteRemove"], graphic = favouriteRemoveIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -223,9 +220,7 @@ class StationsInfoView : BaseView(FxRadio.appName) {
                     }
                 }
 
-                button(messages["menu.station.vote"]) {
-                    requestFocusOnSceneAvailable()
-                    graphic = likeIcon
+                button(messages["menu.station.vote"], graphic = likeIcon) {
                     maxWidth = Double.MAX_VALUE
 
                     actionEvents()
@@ -239,13 +234,17 @@ class StationsInfoView : BaseView(FxRadio.appName) {
         addClass(Styles.backgroundWhiteSmoke)
     }
 
+    override fun onDock() {
+        selectedStationViewModel.retrieveAdditionalData()
+    }
+
     private fun createInfoLabel(key: String, valueProperty: Property<*>?) = valueProperty?.let { p ->
         label(p.stringBinding {
             val value = if (it is String) {
                 it.ifEmpty { messages["unknown"] }
             } else it
             messages[key] + ": " + value.toString()
-                .replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase(FX.locale) else c.toString() }
+                .replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase() else c.toString() }
         }) {
             addClass(Styles.grayLabel)
             addClass(Styles.tag)

@@ -19,17 +19,18 @@
 package online.hudacek.fxradio.ui.view.player
 
 import javafx.geometry.Pos
+import javafx.scene.control.ToggleGroup
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.setOnSpacePressed
 import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.ui.util.keyCombination
-import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.openWindow
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.PlayerState
@@ -50,6 +51,7 @@ import tornadofx.onLeftClick
 import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
+import tornadofx.togglebutton
 import tornadofx.vgrow
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
@@ -79,9 +81,10 @@ class PlayerView : BaseView() {
         }
     }
 
-    private val infoGlyph by lazy {
-        FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE) {
+    private val infoToggleButton by lazy {
+        togglebutton(group = ToggleGroup(), selectFirst = false) {
             id = "stationInfo"
+            graphic = FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE)
             padding = insets(5, 7, 5, 7)
 
             disableWhen {
@@ -90,15 +93,19 @@ class PlayerView : BaseView() {
                 }
             }
 
-            onLeftClick {
-                toggleInfoPanelState()
-            }
+            selectedStationViewModel.stateProperty.bind(selectedProperty().objectBinding {
+                if (it == true) {
+                    InfoPanelState.Shown
+                } else {
+                    InfoPanelState.Hidden
+                }
+            })
 
             shortcut(keyCombination(KeyCode.I)) {
-                toggleInfoPanelState()
+                isSelected = !isSelected
             }
 
-            addClass(Styles.playerControlsBorder)
+            addClass(Styles.playerControls)
         }
     }
 
@@ -143,7 +150,7 @@ class PlayerView : BaseView() {
                 viewModel.togglePlayerState()
             }
 
-            addClass(Styles.playerControlsBorder)
+            addClass(Styles.playerControls)
         }
     }
 
@@ -163,9 +170,8 @@ class PlayerView : BaseView() {
         }
     }
 
-    override val root = hbox(spacing = 6) {
+    override val root = hbox(spacing = 6, alignment = Pos.CENTER_LEFT) {
         vgrow = Priority.NEVER
-        alignment = Pos.CENTER_LEFT
 
         // Play/Pause buttons
         add(playerControls)
@@ -178,15 +184,14 @@ class PlayerView : BaseView() {
         add(playerStationView)
 
         // Show station details
-        add(infoGlyph)
+        add(infoToggleButton)
 
         region {
             hgrow = Priority.ALWAYS
         }
 
         //Volume controls
-        hbox {
-            alignment = Pos.CENTER
+        hbox(alignment = Pos.CENTER) {
             add(volumeDownGlyph)
             add(volumeSlider)
             add(volumeUpGlyph)
@@ -195,7 +200,7 @@ class PlayerView : BaseView() {
         if (Properties.EnableDebugView.value(false)) {
             add(FontAwesome.Glyph.BUG.make(VOLUME_GLYPH_SIZE, isPrimary = false) {
                 onLeftClick {
-                    Modal.Debug.open()
+                    Modal.Debug.openWindow()
                 }
             })
         }
@@ -209,15 +214,5 @@ class PlayerView : BaseView() {
             viewModel.togglePlayerState()
         }
         viewModel.initializePlayer()
-    }
-
-    private fun toggleInfoPanelState() {
-        selectedStationViewModel.stateProperty.apply {
-            value = if (value == InfoPanelState.Shown) {
-                InfoPanelState.Hidden
-            } else {
-                InfoPanelState.Shown
-            }
-        }
     }
 }

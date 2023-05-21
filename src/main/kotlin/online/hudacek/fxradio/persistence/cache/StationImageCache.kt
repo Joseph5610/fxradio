@@ -21,6 +21,7 @@ package online.hudacek.fxradio.persistence.cache
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import javafx.scene.image.Image
+import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.applySchedulersSingle
@@ -28,15 +29,20 @@ import online.hudacek.fxradio.util.maybeOfNullable
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
 
 class StationImageCache : ImageCache() {
+
+    private val defaultStationLogoMaybe by lazy { Maybe.just(defaultStationLogo) }
 
     /**
      * Retrieves the station image either from local cache or remote url
      */
     override fun load(station: Station): Maybe<Image> = maybeOfNullable(getLocalPath(station))
-        .onErrorResumeNext { getRemote(station) }
         .switchIfEmpty(getRemote(station))
+        .switchIfEmpty(defaultStationLogoMaybe) // if favicon is null, use default
+        .onErrorResumeNext { defaultStationLogoMaybe }
 
     /**
      * Downloads and stores remote image file into local cache
@@ -61,19 +67,20 @@ class StationImageCache : ImageCache() {
     /**
      * Gets Image for [station] from local cache
      */
-    private fun getLocalPath(station: Station) = if (station.isCached) {
-        Image("file:" + cacheBasePath.resolve(station.uuid).toFile().absolutePath, true)
-    } else {
-        null
+    private fun getLocalPath(station: Station): Image? {
+        val stationImagePath = cacheBasePath.resolve(station.uuid)
+        return if (stationImagePath.exists()) {
+            Image("file:" + stationImagePath.absolutePathString(), true)
+        } else {
+            null
+        }
     }
 
-    private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) {
-        ips.use {
-            Files.copy(
-                it,
-                cacheBasePath.resolve(fileName),
-                StandardCopyOption.REPLACE_EXISTING
-            )
-        }
+    private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) = ips.use {
+        Files.copy(it, cacheBasePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)
+    }
+
+    companion object {
+        val defaultStationLogo by lazy { Image(Config.Resources.waveIcon) }
     }
 }

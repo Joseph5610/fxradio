@@ -18,81 +18,68 @@
 
 package online.hudacek.fxradio.ui.view.library
 
-import javafx.beans.property.ListProperty
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.ui.BaseFragment
+import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.ListViewHandler
 import online.hudacek.fxradio.ui.util.flagIcon
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import tornadofx.*
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.doubleBinding
+import tornadofx.fitToParentHeight
+import tornadofx.get
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.insets
+import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
+import tornadofx.selectedItem
+import tornadofx.stringBinding
+import java.util.Locale
 
 /**
- * Custom listview fragment for countries
+ * Custom listview view for pinned countries
  */
-class LibraryCountriesFragment : BaseFragment() {
+class LibraryPinnedListView : BaseView() {
 
     private val viewModel: LibraryViewModel by inject()
 
-    private val countriesProperty: ListProperty<Country> by param()
-
-    override fun onDock() {
-        viewModel.stateObservable.subscribe {
-            if (it !is LibraryState.SelectedCountry) {
-                root.selectionModel.clearSelection()
-            } else {
-                if (it.country.iso3166 != root.selectedItem?.iso3166) {
-                    root.selectionModel.clearSelection()
-                }
-            }
-        }
-    }
-
-    override val root = listview(countriesProperty) {
-        id = "libraryCountriesFragment"
+    override val root = listview(viewModel.pinnedProperty) {
+        id = "libraryCountriesView"
 
         fitToParentHeight()
 
         VBox.setMargin(this, insets(6))
-        val handler = ListViewHandler(this)
-        setOnKeyPressed(handler::handle)
 
         /**
          * Set min/max size of listview based on its items size
          */
-        prefHeightProperty().bind(countriesProperty.doubleBinding {
-            if (it != null) it.size * 30.0 + 10.0 else 30.0
+        prefHeightProperty().bind(viewModel.pinnedProperty.doubleBinding {
+            if (it != null) it.size * 30.0 + 10.0 else 10.0
         })
 
         cellCache {
             hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
+                val countryName = Locale.of("", it.iso3166).displayName
 
                 imageview {
                     image = it.flagIcon
                 }
 
-                label(it.name.split("(")[0])
-
-                // Do not show count of stations for pinned stations, they would always show 0
-                // as we do not store this in DB
-                if (it.stationCount > 0) {
-                    label("${it.stationCount}") {
-                        addClass(Styles.listItemTag)
-                    }
-                }
+                label(countryName)
 
                 platformContextMenu(
-                    listOf(item(messages["pin"]) {
+                    listOf(item(messages["pinned.pin"]) {
                         val itemName = viewModel.pinnedProperty.stringBinding { l ->
                             if (l?.contains(it)!!)
-                                messages["unpin"]
+                                messages["pinned.unpin"]
                             else
-                                messages["pin"]
+                                messages["pinned.pin"]
                         }
                         textProperty().bind(itemName)
 
@@ -107,6 +94,7 @@ class LibraryCountriesFragment : BaseFragment() {
                 )
             }
         }
+
         cellFormat {
             addClass(Styles.libraryListItem)
         }
@@ -116,5 +104,17 @@ class LibraryCountriesFragment : BaseFragment() {
         }
 
         addClass(Styles.libraryListView)
+    }
+
+    override fun onDock() {
+        viewModel.stateObservable.subscribe {
+            if (it !is LibraryState.SelectedCountry) {
+                root.selectionModel.clearSelection()
+            } else {
+                if (it.country.iso3166 != root.selectedItem?.iso3166) {
+                    root.selectionModel.clearSelection()
+                }
+            }
+        }
     }
 }

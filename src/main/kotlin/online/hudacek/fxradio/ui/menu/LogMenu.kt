@@ -25,12 +25,12 @@ import tornadofx.action
 import tornadofx.get
 import tornadofx.onChange
 
-class LogMenu : BaseMenu("menu.help.loglevel") {
+class LogMenu : BaseMenu("menu.help.log.title") {
 
     private val logViewModel: LogViewModel by inject()
 
     private val checkLoggerOff by lazy {
-        checkMenuItem(messages["menu.help.loglevel.off"]) {
+        checkMenuItem(messages["menu.help.log.off"]) {
             isSelected = logViewModel.item.level == Level.OFF
             action {
                 logViewModel.item = Log(Level.OFF)
@@ -39,7 +39,7 @@ class LogMenu : BaseMenu("menu.help.loglevel") {
     }
 
     private val checkLoggerInfo by lazy {
-        checkMenuItem(messages["menu.help.loglevel.info"]) {
+        checkMenuItem(messages["menu.help.log.info"]) {
             isSelected = logViewModel.item.level == Level.INFO
             action {
                 logViewModel.item = Log(Level.INFO)
@@ -47,7 +47,7 @@ class LogMenu : BaseMenu("menu.help.loglevel") {
         }
     }
     private val checkLoggerDebug by lazy {
-        checkMenuItem(messages["menu.help.loglevel.debug"]) {
+        checkMenuItem(messages["menu.help.log.debug"]) {
             isSelected = logViewModel.item.level == Level.DEBUG
             action {
                 logViewModel.item = Log(Level.DEBUG)
