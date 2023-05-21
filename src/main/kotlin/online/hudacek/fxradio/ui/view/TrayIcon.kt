@@ -90,6 +90,7 @@ class TrayIcon : Controller() {
     }
 
     private fun removeIcon() {
+        Platform.setImplicitExit(true)
         SwingUtilities.invokeLater {
             trayIcon?.let { getSystemTray().remove(it) }
         }

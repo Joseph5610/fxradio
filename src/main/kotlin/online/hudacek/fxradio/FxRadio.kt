@@ -52,7 +52,8 @@ import kotlin.reflect.KClass
 
 private const val WINDOW_MIN_WIDTH = 800.0
 private const val WINDOW_MIN_HEIGHT = 600.0
-
+private const val WINDOW_DEFAULT_WIDTH = 950.0
+private const val WINDOW_DEFAULT_HEIGHT = 680.0
 /**
  * Load app in Dark Mode
  */
@@ -89,6 +90,10 @@ open class FxRadio(
         with(stage) {
             minWidth = WINDOW_MIN_WIDTH
             minHeight = WINDOW_MIN_HEIGHT
+
+            // Default app size on first run
+            width = WINDOW_DEFAULT_WIDTH
+            height = WINDOW_DEFAULT_HEIGHT
 
             // Setup window location on screen
             with(config) {

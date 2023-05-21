@@ -44,7 +44,7 @@ sealed class PlayerState {
 
 class Player(
     animate: Boolean = Properties.PlayerAnimated.value(true),
-    volume: Double = Properties.Volume.value(0.0),
+    volume: Double = Properties.Volume.value(-15.0),
     trackName: String = "",
     mediaPlayer: MediaPlayer = MediaPlayerFactory.create()
 ) {
