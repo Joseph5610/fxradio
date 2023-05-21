@@ -67,7 +67,7 @@ import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
-private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
+private const val NOTIFICATION_TIME_ON_SCREEN = 3.0
 
 /**
  * This is to overcome a bug that sometimes
@@ -123,7 +123,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
     clipboard: Clipboard,
     menuItemName: String,
     valueToCopy: StringProperty
-) = platformContextMenu(listOf(
+) = platformContextMenu {
     item(menuItemName) {
         action {
             if (valueToCopy.value != null) {
@@ -137,7 +137,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
             }
         }
     }
-))
+}
 
 internal fun Window.setOnSpacePressed(action: () -> Unit) {
     addEventHandler(KeyEvent.KEY_PRESSED) {

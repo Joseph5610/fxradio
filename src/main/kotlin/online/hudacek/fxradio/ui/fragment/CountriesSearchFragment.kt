@@ -22,7 +22,6 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.ui.BaseFragment
-import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.flagIcon
@@ -41,6 +40,7 @@ import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.imageview
 import tornadofx.insets
+import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.objectBinding
@@ -114,8 +114,8 @@ class CountriesSearchFragment : BaseFragment() {
                         }
                     }
 
-                    platformContextMenu(
-                        listOf(item(messages["pinned.pin"]) {
+                    platformContextMenu {
+                        item(messages["pinned.pin"]) {
                             val itemName = viewModel.pinnedProperty.stringBinding { l ->
                                 if (l?.contains(it)!!)
                                     messages["pinned.unpin"]
@@ -127,8 +127,8 @@ class CountriesSearchFragment : BaseFragment() {
                             action {
                                 togglePin(it)
                             }
-                        })
-                    )
+                        }
+                    }
                 }
             }
 

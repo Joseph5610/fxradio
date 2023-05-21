@@ -37,7 +37,7 @@ object RadioBrowserApiProvider : Component() {
     }
 
     /**
-     * Get the radio-browser API service instance
+     * Creates the [RadioBrowserApi] service instance
      */
     fun provide(): RadioBrowserApi = serviceProvider.create()
 

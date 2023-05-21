@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.8.21"
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("application")
 }
@@ -108,8 +108,6 @@ dependencies {
         implementation("io.humble:humble-video-arch-x86_64-pc-linux-gnu6:$humbleVersion")
     }
     implementation("uk.co.caprica:vlcj:$vlcjVersion")
-
-    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.8")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")

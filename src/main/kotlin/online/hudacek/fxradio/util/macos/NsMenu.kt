@@ -22,6 +22,7 @@ import de.jangassen.MenuToolkit
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
+import javafx.scene.input.MouseEvent
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
@@ -30,9 +31,7 @@ import tornadofx.FX
 /**
  * NSMenu helper for macOS only
  */
-class NSMenuBuilder {
-
-    private val tk by lazy { MenuToolkit.toolkit(FX.locale) }
+class NsMenu {
 
     /**
      * macOS default Application Menu
@@ -41,13 +40,13 @@ class NSMenuBuilder {
         menu(FxRadio.appName) {
             items.addAll(
                 separator(),
-                tk.createHideMenuItem(text),
-                tk.createHideOthersMenuItem(),
-                tk.createUnhideAllMenuItem(),
+                toolkit.createHideMenuItem(text),
+                toolkit.createHideOthersMenuItem(),
+                toolkit.createUnhideAllMenuItem(),
                 separator(),
-                tk.createQuitMenuItem(text)
+                toolkit.createQuitMenuItem(text)
             )
-            tk.setApplicationMenu(this)
+            toolkit.setApplicationMenu(this)
         }
     }
 
@@ -57,36 +56,46 @@ class NSMenuBuilder {
         }
     }
 
-    /**
-     * Adds menus to the main MenuBar
-     */
-    fun addMenus(vararg menus: Menu) = apply {
-        menuBar.menus.addAll(menus)
-    }
+    inner class Builder {
 
-    /**
-     * Creates macOS style default Window menu
-     */
-    fun addWindowMenu(name: String) = apply {
-        val menu = menu(name) {
-            items.addAll(
-                tk.createMinimizeMenuItem(),
-                tk.createZoomMenuItem(),
-                tk.createCycleWindowsItem(),
-                separator(),
-                tk.createBringAllToFrontItem()
-            )
+        /**
+         * Adds menus to the main MenuBar
+         */
+        fun addMenus(vararg menus: Menu) = apply {
+            menuBar.menus.addAll(menus)
         }
-        tk.autoAddWindowMenuItems(menu)
-        menuBar.menus.add(menuBar.menus.size - 1, menu)
-    }
 
-    /**
-     * Adds additional MenuItems into the [appMenu]
-     */
-    fun addAppMenuItems(items: List<MenuItem>) = apply {
-        appMenu.items.addAll(0, items)
-    }
+        /**
+         * Creates macOS style default Window menu
+         */
+        fun addWindowMenu(name: String) = apply {
+            val menu = menu(name) {
+                items.addAll(
+                    toolkit.createMinimizeMenuItem(),
+                    toolkit.createZoomMenuItem(),
+                    toolkit.createCycleWindowsItem(),
+                    separator(),
+                    toolkit.createBringAllToFrontItem()
+                )
+            }
+            toolkit.autoAddWindowMenuItems(menu)
+            menuBar.menus.add(menuBar.menus.size - 1, menu)
+        }
 
-    fun build() = menuBar
+        /**
+         * Adds additional MenuItems into the [appMenu]
+         */
+        fun addAppMenuItems(items: List<MenuItem>) = apply {
+            appMenu.items.addAll(0, items)
+        }
+
+        fun build() = menuBar
+    }
+    
+    companion object {
+
+        private val toolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
+
+        fun showContextMenu(menu: Menu, e: MouseEvent) = toolkit.showContextMenu(menu, e)
+    }
 }

@@ -152,7 +152,7 @@ open class FxRadio(
 
         /**
          * Gets version from jar MANIFEST.MF file
-         * On failure (e.g. if app is not run from the jar file), returns the "0.0.0" value
+         * On failure (e.g. if app is not run from the jar file), returns "0.0.0"
          */
         val version: String by lazy {
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0.0"

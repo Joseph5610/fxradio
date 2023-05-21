@@ -17,7 +17,7 @@ object MusicBrainzApiProvider : Component() {
     }
 
     /**
-     * Get the MusicBrainz API service instance
+     * Creates the [MusicBrainzApi] service instance
      */
     fun provide(): MusicBrainzApi = serviceProvider.create()
 

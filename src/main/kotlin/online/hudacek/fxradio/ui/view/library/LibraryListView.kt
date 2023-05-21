@@ -53,7 +53,7 @@ class LibraryListView : BaseView() {
 
         cellCache {
             label(messages[it.type.key]) {
-                graphic = it.glyph.make(GLYPH_SIZE, isPrimary = true)
+                graphic = it.glyph.make(GLYPH_SIZE)
             }
         }
 

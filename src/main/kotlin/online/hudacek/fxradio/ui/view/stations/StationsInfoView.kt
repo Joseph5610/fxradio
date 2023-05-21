@@ -59,7 +59,7 @@ import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
-import java.util.Locale
+import java.util.*
 
 private const val LOGO_SIZE = 60.0
 private const val ICON_SIZE = 12.0
@@ -113,7 +113,7 @@ class StationsInfoView : BaseView() {
                 }
 
                 smallLabel(messages["verified"]) {
-                    graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = 13.0, isPrimary = true)
+                    graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = ICON_SIZE)
                     addClass(Styles.tag)
                     showWhen { selectedStationViewModel.hasExtendedInfoProperty }
                 }
