@@ -8,10 +8,12 @@ import javafx.animation.Timeline
 import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
+import javafx.scene.text.Text
 import javafx.util.Duration
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.util.observeOnFx
 import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import tornadofx.addClass
@@ -30,17 +32,44 @@ open class TickerEntry<T : Node>(
     open fun updateObservable(): Completable? = null
 }
 
-private data class ActiveTick(val entry: TickerEntry<Node>, var cleared: Boolean = false)
+private data class ActiveTick(val entry: TickerEntry<Text>, var cleared: Boolean = false)
 
 class PlayerTickerView : TickerView() {
 
     private val playerViewModel: PlayerViewModel by inject()
 
-    override fun onDock() {
-        playerViewModel.trackNameProperty.toObservable()
-            .subscribe {
-                marqueeFragment.replaceTickEntry(TickerEntry(content = createText(it), reschedule = true))
+    private val trackNameObservable = playerViewModel.trackNameProperty.toObservable()
+
+    private val entryContent = text {
+        layoutY = 12.0
+        isVisible = false
+        addClass(Styles.defaultTextColor)
+    }
+
+    private val animationDuration = Duration.seconds(0.5)
+
+    private val trackEntry = object : TickerEntry<Text>(content = entryContent, reschedule = true) {
+        override fun updateObservable() = trackNameObservable
+            .distinctUntilChanged()
+            .observeOnFx()
+            .doOnNext {
+                content.fade(animationDuration, 0.0) {
+                    setOnFinished { _ ->
+                        // Move the content to start
+                        content.layoutX = marqueeFragment.root.prefWidth
+
+                        content.text = it
+
+                        // Fade in the new content
+                        content.fade(animationDuration, 1.0)
+                    }
+                }
             }
+            .ignoreElements()
+    }
+
+    override fun onDock() {
+        marqueeFragment.enqueueTickEntry(trackEntry)
     }
 }
 
@@ -55,15 +84,8 @@ open class TickerView : BaseView() {
 
     override val root = pane {
         prefHeight = 15.0
-
         marqueeFragment.inside(this)
         add(marqueeFragment)
-    }
-
-    fun createText(content: String) = text(content) {
-        layoutY = 12.0
-        isVisible = false
-        addClass(Styles.defaultTextColor)
     }
 
     class MarqueeFragment : BaseFragment() {
@@ -75,16 +97,16 @@ open class TickerView : BaseView() {
         private val activeTicks = ConcurrentLinkedQueue<ActiveTick>()
 
         // This one does, multiple threads!
-        private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Node>>()
+        private val queuedTicks = ConcurrentLinkedQueue<TickerEntry<Text>>()
 
         // Timeline is up here in case we need to pause, play the animation
         private val timeline by lazy { Timeline() }
 
-        override val root = pane().also {
-            it.clip = Rectangle(25.0, 25.0).apply {
+        override val root = pane {
+            clip = Rectangle(25.0, 25.0).also {
                 // Bind the clipping to the size of the thing
-                widthProperty().bind(it.widthProperty())
-                heightProperty().bind(it.heightProperty())
+                it.widthProperty().bind(widthProperty())
+                it.heightProperty().bind(heightProperty())
             }
             startAnimation() // Fire up the animation process
         }
@@ -96,12 +118,7 @@ open class TickerView : BaseView() {
             root.prefHeightProperty().bind(of.heightProperty())
         }
 
-        fun replaceTickEntry(entry: TickerEntry<Node>) {
-            clear()
-            queuedTicks.add(entry)
-        }
-
-        private fun enqueueTickEntry(entry: TickerEntry<Node>) = queuedTicks.add(entry)
+        fun enqueueTickEntry(entry: TickerEntry<Text>) = queuedTicks.add(entry)
 
         // Fire up the animation process for the ticker
         private fun startAnimation() {
@@ -120,13 +137,13 @@ open class TickerView : BaseView() {
             }
 
             // Keep track of the things we've started, so we can dispose them
-            val subscriptions = hashMapOf<TickerEntry<Node>, Disposable>()
+            val subscriptions = hashMapOf<TickerEntry<Text>, Disposable>()
 
             // Could also update this things speed time so that stuff scrolls faster
             KeyFrame(Duration.millis(35.0), {
                 // There's possible some thread bugs in there, but only on the very first creation
                 if (activeTicks.isEmpty() || lastOneCleared()) {
-                    val newTickerEntry: TickerEntry<Node>? = queuedTicks.poll()
+                    val newTickerEntry = queuedTicks.poll()
                     if (newTickerEntry != null) {
                         newTickerEntry.content.isVisible = true
                         // Then just put it into the active queue, so it will start processing like normal
@@ -170,14 +187,6 @@ open class TickerView : BaseView() {
             }).also { timeline.keyFrames += it }
             timeline.cycleCount = Animation.INDEFINITE
             timeline.play()
-        }
-
-        private fun clear() {
-            queuedTicks.clear()
-            activeTicks.forEach {
-                it.entry.reschedule = false
-                it.entry.content.fade(Duration.seconds(0.5), 0.0)
-            }
         }
     }
 }

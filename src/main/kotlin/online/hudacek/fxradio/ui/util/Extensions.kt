@@ -18,6 +18,7 @@
 
 package online.hudacek.fxradio.ui.util
 
+import io.reactivex.rxjava3.core.Observable
 import javafx.animation.PauseTransition
 import javafx.beans.property.ListProperty
 import javafx.beans.property.Property
@@ -191,11 +192,14 @@ internal fun EventTarget.field(
         }
     })
 
-fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
-    opcr(this, StationImageView(station, size), op)
+internal fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
+    opcr(this, StationImageView(Observable.just(station), size), op)
 
-fun EventTarget.stationView(stationProperty: Property<Station>, size: Double, op: StationImageView.() -> Unit = {}) =
-    opcr(this, StationImageView(stationProperty, size), op)
+internal fun EventTarget.stationView(
+    stationObservable: Observable<Station>,
+    size: Double,
+    op: StationImageView.() -> Unit = {}
+) = opcr(this, StationImageView(stationObservable, size), op)
 
 internal val Country.flagIcon: Image?
     get() = FlagIcon(iso3166).get()

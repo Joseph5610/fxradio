@@ -3,7 +3,7 @@ package online.hudacek.fxradio.persistence.database
 import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 
-class FavouritesTable : StationTable("FAVOURITES") {
+class FavouritesTable : StationTable(tableName = "FAVOURITES") {
 
     override fun selectAll() =
         database.select("SELECT * FROM $tableName ORDER BY sorting_order ASC, id ASC;").asStationFlowable()

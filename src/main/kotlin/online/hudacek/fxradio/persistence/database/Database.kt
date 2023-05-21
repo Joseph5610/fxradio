@@ -34,13 +34,12 @@ private const val DB_POOLS = 5
  */
 open class Database(private val tableName: String) {
 
-
     fun selectAllQuery(): SelectBuilder = database.select("SELECT * FROM $tableName")
 
     fun removeAllQuery(): UpdateBuilder = database.update("DELETE FROM $tableName")
 
-
     companion object {
+
         private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
 
         // Workaround for https://github.com/davidmoten/rxjava2-jdbc/issues/51

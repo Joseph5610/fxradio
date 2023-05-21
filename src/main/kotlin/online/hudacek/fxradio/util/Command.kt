@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.util
 
 import mu.KotlinLogging
+import java.io.BufferedReader
 
 private val logger = KotlinLogging.logger {}
 
@@ -37,15 +38,7 @@ class Command(command: String) {
      * Parse result of command to string
      */
     private val Process.result: String
-        get() = StringBuilder().apply {
-            inputStream.use { inputStream ->
-                inputStream.bufferedReader().useLines { sequence ->
-                    sequence.forEach {
-                        append(it)
-                    }
-                }
-            }
-        }.toString().also {
+        get() = inputStream.bufferedReader().use(BufferedReader::readText).trim().also {
             logger.debug { "Command Result: $it" }
         }
 }

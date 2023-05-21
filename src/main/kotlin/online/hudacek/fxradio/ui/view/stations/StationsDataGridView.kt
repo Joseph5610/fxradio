@@ -34,7 +34,6 @@ import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.toObservableChanges
-import online.hudacek.fxradio.viewmodel.InfoPanelState
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
@@ -50,6 +49,7 @@ import tornadofx.onLeftClick
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.point
+import tornadofx.putString
 import tornadofx.px
 import tornadofx.scale
 import tornadofx.style
@@ -83,7 +83,7 @@ class StationsDataGridView : BaseView() {
         }
 
         onUserSelect {
-           selectStation(it)
+            selectStation(it)
         }
 
         cellFormat {
@@ -118,14 +118,19 @@ class StationsDataGridView : BaseView() {
                     tooltip(station.name)
                 }
 
-                platformContextMenu(listOf(item(messages["menu.station.info"]) {
+                platformContextMenu(listOf(item(messages["menu.station.vote"]) {
                     action {
-                        selectedStationViewModel.stateProperty.value = InfoPanelState.Shown
+                        appEvent.votedStations.onNext(station)
+                    }
+                }, item(messages["copy.streamUrl"]) {
+                    action {
+                        clipboard.putString(station.urlResolved)
                     }
                 }))
 
                 stationView(station, LOGO_SIZE) {
                     paddingAll = 5
+                    subscribe()
                 }
 
                 label(station.name) {

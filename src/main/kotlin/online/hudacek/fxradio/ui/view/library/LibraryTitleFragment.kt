@@ -35,6 +35,7 @@ import tornadofx.hgrow
 import tornadofx.onLeftClick
 import tornadofx.paddingLeft
 import tornadofx.paddingRight
+import tornadofx.paddingTop
 import tornadofx.point
 import tornadofx.region
 import tornadofx.transform
@@ -48,11 +49,7 @@ private const val ICON_SIZE = 11.0
 class LibraryTitleFragment : BaseFragment() {
 
     private val libraryTitle: String by param()
-    private val showProperty: BooleanProperty by param()
-
-    private val originalScale = point(1.0, 1.0)
-    private val destination = point(0.0, 0.0)
-    private val duration: Duration = Duration.seconds(0.2)
+    private val showProperty: BooleanProperty? by param()
 
     private val showIcon: Glyph by lazy {
         FontAwesome.Glyph.CHEVRON_DOWN.make(size = ICON_SIZE, isPrimary = false) {
@@ -60,12 +57,12 @@ class LibraryTitleFragment : BaseFragment() {
             paddingRight = 10.0
 
             onLeftClick {
-                showProperty.value = !showProperty.value
+                showProperty!!.value = !showProperty!!.value
             }
 
             showProperty
-                .toObservable()
-                .subscribe {
+                ?.toObservable()
+                ?.subscribe {
                     if (it) {
                         transform(
                             time = duration,
@@ -88,16 +85,25 @@ class LibraryTitleFragment : BaseFragment() {
     }
 
     override val root = hbox {
+        paddingTop = 10.0
         smallLabel(libraryTitle) {
             paddingLeft = 10.0
             addClass(Styles.boldText)
         }
-        region { hgrow = Priority.ALWAYS }
-        vbox {
-            add(showIcon)
-            showWhen {
-                this@hbox.hoverProperty()
+        if (showProperty != null) {
+            region { hgrow = Priority.ALWAYS }
+            vbox {
+                add(showIcon)
+                showWhen {
+                    this@hbox.hoverProperty()
+                }
             }
         }
+    }
+
+    companion object {
+        private val originalScale = point(1.0, 1.0)
+        private val destination = point(0.0, 0.0)
+        private val duration: Duration = Duration.seconds(0.2)
     }
 }

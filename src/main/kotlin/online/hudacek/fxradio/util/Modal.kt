@@ -24,6 +24,7 @@ import javafx.stage.Window
 import online.hudacek.fxradio.ui.fragment.AddStationFragment
 import online.hudacek.fxradio.ui.fragment.AppInfoFragment
 import online.hudacek.fxradio.ui.fragment.AttributionsFragment
+import online.hudacek.fxradio.ui.fragment.CountriesSearchFragment
 import online.hudacek.fxradio.ui.fragment.DebugFragment
 import online.hudacek.fxradio.ui.fragment.OpenStreamFragment
 import online.hudacek.fxradio.ui.fragment.PreferencesFragment
@@ -50,6 +51,7 @@ sealed class Modal<out T : Fragment>(
     object License : Modal<AttributionsFragment.LicenseFragment>()
     object Preferences : Modal<PreferencesFragment>()
     object OpenStream : Modal<OpenStreamFragment>()
+    object Countries : Modal<CountriesSearchFragment>()
 }
 
 /**
@@ -57,9 +59,7 @@ sealed class Modal<out T : Fragment>(
  */
 internal inline fun <reified T : Fragment> Modal<T>.open() {
     // Ensure only one modal of given type is opened
-    val stage = Window.getWindows()
-        .filterIsInstance<Stage>()
-        .firstOrNull { it.userData == T::class }
+    val stage = findOpenStage<T>()
 
     if (stage == null) {
         find<T>().openModal(stageStyle = style, resizable = resizable).also {
@@ -69,6 +69,8 @@ internal inline fun <reified T : Fragment> Modal<T>.open() {
                 it?.icons?.clear()
             }
         }
+    } else {
+        stage.requestFocus()
     }
 }
 
@@ -84,3 +86,23 @@ internal inline fun <reified T : Fragment> Modal<T>.openInternalWindow() {
         )
     }
 }
+
+internal inline fun <reified T : Fragment> Modal<T>.openWindow() {
+    // Ensure only one window of given type is opened
+    val stage = findOpenStage<T>()
+    if (stage == null) {
+        find<T>().openWindow(stageStyle = style, resizable = resizable).also {
+            it?.userData = T::class
+            // We don't want stage icon in window on macOS
+            if (MacUtils.isMac) {
+                it?.icons?.clear()
+            }
+        }
+    } else {
+        stage.requestFocus()
+    }
+}
+
+private inline fun <reified T : Fragment> findOpenStage() = findStages().firstOrNull { it.userData == T::class }
+
+private fun findStages() = Window.getWindows().filterIsInstance<Stage>()

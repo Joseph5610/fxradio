@@ -15,7 +15,6 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @file:Suppress("MagicNumber")
 
 package online.hudacek.fxradio.ui.style
@@ -46,7 +45,7 @@ class StylesDark : Stylesheet() {
 
         val playerMainBox by cssclass()
         val playerStationBox by cssclass()
-        val playerControlsBorder by cssclass()
+        val playerControls by cssclass()
 
         val libraryListView by cssclass()
         val libraryListItem by cssclass()
@@ -68,7 +67,6 @@ class StylesDark : Stylesheet() {
 
         val mainMenuBox by cssclass()
 
-        //for Text()
         val primaryTextColor by cssclass()
         val defaultTextColor by cssclass()
         val noBorder by cssclass()
@@ -106,7 +104,7 @@ class StylesDark : Stylesheet() {
             backgroundRadius += box(4.px)
             borderRadius += box(4.px)
             backgroundColor += c(colors.playerBox)
-            borderColor += box(c(colors.backgroundBorder))
+            borderColor += box(c(colors.playerBox))
             maxWidth = 290.px
             prefWidth = 290.px
             alignment = Pos.CENTER
@@ -144,9 +142,20 @@ class StylesDark : Stylesheet() {
             textFill = c(colors.primary)
         }
 
-        playerControlsBorder {
+        playerControls {
+            backgroundRadius += box(6.px)
+            borderRadius += box(6.px)
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.background))
+            backgroundInsets += box(0.px)
+            borderInsets += box(0.px)
+            and(focused) {
+                borderColor += box(c(colors.grayLabel + "22"))
+            }
             and(hover) {
-                backgroundRadius += box(6.px)
+                backgroundColor += c(colors.grayLabel + "22")
+            }
+            and(selected) {
                 backgroundColor += c(colors.grayLabel + "22")
             }
         }
@@ -192,6 +201,7 @@ class StylesDark : Stylesheet() {
         }
 
         libraryListView {
+            borderRadius += box(6.px)
             backgroundColor += c(colors.background)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
@@ -236,9 +246,11 @@ class StylesDark : Stylesheet() {
             borderRadius += box(6.px)
             and(odd) {
                 backgroundColor += c(colors.transparent)
+                borderColor += box(c(colors.transparent))
             }
             and(even) {
                 backgroundColor += c(colors.background)
+                borderColor += box(c(colors.background))
             }
             and(selected) {
                 borderColor += box(c(colors.primary))
@@ -287,10 +299,6 @@ class StylesDark : Stylesheet() {
                 accentColor = c(colors.primary, 0.2)
                 backgroundInsets += box(0.px)
                 borderInsets += box(0.px)
-                and(focused) {
-                    borderColor += box(c(colors.primary, 0.6))
-                    faintFocusColor = c("${colors.primary}22")
-                }
             }
 
             and(selected) {
@@ -518,6 +526,7 @@ class StylesDark : Stylesheet() {
 
         comboBox {
             backgroundColor += c(colors.backgroundBorder)
+            borderColor += box(c(colors.backgroundBorder))
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             backgroundInsets += box(0.px)
@@ -566,7 +575,7 @@ class StylesDark : Stylesheet() {
             InternalWindow.Styles.top {
                 backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
                 borderRadius += box(6.px, 6.px, 0.px, 0.px)
-                backgroundColor += c(colors.background)
+                backgroundColor += c("#262625")
             }
 
             InternalWindow.Styles.closebutton {
@@ -574,7 +583,7 @@ class StylesDark : Stylesheet() {
             }
 
             InternalWindow.Styles.floatingWindowContent {
-                backgroundColor += c(colors.background)
+                backgroundColor += c("#262625")
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }

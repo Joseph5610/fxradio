@@ -36,5 +36,5 @@ data class Country(
     override fun hashCode() = name.hashCode()
 }
 
-val Country.isRussia: Boolean
-    get() = iso3166 == "RU"
+val Country.isIgnoredCountry: Boolean
+    get() = (iso3166 == "RU" || iso3166 == "BY")

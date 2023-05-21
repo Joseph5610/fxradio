@@ -19,7 +19,7 @@
 package online.hudacek.fxradio.ui.menu
 
 import online.hudacek.fxradio.ui.util.stationView
-import online.hudacek.fxradio.util.AlertHelper.confirmAlert
+import online.hudacek.fxradio.util.RxAlert.confirm
 import online.hudacek.fxradio.util.actionEvents
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.LibraryState
@@ -53,7 +53,9 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
                     // For some reason macOS native menu does not respect
                     // width/height setting, so it is disabled for now
                     if (!appMenuViewModel.usePlatformProperty.value) {
-                        graphic = stationView(it, 15.0)
+                        graphic = stationView(it, 15.0) {
+                            subscribe()
+                        }
                     }
                     action {
                         selectedStationViewModel.item = SelectedStation(it)
@@ -68,7 +70,7 @@ class FavouritesMenu : BaseMenu("menu.favourites") {
             }
 
             actionEvents()
-                .flatMapMaybe { confirmAlert(messages["database.clear.confirm"], messages["database.clear.text"]) }
+                .flatMapMaybe { confirm(messages["database.clear.title"], messages["database.clear.description"]) }
                 .subscribe {
                     favouritesViewModel.cleanupFavourites()
                 }

@@ -20,11 +20,9 @@ package online.hudacek.fxradio.ui.fragment
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
-import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.util.Attributions
@@ -37,10 +35,10 @@ import tornadofx.addClass
 import tornadofx.bindSelected
 import tornadofx.button
 import tornadofx.get
-import tornadofx.hyperlink
 import tornadofx.label
 import tornadofx.onUserSelect
 import tornadofx.paddingAll
+import tornadofx.paddingTop
 import tornadofx.prefWidth
 import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
@@ -73,16 +71,8 @@ class AttributionsFragment : BaseFragment() {
             }
         }
 
-        vbox(alignment = Pos.CENTER) {
-            hyperlink(messages["about.datasource"]) {
-                action {
-                    app.openUrl(Config.API.radioBrowserUrl)
-                }
-                addClass(Styles.grayLabel)
-            }
-        }
-
         vbox(alignment = Pos.CENTER_RIGHT) {
+            paddingTop = 10.0
             button(messages["close"]) {
                 isCancelButton = true
                 action {

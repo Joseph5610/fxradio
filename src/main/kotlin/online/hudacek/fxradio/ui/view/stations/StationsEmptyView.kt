@@ -23,12 +23,11 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.showWhen
-import online.hudacek.fxradio.util.Modal
-import online.hudacek.fxradio.util.open
+import online.hudacek.fxradio.util.actionEvents
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
-import tornadofx.action
 import tornadofx.addClass
 import tornadofx.booleanBinding
 import tornadofx.controlsfx.glyph
@@ -49,6 +48,7 @@ private const val GLYPH_SIZE = 50.0
 class StationsEmptyView : BaseView() {
 
     private val viewModel: StationsViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
 
     private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE, isPrimary = false) }
     private val errorGlyph by lazy { FontAwesome.Glyph.WARNING.make(size = GLYPH_SIZE, isPrimary = false) }
@@ -56,8 +56,8 @@ class StationsEmptyView : BaseView() {
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
-            is StationsState.Error -> messages["connectionError"]
-            is StationsState.ShortQuery -> messages["searchingLibrary"]
+            is StationsState.Error -> messages["connectionError.title"]
+            is StationsState.ShortQuery -> messages["search.empty.title"]
             else -> messages["noResults"]
         }
     }
@@ -65,7 +65,7 @@ class StationsEmptyView : BaseView() {
     private val subHeaderProperty = viewModel.stateProperty.stringBinding {
         when (it) {
             is StationsState.Error -> it.cause
-            is StationsState.ShortQuery -> messages["searchingLibraryDesc"]
+            is StationsState.ShortQuery -> messages["search.empty.description"]
             else -> ""
         }
     }
@@ -84,19 +84,22 @@ class StationsEmptyView : BaseView() {
     // Description of a message, shown only if relevant
     private val subHeader by lazy {
         label(subHeaderProperty) {
-            paddingTop = 5.0
             id = "stationMessageSubHeader"
+            paddingTop = 5.0
             addClass(Styles.grayLabel)
         }
     }
 
     private val connectionHelpMessage by lazy {
-        hyperlink(messages["connectionErrorDesc"]) {
-            paddingTop = 10.0
+        hyperlink(messages["connectionError.description"]) {
             id = "stationMessageConnectionHelpMsg"
-
-            action { Modal.Preferences.open() }
             paddingTop = 5.0
+
+            actionEvents()
+                .withLatestFrom(libraryViewModel.stateObservable) { _, s -> s }
+                .subscribe {
+                    viewModel.handleNewLibraryState(it)
+                }
 
             showWhen {
                 viewModel.stateProperty.booleanBinding {
@@ -106,7 +109,6 @@ class StationsEmptyView : BaseView() {
                     }
                 }
             }
-
             addClass(Styles.grayLabel)
         }
     }
@@ -126,6 +128,7 @@ class StationsEmptyView : BaseView() {
     }
 
     override val root = vbox(alignment = Pos.CENTER) {
+        id = "stationsEmptyView"
         paddingTop = 120.0
 
         add(graphic)

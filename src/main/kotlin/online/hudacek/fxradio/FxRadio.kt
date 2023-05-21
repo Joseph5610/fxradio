@@ -44,6 +44,7 @@ import tornadofx.launch
 import tornadofx.setStageIcon
 import tornadofx.stylesheet
 import java.io.FileInputStream
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Year
@@ -77,7 +78,11 @@ open class FxRadio(
     /**
      * override app.config path to ${user.home}/.fxradio
      */
-    override val configBasePath: Path = Paths.get(Config.Paths.confDirPath)
+    override val configBasePath: Path = if (isAppRunningInTest) {
+        Files.createTempDirectory("fxradio_test_${System.currentTimeMillis()}")
+    } else {
+        Paths.get(Config.Paths.confDirPath)
+    }
 
     override fun start(stage: Stage) {
         Thread.setDefaultUncaughtExceptionHandler(CustomErrorHandler())
@@ -109,11 +114,21 @@ open class FxRadio(
             FX.layoutDebuggerShortcut = null
         }
 
-        trayIcon.createIcon()
+        trayIcon.subscribe()
         MacUtils.setAppearance(preferencesViewModel.darkModeProperty.value)
     }
 
     override fun stop() {
+        // Save last used window width/height on close of the app to use it on next start
+        saveProperties {
+            mapOf(
+                Properties.WindowWidth to FX.primaryStage.width,
+                Properties.WindowHeight to FX.primaryStage.height,
+                Properties.WindowX to FX.primaryStage.x,
+                Properties.WindowY to FX.primaryStage.y
+            )
+        }
+
         if (!isAppRunningInTest) {
             playerViewModel.releasePlayer()
             RadioBrowserApiProvider.close()
@@ -122,16 +137,6 @@ open class FxRadio(
             Database.close()
             LogManager.shutdown()
         }
-
-        // Save last used window width/height on close of the app to use it on next start
-        saveProperties(
-            mapOf(
-                Properties.WindowWidth to FX.primaryStage.width,
-                Properties.WindowHeight to FX.primaryStage.height,
-                Properties.WindowX to FX.primaryStage.x,
-                Properties.WindowY to FX.primaryStage.y
-            )
-        )
         super.stop()
     }
 
@@ -141,7 +146,6 @@ open class FxRadio(
     companion object {
 
         const val appName = "FXRadio"
-        const val appDesc = "Internet radio directory"
         const val appUrl = "https://hudacek.online/fxradio/"
         const val author = "hudacek.online"
         val copyright = "Copyright (c) 2020-" + Year.now().value
