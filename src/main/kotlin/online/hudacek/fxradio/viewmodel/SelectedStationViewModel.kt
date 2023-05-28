@@ -29,6 +29,7 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.search.StationSearchUUIDUseCase
 import online.hudacek.fxradio.util.toObservableChangesNonNull
+import tornadofx.booleanProperty
 import tornadofx.observableListOf
 import tornadofx.property
 
@@ -89,6 +90,8 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val clickTrendProperty = bind(SelectedStation::clickTrend) as IntegerProperty
     val clickCountProperty = bind(SelectedStation::clickCount) as IntegerProperty
     val hasExtendedInfoProperty = bind(SelectedStation::hasExtendedInfo) as BooleanProperty
+
+    val showPlaylistProperty = booleanProperty(false)
 
     val stationObservable: Observable<Station> = stationProperty
         .toObservableChangesNonNull()

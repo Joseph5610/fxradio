@@ -21,7 +21,11 @@ package online.hudacek.fxradio.ui.view.stations
 import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
+import javafx.scene.image.Image
+import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import online.hudacek.fxradio.media.StreamMetaData
+import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
@@ -29,27 +33,34 @@ import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
+import online.hudacek.fxradio.usecase.GetCoverArtUseCase
 import online.hudacek.fxradio.util.actionEvents
+import online.hudacek.fxradio.util.observeOnFx
 import online.hudacek.fxradio.util.toBinding
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
-import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
+import tornadofx.bind
 import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.button
 import tornadofx.center
+import tornadofx.controlsfx.segmentedbutton
 import tornadofx.flowpane
 import tornadofx.get
+import tornadofx.hbox
 import tornadofx.hyperlink
+import tornadofx.imageview
 import tornadofx.insets
 import tornadofx.label
+import tornadofx.listview
+import tornadofx.onUserSelect
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.putString
+import tornadofx.px
 import tornadofx.separator
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
@@ -57,17 +68,20 @@ import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
+import tornadofx.vgrow
+import java.time.format.DateTimeFormatter
 import java.util.*
+import tornadofx.controlsfx.button as toggleBtn
 
 private const val LOGO_SIZE = 60.0
 private const val ICON_SIZE = 12.0
+private const val COVER_ART_SIZE = 25.0
 
 class StationsInfoView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val favouritesViewModel: FavouritesViewModel by inject()
-    private val searchViewModel: SearchViewModel by inject()
-    private val libraryViewModel: LibraryViewModel by inject()
+    private val coverArtUseCase: GetCoverArtUseCase by inject()
 
     private val likeIcon by lazy {
         FontAwesome.Glyph.THUMBS_UP.make(ICON_SIZE) {
@@ -93,65 +107,142 @@ class StationsInfoView : BaseView() {
 
     override val root = borderpane {
         opacity = 0.985
-        prefWidth = 250.0
+        prefWidth = 290.0
         padding = insets(top = 30.0, left = 10.0, right = 10.0, bottom = 15.0)
         top {
-            vbox(alignment = Pos.CENTER) {
+            vbox {
                 paddingAll = 10.0
+                vbox(alignment = Pos.CENTER) {
+                    padding = insets(10.0, 15.0)
+                    segmentedbutton {
+                        style {
+                            fontSize = 12.px
+                        }
 
-                add(stationLogo)
+                        toggleBtn(messages["info.button.station"]) {
+                            properties["tornadofx.toggleGroupValue"] = false
+                            addClass(Styles.segmentedButton)
+                        }
 
-                hyperlink(selectedStationViewModel.nameProperty) {
-                    action {
-                        app.openUrl(selectedStationViewModel.homePageProperty.value)
+                        toggleBtn(messages["info.button.playlist"]) {
+                            properties["tornadofx.toggleGroupValue"] = true
+                            addClass(Styles.segmentedButton)
+                        }
+                        toggleGroup.bind(selectedStationViewModel.showPlaylistProperty)
                     }
-                    addClass(Styles.subheader)
-                    addClass(Styles.primaryTextColor)
-                    tooltip(messages["info.visitWebsite"])
                 }
 
-                smallLabel(messages["verified"]) {
-                    graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = ICON_SIZE)
-                    addClass(Styles.tag)
-                    showWhen { selectedStationViewModel.hasExtendedInfoProperty }
-                }
+                vbox(alignment = Pos.CENTER) {
+                    add(stationLogo)
 
-                label(stationNameBinding) {
-                    paddingTop = 5.0
-                    addClass(Styles.grayLabel)
+                    hyperlink(selectedStationViewModel.nameProperty) {
+                        action {
+                            app.openUrl(selectedStationViewModel.homePageProperty.value)
+                        }
+                        addClass(Styles.subheader)
+                        addClass(Styles.primaryTextColor)
+                        tooltip(messages["info.visitWebsite"])
+                    }
+
+                    smallLabel(messages["verified"]) {
+                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = ICON_SIZE)
+                        addClass(Styles.tag)
+                        showWhen { selectedStationViewModel.hasExtendedInfoProperty }
+                    }
+
+                    label(stationNameBinding) {
+                        paddingTop = 5.0
+                        addClass(Styles.grayLabel)
+                    }
+
+                    showWhen {
+                        selectedStationViewModel.showPlaylistProperty.not()
+                    }
                 }
             }
         }
 
         center {
             vbox {
-                maxWidth = 220.0
-                flowpane {
-                    hgap = 5.0
-                    vgap = 5.0
-                    alignment = Pos.CENTER
-                    paddingAll = 5.0
+                listview<StreamMetaData> {
+                    vgrow = Priority.ALWAYS
+                    cellFormat {
+                        addClass(Styles.decoratedListItem)
+                    }
 
-                    createInfoLabel("info.bitrate", selectedStationViewModel.bitrateProperty)?.let { add(it) }
-                    createInfoLabel("info.codec", selectedStationViewModel.codecProperty)?.let { add(it) }
-                    createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
-                    createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
-                    createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
-                    createInfoLabel("info.clickTrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
-                    createInfoLabel("info.clickCount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
+                    onUserSelect {
+                        clipboard.putString(it.nowPlaying)
+                    }
+
+                    cellCache {
+                        hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
+                            imageview(StationImageCache.defaultStationLogo) {
+                                isPreserveRatio = true
+                                fitWidth = COVER_ART_SIZE
+                                fitHeight = COVER_ART_SIZE
+
+                                coverArtUseCase.execute(it.nowPlaying)
+                                    .subscribe {
+                                        if (it.isSuccessful) {
+                                            it.body?.byteStream().use { i ->
+                                                image = Image(i)
+                                            }
+                                        }
+                                    }
+                            }
+                            vbox {
+                                label(it.nowPlaying)
+                                smallLabel(it.timestamp.format(formatter) + " | " + it.stationName)
+                            }
+                        }
+                    }
+
+                    appEvent.streamMetaDataUpdates
+                        .observeOnFx()
+                        .subscribe {
+                            items.add(0, it)
+                        }
+
+                    showWhen {
+                        selectedStationViewModel.showPlaylistProperty
+                    }
+
+                    addClass(Styles.decoratedListView)
                 }
 
                 vbox {
-                    smallLabel(messages["info.tags"])
-                    add(
-                        find<TagsFragment>(
-                            params = mapOf(
-                                "tagsProperty" to selectedStationViewModel.tagsProperty
+                    maxWidth = 250.0
+                    flowpane {
+                        hgap = 5.0
+                        vgap = 5.0
+                        alignment = Pos.CENTER
+                        paddingAll = 5.0
+
+                        createInfoLabel("info.bitrate", selectedStationViewModel.bitrateProperty)?.let { add(it) }
+                        createInfoLabel("info.codec", selectedStationViewModel.codecProperty)?.let { add(it) }
+                        createInfoLabel("info.votes", selectedStationViewModel.votesProperty)?.let { add(it) }
+                        createInfoLabel("info.language", selectedStationViewModel.languageProperty)?.let { add(it) }
+                        createInfoLabel("info.state", selectedStationViewModel.countryStateProperty)?.let { add(it) }
+                        createInfoLabel("info.clickTrend", selectedStationViewModel.clickTrendProperty)?.let { add(it) }
+                        createInfoLabel("info.clickCount", selectedStationViewModel.clickCountProperty)?.let { add(it) }
+                    }
+
+                    vbox {
+                        smallLabel(messages["info.tags"])
+                        add(
+                            find<TagsFragment>(
+                                params = mapOf(
+                                    "tagsProperty" to selectedStationViewModel.tagsProperty
+                                )
                             )
                         )
-                    )
+                        showWhen {
+                            selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
+                        }
+                    }
+
                     showWhen {
-                        selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
+                        selectedStationViewModel.showPlaylistProperty.not()
                     }
                 }
             }
@@ -217,6 +308,10 @@ class StationsInfoView : BaseView() {
 
                     addClass(Styles.primaryButton)
                 }
+
+                showWhen {
+                    selectedStationViewModel.showPlaylistProperty.not()
+                }
             }
         }
         addClass(Styles.backgroundWhiteSmoke)
@@ -240,5 +335,9 @@ class StationsInfoView : BaseView() {
             addClass(Styles.grayLabel)
             addClass(Styles.tag)
         }
+    }
+
+    companion object {
+        private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     }
 }
