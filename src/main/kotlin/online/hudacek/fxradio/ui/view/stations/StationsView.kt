@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.view.stations
 
-import javafx.geometry.Pos
 import javafx.geometry.Side
 import javafx.scene.layout.Priority
 import javafx.util.Duration.millis
@@ -26,23 +25,20 @@ import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.InfoPanelState
-import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
-import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
-import tornadofx.action
 import tornadofx.addClass
-import tornadofx.bindChildren
+import tornadofx.bind
 import tornadofx.booleanBinding
 import tornadofx.controlsfx.hiddensidepane
 import tornadofx.controlsfx.right
 import tornadofx.fitToParentHeight
-import tornadofx.flowpane
 import tornadofx.hgrow
-import tornadofx.hyperlink
+import tornadofx.listProperty
 import tornadofx.objectBinding
+import tornadofx.observableListOf
 import tornadofx.paddingAll
 import tornadofx.vbox
 import tornadofx.vgrow
@@ -59,8 +55,11 @@ class StationsView : BaseView() {
 
     private val stationsViewModel: StationsViewModel by inject()
     private val libraryViewModel: LibraryViewModel by inject()
-    private val searchViewModel: SearchViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
+
+    private val tagsProperty = listProperty<String>(observableListOf()).apply {
+        bind(libraryViewModel.tagsProperty) { c -> c.name }
+    }
 
     override fun onDock() {
         libraryViewModel.getTags()
@@ -81,24 +80,13 @@ class StationsView : BaseView() {
                 add(messageView)
                 vbox {
                     paddingAll = 15
-                    flowpane {
-                        hgap = 5.0
-                        vgap = 5.0
-                        paddingAll = 5
-                        alignment = Pos.CENTER
-                        bindChildren(libraryViewModel.tagsProperty) {
-                            hyperlink(it.name) {
-                                addClass(Styles.tag)
-                                addClass(Styles.grayLabel)
-
-                                action {
-                                    libraryViewModel.stateProperty.value = LibraryState.Search
-                                    searchViewModel.bindQueryProperty.value = it.name
-                                    searchViewModel.searchByTagProperty.value = true
-                                }
-                            }
-                        }
-                    }
+                    add(
+                        find<TagsFragment>(
+                            params = mapOf(
+                                "tagsProperty" to tagsProperty
+                            )
+                        )
+                    )
                     showWhen {
                         stationsViewModel.stateProperty.booleanBinding {
                             when (it) {

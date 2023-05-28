@@ -18,16 +18,17 @@
 
 package online.hudacek.fxradio.usecase
 
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.core.Observable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Tag
 import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
  * Gets most popular tags
  */
-class GetTagsUseCase : BaseUseCase<Unit, Single<List<Tag>>>() {
+class GetTagsUseCase : BaseUseCase<Unit, Observable<Tag>>() {
 
-    override fun execute(input: Unit): Single<List<Tag>> = radioBrowserApi
+    override fun execute(input: Unit): Observable<Tag> = radioBrowserApi
         .getTags(limit = 15)
         .compose(applySchedulersSingle())
+        .flattenAsObservable { it }
 }

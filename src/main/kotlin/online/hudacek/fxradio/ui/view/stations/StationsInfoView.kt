@@ -32,14 +32,12 @@ import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.actionEvents
 import online.hudacek.fxradio.util.toBinding
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
-import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
-import tornadofx.bindChildren
 import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.button
@@ -145,24 +143,13 @@ class StationsInfoView : BaseView() {
 
                 vbox {
                     smallLabel(messages["info.tags"])
-                    flowpane {
-                        hgap = 5.0
-                        vgap = 5.0
-                        paddingAll = 5.0
-                        alignment = Pos.CENTER
-                        bindChildren(selectedStationViewModel.tagsProperty) {
-                            hyperlink(it) {
-                                addClass(Styles.tag)
-                                addClass(Styles.grayLabel)
-
-                                action {
-                                    libraryViewModel.stateProperty.value = LibraryState.Search
-                                    searchViewModel.bindQueryProperty.value = it
-                                    searchViewModel.searchByTagProperty.value = true
-                                }
-                            }
-                        }
-                    }
+                    add(
+                        find<TagsFragment>(
+                            params = mapOf(
+                                "tagsProperty" to selectedStationViewModel.tagsProperty
+                            )
+                        )
+                    )
                     showWhen {
                         selectedStationViewModel.tagsProperty.sizeProperty.isNotEqualTo(0)
                     }
