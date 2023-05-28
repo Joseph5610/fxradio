@@ -12,7 +12,7 @@ object MusicBrainzApiProvider : Component() {
 
     private val serviceProvider: ServiceProvider by lazy {
         ServiceProvider(Config.API.musicBrainzApi).also {
-            logger.info { "Initialized MusicBrainz Art API provider" }
+            logger.info { "Initialized MusicBrainz API provider" }
         }
     }
 

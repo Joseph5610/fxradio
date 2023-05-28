@@ -53,11 +53,13 @@ class StationsEmptyView : BaseView() {
     private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE, isPrimary = false) }
     private val errorGlyph by lazy { FontAwesome.Glyph.WARNING.make(size = GLYPH_SIZE, isPrimary = false) }
     private val noResultsGlyph by lazy { FontAwesome.Glyph.TIMES.make(size = GLYPH_SIZE, isPrimary = false) }
+    private val loadingGlyph by lazy { FontAwesome.Glyph.CLOUD_DOWNLOAD.make(size = GLYPH_SIZE, isPrimary = false) }
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
             is StationsState.Error -> messages["connectionError.title"]
             is StationsState.ShortQuery -> messages["search.empty.title"]
+            is StationsState.Loading -> messages["loading"]
             else -> messages["noResults"]
         }
     }
@@ -121,6 +123,7 @@ class StationsEmptyView : BaseView() {
                     graphicProperty().value = when (it) {
                         is StationsState.Error -> errorGlyph
                         is StationsState.ShortQuery -> searchGlyph
+                        is StationsState.Loading -> loadingGlyph
                         else -> noResultsGlyph
                     }
                 }

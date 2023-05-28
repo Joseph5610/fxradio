@@ -39,6 +39,7 @@ sealed class StationsState {
     data class Error(val cause: String) : StationsState()
     object NoStations : StationsState()
     object ShortQuery : StationsState()
+    object Loading: StationsState()
 }
 
 class Stations(stations: ObservableList<Station> = observableListOf()) {
@@ -115,6 +116,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     }
 
     fun handleNewLibraryState(newState: LibraryState) {
+        stateProperty.value = StationsState.Loading
         when (newState) {
             is LibraryState.SelectedCountry -> getStationsByCountryUseCase
                 .execute(newState.country)

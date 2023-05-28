@@ -127,6 +127,7 @@ class StationsInfoView : BaseView() {
 
         center {
             vbox {
+                maxWidth = 220.0
                 flowpane {
                     hgap = 5.0
                     vgap = 5.0
@@ -244,8 +245,11 @@ class StationsInfoView : BaseView() {
                 it.ifEmpty { messages["unknown"] }
             } else it
             messages[key] + ": " + value.toString()
-                .replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase() else c.toString() }
+                .split(",")
+                .take(2)
+                .joinToString()
         }) {
+            maxWidth = 190.0
             addClass(Styles.grayLabel)
             addClass(Styles.tag)
         }

@@ -32,7 +32,7 @@ object RadioBrowserApiProvider : Component() {
 
     private val serviceProvider: ServiceProvider by lazy {
         ServiceProvider("https://${viewModel.selectedProperty.value}").also {
-            logger.info { "Initialized Stations API provider for ${it.retrofit.baseUrl()}" }
+            logger.info { "Initialized RadioBrowser API provider for ${it.retrofit.baseUrl()}" }
         }
     }
 

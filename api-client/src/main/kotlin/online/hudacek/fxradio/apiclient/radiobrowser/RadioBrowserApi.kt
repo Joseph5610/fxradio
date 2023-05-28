@@ -30,6 +30,7 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Tag
 import online.hudacek.fxradio.apiclient.radiobrowser.model.VoteResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -77,4 +78,11 @@ interface RadioBrowserApi : ApiDefinition {
 
     @GET("json/url/{uuid}")
     fun click(@Path("uuid") uuid: String): Single<ClickResponse>
+
+    @GET("json/tags")
+    fun getTags(
+        @Query("order") order: String = "stationcount",
+        @Query("reverse") reverse: Boolean = true,
+        @Query("limit") limit: Int = 100
+    ): Single<List<Tag>>
 }

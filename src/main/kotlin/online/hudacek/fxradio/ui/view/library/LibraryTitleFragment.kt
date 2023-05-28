@@ -56,10 +56,6 @@ class LibraryTitleFragment : BaseFragment() {
             paddingLeft = 10.0
             paddingRight = 10.0
 
-            onLeftClick {
-                showProperty!!.value = !showProperty!!.value
-            }
-
             showProperty
                 ?.toObservable()
                 ?.subscribe {
@@ -86,11 +82,15 @@ class LibraryTitleFragment : BaseFragment() {
 
     override val root = hbox {
         paddingTop = 10.0
+
         smallLabel(libraryTitle) {
             paddingLeft = 10.0
             addClass(Styles.boldText)
         }
         if (showProperty != null) {
+            onLeftClick {
+                showProperty!!.value = !showProperty!!.value
+            }
             region { hgrow = Priority.ALWAYS }
             vbox {
                 add(showIcon)
