@@ -24,7 +24,7 @@ plugins {
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
-val kotlinCoroutinesVersion = "1.6.4"
+val kotlinCoroutinesVersion = "1.7.1"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.20.0"
 val slf4jVersion = "2.0.7"
@@ -33,10 +33,10 @@ val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.3"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.16.3"
+val flywayVersion = "9.19.0"
 val controlsFxVersion = "11.1.2"
 
-version = "0.16.0"
+version = "0.17.0"
 
 val appVersion: String = version as String
 
@@ -56,14 +56,11 @@ allprojects {
         // Use the Kotlin JDK 8 standard library.
         implementation(kotlin("stdlib"))
 
-        implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
+        implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
         implementation("org.slf4j:slf4j-api:$slf4jVersion")
         implementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion")
         implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
         implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
-
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
     }
 
     kotlin {
@@ -86,7 +83,7 @@ dependencies {
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
-    implementation("org.xerial:sqlite-jdbc:3.41.2.1")
+    implementation("org.xerial:sqlite-jdbc:3.42.0.0")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
@@ -94,6 +91,9 @@ dependencies {
         exclude("com.google.code.findbugs", "annotations")
         exclude("net.jcip", "jcip-annotations")
     }
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$kotlinCoroutinesVersion")
 
     // Players
     val os = OperatingSystem.current()

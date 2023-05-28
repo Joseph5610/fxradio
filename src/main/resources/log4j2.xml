@@ -14,7 +14,7 @@
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
             <Policies>
-                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <SizeBasedTriggeringPolicy size="50 MB"/>
             </Policies>
         </RollingFile>
         <Async name="Async">
