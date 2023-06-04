@@ -27,6 +27,7 @@ import javafx.scene.paint.Color
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.ui.BaseView
+import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.openUrl
@@ -54,6 +55,7 @@ import tornadofx.hbox
 import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.insets
+import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.onUserSelect
@@ -110,10 +112,10 @@ class StationsInfoView : BaseView() {
         prefWidth = 290.0
         padding = insets(top = 30.0, left = 10.0, right = 10.0, bottom = 15.0)
         top {
-            vbox {
-                paddingAll = 10.0
+            vbox(spacing = 5) {
+                paddingAll = 5.0
                 vbox(alignment = Pos.CENTER) {
-                    padding = insets(10.0, 15.0)
+                    paddingAll = 10.0
                     segmentedbutton {
                         style {
                             fontSize = 12.px
@@ -170,12 +172,16 @@ class StationsInfoView : BaseView() {
                         addClass(Styles.decoratedListItem)
                     }
 
-                    onUserSelect {
-                        clipboard.putString(it.nowPlaying)
-                    }
-
                     cellCache {
                         hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
+                            tooltip(it.nowPlaying)
+                            platformContextMenu {
+                                item(messages["copy"]) {
+                                    action {
+                                        clipboard.putString(it.nowPlaying)
+                                    }
+                                }
+                            }
                             imageview(StationImageCache.defaultStationLogo) {
                                 isPreserveRatio = true
                                 fitWidth = COVER_ART_SIZE
@@ -191,8 +197,12 @@ class StationsInfoView : BaseView() {
                                     }
                             }
                             vbox {
-                                label(it.nowPlaying)
-                                smallLabel(it.timestamp.format(formatter) + " | " + it.stationName)
+                                label(it.nowPlaying) {
+                                    maxWidth = 200.0
+                                }
+                                smallLabel(it.timestamp.format(formatter) + " | " + it.stationName) {
+                                    maxWidth = 200.0
+                                }
                             }
                         }
                     }
