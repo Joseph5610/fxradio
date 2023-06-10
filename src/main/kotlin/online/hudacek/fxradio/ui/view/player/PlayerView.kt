@@ -42,6 +42,7 @@ import tornadofx.bind
 import tornadofx.booleanBinding
 import tornadofx.controlsfx.glyph
 import tornadofx.disableWhen
+import tornadofx.get
 import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.insets
@@ -52,7 +53,9 @@ import tornadofx.paddingTop
 import tornadofx.region
 import tornadofx.slider
 import tornadofx.togglebutton
+import tornadofx.tooltip
 import tornadofx.vgrow
+import tornadofx.whenSelected
 
 private const val CONTROLS_GLYPH_SIZE = 22.0
 private const val VOLUME_GLYPH_SIZE = 14.0
@@ -69,6 +72,8 @@ class PlayerView : BaseView() {
 
     private val playerStationView: PlayerStationView by inject()
 
+    private val tg = ToggleGroup()
+
     private val playGlyph by lazy {
         FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, isPrimary = false) {
             padding = insets(5, 7, 5, 7)
@@ -82,8 +87,9 @@ class PlayerView : BaseView() {
     }
 
     private val infoToggleButton by lazy {
-        togglebutton(group = ToggleGroup(), selectFirst = false) {
+        togglebutton(group = tg, selectFirst = false, value = false) {
             id = "stationInfo"
+            tooltip(messages["info.button.station"])
             graphic = FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE)
             padding = insets(5, 7, 5, 7)
 
@@ -93,16 +99,27 @@ class PlayerView : BaseView() {
                 }
             }
 
-            selectedStationViewModel.stateProperty.bind(selectedProperty().objectBinding {
-                if (it == true) {
-                    InfoPanelState.Shown
-                } else {
-                    InfoPanelState.Hidden
-                }
-            })
+            whenSelected {
+                selectedStationViewModel.showPlaylistProperty.value = false
+            }
 
             shortcut(keyCombination(KeyCode.I)) {
                 isSelected = !isSelected
+            }
+
+            addClass(Styles.playerControls)
+        }
+    }
+
+    private val playlistToggleButton by lazy {
+        togglebutton(group = tg, selectFirst = false, value = true) {
+            id = "playlistHistory"
+            tooltip(messages["info.button.playlist"])
+            graphic = FontAwesome.Glyph.MUSIC.make(INFO_GLYPH_SIZE)
+            padding = insets(5, 7, 5, 7)
+
+            whenSelected {
+                selectedStationViewModel.showPlaylistProperty.value = true
             }
 
             addClass(Styles.playerControls)
@@ -133,6 +150,14 @@ class PlayerView : BaseView() {
             pauseGlyph
         } else {
             playGlyph
+        }
+    }
+
+    private val selectedToggleBinding = tg.selectedToggleProperty().objectBinding {
+        if (it != null) {
+            InfoPanelState.Shown
+        } else {
+            InfoPanelState.Hidden
         }
     }
 
@@ -185,6 +210,10 @@ class PlayerView : BaseView() {
 
         // Show station details
         add(infoToggleButton)
+
+        // Show playlist history
+        add(playlistToggleButton)
+        selectedStationViewModel.stateProperty.bind(selectedToggleBinding)
 
         region {
             hgrow = Priority.ALWAYS

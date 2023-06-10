@@ -27,15 +27,12 @@ import javafx.scene.control.MenuItem
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.MouseButton
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.value
 import tornadofx.bind
-import tornadofx.booleanBinding
 import tornadofx.contextmenu
-import tornadofx.disableWhen
 
 /**
  * Menu helpers
@@ -69,12 +66,6 @@ internal fun checkMenuItem(
 }
 
 internal fun separator() = SeparatorMenuItem()
-
-internal fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
-    disableWhen(station.booleanBinding {
-        it == null || !it.isValid()
-    })
-}
 
 /***
  * Create macOS native Context Menu or JavaFX standard [javafx.scene.control.ContextMenu]

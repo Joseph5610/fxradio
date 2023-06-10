@@ -18,7 +18,10 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import javafx.beans.property.Property
 import javafx.scene.control.CheckMenuItem
+import javafx.scene.control.MenuItem
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.util.toObservable
@@ -26,6 +29,8 @@ import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
+import tornadofx.booleanBinding
+import tornadofx.disableWhen
 import tornadofx.get
 
 class PlayerMenu : BaseMenu("menu.player.controls") {
@@ -80,4 +85,10 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
     }
 
     override val menuItems = listOf(startItem, stopItem, separator(), playerTypeItem, animateItem)
+
+    private fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
+        disableWhen(station.booleanBinding {
+            it == null || !it.isValid()
+        })
+    }
 }

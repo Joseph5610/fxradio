@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.21"
+    kotlin("jvm") version "1.8.22"
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("application")
 }

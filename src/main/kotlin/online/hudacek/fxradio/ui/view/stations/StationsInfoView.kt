@@ -43,12 +43,10 @@ import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
 import tornadofx.addClass
-import tornadofx.bind
 import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.button
 import tornadofx.center
-import tornadofx.controlsfx.segmentedbutton
 import tornadofx.flowpane
 import tornadofx.get
 import tornadofx.hbox
@@ -58,11 +56,9 @@ import tornadofx.insets
 import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
-import tornadofx.onUserSelect
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.putString
-import tornadofx.px
 import tornadofx.separator
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
@@ -73,9 +69,9 @@ import tornadofx.vbox
 import tornadofx.vgrow
 import java.time.format.DateTimeFormatter
 import java.util.*
-import tornadofx.controlsfx.button as toggleBtn
 
 private const val LOGO_SIZE = 60.0
+private const val EMPTY_LIST_ICON_SIZE = 45.0
 private const val ICON_SIZE = 12.0
 private const val COVER_ART_SIZE = 25.0
 
@@ -96,6 +92,7 @@ class StationsInfoView : BaseView() {
     private val copyIcon by lazy { FontAwesome.Glyph.COPY.make(ICON_SIZE, isPrimary = false) }
     private val favouriteAddIcon by lazy { FontAwesome.Glyph.HEART.make(ICON_SIZE, isPrimary = false) }
     private val favouriteRemoveIcon by lazy { FontAwesome.Glyph.HEART_ALT.make(ICON_SIZE, isPrimary = false) }
+    private val playlistLargeIcon by lazy { FontAwesome.Glyph.TH_LIST.make(EMPTY_LIST_ICON_SIZE, isPrimary = false) }
 
     private val stationLogo by lazy {
         stationView(selectedStationViewModel.stationObservable, LOGO_SIZE) {
@@ -107,33 +104,68 @@ class StationsInfoView : BaseView() {
         Locale.of("", it).displayName
     }
 
+    private val historyListView = listview<StreamMetaData> {
+        vgrow = Priority.ALWAYS
+
+        cellFormat {
+            addClass(Styles.decoratedListItem)
+        }
+
+        cellCache {
+            hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
+                tooltip(it.nowPlaying)
+                platformContextMenu {
+                    item(messages["copy"]) {
+                        action {
+                            clipboard.putString(it.nowPlaying)
+                        }
+                    }
+                }
+                imageview(StationImageCache.defaultStationLogo) {
+                    isPreserveRatio = true
+                    fitWidth = COVER_ART_SIZE
+                    fitHeight = COVER_ART_SIZE
+
+                    coverArtUseCase.execute(it.nowPlaying)
+                        .subscribe {
+                            if (it.isSuccessful) {
+                                it.body?.byteStream().use { i ->
+                                    image = Image(i)
+                                }
+                            }
+                        }
+                }
+                vbox {
+                    label(it.nowPlaying) {
+                        maxWidth = 200.0
+                    }
+                    smallLabel(it.timestamp.format(formatter) + " | " + it.stationName) {
+                        maxWidth = 200.0
+                    }
+                }
+            }
+        }
+
+        appEvent.streamMetaDataUpdates
+            .observeOnFx()
+            .subscribe {
+                items.add(0, it)
+            }
+
+        showWhen {
+            selectedStationViewModel.showPlaylistProperty.and(items.sizeProperty.greaterThan(0))
+        }
+
+        addClass(Styles.decoratedListView)
+    }
+
     override val root = borderpane {
         opacity = 0.985
         prefWidth = 290.0
         padding = insets(top = 30.0, left = 10.0, right = 10.0, bottom = 15.0)
         top {
             vbox(spacing = 5) {
-                paddingAll = 5.0
-                vbox(alignment = Pos.CENTER) {
-                    paddingAll = 10.0
-                    segmentedbutton {
-                        style {
-                            fontSize = 12.px
-                        }
-
-                        toggleBtn(messages["info.button.station"]) {
-                            properties["tornadofx.toggleGroupValue"] = false
-                            addClass(Styles.segmentedButton)
-                        }
-
-                        toggleBtn(messages["info.button.playlist"]) {
-                            properties["tornadofx.toggleGroupValue"] = true
-                            addClass(Styles.segmentedButton)
-                        }
-                        toggleGroup.bind(selectedStationViewModel.showPlaylistProperty)
-                    }
-                }
-
+                paddingAll = 10.0
                 vbox(alignment = Pos.CENTER) {
                     add(stationLogo)
 
@@ -166,58 +198,19 @@ class StationsInfoView : BaseView() {
 
         center {
             vbox {
-                listview<StreamMetaData> {
+                add(historyListView)
+
+                vbox(alignment = Pos.CENTER) {
                     vgrow = Priority.ALWAYS
-                    cellFormat {
-                        addClass(Styles.decoratedListItem)
+                    add(playlistLargeIcon)
+                    label(messages["playlistHistory.empty"]) {
+                        addClass(Styles.subheader)
                     }
-
-                    cellCache {
-                        hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
-                            tooltip(it.nowPlaying)
-                            platformContextMenu {
-                                item(messages["copy"]) {
-                                    action {
-                                        clipboard.putString(it.nowPlaying)
-                                    }
-                                }
-                            }
-                            imageview(StationImageCache.defaultStationLogo) {
-                                isPreserveRatio = true
-                                fitWidth = COVER_ART_SIZE
-                                fitHeight = COVER_ART_SIZE
-
-                                coverArtUseCase.execute(it.nowPlaying)
-                                    .subscribe {
-                                        if (it.isSuccessful) {
-                                            it.body?.byteStream().use { i ->
-                                                image = Image(i)
-                                            }
-                                        }
-                                    }
-                            }
-                            vbox {
-                                label(it.nowPlaying) {
-                                    maxWidth = 200.0
-                                }
-                                smallLabel(it.timestamp.format(formatter) + " | " + it.stationName) {
-                                    maxWidth = 200.0
-                                }
-                            }
-                        }
-                    }
-
-                    appEvent.streamMetaDataUpdates
-                        .observeOnFx()
-                        .subscribe {
-                            items.add(0, it)
-                        }
-
                     showWhen {
-                        selectedStationViewModel.showPlaylistProperty
+                        selectedStationViewModel.showPlaylistProperty.and(
+                            historyListView.items.sizeProperty.isEqualTo(0)
+                        )
                     }
-
-                    addClass(Styles.decoratedListView)
                 }
 
                 vbox {
