@@ -107,10 +107,6 @@ class StationsInfoView : BaseView() {
     private val historyListView = listview<StreamMetaData> {
         vgrow = Priority.ALWAYS
 
-        cellFormat {
-            addClass(Styles.decoratedListItem)
-        }
-
         cellCache {
             hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
                 tooltip(it.nowPlaying)
@@ -146,6 +142,10 @@ class StationsInfoView : BaseView() {
             }
         }
 
+        cellFormat {
+            addClass(Styles.decoratedListItem)
+        }
+
         appEvent.streamMetaDataUpdates
             .observeOnFx()
             .subscribe {
@@ -160,38 +160,36 @@ class StationsInfoView : BaseView() {
     }
 
     override val root = borderpane {
-        opacity = 0.985
+        opacity = 0.98
         prefWidth = 290.0
         padding = insets(top = 30.0, left = 10.0, right = 10.0, bottom = 15.0)
         top {
-            vbox(spacing = 5) {
+            vbox(alignment = Pos.CENTER) {
                 paddingAll = 10.0
-                vbox(alignment = Pos.CENTER) {
-                    add(stationLogo)
+                add(stationLogo)
 
-                    hyperlink(selectedStationViewModel.nameProperty) {
-                        action {
-                            app.openUrl(selectedStationViewModel.homePageProperty.value)
-                        }
-                        addClass(Styles.subheader)
-                        addClass(Styles.primaryTextColor)
-                        tooltip(messages["info.visitWebsite"])
+                hyperlink(selectedStationViewModel.nameProperty) {
+                    action {
+                        app.openUrl(selectedStationViewModel.homePageProperty.value)
                     }
+                    addClass(Styles.subheader)
+                    addClass(Styles.primaryTextColor)
+                    tooltip(messages["info.visitWebsite"])
+                }
 
-                    smallLabel(messages["verified"]) {
-                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = ICON_SIZE)
-                        addClass(Styles.tag)
-                        showWhen { selectedStationViewModel.hasExtendedInfoProperty }
-                    }
+                smallLabel(messages["verified"]) {
+                    graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = ICON_SIZE)
+                    addClass(Styles.tag)
+                    showWhen { selectedStationViewModel.hasExtendedInfoProperty }
+                }
 
-                    label(stationNameBinding) {
-                        paddingTop = 5.0
-                        addClass(Styles.grayLabel)
-                    }
+                label(stationNameBinding) {
+                    paddingTop = 5.0
+                    addClass(Styles.grayLabel)
+                }
 
-                    showWhen {
-                        selectedStationViewModel.showPlaylistProperty.not()
-                    }
+                showWhen {
+                    selectedStationViewModel.showPlaylistProperty.not()
                 }
             }
         }
@@ -317,7 +315,7 @@ class StationsInfoView : BaseView() {
                 }
             }
         }
-        addClass(Styles.backgroundWhiteSmoke)
+        addClass(Styles.backgroundWhite)
     }
 
     override fun onDock() {

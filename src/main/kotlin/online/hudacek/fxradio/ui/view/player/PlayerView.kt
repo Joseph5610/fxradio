@@ -115,7 +115,7 @@ class PlayerView : BaseView() {
         togglebutton(group = tg, selectFirst = false, value = true) {
             id = "playlistHistory"
             tooltip(messages["info.button.playlist"])
-            graphic = FontAwesome.Glyph.MUSIC.make(INFO_GLYPH_SIZE)
+            graphic = FontAwesome.Glyph.LIST_UL.make(INFO_GLYPH_SIZE)
             padding = insets(5, 7, 5, 7)
 
             whenSelected {
