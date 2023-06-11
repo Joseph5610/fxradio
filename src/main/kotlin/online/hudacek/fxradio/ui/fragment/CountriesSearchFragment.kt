@@ -155,7 +155,7 @@ class CountriesSearchFragment : BaseFragment() {
                 }
             }
         }
-        addClass(Styles.backgroundWhite)
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     private fun togglePin(country: Country) {

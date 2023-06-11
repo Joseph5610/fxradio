@@ -315,7 +315,7 @@ class StationsInfoView : BaseView() {
                 }
             }
         }
-        addClass(Styles.backgroundWhite)
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     override fun onDock() {

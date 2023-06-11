@@ -234,8 +234,8 @@ class StylesDark : Stylesheet() {
         }
 
         decoratedListView {
-            backgroundColor += c(colors.transparent)
-            borderColor += box(c(colors.transparent))
+            backgroundColor += c(colors.background)
+            borderColor += box(c(colors.background))
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
@@ -245,12 +245,12 @@ class StylesDark : Stylesheet() {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(odd) {
-                backgroundColor += c(colors.transparent)
-                borderColor += box(c(colors.transparent))
-            }
-            and(even) {
                 backgroundColor += c(colors.background)
                 borderColor += box(c(colors.background))
+            }
+            and(even) {
+                backgroundColor += c("#262626")
+                borderColor += box(c("#262626"))
             }
             and(selected) {
                 borderColor += box(c(colors.primary))
@@ -583,7 +583,7 @@ class StylesDark : Stylesheet() {
             }
 
             InternalWindow.Styles.floatingWindowContent {
-                backgroundColor += c("#262625")
+                backgroundColor += c(colors.background)
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }

@@ -235,8 +235,8 @@ class Styles : Stylesheet() {
         }
 
         decoratedListView {
-            backgroundColor += Color.WHITE
-            borderColor += box(Color.WHITE)
+            backgroundColor += Color.WHITESMOKE
+            borderColor += box(Color.WHITESMOKE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
@@ -246,13 +246,12 @@ class Styles : Stylesheet() {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(odd) {
-                backgroundColor += Color.WHITE
-                borderColor += box(Color.WHITE)
-
-            }
-            and(even) {
                 backgroundColor += Color.WHITESMOKE
                 borderColor += box(Color.WHITESMOKE)
+            }
+            and(even) {
+                backgroundColor += Color.WHITE
+                borderColor += box(Color.WHITE)
             }
             and(selected) {
                 borderColor += box(c(colors.primary))
@@ -514,7 +513,7 @@ class Styles : Stylesheet() {
             }
 
             InternalWindow.Styles.floatingWindowContent {
-                backgroundColor += Color.WHITE
+                backgroundColor += Color.WHITESMOKE
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }
