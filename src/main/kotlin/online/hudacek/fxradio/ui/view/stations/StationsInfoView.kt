@@ -21,6 +21,9 @@ package online.hudacek.fxradio.ui.view.stations
 import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.Property
 import javafx.geometry.Pos
+import javafx.geometry.Side
+import javafx.scene.control.ContextMenu
+import javafx.scene.control.Menu
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
@@ -36,6 +39,8 @@ import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.usecase.GetCoverArtUseCase
 import online.hudacek.fxradio.util.actionEvents
+import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.observeOnFx
 import online.hudacek.fxradio.util.toBinding
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
@@ -47,9 +52,11 @@ import tornadofx.borderpane
 import tornadofx.bottom
 import tornadofx.button
 import tornadofx.center
+import tornadofx.controlsfx.glyph
 import tornadofx.flowpane
 import tornadofx.get
 import tornadofx.hbox
+import tornadofx.hgrow
 import tornadofx.hyperlink
 import tornadofx.imageview
 import tornadofx.insets
@@ -59,6 +66,7 @@ import tornadofx.listview
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.putString
+import tornadofx.region
 import tornadofx.separator
 import tornadofx.sizeProperty
 import tornadofx.stringBinding
@@ -74,6 +82,8 @@ private const val LOGO_SIZE = 60.0
 private const val EMPTY_LIST_ICON_SIZE = 45.0
 private const val ICON_SIZE = 12.0
 private const val COVER_ART_SIZE = 25.0
+private const val GLYPH_SIZE = 14.0
+private const val YT_URL = "https://www.youtube.com/results?search_query="
 
 class StationsInfoView : BaseView() {
 
@@ -110,7 +120,13 @@ class StationsInfoView : BaseView() {
         cellCache {
             hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
                 tooltip(it.nowPlaying)
-                platformContextMenu {
+                val menu: Menu = platformContextMenu {
+                    item(messages["playlistHistory.searchOnYouTube"]) {
+                        action {
+                            app.openUrl(YT_URL, it.nowPlaying)
+                        }
+                    }
+                    separator()
                     item(messages["copy"]) {
                         action {
                             clipboard.putString(it.nowPlaying)
@@ -133,10 +149,26 @@ class StationsInfoView : BaseView() {
                 }
                 vbox {
                     label(it.nowPlaying) {
-                        maxWidth = 200.0
+                        maxWidth = 180.0
                     }
                     smallLabel(it.timestamp.format(formatter) + " | " + it.stationName) {
-                        maxWidth = 200.0
+                        maxWidth = 180.0
+                    }
+                }
+                region {
+                    hgrow = Priority.ALWAYS
+                }
+
+                glyph {
+                    graphic = FontAwesome.Glyph.ELLIPSIS_H.make(GLYPH_SIZE)
+                    // Show standard javafx context menu on non-macos OS
+                    val cMenu by lazy { ContextMenu().apply { items.addAll(menu.items) } }
+                    setOnMouseClicked {
+                        if(!MacUtils.isMac) {
+                            cMenu.show(this, Side.BOTTOM, layoutX, layoutY)
+                        } else {
+                            NsMenu.showContextMenu(menu, it)
+                        }
                     }
                 }
             }

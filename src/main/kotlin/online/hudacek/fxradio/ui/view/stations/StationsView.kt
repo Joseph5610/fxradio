@@ -48,7 +48,7 @@ import tornadofx.vgrow
  */
 class StationsView : BaseView() {
 
-    private val messageView: StationsEmptyView by inject()
+    private val stationsEmptyView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
     private val stationsInfoView: StationsInfoView by inject()
@@ -77,7 +77,7 @@ class StationsView : BaseView() {
                 paddingAll = 5.0
                 vgrow = Priority.ALWAYS
                 hgrow = Priority.ALWAYS
-                add(messageView)
+                add(stationsEmptyView)
                 vbox {
                     paddingAll = 15
                     add(

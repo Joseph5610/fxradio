@@ -35,8 +35,6 @@ import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.button
 import tornadofx.checkbox
-import tornadofx.controlsfx.content
-import tornadofx.controlsfx.notificationPane
 import tornadofx.enableWhen
 import tornadofx.field
 import tornadofx.fieldset
@@ -46,7 +44,8 @@ import tornadofx.hbox
 import tornadofx.listProperty
 import tornadofx.observableListOf
 import tornadofx.validator
-import java.util.Locale
+import tornadofx.vbox
+import java.util.*
 
 class AddStationFragment : BaseFragment() {
 
@@ -64,111 +63,108 @@ class AddStationFragment : BaseFragment() {
         bind(libraryViewModel.countriesProperty) { c -> Locale.of(c.iso3166).displayLanguage }
     }
 
-    override val root = notificationPane(showFromTop = true) {
+    override val root = vbox {
         title = messages["add.title"]
         prefWidth = 400.0
 
-        content {
-            form {
-                fieldset {
-                    field(
-                        messages["add.name"], messages["add.station.prompt"],
-                        viewModel.nameProperty, isRequired = true
-                    ) { field ->
-                        field.requestFocusOnSceneAvailable()
-                        field.validator {
-                            if (!validate(it, 400)) error(messages["field.invalid.length"])
-                            else null
-                        }
-                    }
-
-                    field(
-                        messages["add.url"], "https://example.com/stream.m3u",
-                        viewModel.urlProperty, isRequired = true
-                    ) { field ->
-                        field.validator {
-                            if (it == null || !ApiUtils.isValidUrl(it)) {
-                                error(messages["field.invalid.url"])
-                            } else {
-                                null
-                            }
-                        }
-                    }
-
-                    field(
-                        messages["add.site"], "https://example.com/",
-                        viewModel.homePageProperty, isRequired = false
-                    ) { field ->
-                        field.validator {
-                            if (it == null || !ApiUtils.isValidUrl(it)) {
-                                error(messages["field.invalid.url"])
-                            } else {
-                                null
-                            }
-                        }
-                    }
-
-                    field(
-                        messages["add.icon"], "https://example.com/favicon.ico",
-                        viewModel.faviconProperty, isRequired = false
-                    ) { field ->
-                        field.validator {
-                            if (it == null || !ApiUtils.isValidUrl(it)) {
-                                error(messages["field.invalid.url"])
-                            } else {
-                                null
-                            }
-                        }
-                    }
-
-                    field(
-                        messages["add.language"], messages["add.language.prompt"],
-                        viewModel.languageProperty, isRequired = true, languagesProperty
-                    ) { field ->
-                        field.validator {
-                            if (!validate(it, 150)) error(messages["field.invalid.length"])
-                            else null
-                        }
-                    }
-
-                    field(
-                        messages["add.country"], messages["add.country.prompt"],
-                        viewModel.countryProperty, isRequired = true, countriesListProperty
-                    ) { field ->
-                        field.validator {
-                            if (it !in countriesListProperty)
-                                error(messages["field.invalid.country"])
-                            else
-                                null
-                        }
-                    }
-                    field(messages["add.tags"], messages["add.tags.prompt"], viewModel.tagsProperty)
-                    field {
-                        checkbox(messages["add.favourites"], viewModel.saveToFavouritesProperty)
+        form {
+            fieldset {
+                field(
+                    messages["add.name"], messages["add.station.prompt"],
+                    viewModel.nameProperty, isRequired = true
+                ) { field ->
+                    field.requestFocusOnSceneAvailable()
+                    field.validator {
+                        if (!validate(it, 400)) error(messages["field.invalid.length"])
+                        else null
                     }
                 }
 
-                hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
-                    button(messages["cancel"]) {
-                        isCancelButton = true
-                        action {
-                            close()
+                field(
+                    messages["add.url"], "https://example.com/stream.m3u",
+                    viewModel.urlProperty, isRequired = true
+                ) { field ->
+                    field.validator {
+                        if (it == null || !ApiUtils.isValidUrl(it)) {
+                            error(messages["field.invalid.url"])
+                        } else {
+                            null
                         }
                     }
-                    button(messages["save"]) {
-                        enableWhen(viewModel.valid)
-                        isDefaultButton = true
+                }
 
-                        actionEvents()
-                            .flatMapMaybe { viewModel.addNewStation() }
-                            .subscribe(::save)
-
-                        addClass(Styles.primaryButton)
+                field(
+                    messages["add.site"], "https://example.com/",
+                    viewModel.homePageProperty, isRequired = false
+                ) { field ->
+                    field.validator {
+                        if (it == null || !ApiUtils.isValidUrl(it)) {
+                            error(messages["field.invalid.url"])
+                        } else {
+                            null
+                        }
                     }
+                }
+
+                field(
+                    messages["add.icon"], "https://example.com/favicon.ico",
+                    viewModel.faviconProperty, isRequired = false
+                ) { field ->
+                    field.validator {
+                        if (it == null || !ApiUtils.isValidUrl(it)) {
+                            error(messages["field.invalid.url"])
+                        } else {
+                            null
+                        }
+                    }
+                }
+
+                field(
+                    messages["add.language"], messages["add.language.prompt"],
+                    viewModel.languageProperty, isRequired = true, languagesProperty
+                ) { field ->
+                    field.validator {
+                        if (!validate(it, 150)) error(messages["field.invalid.length"])
+                        else null
+                    }
+                }
+
+                field(
+                    messages["add.country"], messages["add.country.prompt"],
+                    viewModel.countryProperty, isRequired = true, countriesListProperty
+                ) { field ->
+                    field.validator {
+                        if (it !in countriesListProperty)
+                            error(messages["field.invalid.country"])
+                        else
+                            null
+                    }
+                }
+                field(messages["add.tags"], messages["add.tags.prompt"], viewModel.tagsProperty)
+                field {
+                    checkbox(messages["add.favourites"], viewModel.saveToFavouritesProperty)
+                }
+            }
+
+            hbox(spacing = 5, alignment = Pos.CENTER_RIGHT) {
+                button(messages["cancel"]) {
+                    isCancelButton = true
+                    action {
+                        close()
+                    }
+                }
+                button(messages["save"]) {
+                    enableWhen(viewModel.valid)
+                    isDefaultButton = true
+
+                    actionEvents()
+                        .flatMapMaybe { viewModel.addNewStation() }
+                        .subscribe(::save)
+
+                    addClass(Styles.primaryButton)
                 }
             }
         }
-        addClass(Styles.backgroundWhiteSmoke)
     }
 
     override fun onDock() {

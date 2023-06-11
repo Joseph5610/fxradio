@@ -254,7 +254,22 @@ class Styles : Stylesheet() {
                 borderColor += box(Color.WHITE)
             }
             and(selected) {
-                borderColor += box(c(colors.primary))
+                backgroundColor += c(colors.primary)
+                borderColor += box(c(colors.primary + "22"))
+
+                label and (listItemTag) {
+                    textFill = c(colors.grayLabel)
+                }
+
+                menuItem {
+                    label {
+                        textFill = c(colors.label)
+                    }
+                }
+
+                label {
+                    textFill = Color.WHITESMOKE
+                }
             }
             padding = box(10.px, 10.px, 10.px, 10.px)
         }
@@ -330,19 +345,19 @@ class Styles : Stylesheet() {
             track {
                 backgroundColor += c(colors.transparent)
                 borderColor += box(c(colors.transparent))
-                unsafe("-fx-background-radius", raw("0.0em"))
-                unsafe("-fx-border-radius", raw("2.0em"))
+                borderRadius += box(2.em)
+                backgroundRadius += box(0.em)
             }
 
             thumb {
                 unsafe("-fx-background-color", raw("derive(black,90.0%)"))
                 unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
-                unsafe("-fx-background-radius", raw("2.0em"))
+                backgroundRadius += box(2.em)
 
                 and(hover) {
                     unsafe("-fx-background-color", raw("derive(#4D4C4F,10.0%)"))
                     unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
-                    unsafe("-fx-background-radius", raw("2.0em"))
+                    backgroundRadius += box(2.em)
                 }
             }
         }
