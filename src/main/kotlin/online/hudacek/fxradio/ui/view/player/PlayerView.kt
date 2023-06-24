@@ -72,7 +72,10 @@ class PlayerView : BaseView() {
 
     private val playerStationView: PlayerStationView by inject()
 
-    private val tg = ToggleGroup()
+    /**
+     * [ToggleGroup] for Info and Playlist History toggle buttons
+     */
+    private val infoButtonsToggleGroup = ToggleGroup()
 
     private val playGlyph by lazy {
         FontAwesome.Glyph.PLAY.make(CONTROLS_GLYPH_SIZE, isPrimary = false) {
@@ -87,7 +90,7 @@ class PlayerView : BaseView() {
     }
 
     private val infoToggleButton by lazy {
-        togglebutton(group = tg, selectFirst = false, value = false) {
+        togglebutton(group = infoButtonsToggleGroup, selectFirst = false, value = false) {
             id = "stationInfo"
             tooltip(messages["info.button.station"])
             graphic = FontAwesome.Glyph.INFO_CIRCLE.make(INFO_GLYPH_SIZE)
@@ -104,7 +107,9 @@ class PlayerView : BaseView() {
             }
 
             shortcut(keyCombination(KeyCode.I)) {
-                isSelected = !isSelected
+                if (selectedStationViewModel.stationProperty.value.isValid()) {
+                    isSelected = !isSelected
+                }
             }
 
             addClass(Styles.playerControls)
@@ -112,7 +117,7 @@ class PlayerView : BaseView() {
     }
 
     private val playlistToggleButton by lazy {
-        togglebutton(group = tg, selectFirst = false, value = true) {
+        togglebutton(group = infoButtonsToggleGroup, selectFirst = false, value = true) {
             id = "playlistHistory"
             tooltip(messages["info.button.playlist"])
             graphic = FontAwesome.Glyph.LIST_UL.make(INFO_GLYPH_SIZE)
@@ -153,7 +158,11 @@ class PlayerView : BaseView() {
         }
     }
 
-    private val selectedToggleBinding = tg.selectedToggleProperty().objectBinding {
+    /**
+     * Creates [InfoPanelState] object binding based on the selected toggle in the ToggleGroup
+     */
+    private val selectedToggleBinding = infoButtonsToggleGroup.selectedToggleProperty().objectBinding {
+        // Nothing is selected, panel should be hidden
         if (it != null) {
             InfoPanelState.Shown
         } else {

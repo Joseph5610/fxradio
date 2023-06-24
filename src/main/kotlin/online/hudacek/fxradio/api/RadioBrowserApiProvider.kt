@@ -22,24 +22,17 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.ServiceProvider
 import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
 import online.hudacek.fxradio.viewmodel.ServersViewModel
-import tornadofx.Component
 
 private val logger = KotlinLogging.logger {}
 
-object RadioBrowserApiProvider : Component() {
+
+object RadioBrowserApiProvider : AbstractApiProvider<RadioBrowserApi>() {
 
     private val viewModel: ServersViewModel by inject()
 
-    private val serviceProvider: ServiceProvider by lazy {
+    override val serviceProvider: ServiceProvider by lazy {
         ServiceProvider("https://${viewModel.selectedProperty.value}").also {
             logger.info { "Initialized RadioBrowser API provider for ${it.retrofit.baseUrl()}" }
         }
     }
-
-    /**
-     * Creates the [RadioBrowserApi] service instance
-     */
-    fun provide(): RadioBrowserApi = serviceProvider.create()
-
-    fun close() = serviceProvider.close()
 }

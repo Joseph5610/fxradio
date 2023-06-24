@@ -29,7 +29,7 @@ object Attributions {
             Attribution("tornadofx", "2.0.0-SNAPSHOT", Licenses.apache20),
             Attribution("controlsfx", "11.1.2", Licenses.controlsfx),
             Attribution("vlcj", "4.8.2", Licenses.gpl3),
-            Attribution("humble video", "0.3.0", Licenses.agpl3),
+            Attribution("humble-video", "0.3.0", Licenses.agpl3),
             Attribution("Retrofit HTTP client", "2.9.0", Licenses.retrofit),
             Attribution("slf4j-api", "2.0.7", Licenses.sl4fj),
             Attribution("log4j", "2.20.0", Licenses.apache20),

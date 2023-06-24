@@ -4,22 +4,15 @@ import mu.KotlinLogging
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.ServiceProvider
 import online.hudacek.fxradio.apiclient.musicbrainz.MusicBrainzApi
-import tornadofx.Component
+
 
 private val logger = KotlinLogging.logger {}
 
-object MusicBrainzApiProvider : Component() {
+object MusicBrainzApiProvider : AbstractApiProvider<MusicBrainzApi>() {
 
-    private val serviceProvider: ServiceProvider by lazy {
+    override val serviceProvider by lazy {
         ServiceProvider(Config.API.musicBrainzApi).also {
             logger.info { "Initialized MusicBrainz API provider" }
         }
     }
-
-    /**
-     * Creates the [MusicBrainzApi] service instance
-     */
-    fun provide(): MusicBrainzApi = serviceProvider.create()
-
-    fun close() = serviceProvider.close()
 }

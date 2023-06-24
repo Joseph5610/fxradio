@@ -81,6 +81,16 @@ class StationsDataGridView : BaseView() {
 
         cellWidth = CELL_WIDTH
 
+        // Handle cases when selectedStation was not selected by the DataGrid action but from other ways
+        selectedStationViewModel.stationObservable
+            .subscribe {
+                if (items.contains(it)) {
+                    selectionModel.select(it)
+                } else {
+                    selectionModel.clearSelection()
+                }
+            }
+
         // Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
             selectionModel.clearSelection()

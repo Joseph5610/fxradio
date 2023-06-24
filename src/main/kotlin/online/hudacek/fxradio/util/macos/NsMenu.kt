@@ -27,6 +27,11 @@ import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.ui.menu.menu
 import online.hudacek.fxradio.ui.menu.separator
 import tornadofx.FX
+import tornadofx.FX.Companion.messages
+import tornadofx.FX.Companion.primaryStage
+import tornadofx.action
+import tornadofx.get
+import tornadofx.item
 
 /**
  * NSMenu helper for macOS only
@@ -91,11 +96,27 @@ class NsMenu {
 
         fun build() = menuBar
     }
-    
+
     companion object {
 
         private val toolkit: MenuToolkit by lazy { MenuToolkit.toolkit(FX.locale) }
 
+        /**
+         * Create Dock Menu
+         */
+        private val dockMenu by lazy {
+            menu("") {
+                item(messages["show"] + " " + FxRadio.appName) {
+                    action {
+                        primaryStage.show()
+                        primaryStage.toFront()
+                    }
+                }
+            }
+        }
+
         fun showContextMenu(menu: Menu, e: MouseEvent) = toolkit.showContextMenu(menu, e)
+
+        fun createDockMenu() = toolkit.setDockIconMenu(dockMenu)
     }
 }

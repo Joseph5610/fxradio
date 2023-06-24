@@ -576,11 +576,16 @@ class StylesDark : Stylesheet() {
 
 
         InternalWindow.Styles.floatingWindowWrapper {
-
-            InternalWindow.Styles.top {
-                backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
-                borderRadius += box(6.px, 6.px, 0.px, 0.px)
-                backgroundColor += c("#262625")
+            InternalWindow.Styles.window {
+                InternalWindow.Styles.top {
+                    backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
+                    borderRadius += box(6.px, 6.px, 0.px, 0.px)
+                    backgroundColor += c("#262625")
+                    label {
+                        padding = box(5.px)
+                        alignment = Pos.CENTER
+                    }
+                }
             }
 
             InternalWindow.Styles.closebutton {

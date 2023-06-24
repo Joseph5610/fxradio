@@ -32,6 +32,7 @@ import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -121,6 +122,9 @@ open class FxRadio(
 
         trayIcon.subscribe()
         MacUtils.setAppearance(preferencesViewModel.darkModeProperty.value)
+        if(MacUtils.isMac) {
+            NsMenu.createDockMenu()
+        }
     }
 
     override fun stop() {

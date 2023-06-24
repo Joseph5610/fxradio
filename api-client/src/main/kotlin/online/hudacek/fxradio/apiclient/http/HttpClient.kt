@@ -26,21 +26,23 @@ import java.net.InetAddress
 private val logger = KotlinLogging.logger {}
 
 /**
- * Creates and holds single instance of OkHttpClient
- * Plain OkHttpClient is used mostly for downloading images of stations
+ * Creates and holds single instance of Caching OkHttpClient
+ * Used mostly for downloading images
  */
 object HttpClient {
 
-    // Uses default HTTP client
+    /**
+     * Caching OkHttpClient Provider
+     */
     private val clientProvider by lazy { CachingClientProvider() }
 
     /**
-     * Performs DNS lookup for [address]
+     * Performs DNS lookup to [address]
      */
     fun lookup(address: String): List<InetAddress> = clientProvider.dns(address)
 
     /**
-     * Performs HTTP request for [url]
+     * Performs HTTP request to [url]
      */
     fun request(url: String): Response {
         logger.trace { "Performing request to $url" }

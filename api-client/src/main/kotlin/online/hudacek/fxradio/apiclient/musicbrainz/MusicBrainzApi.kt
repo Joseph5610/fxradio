@@ -6,6 +6,9 @@ import online.hudacek.fxradio.apiclient.musicbrainz.model.SearchResult
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * musicbrainz.org API service
+ */
 interface MusicBrainzApi : ApiDefinition {
 
     @GET("release")

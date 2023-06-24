@@ -10,9 +10,9 @@ class FavouritesTable : StationTable(tableName = "FAVOURITES") {
 
     override fun insert(element: Station): Flowable<Int> = database.update(
         "INSERT INTO $tableName (name, stationuuid, url_resolved, " +
-                "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate, sorting_order) " +
+                "homepage, country, countrycode, state, language, favicon, tags, codec, bitrate, sorting_order, has_extended_info) " +
                 "VALUES (:name, :stationuuid, :url_resolved, :homepage, :country, :countrycode, :state, :language, " +
-                ":favicon, :tags, :codec, :bitrate, :sorting_order )"
+                ":favicon, :tags, :codec, :bitrate, :sorting_order, :has_extended_info)"
     )
         .parameter("name", element.name)
         .parameter("stationuuid", element.uuid)
@@ -27,6 +27,7 @@ class FavouritesTable : StationTable(tableName = "FAVOURITES") {
         .parameter("codec", element.codec)
         .parameter("bitrate", element.bitrate)
         .parameter("sorting_order", Int.MAX_VALUE)
+        .parameter("has_extended_info", element.hasExtendedInfo)
         .counts()
 
     fun updateOrder(station: Station, newOrderId: Int): Flowable<Int> =

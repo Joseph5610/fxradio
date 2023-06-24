@@ -82,11 +82,17 @@ internal inline fun <reified T : Fragment> Modal<T>.openInternalWindow() {
     if (activeWindow == null) {
         // Only allow one internal window open
         find<T>().openInternalWindow<T>(
-            owner = FX.primaryStage.scene.root, movable = resizable
+            owner = FX.primaryStage.scene.root, movable = resizable, closeButton = false
         )
+    } else {
+        // Closes the internal window if it is already opened
+        activeWindow.close()
     }
 }
 
+/**
+ * Finds and opens window for [Modal]
+ */
 internal inline fun <reified T : Fragment> Modal<T>.openWindow() {
     // Ensure only one window of given type is opened
     val stage = findOpenStage<T>()
@@ -103,6 +109,12 @@ internal inline fun <reified T : Fragment> Modal<T>.openWindow() {
     }
 }
 
-private inline fun <reified T : Fragment> findOpenStage() = findStages().firstOrNull { it.userData == T::class }
+/**
+ * Returns first opened stage of type [T] or null if no such stage is opened
+ */
+private inline fun <reified T : Fragment> findOpenStage() = getAllStages().firstOrNull { it.userData == T::class }
 
-private fun findStages() = Window.getWindows().filterIsInstance<Stage>()
+/**
+ * Returns list of currently opened Stages
+ */
+private fun getAllStages() = Window.getWindows().filterIsInstance<Stage>()

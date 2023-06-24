@@ -22,5 +22,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 object ApiUtils {
 
+    /**
+     * Returns true if the [url] is valid HTTP or HTTPS URL
+     */
     fun isValidUrl(url: String) = url.toHttpUrlOrNull() != null
 }

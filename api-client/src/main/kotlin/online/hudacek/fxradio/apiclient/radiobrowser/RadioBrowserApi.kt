@@ -38,16 +38,31 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+private const val DEFAULT_HIDE_BROKEN = true
+
 /**
- * Provides HTTP endpoints for radio-browser.info API
+ * radio-browser.info API service
  */
 interface RadioBrowserApi : ApiDefinition {
+
+    @GET("json/stations/topvote/50")
+    fun getTopVotedStations(@Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN): Single<List<Station>>
 
     @POST("json/stations/bycountrycodeexact/{countryCode}")
     fun getStationsByCountryCode(
         @Path("countryCode") countryCode: String,
-        @Query("hidebroken") hideBroken: Boolean = true
+        @Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN
     ): Single<List<Station>>
+
+    @GET("json/countries")
+    fun getCountries(@Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN): Single<List<Country>>
+
+    @GET("json/tags")
+    fun getTags(
+        @Query("order") order: String = "stationcount",
+        @Query("reverse") reverse: Boolean = true,
+        @Query("limit") limit: Int = 100
+    ): Single<List<Tag>>
 
     @POST("json/stations/search")
     fun searchStationByName(@Body searchRequest: SearchRequest): Single<List<Station>>
@@ -58,20 +73,11 @@ interface RadioBrowserApi : ApiDefinition {
     @POST("json/stations/byuuid")
     fun searchStationByUUIDs(@Body searchByUUIDsRequest: SearchByUUIDsRequest): Single<List<Station>>
 
-    @GET("json/stations/topvote/50")
-    fun getTopVotedStations(@Query("hidebroken") hideBroken: Boolean = true): Single<List<Station>>
-
     @POST("json/stations")
     fun getAllStations(@Body allStationsRequest: AllStationsRequest): Single<List<Station>>
 
     @POST("json/add")
     fun addStation(@Body newStationRequest: NewStationRequest): Single<NewStationResponse>
-
-    @GET("json/countries")
-    fun getCountries(@Query("hidebroken") hideBroken: Boolean = true): Single<List<Country>>
-
-    @GET("json/stats")
-    fun getStats(): Single<StatsResponse>
 
     @GET("json/vote/{uuid}")
     fun addVote(@Path("uuid") uuid: String): Single<VoteResponse>
@@ -79,10 +85,6 @@ interface RadioBrowserApi : ApiDefinition {
     @GET("json/url/{uuid}")
     fun click(@Path("uuid") uuid: String): Single<ClickResponse>
 
-    @GET("json/tags")
-    fun getTags(
-        @Query("order") order: String = "stationcount",
-        @Query("reverse") reverse: Boolean = true,
-        @Query("limit") limit: Int = 100
-    ): Single<List<Tag>>
+    @GET("json/stats")
+    fun getStats(): Single<StatsResponse>
 }

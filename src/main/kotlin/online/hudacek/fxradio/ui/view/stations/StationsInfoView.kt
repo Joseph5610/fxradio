@@ -27,12 +27,14 @@ import javafx.scene.control.Menu
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
+import online.hudacek.fxradio.ui.util.msgFormat
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
@@ -44,6 +46,7 @@ import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.observeOnFx
 import online.hudacek.fxradio.util.toBinding
 import online.hudacek.fxradio.viewmodel.FavouritesViewModel
+import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.action
@@ -114,22 +117,28 @@ class StationsInfoView : BaseView() {
         Locale.of("", it).displayName
     }
 
-    private val historyListView = listview<StreamMetaData> {
+    private val historyListView = listview<MetaDataWithStation> {
         vgrow = Priority.ALWAYS
 
         cellCache {
             hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
-                tooltip(it.nowPlaying)
+                tooltip(it.metaData.nowPlaying)
                 val menu: Menu = platformContextMenu {
+                    item(messages["playlistHistory.play"].msgFormat(it.station.name)) {
+                        action {
+                            selectedStationViewModel.item = SelectedStation(it.station)
+                        }
+                    }
+                    separator()
                     item(messages["playlistHistory.searchOnYouTube"]) {
                         action {
-                            app.openUrl(YT_URL, it.nowPlaying)
+                            app.openUrl(YT_URL, it.metaData.nowPlaying)
                         }
                     }
                     separator()
                     item(messages["copy"]) {
                         action {
-                            clipboard.putString(it.nowPlaying)
+                            clipboard.putString(it.metaData.nowPlaying)
                         }
                     }
                 }
@@ -138,7 +147,7 @@ class StationsInfoView : BaseView() {
                     fitWidth = COVER_ART_SIZE
                     fitHeight = COVER_ART_SIZE
 
-                    coverArtUseCase.execute(it.nowPlaying)
+                    coverArtUseCase.execute(it.metaData.nowPlaying)
                         .subscribe {
                             if (it.isSuccessful) {
                                 it.body?.byteStream().use { i ->
@@ -148,10 +157,10 @@ class StationsInfoView : BaseView() {
                         }
                 }
                 vbox {
-                    label(it.nowPlaying) {
+                    label(it.metaData.nowPlaying) {
                         maxWidth = 180.0
                     }
-                    smallLabel(it.timestamp.format(formatter) + " | " + it.stationName) {
+                    smallLabel(it.metaData.timestamp.format(formatter) + " | " + it.station.name) {
                         maxWidth = 180.0
                     }
                 }
@@ -164,7 +173,7 @@ class StationsInfoView : BaseView() {
                     // Show standard javafx context menu on non-macos OS
                     val cMenu by lazy { ContextMenu().apply { items.addAll(menu.items) } }
                     setOnMouseClicked {
-                        if(!MacUtils.isMac) {
+                        if (!MacUtils.isMac) {
                             cMenu.show(this, Side.BOTTOM, layoutX, layoutY)
                         } else {
                             NsMenu.showContextMenu(menu, it)
@@ -180,6 +189,10 @@ class StationsInfoView : BaseView() {
 
         appEvent.streamMetaDataUpdates
             .observeOnFx()
+            // Replace Station name received from stream with API station name
+            .withLatestFrom(selectedStationViewModel.stationObservable) { m, s ->
+                MetaDataWithStation(s, m)
+            }
             .subscribe {
                 items.add(0, it)
             }
@@ -373,4 +386,6 @@ class StationsInfoView : BaseView() {
     companion object {
         private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     }
+
+    private data class MetaDataWithStation(val station: Station, val metaData: StreamMetaData)
 }

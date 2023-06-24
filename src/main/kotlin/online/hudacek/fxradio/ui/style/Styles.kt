@@ -208,7 +208,7 @@ class Styles : Stylesheet() {
                 backgroundColor += c(colors.primary)
                 borderColor += box(c(colors.primary + "22"))
 
-                label and (listItemTag) {
+                label and listItemTag {
                     textFill = c(colors.grayLabel)
                 }
 
@@ -257,7 +257,7 @@ class Styles : Stylesheet() {
                 backgroundColor += c(colors.primary)
                 borderColor += box(c(colors.primary + "22"))
 
-                label and (listItemTag) {
+                label and listItemTag {
                     textFill = c(colors.grayLabel)
                 }
 
@@ -517,10 +517,16 @@ class Styles : Stylesheet() {
 
         InternalWindow.Styles.floatingWindowWrapper {
 
-            InternalWindow.Styles.top {
-                backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
-                borderRadius += box(6.px, 6.px, 0.px, 0.px)
-                backgroundColor += Color.WHITE
+            InternalWindow.Styles.window {
+                InternalWindow.Styles.top {
+                    backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
+                    borderRadius += box(6.px, 6.px, 0.px, 0.px)
+                    backgroundColor += Color.WHITE
+                    label {
+                        padding = box(5.px)
+                        alignment = Pos.CENTER
+                    }
+                }
             }
 
             InternalWindow.Styles.closebutton {
