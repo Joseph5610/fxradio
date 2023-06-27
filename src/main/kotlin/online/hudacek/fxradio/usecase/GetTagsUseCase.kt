@@ -16,14 +16,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient
+package online.hudacek.fxradio.usecase
 
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import io.reactivex.rxjava3.core.Observable
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Tag
+import online.hudacek.fxradio.util.applySchedulersSingle
 
-object ApiUtils {
+private const val MAX_TAGS_LIMIT = 15
 
-    /**
-     * Returns true if the [url] is valid HTTP or HTTPS URL
-     */
-    fun isValidUrl(url: String) = url.toHttpUrlOrNull() != null
+/**
+ * Gets most popular tags
+ */
+class GetTagsUseCase : BaseUseCase<Unit, Observable<Tag>>() {
+
+    override fun execute(input: Unit): Observable<Tag> = radioBrowserApi
+        .getTags(limit = MAX_TAGS_LIMIT)
+        .compose(applySchedulersSingle())
+        .flattenAsObservable { it }
 }

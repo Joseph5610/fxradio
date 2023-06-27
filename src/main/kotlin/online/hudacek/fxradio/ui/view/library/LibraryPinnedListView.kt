@@ -21,7 +21,6 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.flagIcon
@@ -35,12 +34,13 @@ import tornadofx.get
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.insets
+import tornadofx.item
 import tornadofx.label
 import tornadofx.listview
 import tornadofx.onUserSelect
 import tornadofx.selectedItem
 import tornadofx.stringBinding
-import java.util.Locale
+import java.util.*
 
 /**
  * Custom listview view for pinned countries
@@ -73,8 +73,8 @@ class LibraryPinnedListView : BaseView() {
 
                 label(countryName)
 
-                platformContextMenu(
-                    listOf(item(messages["pinned.pin"]) {
+                platformContextMenu {
+                    item(messages["pinned.pin"]) {
                         val itemName = viewModel.pinnedProperty.stringBinding { l ->
                             if (l?.contains(it)!!)
                                 messages["pinned.unpin"]
@@ -90,8 +90,8 @@ class LibraryPinnedListView : BaseView() {
                                 viewModel.pinCountry(it)
                             }
                         }
-                    })
-                )
+                    }
+                }
             }
         }
 

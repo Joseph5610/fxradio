@@ -18,7 +18,6 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import de.jangassen.MenuToolkit
 import javafx.beans.property.Property
 import javafx.event.EventTarget
 import javafx.scene.Node
@@ -28,14 +27,12 @@ import javafx.scene.control.MenuItem
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.MouseButton
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.value
 import tornadofx.bind
-import tornadofx.booleanBinding
 import tornadofx.contextmenu
-import tornadofx.disableWhen
 
 /**
  * Menu helpers
@@ -70,27 +67,25 @@ internal fun checkMenuItem(
 
 internal fun separator() = SeparatorMenuItem()
 
-internal fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
-    disableWhen(station.booleanBinding {
-        it == null || !it.isValid()
-    })
-}
-
-internal fun EventTarget.platformContextMenu(menuItems: List<MenuItem>) {
+/***
+ * Create macOS native Context Menu or JavaFX standard [javafx.scene.control.ContextMenu]
+ * if platform is not macOS
+ */
+internal fun EventTarget.platformContextMenu(op: Menu.() -> Unit = {}): Menu {
+    val menu = Menu()
+    op(menu)
     if (MacUtils.isMac && Properties.UsePlatformMenus.value(true)) {
-        val menu = Menu().apply {
-            items.addAll(menuItems)
-        }
         if (this is Node) {
             setOnMouseClicked {
                 if (it.button == MouseButton.SECONDARY) {
-                    MenuToolkit.toolkit().showContextMenu(menu, it)
+                    NsMenu.showContextMenu(menu, it)
                 }
             }
         }
     } else {
         contextmenu {
-            items.addAll(menuItems)
+            items.addAll(menu.items)
         }
     }
+    return menu
 }

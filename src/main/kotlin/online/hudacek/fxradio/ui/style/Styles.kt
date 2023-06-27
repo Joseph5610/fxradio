@@ -208,7 +208,7 @@ class Styles : Stylesheet() {
                 backgroundColor += c(colors.primary)
                 borderColor += box(c(colors.primary + "22"))
 
-                label and (listItemTag) {
+                label and listItemTag {
                     textFill = c(colors.grayLabel)
                 }
 
@@ -235,8 +235,8 @@ class Styles : Stylesheet() {
         }
 
         decoratedListView {
-            backgroundColor += Color.WHITE
-            borderColor += box(Color.WHITE)
+            backgroundColor += Color.WHITESMOKE
+            borderColor += box(Color.WHITESMOKE)
             unsafe("-fx-control-inner-background", Color.TRANSPARENT)
         }
 
@@ -246,16 +246,30 @@ class Styles : Stylesheet() {
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)
             and(odd) {
-                backgroundColor += Color.WHITE
-                borderColor += box(Color.WHITE)
-
-            }
-            and(even) {
                 backgroundColor += Color.WHITESMOKE
                 borderColor += box(Color.WHITESMOKE)
             }
+            and(even) {
+                backgroundColor += Color.WHITE
+                borderColor += box(Color.WHITE)
+            }
             and(selected) {
-                borderColor += box(c(colors.primary))
+                backgroundColor += c(colors.primary)
+                borderColor += box(c(colors.primary + "22"))
+
+                label and listItemTag {
+                    textFill = c(colors.grayLabel)
+                }
+
+                menuItem {
+                    label {
+                        textFill = c(colors.label)
+                    }
+                }
+
+                label {
+                    textFill = Color.WHITESMOKE
+                }
             }
             padding = box(10.px, 10.px, 10.px, 10.px)
         }
@@ -331,19 +345,19 @@ class Styles : Stylesheet() {
             track {
                 backgroundColor += c(colors.transparent)
                 borderColor += box(c(colors.transparent))
-                unsafe("-fx-background-radius", raw("0.0em"))
-                unsafe("-fx-border-radius", raw("2.0em"))
+                borderRadius += box(2.em)
+                backgroundRadius += box(0.em)
             }
 
             thumb {
                 unsafe("-fx-background-color", raw("derive(black,90.0%)"))
                 unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
-                unsafe("-fx-background-radius", raw("2.0em"))
+                backgroundRadius += box(2.em)
 
                 and(hover) {
                     unsafe("-fx-background-color", raw("derive(#4D4C4F,10.0%)"))
                     unsafe("-fx-background-insets", raw("2.0, 0.0, 0.0"))
-                    unsafe("-fx-background-radius", raw("2.0em"))
+                    backgroundRadius += box(2.em)
                 }
             }
         }
@@ -503,10 +517,16 @@ class Styles : Stylesheet() {
 
         InternalWindow.Styles.floatingWindowWrapper {
 
-            InternalWindow.Styles.top {
-                backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
-                borderRadius += box(6.px, 6.px, 0.px, 0.px)
-                backgroundColor += Color.WHITE
+            InternalWindow.Styles.window {
+                InternalWindow.Styles.top {
+                    backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
+                    borderRadius += box(6.px, 6.px, 0.px, 0.px)
+                    backgroundColor += Color.WHITE
+                    label {
+                        padding = box(5.px)
+                        alignment = Pos.CENTER
+                    }
+                }
             }
 
             InternalWindow.Styles.closebutton {
@@ -514,7 +534,7 @@ class Styles : Stylesheet() {
             }
 
             InternalWindow.Styles.floatingWindowContent {
-                backgroundColor += Color.WHITE
+                backgroundColor += Color.WHITESMOKE
                 backgroundRadius += box(0.px, 0.px, 6.px, 6.px)
                 borderRadius += box(0.px, 0.px, 6.px, 6.px)
             }

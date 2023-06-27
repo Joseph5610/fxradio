@@ -29,18 +29,18 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class ServiceProvider(
     private val baseUrl: String,
-    private val abstractClientProvider: AbstractClientProvider = CachingClientProvider()
+    private val clientProvider: AbstractClientProvider = CachingClientProvider(),
 ) {
 
     /**
-     * Retrofit client instance for [baseUrl] with custom [abstractClientProvider]
+     * Retrofit client instance for [baseUrl] with custom [clientProvider]
      */
     val retrofit: Retrofit
         get() = Retrofit.Builder()
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(baseUrl)
-            .client(abstractClientProvider.client)
+            .client(clientProvider.client)
             .build()
 
     /**
@@ -48,5 +48,5 @@ class ServiceProvider(
      */
     inline fun <reified T : ApiDefinition> create(): T = retrofit.create(T::class.java)
 
-    fun close() = abstractClientProvider.close()
+    fun close() = clientProvider.close()
 }

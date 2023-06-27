@@ -25,7 +25,6 @@ import javafx.beans.property.Property
 import javafx.beans.property.StringProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
-import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.scene.Node
 import javafx.scene.Scene
@@ -67,7 +66,7 @@ import tornadofx.visibleWhen
 import java.net.URLEncoder
 import java.text.MessageFormat
 
-private const val NOTIFICATION_TIME_ON_SCREEN = 5.0
+private const val NOTIFICATION_TIME_ON_SCREEN = 3.0
 
 /**
  * This is to overcome a bug that sometimes
@@ -123,7 +122,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
     clipboard: Clipboard,
     menuItemName: String,
     valueToCopy: StringProperty
-) = platformContextMenu(listOf(
+) = platformContextMenu {
     item(menuItemName) {
         action {
             if (valueToCopy.value != null) {
@@ -137,7 +136,7 @@ internal fun EventTarget.autoUpdatingCopyMenu(
             }
         }
     }
-))
+}
 
 internal fun Window.setOnSpacePressed(action: () -> Unit) {
     addEventHandler(KeyEvent.KEY_PRESSED) {
@@ -162,7 +161,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
 
 /**
  * Custom function for showing notification in NotificationPane.
- * Notification disappears after 5 seconds
+ * Notification disappears after [NOTIFICATION_TIME_ON_SCREEN]
  *
  * Example usage:
  * notificationPane[FontAwesome.Glyph.WARNING] = "Custom notification Text"
@@ -170,7 +169,7 @@ internal fun <T : Node> T.showWhen(expr: () -> ObservableValue<Boolean>): T =
 internal operator fun NotificationPane.set(glyph: FontAwesome.Glyph, message: String) {
     if (isVisible) show(message, glyph.toGlyph())
     val delay = PauseTransition(Duration.seconds(NOTIFICATION_TIME_ON_SCREEN))
-    delay.onFinished = EventHandler { hide() }
+    delay.setOnFinished { hide() }
     delay.play()
 }
 
@@ -182,15 +181,14 @@ internal fun EventTarget.field(
     isRequired: Boolean = false,
     autoCompleteProperty: ListProperty<String>? = null,
     op: (TextField) -> Unit = {}
-) =
-    add(field(message) {
-        textfield(property) {
-            if (autoCompleteProperty != null) bindAutoCompletion(autoCompleteProperty)
-            if (isRequired) required()
-            promptText = prompt
-            op(this)
-        }
-    })
+) = add(field(message) {
+    textfield(property) {
+        if (autoCompleteProperty != null) bindAutoCompletion(autoCompleteProperty)
+        if (isRequired) required()
+        promptText = prompt
+        op(this)
+    }
+})
 
 internal fun EventTarget.stationView(station: Station, size: Double, op: StationImageView.() -> Unit = {}) =
     opcr(this, StationImageView(Observable.just(station), size), op)

@@ -18,16 +18,20 @@
 
 package online.hudacek.fxradio.ui.menu
 
+import javafx.beans.property.Property
 import javafx.scene.control.CheckMenuItem
+import javafx.scene.control.MenuItem
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
+import online.hudacek.fxradio.util.toObservable
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.booleanBinding
+import tornadofx.disableWhen
 import tornadofx.get
-import tornadofx.onChange
 
 class PlayerMenu : BaseMenu("menu.player.controls") {
 
@@ -56,7 +60,11 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val playerTypeItem: CheckMenuItem by lazy {
         checkMenuItem(messages["menu.player.switch"]) {
-            isSelected = playerShowProperty.value
+            playerViewModel.mediaPlayerProperty.toObservable()
+                .map { it.playerType }
+                .subscribe {
+                    isSelected = it == MediaPlayer.Type.Humble
+                }
             action {
                 with(playerViewModel) {
                     stateProperty.value = PlayerState.Stopped
@@ -68,12 +76,6 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    private val playerShowProperty = playerViewModel.mediaPlayerProperty.booleanBinding {
-        it?.playerType == MediaPlayer.Type.Humble
-    }.onChange {
-        playerTypeItem.isSelected = it
-    }
-
     private val animateItem by lazy {
         checkMenuItem(messages["menu.player.animate"], bindProperty = playerViewModel.animateProperty) {
             action {
@@ -83,4 +85,10 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
     }
 
     override val menuItems = listOf(startItem, stopItem, separator(), playerTypeItem, animateItem)
+
+    private fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
+        disableWhen(station.booleanBinding {
+            it == null || !it.isValid()
+        })
+    }
 }

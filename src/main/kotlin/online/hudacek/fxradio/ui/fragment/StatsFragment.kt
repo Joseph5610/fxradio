@@ -110,7 +110,7 @@ class StatsFragment : BaseFragment() {
             }
             addClass(Styles.decoratedListView)
         }
-        addClass(Styles.backgroundWhite)
+        addClass(Styles.backgroundWhiteSmoke)
     }
 
     override fun onDock() = viewModel.fetchStats()

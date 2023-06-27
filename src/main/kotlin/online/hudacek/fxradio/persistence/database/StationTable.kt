@@ -52,7 +52,8 @@ abstract class StationTable(override val tableName: String) : Table<Station>, Da
             it.getString("state"),
             it.getString("language"),
             it.getString("codec"),
-            it.getInt("bitrate")
+            it.getInt("bitrate"),
+            hasExtendedInfo = it.getBoolean("has_extended_info")
         )
     }
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 private const val CACHE_AGE_MINUTES = 30
 
 /**
- * Cache all HTTP responses up to 30 minutes
+ * Cache all HTTP responses up to [CACHE_AGE_MINUTES]
  */
 class CacheInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {

@@ -23,14 +23,22 @@ import javafx.scene.layout.Priority
 import javafx.util.Duration.millis
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
+import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.InfoPanelState
+import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
+import online.hudacek.fxradio.viewmodel.StationsState
+import online.hudacek.fxradio.viewmodel.StationsViewModel
 import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.booleanBinding
 import tornadofx.controlsfx.hiddensidepane
 import tornadofx.controlsfx.right
 import tornadofx.fitToParentHeight
 import tornadofx.hgrow
+import tornadofx.listProperty
 import tornadofx.objectBinding
+import tornadofx.observableListOf
 import tornadofx.paddingAll
 import tornadofx.vbox
 import tornadofx.vgrow
@@ -40,12 +48,22 @@ import tornadofx.vgrow
  */
 class StationsView : BaseView() {
 
-    private val messageView: StationsEmptyView by inject()
+    private val stationsEmptyView: StationsEmptyView by inject()
     private val headerView: StationsHeaderView by inject()
     private val dataGridView: StationsDataGridView by inject()
     private val stationsInfoView: StationsInfoView by inject()
 
+    private val stationsViewModel: StationsViewModel by inject()
+    private val libraryViewModel: LibraryViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
+
+    private val tagsProperty = listProperty<String>(observableListOf()).apply {
+        bind(libraryViewModel.tagsProperty) { c -> c.name }
+    }
+
+    override fun onDock() {
+        libraryViewModel.getTags()
+    }
 
     override val root = hiddensidepane {
         vgrow = Priority.ALWAYS
@@ -59,7 +77,25 @@ class StationsView : BaseView() {
                 paddingAll = 5.0
                 vgrow = Priority.ALWAYS
                 hgrow = Priority.ALWAYS
-                add(messageView)
+                add(stationsEmptyView)
+                vbox {
+                    paddingAll = 15
+                    add(
+                        find<TagsFragment>(
+                            params = mapOf(
+                                "tagsProperty" to tagsProperty
+                            )
+                        )
+                    )
+                    showWhen {
+                        stationsViewModel.stateProperty.booleanBinding {
+                            when (it) {
+                                is StationsState.ShortQuery -> true
+                                else -> false
+                            }
+                        }
+                    }
+                }
                 add(dataGridView)
             }
         }

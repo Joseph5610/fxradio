@@ -32,6 +32,7 @@ import online.hudacek.fxradio.ui.view.MainView
 import online.hudacek.fxradio.ui.view.TrayIcon
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
+import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.saveProperties
 import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
@@ -52,7 +53,8 @@ import kotlin.reflect.KClass
 
 private const val WINDOW_MIN_WIDTH = 800.0
 private const val WINDOW_MIN_HEIGHT = 600.0
-
+private const val WINDOW_DEFAULT_WIDTH = 950.0
+private const val WINDOW_DEFAULT_HEIGHT = 680.0
 /**
  * Load app in Dark Mode
  */
@@ -90,6 +92,10 @@ open class FxRadio(
             minWidth = WINDOW_MIN_WIDTH
             minHeight = WINDOW_MIN_HEIGHT
 
+            // Default app size on first run
+            width = WINDOW_DEFAULT_WIDTH
+            height = WINDOW_DEFAULT_HEIGHT
+
             // Setup window location on screen
             with(config) {
                 double(Properties.WindowWidth.key)?.let {
@@ -116,6 +122,9 @@ open class FxRadio(
 
         trayIcon.subscribe()
         MacUtils.setAppearance(preferencesViewModel.darkModeProperty.value)
+        if(MacUtils.isMac) {
+            NsMenu.createDockMenu()
+        }
     }
 
     override fun stop() {
@@ -152,7 +161,7 @@ open class FxRadio(
 
         /**
          * Gets version from jar MANIFEST.MF file
-         * On failure (e.g. if app is not run from the jar file), returns the "0.0.0" value
+         * On failure (e.g. if app is not run from the jar file), returns "0.0.0"
          */
         val version: String by lazy {
             FxRadio::class.java.getPackage().implementationVersion ?: "0.0.0"

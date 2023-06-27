@@ -25,6 +25,8 @@ import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Tag
+import online.hudacek.fxradio.usecase.GetTagsUseCase
 import online.hudacek.fxradio.usecase.country.CountryPinUseCase
 import online.hudacek.fxradio.usecase.country.CountryUnpinUseCase
 import online.hudacek.fxradio.usecase.country.GetCountriesUseCase
@@ -50,6 +52,7 @@ data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
 
 class Library(
     countries: ObservableList<Country> = observableListOf(),
+    tags: ObservableList<Tag> = observableListOf<Tag>(),
     pinned: ObservableList<Country> = observableListOf(),
     showLibrary: Boolean = Properties.ShowLibrary.value(true),
     showPinned: Boolean = Properties.ShowPinnedCountries.value(true),
@@ -61,6 +64,9 @@ class Library(
 
     // Countries shown in Countries ListView
     var pinned: ObservableList<Country> by property(pinned)
+
+    // List of most popular tags
+    var tags: ObservableList<Tag> by property(tags)
 
     // Default items shown in library ListView
     var libraries: ObservableList<LibraryItem> by property(
@@ -85,6 +91,7 @@ class Library(
 class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), LibraryState.Popular) {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
+    private val getTagsUseCase: GetTagsUseCase by inject()
     private val countryPinUseCase: CountryPinUseCase by inject()
     private val countryUnpinUseCase: CountryUnpinUseCase by inject()
 
@@ -94,6 +101,8 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
 
     val showLibraryProperty = bind(Library::showLibrary) as BooleanProperty
     val showPinnedProperty = bind(Library::showPinned) as BooleanProperty
+
+    val tagsProperty = bind(Library::tags) as ListProperty
 
     val countriesQueryProperty = bind(Library::countriesQuery) as StringProperty
 
@@ -121,6 +130,12 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
 
     fun getCountries(): Disposable = getCountriesUseCase.execute(Unit).subscribe({
         countriesProperty += it
+    }, {
+        logger.error(it) { "Exception when downloading countries" }
+    })
+
+    fun getTags(): Disposable = getTagsUseCase.execute(Unit).subscribe({
+        tagsProperty += it
     }, {
         logger.error(it) { "Exception when downloading countries" }
     })

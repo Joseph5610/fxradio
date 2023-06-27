@@ -133,62 +133,6 @@ class PlayerStationView : BaseView() {
             top {
                 autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {
-
-                    if(Properties.EnableDebugView.value(false)) {
-                        onLeftClick {
-                            showPopover()
-                        }
-
-                        popover {
-                            isDetachable = false
-                            vbox {
-                                prefWidth = 350.0
-                                maxWidth = 350.0
-                                listview<StreamMetaData> {
-                                    cellFormat {
-                                        addClass(Styles.decoratedListItem)
-                                    }
-
-                                    onUserSelect {
-                                        clipboard.putString(it.nowPlaying)
-                                        hide()
-                                    }
-
-                                    cellCache {
-                                        hbox(spacing = 5, alignment = Pos.CENTER_LEFT) {
-                                            imageview(StationImageCache.defaultStationLogo) {
-                                                isPreserveRatio = true
-                                                fitWidth = LOGO_SIZE
-                                                fitHeight = LOGO_SIZE
-
-                                                coverArtUseCase.execute(it.nowPlaying)
-                                                    .subscribe {
-                                                        if (it.isSuccessful) {
-                                                            it.body?.byteStream().use { i ->
-                                                                image = Image(i)
-                                                            }
-                                                        }
-                                                    }
-                                            }
-                                            vbox {
-                                                label(it.nowPlaying)
-                                                smallLabel(it.timestamp.format(formatter) + " | " + it.stationName)
-                                            }
-                                        }
-                                    }
-
-                                    appEvent.streamMetaDataUpdates
-                                        .observeOnFx()
-                                        .subscribe {
-                                            items.add(0, it)
-                                        }
-                                    addClass(Styles.decoratedListView)
-                                }
-                                addClass(Styles.backgroundWhite)
-                            }
-                        }
-                    }
-
                     // Dynamic ticker for station name
                     add(tickerView)
 
@@ -216,9 +160,5 @@ class PlayerStationView : BaseView() {
             }
         }
         addClass(Styles.playerStationBox)
-    }
-
-    companion object {
-        private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     }
 }

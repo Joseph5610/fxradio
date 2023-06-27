@@ -25,7 +25,6 @@ import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.description
 import online.hudacek.fxradio.ui.BaseView
-import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.util.DataCellHandler
 import online.hudacek.fxradio.ui.util.DataGridHandler
@@ -34,6 +33,7 @@ import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.util.toObservableChanges
+import online.hudacek.fxradio.viewmodel.FavouritesViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStation
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
@@ -43,6 +43,7 @@ import tornadofx.action
 import tornadofx.booleanBinding
 import tornadofx.datagrid
 import tornadofx.get
+import tornadofx.item
 import tornadofx.label
 import tornadofx.onHover
 import tornadofx.onLeftClick
@@ -52,12 +53,15 @@ import tornadofx.point
 import tornadofx.putString
 import tornadofx.px
 import tornadofx.scale
+import tornadofx.separator
+import tornadofx.stringBinding
 import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.vbox
 
 private const val CELL_WIDTH = 140.0
 private const val LOGO_SIZE = 100.0
+private const val VERIFIED_ICON_SIZE = 13.0
 
 /**
  * Main view of stations
@@ -67,6 +71,7 @@ class StationsDataGridView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationsViewModel: StationsViewModel by inject()
+    private val favouritesViewModel: FavouritesViewModel by inject()
 
     override val root = datagrid(stationsViewModel.stationsProperty) {
         id = "stations"
@@ -75,6 +80,16 @@ class StationsDataGridView : BaseView() {
         setOnKeyPressed(handler::handle)
 
         cellWidth = CELL_WIDTH
+
+        // Handle cases when selectedStation was not selected by the DataGrid action but from other ways
+        selectedStationViewModel.stationObservable
+            .subscribe {
+                if (items.contains(it)) {
+                    selectionModel.select(it)
+                } else {
+                    selectionModel.clearSelection()
+                }
+            }
 
         // Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
@@ -118,15 +133,38 @@ class StationsDataGridView : BaseView() {
                     tooltip(station.name)
                 }
 
-                platformContextMenu(listOf(item(messages["menu.station.vote"]) {
-                    action {
-                        appEvent.votedStations.onNext(station)
+                platformContextMenu {
+                    item(messages["menu.station.favourite"]) {
+                        val itemName = favouritesViewModel.stationsProperty.stringBinding { l ->
+                            if (l?.contains(station)!!)
+                                messages["menu.station.favouriteRemove"]
+                            else
+                                messages["menu.station.favourite"]
+                        }
+                        textProperty().bind(itemName)
+
+                        action {
+                            with(favouritesViewModel) {
+                                if (stationsProperty.contains(station)) {
+                                    removeFavourite(station)
+                                } else {
+                                    addFavourite(station)
+                                }
+                            }
+                        }
                     }
-                }, item(messages["copy.streamUrl"]) {
-                    action {
-                        clipboard.putString(station.urlResolved)
+                    separator()
+                    item(messages["menu.station.vote"]) {
+                        action {
+                            appEvent.votedStations.onNext(station)
+                        }
                     }
-                }))
+                    item(messages["copy.streamUrl"]) {
+                        action {
+                            clipboard.putString(station.urlResolved)
+                        }
+                    }
+                }
 
                 stationView(station, LOGO_SIZE) {
                     paddingAll = 5
@@ -135,7 +173,7 @@ class StationsDataGridView : BaseView() {
 
                 label(station.name) {
                     if (station.hasExtendedInfo) {
-                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = 13.0, isPrimary = true)
+                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = VERIFIED_ICON_SIZE)
                     }
                     paddingTop = 5
                     style {

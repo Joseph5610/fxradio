@@ -67,7 +67,7 @@ class TrayIcon : Controller() {
                     isEnabled = false
                 }
 
-                item("Play/Stop") {
+                item(messages["menu.player.toggle"]) {
                     playerViewModel.stateObservable.subscribe {
                         label = if (it is PlayerState.Playing) {
                             messages["menu.player.stop"]
@@ -90,6 +90,7 @@ class TrayIcon : Controller() {
     }
 
     private fun removeIcon() {
+        Platform.setImplicitExit(true)
         SwingUtilities.invokeLater {
             trayIcon?.let { getSystemTray().remove(it) }
         }

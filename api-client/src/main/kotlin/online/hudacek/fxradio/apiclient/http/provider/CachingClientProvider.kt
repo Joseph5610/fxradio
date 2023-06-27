@@ -32,8 +32,7 @@ import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
-// Defines Connection timeout for the duration of call in seconds
-private const val TIMEOUT_SECS: Long = 45
+private const val TIMEOUT_SECS: Long = 45 // Timeout for the duration of the whole call in seconds
 private const val MAX_IDLE_CONNECTIONS: Int = 7
 private const val MAX_CACHE_SIZE = 100L * 1024L * 1024L  // 100 MiB
 private const val CACHE_BASE_DIR = "fxradio-http-cache"
@@ -66,7 +65,6 @@ class CachingClientProvider(
      * Construct http client with custom user agent, connection pool and timeouts
      */
     override val client: OkHttpClient = OkHttpClient.Builder()
-        // The whole call should not take longer than TIMEOUT_SECS
         .callTimeout(TIMEOUT_SECS, TimeUnit.SECONDS)
         .cache(Cache(File(cacheParentDirectory, CACHE_BASE_DIR), MAX_CACHE_SIZE))
         .addNetworkInterceptor(UserAgentInterceptor())
