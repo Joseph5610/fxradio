@@ -574,8 +574,8 @@ class StylesDark : Stylesheet() {
             }
         }
 
-
         InternalWindow.Styles.floatingWindowWrapper {
+
             InternalWindow.Styles.window {
                 InternalWindow.Styles.top {
                     backgroundRadius += box(6.px, 6.px, 0.px, 0.px)
