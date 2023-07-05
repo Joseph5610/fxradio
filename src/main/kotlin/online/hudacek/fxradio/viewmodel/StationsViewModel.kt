@@ -18,16 +18,18 @@
 
 package online.hudacek.fxradio.viewmodel
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import javafx.beans.property.ListProperty
 import javafx.collections.ObservableList
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AdvancedSearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.event.data.AppNotification
+import online.hudacek.fxradio.usecase.station.AdvancedSearchUseCase
 import online.hudacek.fxradio.usecase.station.GetPopularStationsUseCase
 import online.hudacek.fxradio.usecase.station.GetStationsByCountryUseCase
-import online.hudacek.fxradio.usecase.station.GetTrendingStationsUseCase
 import online.hudacek.fxradio.usecase.station.StationVoteUseCase
-import online.hudacek.fxradio.util.toObservableChanges
+import online.hudacek.fxradio.util.toObservable
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.asObservable
 import tornadofx.get
@@ -39,7 +41,7 @@ sealed class StationsState {
     data class Error(val cause: String) : StationsState()
     object NoStations : StationsState()
     object ShortQuery : StationsState()
-    object Loading: StationsState()
+    object Loading : StationsState()
 }
 
 class Stations(stations: ObservableList<Station> = observableListOf()) {
@@ -57,26 +59,36 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
     private val favouritesViewModel: FavouritesViewModel by inject()
 
     private val getPopularStationsUseCase: GetPopularStationsUseCase by inject()
-    private val getTrendingStationsUseCase: GetTrendingStationsUseCase by inject()
     private val getStationsByCountryUseCase: GetStationsByCountryUseCase by inject()
+    private val advancedSearchUseCase: AdvancedSearchUseCase by inject()
     private val stationVoteUseCase: StationVoteUseCase by inject()
 
     val stationsProperty = bind(Stations::stations) as ListProperty
 
     init {
+
         libraryViewModel.stateObservable
-            .subscribe(::handleNewLibraryState)
+            .filter { it !is LibraryState.Search }
+            .doOnNext { stateProperty.value = StationsState.Loading }
+            .switchMapMaybe(::handleNewLibraryState)
+            .subscribe(::show, ::handleError)
 
-        searchViewModel.searchByTagProperty.toObservableChanges().subscribe { search() }
+        // SearchState needs special handling
+        libraryViewModel.stateObservable
+            .filter { it is LibraryState.Search }
+            .doOnNext { stateProperty.value = StationsState.Loading }
+            .subscribe(::handleSearch, ::handleError)
 
-        searchViewModel.queryChanges.subscribe { search() }
+        searchViewModel.searchByTagProperty.toObservable()
+            .subscribe({
+                handleSearch(libraryViewModel.stateProperty.value)
+            }, ::handleError)
 
-        favouritesViewModel.stationsObservable
-            .subscribe {
-                if (libraryViewModel.stateProperty.value == LibraryState.Favourites) {
-                    show(it)
-                }
+        favouritesViewModel.stationsObservable.subscribe {
+            if (libraryViewModel.stateProperty.value == LibraryState.Favourites) {
+                show(it)
             }
+        }
 
         // Increase vote count on the server
         appEvent.votedStations
@@ -92,7 +104,28 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
             }.subscribe(appEvent.appNotification)
     }
 
-    private fun show(stations: List<Station>) {
+    /**
+     * Returns [Maybe] list of [Station] that should be shown based on the selected library type
+     */
+    fun handleNewLibraryState(state: LibraryState): Maybe<out List<Station>> {
+        val stationSingle = when (state) {
+            is LibraryState.SelectedCountry -> getStationsByCountryUseCase.execute(state.country)
+            is LibraryState.Favourites -> Single.just(favouritesViewModel.stationsProperty)
+            is LibraryState.Popular -> getPopularStationsUseCase.execute(Unit)
+            is LibraryState.Trending -> advancedSearchUseCase.execute(trendingRequest)
+            is LibraryState.Search -> searchViewModel.search()
+            is LibraryState.Verified -> advancedSearchUseCase.execute(verifiedRequest)
+        }
+
+        return stationSingle
+            .doOnError(::handleError)
+            .onErrorComplete()
+    }
+
+    /**
+     * Shows the provided list of [stations] in the DataGrid
+     */
+    fun show(stations: List<Station>) {
         if (stations.isEmpty()) {
             stateProperty.value = StationsState.NoStations
         } else {
@@ -101,37 +134,28 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         }
     }
 
-    private fun search() {
-        if (searchViewModel.queryBinding.value.length <= 2) {
-            stateProperty.value = StationsState.ShortQuery
-        } else {
-            searchViewModel
-                .search()
-                .subscribe(::show, ::handleError)
-        }
-    }
-
     private fun handleError(throwable: Throwable) {
         stateProperty.value = StationsState.Error(throwable.toString())
     }
 
-    fun handleNewLibraryState(newState: LibraryState) {
-        stateProperty.value = StationsState.Loading
-        when (newState) {
-            is LibraryState.SelectedCountry -> getStationsByCountryUseCase
-                .execute(newState.country)
-                .subscribe(::show, ::handleError)
+    private fun handleSearch(libraryState: LibraryState) {
+        if (libraryState !is LibraryState.Search) return
 
-            is LibraryState.Favourites -> show(favouritesViewModel.stationsProperty)
-            is LibraryState.Popular -> getPopularStationsUseCase
-                .execute(Unit)
+        if (libraryState.query.length <= 2) {
+            stateProperty.value = StationsState.ShortQuery
+        } else {
+            handleNewLibraryState(libraryState)
                 .subscribe(::show, ::handleError)
-
-            is LibraryState.Trending -> getTrendingStationsUseCase
-                .execute(Unit)
-                .subscribe(::show, ::handleError)
-
-            is LibraryState.Search -> search()
         }
+    }
+
+    companion object {
+        private const val VERIFIED_LIMIT = 350
+        private const val TRENDING_LIMIT = 150
+
+        private val verifiedRequest = AdvancedSearchRequest(hasExtendedInfo = true, limit = VERIFIED_LIMIT)
+
+        private val trendingRequest =
+            AdvancedSearchRequest(limit = TRENDING_LIMIT, order = "clicktrend", reverse = true)
     }
 }

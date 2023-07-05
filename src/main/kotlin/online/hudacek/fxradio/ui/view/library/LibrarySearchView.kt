@@ -54,17 +54,19 @@ class LibrarySearchView : BaseView() {
         }
 
         setOnMouseClicked {
-            setSearchState()
+            setSearchState(text)
         }
 
         textProperty().onChange {
-            setSearchState()
-            viewModel.commit()
+            if (it != null) {
+                setSearchState(it)
+                viewModel.commit()
+            }
         }
 
         shortcut(keyCombination(KeyCode.F)) {
             requestFocusOnSceneAvailable()
-            setSearchState()
+            setSearchState(text)
         }
 
         validator {
@@ -75,7 +77,7 @@ class LibrarySearchView : BaseView() {
         }
     }
 
-    private fun setSearchState() {
-        libraryViewModel.stateProperty.value = LibraryState.Search
+    private fun setSearchState(query: String) {
+        libraryViewModel.stateProperty.value = LibraryState.Search(query)
     }
 }

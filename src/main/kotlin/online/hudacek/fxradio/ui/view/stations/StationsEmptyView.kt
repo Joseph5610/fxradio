@@ -98,9 +98,8 @@ class StationsEmptyView : BaseView() {
 
             actionEvents()
                 .withLatestFrom(libraryViewModel.stateObservable) { _, s -> s }
-                .subscribe {
-                    viewModel.handleNewLibraryState(it)
-                }
+                .switchMapMaybe { viewModel.handleNewLibraryState(it) }
+                .subscribe(viewModel::show)
 
             showWhen {
                 viewModel.stateProperty.booleanBinding {

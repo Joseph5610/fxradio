@@ -42,7 +42,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         item(messages["menu.player.start"], KeyCodes.play) {
             disableWhenInvalidStation(selectedStationViewModel.stationProperty)
             action {
-                playerViewModel.stateProperty.value = selectedStationViewModel.streamUrlProperty.let {
+                playerViewModel.stateProperty.value = selectedStationViewModel.urlResolvedProperty.let {
                     PlayerState.Playing(it.value)
                 }
             }

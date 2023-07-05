@@ -20,7 +20,7 @@ package online.hudacek.fxradio.apiclient.radiobrowser
 
 import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.ApiDefinition
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AdvancedSearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
@@ -45,7 +45,7 @@ private const val DEFAULT_HIDE_BROKEN = true
  */
 interface RadioBrowserApi : ApiDefinition {
 
-    @GET("json/stations/topvote/50")
+    @GET("json/stations/topvote/150")
     fun getTopVotedStations(@Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN): Single<List<Station>>
 
     @POST("json/stations/bycountrycodeexact/{countryCode}")
@@ -73,8 +73,8 @@ interface RadioBrowserApi : ApiDefinition {
     @POST("json/stations/byuuid")
     fun searchStationByUUIDs(@Body searchByUUIDsRequest: SearchByUUIDsRequest): Single<List<Station>>
 
-    @POST("json/stations")
-    fun getAllStations(@Body allStationsRequest: AllStationsRequest): Single<List<Station>>
+    @POST("json/stations/search")
+    fun advancedSearch(@Body advancedSearchRequest: AdvancedSearchRequest): Single<List<Station>>
 
     @POST("json/add")
     fun addStation(@Body newStationRequest: NewStationRequest): Single<NewStationResponse>

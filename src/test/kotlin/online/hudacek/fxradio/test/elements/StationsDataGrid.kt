@@ -29,7 +29,7 @@ class StationsDataGrid(private val robot: FxRobot) {
         // Avoid station names that start with # as it is query locator for ID
         val stationToClick = dataGridElement.items
             .filter { !it.name.startsWith("#") }
-            .filter { it.name != selectedStationViewModel.stationProperty.value.name }
+            .filter { it.name != selectedStationViewModel.nameProperty.value }
             .take(5)
             .random()
 

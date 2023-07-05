@@ -22,6 +22,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 private const val DUMMY_STATION_URL = "https://hudacek.online"
+private const val DUMMY_STATION_NAME = "Nothing playing"
 
 /**
  * Station data class
@@ -59,8 +60,9 @@ data class Station(
     override fun hashCode() = uuid.hashCode()
 
     companion object {
+
         val dummy by lazy {
-            Station("0", "Nothing playing", DUMMY_STATION_URL, DUMMY_STATION_URL, null)
+            Station("0", DUMMY_STATION_NAME, DUMMY_STATION_URL, DUMMY_STATION_URL, null)
         }
     }
 }

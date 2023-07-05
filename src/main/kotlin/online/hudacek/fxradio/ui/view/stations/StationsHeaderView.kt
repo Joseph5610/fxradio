@@ -98,7 +98,13 @@ class StationsHeaderView : BaseView() {
 
         showWhen {
             // This view is shown always, except when clicking on empty search TextField
-            viewModel.stateProperty.isNotEqualTo(StationsState.ShortQuery)
+            viewModel.stateProperty.booleanBinding {
+                when (it) {
+                    is StationsState.ShortQuery -> false
+                    is StationsState.Error -> false
+                    else -> true
+                }
+            }
         }
 
         addClass(Styles.backgroundWhiteSmoke)

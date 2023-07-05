@@ -128,7 +128,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
             value = if (value is PlayerState.Playing) {
                 PlayerState.Stopped
             } else {
-                selectedStationViewModel.streamUrlProperty.let {
+                selectedStationViewModel.urlResolvedProperty.let {
                     PlayerState.Playing(it.value)
                 }
             }

@@ -22,18 +22,12 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.image.Image
 import mu.KotlinLogging
-import online.hudacek.fxradio.media.StreamMetaData
-import online.hudacek.fxradio.persistence.cache.StationImageCache
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.autoUpdatingCopyMenu
 import online.hudacek.fxradio.ui.util.showWhen
-import online.hudacek.fxradio.ui.util.smallLabel
 import online.hudacek.fxradio.ui.util.stationView
 import online.hudacek.fxradio.usecase.GetCoverArtUseCase
-import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.observeOnFx
-import online.hudacek.fxradio.util.value
 import online.hudacek.fxradio.viewmodel.PlayerState
 import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
@@ -46,17 +40,12 @@ import tornadofx.get
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.label
-import tornadofx.listview
 import tornadofx.onHover
-import tornadofx.onLeftClick
-import tornadofx.onUserSelect
-import tornadofx.putString
 import tornadofx.separator
 import tornadofx.stringBinding
 import tornadofx.tooltip
 import tornadofx.top
 import tornadofx.vbox
-import java.time.format.DateTimeFormatter
 
 private val logger = KotlinLogging.logger {}
 
@@ -83,7 +72,7 @@ class PlayerStationView : BaseView() {
     }
 
     private val coverArtObservable = appEvent.streamMetaDataUpdates
-        .flatMapMaybe { coverArtUseCase.execute(it.nowPlaying) }
+        .switchMapMaybe { coverArtUseCase.execute(it.nowPlaying) }
 
     private val stationLogo by lazy {
         // This view Shows cover art of currently playing song if available,

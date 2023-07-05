@@ -19,21 +19,19 @@
 package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.rxjava3.core.Single
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AdvancedSearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
-private const val ORDER_BY_TREND = "clicktrend"
-
 /**
- * Gets list of Top 50 clicked stations from radio-browser API
+ * Perform advanced search for stations on radio-browser API
  */
-class GetTrendingStationsUseCase : BaseUseCase<Unit, Single<List<Station>>>() {
+class AdvancedSearchUseCase : BaseUseCase<AdvancedSearchRequest, Single<List<Station>>>() {
 
-    override fun execute(input: Unit): Single<List<Station>> = radioBrowserApi
-        .getAllStations(AllStationsRequest(order = ORDER_BY_TREND))
+    override fun execute(input: AdvancedSearchRequest): Single<List<Station>> = radioBrowserApi
+        .advancedSearch(input)
         .compose(applySchedulersSingle())
         .flattenAsObservable { it }
         .filter { !it.isIgnoredStation }

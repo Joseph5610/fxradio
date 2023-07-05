@@ -9,4 +9,5 @@ class FavouritesClearUseCase : BaseUseCase<Unit, Flowable<Int>>() {
 
     override fun execute(input: Unit): Flowable<Int> = Tables.favourites.removeAll()
         .compose(applySchedulersFlowable())
+        .onErrorComplete()
 }

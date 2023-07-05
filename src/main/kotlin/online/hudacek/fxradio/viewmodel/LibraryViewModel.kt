@@ -42,17 +42,19 @@ private val logger = KotlinLogging.logger {}
 
 sealed class LibraryState(val key: String) {
     object Favourites : LibraryState("favourites")
-    object Search : LibraryState("search.results")
+    data class Search(val query: String) : LibraryState("search.results")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
     object Popular : LibraryState("topStations")
     object Trending : LibraryState("trendingStations")
+
+    object Verified : LibraryState("verifiedStations")
 }
 
 data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
 
 class Library(
     countries: ObservableList<Country> = observableListOf(),
-    tags: ObservableList<Tag> = observableListOf<Tag>(),
+    tags: ObservableList<Tag> = observableListOf(),
     pinned: ObservableList<Country> = observableListOf(),
     showLibrary: Boolean = Properties.ShowLibrary.value(true),
     showPinned: Boolean = Properties.ShowPinnedCountries.value(true),
@@ -73,6 +75,7 @@ class Library(
         observableListOf(
             LibraryItem(LibraryState.Popular, FontAwesome.Glyph.THUMBS_UP),
             LibraryItem(LibraryState.Trending, FontAwesome.Glyph.FIRE),
+            LibraryItem(LibraryState.Verified, FontAwesome.Glyph.CHECK_CIRCLE),
             LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.HEART),
         )
     )

@@ -1,7 +1,6 @@
 package online.hudacek.fxradio.ui.view.stations
 
 import javafx.beans.property.ListProperty
-import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
 import online.hudacek.fxradio.ui.BaseFragment
 import online.hudacek.fxradio.ui.style.Styles
@@ -33,7 +32,7 @@ class TagsFragment : BaseFragment() {
         bindChildren(tagsProperty) {
             hyperlink(it) {
                 action {
-                    libraryViewModel.stateProperty.value = LibraryState.Search
+                    libraryViewModel.stateProperty.value = LibraryState.Search(it)
                     searchViewModel.bindQueryProperty.value = it
                     searchViewModel.searchByTagProperty.value = true
                 }
