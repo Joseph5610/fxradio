@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
 import com.google.gson.annotations.SerializedName
+import online.hudacek.fxradio.apiclient.ApiUtils.COUNTRY_IGNORE_LIST
 import java.io.Serializable
 
 private const val DUMMY_STATION_URL = "https://hudacek.online"
@@ -81,7 +82,7 @@ val Station.description: String
     }
 
 val Station.isIgnoredStation: Boolean
-    get() = (countryCode == "RU" || countryCode == "BY")
+    get() = COUNTRY_IGNORE_LIST.contains(countryCode)
 
 private fun String.capitals() =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
