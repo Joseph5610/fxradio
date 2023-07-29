@@ -27,7 +27,7 @@ import tornadofx.observableListOf
 import tornadofx.property
 
 sealed class StatsState {
-    object Loading : StatsState()
+    data object Loading : StatsState()
     data class Fetched(val stats: StatsResponse) : StatsState()
     data class Error(val cause: String) : StatsState()
 }

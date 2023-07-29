@@ -43,15 +43,15 @@ sealed class Modal<out T : Fragment>(
     val style: StageStyle = StageStyle.DECORATED,
     val resizable: Boolean = false
 ) {
-    object AddNewStation : Modal<AddStationFragment>()
-    object AppInfo : Modal<AppInfoFragment>()
-    object Stats : Modal<StatsFragment>()
-    object Attributions : Modal<AttributionsFragment>()
-    object Debug : Modal<DebugFragment>()
-    object License : Modal<AttributionsFragment.LicenseFragment>()
-    object Preferences : Modal<PreferencesFragment>()
-    object OpenStream : Modal<OpenStreamFragment>()
-    object Countries : Modal<CountriesSearchFragment>()
+    data object AddNewStation : Modal<AddStationFragment>()
+    data object AppInfo : Modal<AppInfoFragment>()
+    data object Stats : Modal<StatsFragment>()
+    data object Attributions : Modal<AttributionsFragment>()
+    data object Debug : Modal<DebugFragment>()
+    data object License : Modal<AttributionsFragment.LicenseFragment>()
+    data object Preferences : Modal<PreferencesFragment>()
+    data object OpenStream : Modal<OpenStreamFragment>()
+    data object Countries : Modal<CountriesSearchFragment>()
 }
 
 /**

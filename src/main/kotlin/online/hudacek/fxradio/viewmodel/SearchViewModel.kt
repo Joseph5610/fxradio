@@ -20,7 +20,6 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.usecase.search.StationSearchUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.toBinding
@@ -43,8 +42,6 @@ class Search(
 
 class SearchViewModel : BaseViewModel<Search>(Search()) {
 
-    private val stationSearchUseCase: StationSearchUseCase by inject()
-
     val searchByTagProperty = bind(Search::searchByTag) as BooleanProperty
 
     // Internal only, contains unedited search query
@@ -53,8 +50,6 @@ class SearchViewModel : BaseViewModel<Search>(Search()) {
     val queryBinding = bindQueryProperty.toObservable()
         .map { trimQuery(it) }
         .toBinding()
-
-    fun search() = stationSearchUseCase.execute(searchByTagProperty.value to queryBinding.value)
 
     /**
      * Trims the [query] so that it always contain at max [QUERY_LENGTH] chars

@@ -21,7 +21,7 @@ package online.hudacek.fxradio.viewmodel
 import javafx.beans.property.StringProperty
 import tornadofx.property
 
-data class License(val name: String = "", val content: String)
+data class License(val name: String, val content: String)
 
 class Attribution(name: String, version: String = "", license: License) {
     var name: String by property(name)
@@ -31,9 +31,7 @@ class Attribution(name: String, version: String = "", license: License) {
 }
 
 /**
- * Attribution view model
- * -------------------
- * Handles information about Licensing
+ * Handles information about third party software
  * Used in [online.hudacek.fxradio.ui.fragment.AttributionsFragment]
  */
 class AttributionViewModel : BaseViewModel<Attribution>() {

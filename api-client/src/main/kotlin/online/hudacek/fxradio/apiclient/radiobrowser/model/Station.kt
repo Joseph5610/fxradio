@@ -24,6 +24,7 @@ import java.io.Serializable
 
 private const val DUMMY_STATION_URL = "https://hudacek.online"
 private const val DUMMY_STATION_NAME = "Nothing playing"
+private const val INVALID_UUID = "0"
 
 /**
  * Station data class
@@ -50,7 +51,7 @@ data class Station(
     @SerializedName("has_extended_info") val hasExtendedInfo: Boolean = false
 ) : Serializable {
 
-    fun isValid() = uuid != "0"
+    fun isValid() = uuid != INVALID_UUID
 
     override fun equals(other: Any?) = if (other is Station) {
         this.uuid == other.uuid
@@ -63,7 +64,7 @@ data class Station(
     companion object {
 
         val dummy by lazy {
-            Station("0", DUMMY_STATION_NAME, DUMMY_STATION_URL, DUMMY_STATION_URL, null)
+            Station(INVALID_UUID, DUMMY_STATION_NAME, DUMMY_STATION_URL, DUMMY_STATION_URL, null)
         }
     }
 }

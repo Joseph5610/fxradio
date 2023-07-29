@@ -32,7 +32,7 @@ class TagsFragment : BaseFragment() {
         bindChildren(tagsProperty) {
             hyperlink(it) {
                 action {
-                    libraryViewModel.stateProperty.value = LibraryState.Search(it)
+                    libraryViewModel.stateProperty.value = LibraryState.Search(it, isTagSearch = true)
                     searchViewModel.bindQueryProperty.value = it
                     searchViewModel.searchByTagProperty.value = true
                 }

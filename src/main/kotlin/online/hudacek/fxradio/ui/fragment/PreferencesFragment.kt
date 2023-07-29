@@ -74,7 +74,7 @@ class PreferencesFragment : BaseFragment() {
                 field(messages["preferences.accentColor"]) {
                     labelContainer.alignment = Pos.CENTER_RIGHT
                     togglegroup {
-                        AccentColor.values.forEach {
+                        AccentColor.entries.forEach {
                             radiobutton(text = "", value = it, group = this) {
                                 userData = it
                                 style {

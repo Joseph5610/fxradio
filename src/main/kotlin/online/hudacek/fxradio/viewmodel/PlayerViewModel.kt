@@ -38,7 +38,7 @@ import tornadofx.property
 
 sealed class PlayerState {
     data class Playing(val url: String) : PlayerState()
-    object Stopped : PlayerState()
+    data object Stopped : PlayerState()
     data class Error(val cause: String) : PlayerState()
 }
 
@@ -140,14 +140,12 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
     /**
      * Save player related key/values to app.properties file
      */
-    override fun onCommit() {
-        app.saveProperties {
-            mapOf(
-                Properties.Player to mediaPlayerProperty.value.playerType,
-                Properties.PlayerAnimated to animateProperty.value,
-                Properties.Volume to volumeProperty.value,
-            )
-        }
+    override fun onCommit() = app.saveProperties {
+        mapOf(
+            Properties.Player to mediaPlayerProperty.value.playerType,
+            Properties.PlayerAnimated to animateProperty.value,
+            Properties.Volume to volumeProperty.value,
+        )
     }
 }
 

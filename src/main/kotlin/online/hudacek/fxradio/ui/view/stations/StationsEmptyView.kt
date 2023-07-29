@@ -29,11 +29,14 @@ import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.addClass
+import tornadofx.bind
 import tornadofx.booleanBinding
 import tornadofx.controlsfx.glyph
 import tornadofx.get
 import tornadofx.hyperlink
 import tornadofx.label
+import tornadofx.listProperty
+import tornadofx.observableListOf
 import tornadofx.paddingAll
 import tornadofx.paddingTop
 import tornadofx.stringBinding
@@ -53,6 +56,10 @@ class StationsEmptyView : BaseView() {
     private val searchGlyph by lazy { FontAwesome.Glyph.SEARCH.make(size = GLYPH_SIZE, isPrimary = false) }
     private val errorGlyph by lazy { FontAwesome.Glyph.WARNING.make(size = GLYPH_SIZE, isPrimary = false) }
     private val loadingGlyph by lazy { FontAwesome.Glyph.CLOUD_DOWNLOAD.make(size = GLYPH_SIZE, isPrimary = false) }
+
+    private val tagsProperty = listProperty<String>(observableListOf()).apply {
+        bind(libraryViewModel.tagsProperty) { c -> c.name }
+    }
 
     private val headerProperty = viewModel.stateProperty.stringBinding {
         when (it) {
@@ -136,6 +143,25 @@ class StationsEmptyView : BaseView() {
         add(subHeader)
         add(connectionHelpMessage)
 
+        vbox {
+            paddingAll = 15
+            add(
+                find<TagsFragment>(
+                    params = mapOf(
+                        "tagsProperty" to tagsProperty
+                    )
+                )
+            )
+            showWhen {
+                viewModel.stateProperty.booleanBinding {
+                    when (it) {
+                        is StationsState.ShortQuery -> true
+                        else -> false
+                    }
+                }
+            }
+        }
+
         showWhen {
             viewModel.stateProperty.booleanBinding {
                 when (it) {
@@ -144,5 +170,9 @@ class StationsEmptyView : BaseView() {
                 }
             }
         }
+    }
+
+    override fun onDock() {
+        libraryViewModel.getTags()
     }
 }

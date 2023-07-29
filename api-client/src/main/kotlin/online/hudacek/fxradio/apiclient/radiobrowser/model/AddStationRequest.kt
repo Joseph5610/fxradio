@@ -18,8 +18,15 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-data class NewStationResponse(
-    val ok: Boolean,
-    val message: String,
-    val uuid: String
+import com.google.gson.annotations.SerializedName
+
+data class AddStationRequest(
+    val name: String = "",
+    val url: String = "",
+    val homepage: String = "",
+    val favicon: String = "",
+    @SerializedName("countrycode") val countryCode: String = "",
+    val country: String = "",
+    val language: String = "",
+    val tags: String = ""
 )

@@ -16,10 +16,9 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase.search
+package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.rxjava3.core.Single
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDsRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
@@ -30,6 +29,6 @@ import online.hudacek.fxradio.util.applySchedulersSingle
 class StationSearchUUIDUseCase : BaseUseCase<String, Single<List<Station>>>() {
 
     override fun execute(input: String): Single<List<Station>> = radioBrowserApi
-        .searchStationByUUIDs(SearchByUUIDsRequest(input))
+        .getStationsByUUID(input)
         .compose(applySchedulersSingle())
 }

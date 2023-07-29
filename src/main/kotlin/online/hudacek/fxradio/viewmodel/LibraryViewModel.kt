@@ -41,13 +41,13 @@ import tornadofx.property
 private val logger = KotlinLogging.logger {}
 
 sealed class LibraryState(val key: String) {
-    object Favourites : LibraryState("favourites")
-    data class Search(val query: String) : LibraryState("search.results")
+    data object Favourites : LibraryState("favourites")
+    data class Search(val query: String, val isTagSearch: Boolean = false) : LibraryState("search.results")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
-    object Popular : LibraryState("topStations")
-    object Trending : LibraryState("trendingStations")
+    data object Popular : LibraryState("topStations")
+    data object Trending : LibraryState("trendingStations")
 
-    object Verified : LibraryState("verifiedStations")
+    data object Verified : LibraryState("verifiedStations")
 }
 
 data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
@@ -143,12 +143,10 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
         logger.error(it) { "Exception when downloading countries" }
     })
 
-    override fun onCommit() {
-        app.saveProperties {
-            mapOf(
-                Properties.ShowLibrary to showLibraryProperty.value,
-                Properties.ShowPinnedCountries to showPinnedProperty.value
-            )
-        }
+    override fun onCommit() = app.saveProperties {
+        mapOf(
+            Properties.ShowLibrary to showLibraryProperty.value,
+            Properties.ShowPinnedCountries to showPinnedProperty.value
+        )
     }
 }

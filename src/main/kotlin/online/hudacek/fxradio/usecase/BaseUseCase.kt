@@ -18,9 +18,14 @@
 
 package online.hudacek.fxradio.usecase
 
+import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.api.RadioBrowserApiProvider
 import online.hudacek.fxradio.apiclient.radiobrowser.RadioBrowserApi
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.event.AppEvent
+import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.observeOnFx
 import tornadofx.Controller
 
 /**
@@ -33,4 +38,13 @@ abstract class BaseUseCase<InputType, OutputType> : Controller() {
     protected val radioBrowserApi: RadioBrowserApi by lazy { RadioBrowserApiProvider.provide() }
 
     abstract fun execute(input: InputType): OutputType
+
+    /**
+     * Common method to filter stations from ignored countries
+     */
+    protected fun Single<List<Station>>.filterInvalidCountries() = flattenAsObservable { it }
+        .filter { !it.isIgnoredStation }
+        .map { it.copy(name = it.name.trim()) }
+        .toList()
+        .compose(applySchedulersSingle())
 }

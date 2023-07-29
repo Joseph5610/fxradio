@@ -27,7 +27,7 @@ import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.usecase.search.StationSearchUUIDUseCase
+import online.hudacek.fxradio.usecase.station.StationSearchUUIDUseCase
 import online.hudacek.fxradio.util.toObservableChangesNonNull
 import tornadofx.booleanProperty
 import tornadofx.observableListOf
@@ -36,11 +36,12 @@ import tornadofx.property
 private val logger = KotlinLogging.logger {}
 
 private const val MAX_TAGS = 15 // Max amount of tags to show inside StationsInfoView
+private const val MIN_TAG_LENGTH = 3 // UI cannot search for short strings
 
 sealed class InfoPanelState {
-    object Hidden : InfoPanelState()
+    data object Hidden : InfoPanelState()
 
-    object Shown : InfoPanelState()
+    data object Shown : InfoPanelState()
 }
 
 class SelectedStation(station: Station) {
@@ -63,7 +64,7 @@ class SelectedStation(station: Station) {
         station.tags
             .split(",")
             .map { tag -> tag.trim() }
-            .filter { tag -> tag.isNotEmpty() }
+            .filter { tag -> tag.isNotEmpty() && tag.length >= MIN_TAG_LENGTH }
             .take(MAX_TAGS)
     ))
     var homePage: String by property(station.homepage)

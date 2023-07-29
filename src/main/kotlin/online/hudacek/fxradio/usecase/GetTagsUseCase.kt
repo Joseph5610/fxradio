@@ -20,9 +20,11 @@ package online.hudacek.fxradio.usecase
 
 import io.reactivex.rxjava3.core.Observable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Tag
-import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.applySchedulers
 
 private const val MAX_TAGS_LIMIT = 15
+private const val MIN_TAG_LENGTH = 3
+private const val TAGS_ORDER = "stationcount"
 
 /**
  * Gets most popular tags
@@ -30,7 +32,8 @@ private const val MAX_TAGS_LIMIT = 15
 class GetTagsUseCase : BaseUseCase<Unit, Observable<Tag>>() {
 
     override fun execute(input: Unit): Observable<Tag> = radioBrowserApi
-        .getTags(limit = MAX_TAGS_LIMIT)
-        .compose(applySchedulersSingle())
+        .getTags(order = TAGS_ORDER, limit = MAX_TAGS_LIMIT, reverse = true)
         .flattenAsObservable { it }
+        .filter { it.name.length >= MIN_TAG_LENGTH }
+        .compose(applySchedulers())
 }

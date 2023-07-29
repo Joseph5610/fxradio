@@ -21,9 +21,7 @@ package online.hudacek.fxradio.usecase.station
 import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.AdvancedSearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.usecase.BaseUseCase
-import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
  * Perform advanced search for stations on radio-browser API
@@ -32,9 +30,5 @@ class AdvancedSearchUseCase : BaseUseCase<AdvancedSearchRequest, Single<List<Sta
 
     override fun execute(input: AdvancedSearchRequest): Single<List<Station>> = radioBrowserApi
         .advancedSearch(input)
-        .compose(applySchedulersSingle())
-        .flattenAsObservable { it }
-        .filter { !it.isIgnoredStation }
-        .map { it.copy(name = it.name.trim()) }
-        .toList()
+        .filterInvalidCountries()
 }

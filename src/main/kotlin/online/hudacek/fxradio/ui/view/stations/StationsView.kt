@@ -53,17 +53,7 @@ class StationsView : BaseView() {
     private val dataGridView: StationsDataGridView by inject()
     private val stationsInfoView: StationsInfoView by inject()
 
-    private val stationsViewModel: StationsViewModel by inject()
-    private val libraryViewModel: LibraryViewModel by inject()
     private val selectedStationViewModel: SelectedStationViewModel by inject()
-
-    private val tagsProperty = listProperty<String>(observableListOf()).apply {
-        bind(libraryViewModel.tagsProperty) { c -> c.name }
-    }
-
-    override fun onDock() {
-        libraryViewModel.getTags()
-    }
 
     override val root = hiddensidepane {
         vgrow = Priority.ALWAYS
@@ -78,24 +68,6 @@ class StationsView : BaseView() {
                 vgrow = Priority.ALWAYS
                 hgrow = Priority.ALWAYS
                 add(stationsEmptyView)
-                vbox {
-                    paddingAll = 15
-                    add(
-                        find<TagsFragment>(
-                            params = mapOf(
-                                "tagsProperty" to tagsProperty
-                            )
-                        )
-                    )
-                    showWhen {
-                        stationsViewModel.stateProperty.booleanBinding {
-                            when (it) {
-                                is StationsState.ShortQuery -> true
-                                else -> false
-                            }
-                        }
-                    }
-                }
                 add(dataGridView)
             }
         }

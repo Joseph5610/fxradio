@@ -78,6 +78,7 @@ class LibrarySearchView : BaseView() {
     }
 
     private fun setSearchState(query: String) {
-        libraryViewModel.stateProperty.value = LibraryState.Search(query)
+        libraryViewModel.stateProperty.value = LibraryState.Search(query, isTagSearch = false)
+        viewModel.searchByTagProperty.value = false
     }
 }

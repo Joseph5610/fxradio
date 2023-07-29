@@ -24,7 +24,7 @@ import javafx.scene.image.Image
 import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.applySchedulersMaybe
 import online.hudacek.fxradio.util.maybeOfNullable
 import java.io.InputStream
 import java.nio.file.Files
@@ -42,6 +42,7 @@ class StationImageCache : ImageCache() {
     override fun load(station: Station): Maybe<Image> = maybeOfNullable(getLocalPath(station))
         .switchIfEmpty(getRemote(station))
         .switchIfEmpty(defaultStationLogoMaybe) // If favicon is null, use default
+        .compose(applySchedulersMaybe())
         .onErrorResumeNext { defaultStationLogoMaybe }
 
     /**
@@ -51,7 +52,7 @@ class StationImageCache : ImageCache() {
         maybeOfNullable(station.favicon)
             .flatMapSingle {
                 if (it.isNotEmpty()) {
-                    Single.fromCallable { HttpClient.request(it) }.compose(applySchedulersSingle())
+                    Single.fromCallable { HttpClient.request(it) }
                 } else {
                     Single.error(
                         IllegalArgumentException("Station ${station.uuid} does not have valid icon URL")
@@ -76,11 +77,12 @@ class StationImageCache : ImageCache() {
         }
     }
 
-    private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) = ips.use {
-        Files.copy(it, cacheBasePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)
-    }
-
     companion object {
+
         val defaultStationLogo by lazy { Image(Config.Resources.waveIcon) }
+
+        private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) = ips.use {
+            Files.copy(it, cacheBasePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)
+        }
     }
 }

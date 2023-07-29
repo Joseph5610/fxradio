@@ -20,8 +20,8 @@ package online.hudacek.fxradio.usecase.station
 
 import io.reactivex.rxjava3.core.Single
 import mu.KotlinLogging
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationResponse
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AddStationRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AddStationResponse
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersSingle
 
@@ -32,11 +32,11 @@ private const val INVALID_UUID = "0"
 /**
  * Adds new station to radio-browser API
  */
-class StationAddUseCase : BaseUseCase<NewStationRequest, Single<NewStationResponse>>() {
+class StationAddUseCase : BaseUseCase<AddStationRequest, Single<AddStationResponse>>() {
 
-    override fun execute(input: NewStationRequest): Single<NewStationResponse> = radioBrowserApi
+    override fun execute(input: AddStationRequest): Single<AddStationResponse> = radioBrowserApi
         .addStation(input)
         .compose(applySchedulersSingle())
         .doOnSuccess { logger.debug { "New station added: $it " } }
-        .onErrorResumeNext { Single.just(NewStationResponse(false, it.localizedMessage, INVALID_UUID)) }
+        .onErrorResumeNext { Single.just(AddStationResponse(false, it.localizedMessage, INVALID_UUID)) }
 }

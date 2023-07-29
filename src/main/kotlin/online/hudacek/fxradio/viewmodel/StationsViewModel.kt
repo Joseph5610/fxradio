@@ -29,7 +29,7 @@ import online.hudacek.fxradio.usecase.station.AdvancedSearchUseCase
 import online.hudacek.fxradio.usecase.station.GetPopularStationsUseCase
 import online.hudacek.fxradio.usecase.station.GetStationsByCountryUseCase
 import online.hudacek.fxradio.usecase.station.StationVoteUseCase
-import online.hudacek.fxradio.util.toObservable
+import online.hudacek.fxradio.util.toObservableChangesNonNull
 import org.controlsfx.glyphfont.FontAwesome
 import tornadofx.asObservable
 import tornadofx.get
@@ -39,9 +39,9 @@ import tornadofx.property
 sealed class StationsState {
     data class Fetched(val stations: List<Station>) : StationsState()
     data class Error(val cause: String) : StationsState()
-    object NoStations : StationsState()
-    object ShortQuery : StationsState()
-    object Loading : StationsState()
+    data object NoStations : StationsState()
+    data object ShortQuery : StationsState()
+    data object Loading : StationsState()
 }
 
 class Stations(stations: ObservableList<Station> = observableListOf()) {
@@ -73,16 +73,18 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
             .switchMapMaybe(::handleNewLibraryState)
             .subscribe(::show, ::handleError)
 
+        searchViewModel.searchByTagProperty.toObservableChangesNonNull()
+            .map { it.newVal }
+            .doOnNext {
+                libraryViewModel.stateProperty.value = LibraryState.Search(searchViewModel.bindQueryProperty.value, it)
+            }
+            .subscribe()
+
         // SearchState needs special handling
         libraryViewModel.stateObservable
             .filter { it is LibraryState.Search }
             .doOnNext { stateProperty.value = StationsState.Loading }
             .subscribe(::handleSearch, ::handleError)
-
-        searchViewModel.searchByTagProperty.toObservable()
-            .subscribe({
-                handleSearch(libraryViewModel.stateProperty.value)
-            }, ::handleError)
 
         favouritesViewModel.stationsObservable.subscribe {
             if (libraryViewModel.stateProperty.value == LibraryState.Favourites) {
@@ -113,7 +115,7 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
             is LibraryState.Favourites -> Single.just(favouritesViewModel.stationsProperty)
             is LibraryState.Popular -> getPopularStationsUseCase.execute(Unit)
             is LibraryState.Trending -> advancedSearchUseCase.execute(trendingRequest)
-            is LibraryState.Search -> searchViewModel.search()
+            is LibraryState.Search -> performSearch(state)
             is LibraryState.Verified -> advancedSearchUseCase.execute(verifiedRequest)
         }
 
@@ -149,13 +151,37 @@ class StationsViewModel : BaseStateViewModel<Stations, StationsState>(Stations()
         }
     }
 
+    private fun performSearch(state: LibraryState.Search): Single<List<Station>> {
+        val name = if (!state.isTagSearch) {
+            state.query
+        } else {
+            null
+        }
+
+        val tag = if (state.isTagSearch) {
+            state.query
+        } else {
+            null
+        }
+
+        val tagExact = if (tag != null) true else null
+
+        return advancedSearchUseCase.execute(
+            AdvancedSearchRequest(
+                name = name, tag = tag, tagExact = tagExact, limit = SEARCH_LIMIT
+            )
+        )
+    }
+
     companion object {
         private const val VERIFIED_LIMIT = 350
         private const val TRENDING_LIMIT = 150
+        private const val SEARCH_LIMIT = 350
 
         private val verifiedRequest = AdvancedSearchRequest(hasExtendedInfo = true, limit = VERIFIED_LIMIT)
 
         private val trendingRequest =
             AdvancedSearchRequest(limit = TRENDING_LIMIT, order = "clicktrend", reverse = true)
+
     }
 }
