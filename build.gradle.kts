@@ -33,7 +33,7 @@ val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.9.3"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.19.0"
+val flywayVersion = "9.21.2"
 val controlsFxVersion = "11.1.2"
 
 val defaultAppJvmArgs = listOf(
