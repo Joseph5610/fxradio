@@ -24,7 +24,6 @@ import online.hudacek.fxradio.media.player.experimental.FxPlayerImpl
 import online.hudacek.fxradio.media.player.humble.HumblePlayerImpl
 import online.hudacek.fxradio.media.player.vlc.VLCPlayerImpl
 import online.hudacek.fxradio.util.Properties
-import online.hudacek.fxradio.util.RxAlert
 import online.hudacek.fxradio.util.RxAlert.warning
 import online.hudacek.fxradio.util.value
 import tornadofx.FX.Companion.messages

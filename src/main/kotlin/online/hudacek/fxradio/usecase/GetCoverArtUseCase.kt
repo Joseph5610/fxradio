@@ -27,7 +27,8 @@ import online.hudacek.fxradio.api.MusicBrainzApiProvider
 import online.hudacek.fxradio.apiclient.http.HttpClient
 import online.hudacek.fxradio.apiclient.musicbrainz.MusicBrainzApi
 import online.hudacek.fxradio.apiclient.musicbrainz.model.Release
-import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.applySchedulersMaybe
+import online.hudacek.fxradio.util.maybeOfNullable
 
 private val logger = KotlinLogging.logger {}
 
@@ -42,15 +43,15 @@ class GetCoverArtUseCase : BaseUseCase<String, Maybe<Response>>() {
     private val musicBrainzApi: MusicBrainzApi by lazy { MusicBrainzApiProvider.provide() }
 
     override fun execute(input: String): Maybe<Response> = musicBrainzApi.getReleases(input)
+        .flatMapMaybe { maybeOfNullable(it.releases.firstOrNull { r -> r.score >= SCORE_THRESHOLD }) }
         .map {
             // Take only the most probable candidate for cover art
-            val release = it.releases.first { r -> r.score >= SCORE_THRESHOLD }
-            val coverUrl = Config.API.coverArtApiUrl + release.id + ART_PATH
-            ReleaseWithCoverArt(coverUrl, release)
+            val coverUrl = Config.API.coverArtApiUrl + it.id + ART_PATH
+            ReleaseWithCoverArt(coverUrl, it)
         }
         .doOnSuccess { logger.debug { "Requesting CoverArt: ${it.coverArtUrl}" } }
-        .flatMap { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
-        .compose(applySchedulersSingle())
+        .flatMapSingle { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
+        .compose(applySchedulersMaybe())
         .onErrorComplete()
 }
 

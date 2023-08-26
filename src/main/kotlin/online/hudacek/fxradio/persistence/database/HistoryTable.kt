@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 
 class HistoryTable : StationTable(tableName = "HISTORY") {
+
     override fun selectAll(): Flowable<Station> =
         database.select("SELECT * FROM $tableName ORDER BY id DESC;").asStationFlowable()
 

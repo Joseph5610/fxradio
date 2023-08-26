@@ -40,7 +40,7 @@ class DebugFragment : BaseFragment("Debug Window") {
 
         form {
             fieldset("Selected Station") {
-                textarea(viewModel.stationProperty.asString()) {
+                textarea(viewModel.itemProperty.asString()) {
                     vgrow = Priority.ALWAYS
                     isWrapText = true
                     prefHeight = 150.0

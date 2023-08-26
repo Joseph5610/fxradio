@@ -72,7 +72,7 @@ abstract class Appearance : Component() {
                     AccentColor.MULTICOLOR.colorCode
                 }
             )
-            return AccentColor.values.first { it.colorCode == systemColorCode }
+            return AccentColor.entries.first { it.colorCode == systemColorCode }
         }
 
         /**

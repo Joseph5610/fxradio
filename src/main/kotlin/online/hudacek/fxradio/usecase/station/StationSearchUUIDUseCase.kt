@@ -16,14 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.apiclient.radiobrowser.model
+package online.hudacek.fxradio.usecase.station
 
-import com.google.gson.annotations.SerializedName
+import io.reactivex.rxjava3.core.Single
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.usecase.BaseUseCase
+import online.hudacek.fxradio.util.applySchedulersSingle
 
-data class AllStationsRequest(
-    val order: String = "name",
-    val limit: Int = 50,
-    @SerializedName("hidebroken") val hideBroken: Boolean = true,
-    val reverse: Boolean = true
-)
+/**
+ * Searches for station details by UUID of existing station
+ */
+class StationSearchUUIDUseCase : BaseUseCase<String, Single<List<Station>>>() {
 
+    override fun execute(input: String): Single<List<Station>> = radioBrowserApi
+        .getStationsByUUID(input)
+        .compose(applySchedulersSingle())
+}

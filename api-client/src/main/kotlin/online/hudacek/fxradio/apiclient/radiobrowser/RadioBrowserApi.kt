@@ -20,14 +20,11 @@ package online.hudacek.fxradio.apiclient.radiobrowser
 
 import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.ApiDefinition
-import online.hudacek.fxradio.apiclient.radiobrowser.model.AllStationsRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AdvancedSearchRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.ClickResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationResponse
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByTagRequest
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchByUUIDsRequest
-import online.hudacek.fxradio.apiclient.radiobrowser.model.SearchRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AddStationRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AddStationResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.StatsResponse
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Tag
@@ -45,12 +42,18 @@ private const val DEFAULT_HIDE_BROKEN = true
  */
 interface RadioBrowserApi : ApiDefinition {
 
-    @GET("json/stations/topvote/50")
+    @GET("json/stations/topvote/150")
     fun getTopVotedStations(@Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN): Single<List<Station>>
 
-    @POST("json/stations/bycountrycodeexact/{countryCode}")
+    @GET("json/stations/bycountrycodeexact/{countryCode}")
     fun getStationsByCountryCode(
         @Path("countryCode") countryCode: String,
+        @Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN
+    ): Single<List<Station>>
+
+    @GET("json/stations/byuuid/{uuid}")
+    fun getStationsByUUID(
+        @Path("uuid") uuid: String,
         @Query("hidebroken") hideBroken: Boolean = DEFAULT_HIDE_BROKEN
     ): Single<List<Station>>
 
@@ -59,32 +62,23 @@ interface RadioBrowserApi : ApiDefinition {
 
     @GET("json/tags")
     fun getTags(
-        @Query("order") order: String = "stationcount",
-        @Query("reverse") reverse: Boolean = true,
-        @Query("limit") limit: Int = 100
+        @Query("order") order: String,
+        @Query("limit") limit: Int,
+        @Query("reverse") reverse: Boolean
     ): Single<List<Tag>>
-
-    @POST("json/stations/search")
-    fun searchStationByName(@Body searchRequest: SearchRequest): Single<List<Station>>
-
-    @POST("json/stations/search")
-    fun searchStationByTag(@Body searchByTagRequest: SearchByTagRequest): Single<List<Station>>
-
-    @POST("json/stations/byuuid")
-    fun searchStationByUUIDs(@Body searchByUUIDsRequest: SearchByUUIDsRequest): Single<List<Station>>
-
-    @POST("json/stations")
-    fun getAllStations(@Body allStationsRequest: AllStationsRequest): Single<List<Station>>
-
-    @POST("json/add")
-    fun addStation(@Body newStationRequest: NewStationRequest): Single<NewStationResponse>
 
     @GET("json/vote/{uuid}")
     fun addVote(@Path("uuid") uuid: String): Single<VoteResponse>
 
     @GET("json/url/{uuid}")
-    fun click(@Path("uuid") uuid: String): Single<ClickResponse>
+    fun addClick(@Path("uuid") uuid: String): Single<ClickResponse>
 
     @GET("json/stats")
     fun getStats(): Single<StatsResponse>
+
+    @POST("json/stations/search")
+    fun advancedSearch(@Body advancedSearchRequest: AdvancedSearchRequest): Single<List<Station>>
+
+    @POST("json/add")
+    fun addStation(@Body addStationRequest: AddStationRequest): Single<AddStationResponse>
 }

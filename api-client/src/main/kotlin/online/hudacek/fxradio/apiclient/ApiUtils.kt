@@ -23,6 +23,11 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 object ApiUtils {
 
     /**
+     * Stations from those countries are filtered in the whole application
+     */
+    internal val COUNTRY_IGNORE_LIST = listOf("RU", "BY")
+
+    /**
      * Returns true if the [url] is valid HTTP or HTTPS URL
      */
     fun isValidUrl(url: String) = url.toHttpUrlOrNull() != null

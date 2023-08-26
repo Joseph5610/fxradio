@@ -22,8 +22,8 @@ import io.reactivex.rxjava3.core.Observable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredCountry
 import online.hudacek.fxradio.usecase.BaseUseCase
-import online.hudacek.fxradio.util.applySchedulersSingle
-import java.util.Locale
+import online.hudacek.fxradio.util.applySchedulers
+import java.util.*
 
 
 /**
@@ -31,16 +31,14 @@ import java.util.Locale
  */
 class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
 
-    private val isoCountries = Locale.getISOCountries()
-
     override fun execute(input: Unit): Observable<Country> = radioBrowserApi
         .getCountries()
-        .compose(applySchedulersSingle())
         .flattenAsObservable { it.filter { c -> !c.isIgnoredCountry } }
         .filter { it.stationCount != 0 }
         .map { it.copy(name = getCountryNameFromISO(it.iso3166) ?: it.name) }
         .sorted(Comparator.comparing(Country::name))
         .distinct()
+        .compose(applySchedulers())
 
     private fun getCountryNameFromISO(iso3166: String?): String? {
         val countryCode: String? = isoCountries.firstOrNull { it == iso3166 }
@@ -49,5 +47,9 @@ class GetCountriesUseCase : BaseUseCase<Unit, Observable<Country>>() {
         } else {
             null
         }
+    }
+
+    companion object {
+        private val isoCountries = Locale.getISOCountries()
     }
 }

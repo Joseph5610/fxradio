@@ -18,18 +18,18 @@
 
 package online.hudacek.fxradio.viewmodel
 
-import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.usecase.search.StationSearchUseCase
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.save
 import online.hudacek.fxradio.util.toBinding
 import online.hudacek.fxradio.util.toObservable
-import online.hudacek.fxradio.util.toObservableChangesNonNull
 import online.hudacek.fxradio.util.value
 import tornadofx.property
 
+/**
+ * Maximum search chars
+ */
 private const val QUERY_LENGTH = 50
 
 class Search(
@@ -42,24 +42,20 @@ class Search(
 
 class SearchViewModel : BaseViewModel<Search>(Search()) {
 
-    private val stationSearchUseCase: StationSearchUseCase by inject()
-
     val searchByTagProperty = bind(Search::searchByTag) as BooleanProperty
 
-    //Internal only, contains unedited search query
+    // Internal only, contains unedited search query
     val bindQueryProperty = bind(Search::query) as StringProperty
 
-    //Search query is limited to 50 chars and trimmed to reduce requests to API
-    val queryChanges: Observable<String> = bindQueryProperty
-        .toObservableChangesNonNull()
-        .map { it.newVal }
-        .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
-
     val queryBinding = bindQueryProperty.toObservable()
-        .map { if (it.length > QUERY_LENGTH) it.substring(0, QUERY_LENGTH).trim() else it.trim() }
+        .map { trimQuery(it) }
         .toBinding()
 
-    fun search() = stationSearchUseCase.execute(searchByTagProperty.value to queryBinding.value)
+    /**
+     * Trims the [query] so that it always contain at max [QUERY_LENGTH] chars
+     */
+    private fun trimQuery(query: String) =
+        if (query.length > QUERY_LENGTH) query.substring(0, QUERY_LENGTH).trim() else query.trim()
 
     override fun onCommit() = Properties.SearchQuery.save(bindQueryProperty.value)
 }

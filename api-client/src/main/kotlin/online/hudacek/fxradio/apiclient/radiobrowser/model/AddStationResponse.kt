@@ -18,10 +18,8 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import com.google.gson.annotations.SerializedName
-
-data class SearchRequest(
-    val name: String,
-    val limit: Int = 350,
-    @SerializedName("hidebroken") val hideBroken: Boolean = true
+data class AddStationResponse(
+    val ok: Boolean,
+    val message: String,
+    val uuid: String
 )

@@ -19,6 +19,7 @@
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
 import com.google.gson.annotations.SerializedName
+import online.hudacek.fxradio.apiclient.ApiUtils.COUNTRY_IGNORE_LIST
 
 data class Country(
     val name: String,
@@ -28,13 +29,13 @@ data class Country(
 
     // Don't use stationCount when comparing this data class
     override fun equals(other: Any?) = if (other is Country) {
-        this.name == other.name
+        this.iso3166 == other.iso3166
     } else {
         super.equals(other)
     }
 
-    override fun hashCode() = name.hashCode()
+    override fun hashCode() = iso3166.hashCode()
 }
 
 val Country.isIgnoredCountry: Boolean
-    get() = (iso3166 == "RU" || iso3166 == "BY")
+    get() = COUNTRY_IGNORE_LIST.contains(iso3166)

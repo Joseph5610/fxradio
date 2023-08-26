@@ -41,18 +41,20 @@ import tornadofx.property
 private val logger = KotlinLogging.logger {}
 
 sealed class LibraryState(val key: String) {
-    object Favourites : LibraryState("favourites")
-    object Search : LibraryState("search.results")
+    data object Favourites : LibraryState("favourites")
+    data class Search(val query: String, val isTagSearch: Boolean = false) : LibraryState("search.results")
     data class SelectedCountry(val country: Country) : LibraryState(country.name)
-    object Popular : LibraryState("topStations")
-    object Trending : LibraryState("trendingStations")
+    data object Popular : LibraryState("topStations")
+    data object Trending : LibraryState("trendingStations")
+
+    data object Verified : LibraryState("verifiedStations")
 }
 
 data class LibraryItem(val type: LibraryState, val glyph: FontAwesome.Glyph)
 
 class Library(
     countries: ObservableList<Country> = observableListOf(),
-    tags: ObservableList<Tag> = observableListOf<Tag>(),
+    tags: ObservableList<Tag> = observableListOf(),
     pinned: ObservableList<Country> = observableListOf(),
     showLibrary: Boolean = Properties.ShowLibrary.value(true),
     showPinned: Boolean = Properties.ShowPinnedCountries.value(true),
@@ -73,6 +75,7 @@ class Library(
         observableListOf(
             LibraryItem(LibraryState.Popular, FontAwesome.Glyph.THUMBS_UP),
             LibraryItem(LibraryState.Trending, FontAwesome.Glyph.FIRE),
+            LibraryItem(LibraryState.Verified, FontAwesome.Glyph.CHECK_CIRCLE),
             LibraryItem(LibraryState.Favourites, FontAwesome.Glyph.HEART),
         )
     )
@@ -140,12 +143,10 @@ class LibraryViewModel : BaseStateViewModel<Library, LibraryState>(Library(), Li
         logger.error(it) { "Exception when downloading countries" }
     })
 
-    override fun onCommit() {
-        app.saveProperties {
-            mapOf(
-                Properties.ShowLibrary to showLibraryProperty.value,
-                Properties.ShowPinnedCountries to showPinnedProperty.value
-            )
-        }
+    override fun onCommit() = app.saveProperties {
+        mapOf(
+            Properties.ShowLibrary to showLibraryProperty.value,
+            Properties.ShowPinnedCountries to showPinnedProperty.value
+        )
     }
 }

@@ -188,6 +188,7 @@ class StationsInfoView : BaseView() {
         }
 
         appEvent.streamMetaDataUpdates
+            .filter { it.nowPlaying.length > 1 }
             .observeOnFx()
             // Replace Station name received from stream with API station name
             .withLatestFrom(selectedStationViewModel.stationObservable) { m, s ->
@@ -333,7 +334,6 @@ class StationsInfoView : BaseView() {
                         .map { selectedStationViewModel.stationProperty.value }
                         .filter { it in favouritesViewModel.stationsProperty }
                         .subscribe(favouritesViewModel::removeFavourite)
-
 
                     showWhen {
                         Observable.combineLatest(

@@ -22,7 +22,7 @@ import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.StringProperty
-import online.hudacek.fxradio.apiclient.radiobrowser.model.NewStationRequest
+import online.hudacek.fxradio.apiclient.radiobrowser.model.AddStationRequest
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.station.StationAddUseCase
 import online.hudacek.fxradio.util.toObservable
@@ -106,7 +106,7 @@ class AddStationViewModel : BaseViewModel<AddStationModel>(AddStationModel()) {
                 )
             }
 
-    private fun convertToRequest() = NewStationRequest(
+    private fun convertToRequest() = AddStationRequest(
         nameProperty.value,
         urlProperty.value,
         homePageProperty.value,

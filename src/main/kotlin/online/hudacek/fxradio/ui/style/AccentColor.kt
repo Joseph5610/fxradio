@@ -49,9 +49,5 @@ enum class AccentColor(
         PURPLE -> "#a550a7"
         PINK -> "#f750bb"
     }
-
-    companion object {
-        val values = values().asList()
-    }
 }
 

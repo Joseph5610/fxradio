@@ -28,7 +28,7 @@ import online.hudacek.fxradio.ui.util.msgFormat
 import online.hudacek.fxradio.ui.util.openUrl
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.RxAlert.confirm
-import online.hudacek.fxradio.util.applySchedulersSingle
+import online.hudacek.fxradio.util.applySchedulersMaybe
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.value
 import org.controlsfx.glyphfont.FontAwesome
@@ -46,13 +46,13 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
     fun clearCache(): Disposable = confirm(
         messages["cache.clear.title"],
         messages["cache.clear.description"].msgFormat(ImageCache.totalSize)
-    ).flatMapSingle {
-        Single.just(ImageCache.clear()).compose(applySchedulersSingle())
-    }.subscribe({
-        appEvent.appNotification.onNext(AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
-    }, {
-        appEvent.appNotification.onNext(AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
-    })
+    ).flatMapSingle { Single.just(ImageCache.clear()) }
+        .compose(applySchedulersMaybe())
+        .subscribe({
+            appEvent.appNotification.onNext(AppNotification(messages["cache.clear.ok"], FontAwesome.Glyph.CHECK))
+        }, {
+            appEvent.appNotification.onNext(AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
+        })
 
     fun openWebsite() = app.openUrl(FxRadio.appUrl)
 }

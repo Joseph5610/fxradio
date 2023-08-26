@@ -27,7 +27,7 @@ import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import mu.KotlinLogging
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.usecase.search.StationSearchUUIDUseCase
+import online.hudacek.fxradio.usecase.station.StationSearchUUIDUseCase
 import online.hudacek.fxradio.util.toObservableChangesNonNull
 import tornadofx.booleanProperty
 import tornadofx.observableListOf
@@ -35,10 +35,13 @@ import tornadofx.property
 
 private val logger = KotlinLogging.logger {}
 
-sealed class InfoPanelState {
-    object Hidden : InfoPanelState()
+private const val MAX_TAGS = 15 // Max amount of tags to show inside StationsInfoView
+private const val MIN_TAG_LENGTH = 3 // UI cannot search for short strings
 
-    object Shown : InfoPanelState()
+sealed class InfoPanelState {
+    data object Hidden : InfoPanelState()
+
+    data object Shown : InfoPanelState()
 }
 
 class SelectedStation(station: Station) {
@@ -51,7 +54,7 @@ class SelectedStation(station: Station) {
     var codec: String by property(station.codec)
     var bitrate: Int by property(station.bitrate)
     var votes: Int by property(station.votes)
-    var streamUrl: String by property(station.urlResolved)
+    var urlResolved: String by property(station.urlResolved)
     var clickTrend: Int by property(station.clickTrend)
     var clickCount: Int by property(station.clickCount)
     var favicon: String? by property(station.favicon)
@@ -61,10 +64,17 @@ class SelectedStation(station: Station) {
         station.tags
             .split(",")
             .map { tag -> tag.trim() }
-            .filter { tag -> tag.isNotEmpty() }
-            .take(15) // Max amount of tags to show inside StationsInfoView
+            .filter { tag -> tag.isNotEmpty() && tag.length >= MIN_TAG_LENGTH }
+            .take(MAX_TAGS)
     ))
     var homePage: String by property(station.homepage)
+
+    override fun toString() =
+        "SelectedStation(station=$station, uuid='$uuid', name='$name', country='$country', language='$language', " +
+                "countryCode='$countryCode', codec='$codec', bitrate=$bitrate, votes=$votes, " +
+                "urlResolved='$urlResolved', clickTrend=$clickTrend, clickCount=$clickCount, " +
+                "favicon=$favicon, countryState=$countryState, hasExtendedInfo=$hasExtendedInfo, " +
+                "tags=$tags, homePage='$homePage')"
 }
 
 class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelState>(
@@ -84,7 +94,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
     val languageProperty = bind(SelectedStation::language) as StringProperty
     val countryProperty = bind(SelectedStation::country) as StringProperty
     val votesProperty = bind(SelectedStation::votes) as IntegerProperty
-    val streamUrlProperty = bind(SelectedStation::streamUrl) as StringProperty
+    val urlResolvedProperty = bind(SelectedStation::urlResolved) as StringProperty
     val faviconProperty = bind(SelectedStation::favicon) as StringProperty?
     val countryStateProperty = bind(SelectedStation::countryState) as StringProperty?
     val clickTrendProperty = bind(SelectedStation::clickTrend) as IntegerProperty
@@ -100,6 +110,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
 
     /**
      * Retrieve additional station data as some of them might not be known at all times
+     * or might have changed in time
      */
     fun retrieveAdditionalData() {
         stationObservable
@@ -109,6 +120,7 @@ class SelectedStationViewModel : BaseStateViewModel<SelectedStation, InfoPanelSt
                     votesProperty.value = s.votes
                     clickTrendProperty.value = s.clickTrend
                     clickCountProperty.value = s.clickCount
+                    urlResolvedProperty.value = s.urlResolved
                 }
             }, {
                 logger.debug(it) { "Retrieving additional station data unsuccessful." }

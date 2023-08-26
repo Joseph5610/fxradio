@@ -22,7 +22,6 @@ import io.reactivex.rxjava3.core.Single
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.usecase.BaseUseCase
-import online.hudacek.fxradio.util.applySchedulersSingle
 
 /**
  * Gets all stations from provided country name
@@ -31,8 +30,5 @@ class GetStationsByCountryUseCase : BaseUseCase<Country, Single<List<Station>>>(
 
     override fun execute(input: Country): Single<List<Station>> = radioBrowserApi
         .getStationsByCountryCode(countryCode = input.iso3166)
-        .compose(applySchedulersSingle())
-        .flattenAsObservable { it }
-        .map { it.copy(name = it.name.trim()) }
-        .toList()
+        .filterInvalidCountries()
 }

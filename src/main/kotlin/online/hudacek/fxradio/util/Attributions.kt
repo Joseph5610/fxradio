@@ -45,7 +45,7 @@ object Attributions {
 
     private object Licenses {
         val graphics = License(
-            content = "macOS install disk background: Designed by xb100 / Freepik\n\n" +
+            "Application Graphics", "macOS install disk background: Designed by xb100 / Freepik\n\n" +
                     "Voice chat icons created by Rizki Ahmad Fauzi - Flaticon\n\n" +
                     "Flag Icons based on https://github.com/griffon-legacy/griffon-countries-javafx-plugin"
         )
@@ -132,7 +132,7 @@ object Attributions {
                     "limitations under the License."
         )
 
-        val tickerView = License(content = "https://gitlab.light.kow.is/kowis-projects/deskscreen")
+        val tickerView = License("TickerView", "https://gitlab.light.kow.is/kowis-projects/deskscreen")
         val nsMenuFx = License(
             "BSD 3-Clause \"New\" or \"Revised\" License", "Copyright (c) 2015, codecentric AG\n" +
                     "All rights reserved.\n" +
