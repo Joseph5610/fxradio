@@ -25,7 +25,6 @@ import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.apiclient.radiobrowser.model.isIgnoredStation
 import online.hudacek.fxradio.event.AppEvent
 import online.hudacek.fxradio.util.applySchedulersSingle
-import online.hudacek.fxradio.util.observeOnFx
 import tornadofx.Controller
 
 /**

@@ -12,13 +12,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("io.github.fvarrui:javapackager:1.7.2")
+        classpath("io.github.fvarrui:javapackager:1.7.3")
     }
 }
 
 plugins {
-    kotlin("jvm") version "1.9.0"
-    id("org.openjfx.javafxplugin") version "0.0.13"
+    kotlin("jvm") version "1.9.10"
+    id("org.openjfx.javafxplugin") version "0.0.14"
     id("application")
 }
 
@@ -35,6 +35,20 @@ val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "9.19.0"
 val controlsFxVersion = "11.1.2"
+
+val defaultAppJvmArgs = listOf(
+    // Tornadofx
+    "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED",
+    "--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED",
+    "--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED",
+    // necessary for ControlsFX
+    "--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED",
+    "--add-opens=javafx.base/com.sun.javafx.collections=ALL-UNNAMED",
+    "--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED",
+    "--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED",
+    "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED",
+    "--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
+)
 
 version = "0.18.0"
 
@@ -65,14 +79,15 @@ allprojects {
 
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(19))
-            vendor.set(JvmVendorSpec.AZUL)
+            languageVersion.set(JavaLanguageVersion.of(20))
+            vendor.set(JvmVendorSpec.ADOPTIUM)
         }
     }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs = defaultAppJvmArgs
 }
 
 dependencies {
@@ -132,18 +147,7 @@ javafx {
 
 application {
     mainClass.set("online.hudacek.fxradio.FxRadioKt")
-    applicationDefaultJvmArgs = listOf(
-        // Tornadofx
-        "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED",
-        "--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED",
-        "--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED",
-        // necessary for ControlsFX
-        "--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED",
-        "--add-opens=javafx.base/com.sun.javafx.collections=ALL-UNNAMED",
-        "--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED",
-        "--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED",
-        "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED",
-    )
+    applicationDefaultJvmArgs = defaultAppJvmArgs
 }
 
 task<PackageTask>("jfxNative") {
