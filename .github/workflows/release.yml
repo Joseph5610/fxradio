@@ -33,7 +33,7 @@ jobs:
     build:
         if: startsWith(github.ref, 'refs/tags/')
         name: Build macOS Release
-        runs-on: macos-11
+        runs-on: macos-12
         needs:
             - prepareRelease
         steps:
