@@ -24,16 +24,16 @@ plugins {
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
-val kotlinCoroutinesVersion = "1.7.1"
+val kotlinCoroutinesVersion = "1.7.3"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.20.0"
 val slf4jVersion = "2.0.7"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.16-alpha"
-val junitVersion = "5.9.3"
+val junitVersion = "5.10.0"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.19.0"
+val flywayVersion = "9.21.2"
 val controlsFxVersion = "11.1.2"
 
 val defaultAppJvmArgs = listOf(
