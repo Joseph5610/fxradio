@@ -85,7 +85,6 @@ class LibraryTitleFragment : BaseFragment() {
 
         smallLabel(libraryTitle) {
             paddingLeft = 10.0
-            addClass(Styles.boldText)
         }
         if (showProperty != null) {
             onLeftClick {

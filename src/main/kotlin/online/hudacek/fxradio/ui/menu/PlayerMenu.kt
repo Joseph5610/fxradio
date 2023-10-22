@@ -18,10 +18,8 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import javafx.beans.property.Property
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.MenuItem
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.util.toObservable
@@ -40,7 +38,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val startItem by lazy {
         item(messages["menu.player.start"], KeyCodes.play) {
-            disableWhenInvalidStation(selectedStationViewModel.stationProperty)
+            disableWhenInvalidStation()
             action {
                 playerViewModel.stateProperty.value = selectedStationViewModel.urlResolvedProperty.let {
                     PlayerState.Playing(it.value)
@@ -51,7 +49,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val stopItem by lazy {
         item(messages["menu.player.stop"], KeyCodes.stop) {
-            disableWhenInvalidStation(selectedStationViewModel.stationProperty)
+            disableWhenInvalidStation()
             action {
                 playerViewModel.stateProperty.value = PlayerState.Stopped
             }
@@ -86,8 +84,8 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     override val menuItems = listOf(startItem, stopItem, separator(), playerTypeItem, animateItem)
 
-    private fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
-        disableWhen(station.booleanBinding {
+    private fun MenuItem.disableWhenInvalidStation() {
+        disableWhen(selectedStationViewModel.stationProperty.booleanBinding {
             it == null || !it.isValid()
         })
     }

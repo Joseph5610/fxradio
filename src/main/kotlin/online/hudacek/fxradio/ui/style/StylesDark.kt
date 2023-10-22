@@ -376,7 +376,6 @@ class StylesDark : Stylesheet() {
         datagridCell {
             backgroundColor += c(colors.transparent)
             borderColor += box(c(colors.transparent))
-
             padding = box(0.px, 5.px, 5.px, 5.px)
             backgroundRadius += box(6.px)
             borderRadius += box(6.px)

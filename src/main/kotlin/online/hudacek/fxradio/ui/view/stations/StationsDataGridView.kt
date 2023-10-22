@@ -128,7 +128,6 @@ class StationsDataGridView : BaseView() {
 
         cellCache { station ->
             vbox(alignment = Pos.BOTTOM_CENTER) {
-
                 onHover {
                     tooltip(station.name)
                 }
@@ -177,7 +176,7 @@ class StationsDataGridView : BaseView() {
                     }
                     paddingTop = 5
                     style {
-                        fontSize = 13.px
+                        fontSize = 12.5.px
                     }
                 }
                 smallLabel(station.description)
