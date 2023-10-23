@@ -18,12 +18,21 @@
 
 package online.hudacek.fxradio.media.player.experimental
 
+import javafx.application.Platform
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer.Status
 import mu.KotlinLogging
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.StreamUnavailableException
+import online.hudacek.fxradio.ui.util.msgFormat
+import online.hudacek.fxradio.viewmodel.PlayerState
+import online.hudacek.fxradio.viewmodel.PlayerViewModel
+import tornadofx.FX
+import tornadofx.find
+import tornadofx.get
+import tornadofx.onChange
 import tornadofx.onChangeOnce
+import tornadofx.play
 import javafx.scene.media.MediaPlayer as JFXMediaPlayer
 
 private val logger = KotlinLogging.logger {}
@@ -36,39 +45,12 @@ class FxPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.
     private var jfxPlayer: JFXMediaPlayer? = null
 
     override fun play(streamUrl: String) {
-        try {
+        runCatching {
             stop()
             val media = Media(streamUrl)
-            media.setOnError {
-                throw StreamUnavailableException("Invalid media file!")
-            }
-
-            jfxPlayer = JFXMediaPlayer(media).apply {
-                cycleCount = JFXMediaPlayer.INDEFINITE
-
-                logger.debug { "Requested play of ${media.source}" }
-
-                statusProperty().onChangeOnce {
-                    logger.debug { "Player status change: $it" }
-                    if (status == Status.STOPPED || status == Status.READY) {
-                        play()
-                    }
-                }
-
-                setOnError {
-                    throw StreamUnavailableException("The stream cannot be played!")
-                }
-
-                setOnHalted {
-                    throw StreamUnavailableException("The stream cannot be played!")
-                }
-
-                if (status == Status.STOPPED || status == Status.READY) {
-                    play()
-                }
-            }
-        } catch (e: Exception) {
-            logger.error(e) { "Exception when playing stream!" }
+            jfxPlayer = createPlayer(media)
+        }.onFailure {
+            logger.error(it) { "Exception when playing stream!" }
         }
     }
 
@@ -89,5 +71,23 @@ class FxPlayerImpl(override val playerType: MediaPlayer.Type = MediaPlayer.Type.
 
     override fun release() {
         jfxPlayer?.dispose()
+    }
+
+    private fun createPlayer(media: Media) = JFXMediaPlayer(media).apply {
+        logger.debug { "Requested new player for ${media.source}" }
+
+        cycleCount = JFXMediaPlayer.INDEFINITE
+        isAutoPlay = true
+
+        errorProperty().onChange {
+            Platform.runLater {
+                val errorMessage = FX.messages["player.streamError"].msgFormat(it!!.localizedMessage)
+                find<PlayerViewModel>().stateProperty.value = PlayerState.Error(errorMessage)
+            }
+        }
+
+        if (status == Status.STOPPED || status == Status.READY) {
+            play()
+        }
     }
 }
