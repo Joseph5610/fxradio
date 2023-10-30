@@ -14,7 +14,7 @@ import org.testfx.framework.junit5.Stop
 @DisplayName("API tests")
 class ApiTest : BaseTest() {
 
-    private val service = ServiceProvider("https://${Config.API.fallbackApiServerURL}").create<RadioBrowserApi>()
+    private val service = ServiceProvider("https://${Config.API.FALLBACK_URL}").create<RadioBrowserApi>()
 
     @Start
     fun start(stage: Stage) = loadApp(stage)

@@ -11,7 +11,7 @@ private val logger = KotlinLogging.logger {}
 object MusicBrainzApiProvider : AbstractApiProvider<MusicBrainzApi>() {
 
     override val serviceProvider by lazy {
-        ServiceProvider(Config.API.musicBrainzApi).also {
+        ServiceProvider(Config.API.MUSICBRAINZ_URL).also {
             logger.info { "Initialized MusicBrainz API provider" }
         }
     }

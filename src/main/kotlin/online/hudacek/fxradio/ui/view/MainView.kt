@@ -40,7 +40,7 @@ import tornadofx.vbox
 /**
  * Entry to the app, parent to all other views inside it
  */
-class MainView : BaseView(FxRadio.appName) {
+class MainView : BaseView(FxRadio.APP_NAME) {
 
     private val windowDividerProperty by lazy { Property(Properties.WindowDivider) }
 

@@ -25,7 +25,7 @@ object ApiUtils {
     /**
      * Stations from those countries are filtered in the whole application
      */
-    internal val COUNTRY_IGNORE_LIST = listOf("RU", "BY")
+    internal val COUNTRY_IGNORE_LIST = listOf("RU", "BY", "PS")
 
     /**
      * Returns true if the [url] is valid HTTP or HTTPS URL

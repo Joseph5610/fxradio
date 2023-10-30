@@ -79,7 +79,7 @@ class StationImageCache : ImageCache() {
 
     companion object {
 
-        val defaultStationLogo by lazy { Image(Config.Resources.waveIcon) }
+        val defaultStationLogo by lazy { Image(Config.Resources.APP_WAVE_ICON) }
 
         private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) = ips.use {
             Files.copy(it, cacheBasePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)

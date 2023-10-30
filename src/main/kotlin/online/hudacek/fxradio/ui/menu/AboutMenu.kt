@@ -26,11 +26,11 @@ import online.hudacek.fxradio.util.openWindow
 import tornadofx.action
 import tornadofx.get
 
-class AboutMenu : BaseMenu(FxRadio.appName) {
+class AboutMenu : BaseMenu(FxRadio.APP_NAME) {
 
     val aboutMainItems by lazy {
         listOf(
-            item(messages["menu.app.about"] + " " + FxRadio.appName) {
+            item(messages["menu.app.about"] + " " + FxRadio.APP_NAME) {
                 action {
                     Modal.AppInfo.openWindow()
                 }

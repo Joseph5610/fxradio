@@ -46,7 +46,7 @@ class GetCoverArtUseCase : BaseUseCase<String, Maybe<Response>>() {
         .flatMapMaybe { maybeOfNullable(it.releases.firstOrNull { r -> r.score >= SCORE_THRESHOLD }) }
         .map {
             // Take only the most probable candidate for cover art
-            val coverUrl = Config.API.coverArtApiUrl + it.id + ART_PATH
+            val coverUrl = Config.API.COVER_ART_URL + it.id + ART_PATH
             ReleaseWithCoverArt(coverUrl, it)
         }
         .doOnSuccess { logger.debug { "Requesting CoverArt: ${it.coverArtUrl}" } }

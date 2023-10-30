@@ -39,7 +39,7 @@ class GetServersUseCase : BaseUseCase<Property<ServersState>, Unit>() {
         input.value = ServersState.Loading
         mainScope.launch {
             withContext(IO) {
-                HttpClient.lookup(Config.API.dnsLookupURL)
+                HttpClient.lookup(Config.API.DNS_LOOKUP_URL)
                     .map { it.canonicalHostName }
                     .distinct()
                     .let {

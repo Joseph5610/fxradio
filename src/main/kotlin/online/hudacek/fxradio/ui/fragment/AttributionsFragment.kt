@@ -56,7 +56,7 @@ class AttributionsFragment : BaseFragment() {
     private val viewModel: AttributionViewModel by inject()
 
     override val root = vbox {
-        title = "${messages["attributions.title"]} ${FxRadio.appName}"
+        title = "${messages["attributions.title"]} ${FxRadio.APP_NAME}"
         prefWidth = 500.0
         paddingAll = 10.0
 
