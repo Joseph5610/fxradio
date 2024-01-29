@@ -46,6 +46,7 @@ enum class Properties(val key: String) {
     DarkMode("app.darkmode"),
     UseTrayIcon("app.trayicon"),
     EnableDebugView("app.debug"), // Not configurable in UI
+    SleepTimerInterval("timer.interval"),
 }
 
 /**

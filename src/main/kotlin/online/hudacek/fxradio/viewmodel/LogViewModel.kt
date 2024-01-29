@@ -39,15 +39,15 @@ class LogViewModel : BaseViewModel<Log>(Log()) {
     val levelProperty by lazy { bind(Log::level) as ObjectProperty }
 
     init {
-        //Init correct log level after view model creation
+        // Init correct log level after view model creation
         setLogLevel()
     }
 
     override fun onCommit() {
-        //Set Current Logger Level
+        // Set Current Logger Level
         setLogLevel()
 
-        //Save it
+        // Save it
         Properties.LogLevel.save(levelProperty.value)
     }
 

@@ -20,11 +20,13 @@ package online.hudacek.fxradio.viewmodel
 
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
+import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.StringProperty
 import online.hudacek.fxradio.event.data.AppNotification
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
+import online.hudacek.fxradio.media.SleepTimerService
 import online.hudacek.fxradio.media.StreamMetaData
 import online.hudacek.fxradio.usecase.station.StationClickUseCase
 import online.hudacek.fxradio.util.Properties
@@ -46,12 +48,14 @@ class Player(
     animate: Boolean = Properties.PlayerAnimated.value(true),
     volume: Double = Properties.Volume.value(-15.0),
     trackName: String = "",
-    mediaPlayer: MediaPlayer = MediaPlayerFactory.create()
+    mediaPlayer: MediaPlayer = MediaPlayerFactory.create(),
+    sleepTimerInterval: Int = Properties.SleepTimerInterval.value(0)
 ) {
     var animate: Boolean by property(animate)
     var volume: Double by property(volume)
     var trackName: String by property(trackName)
     var mediaPlayer: MediaPlayer by property(mediaPlayer)
+    var sleepTimerInterval: Int by property(sleepTimerInterval)
 }
 
 /**
@@ -61,11 +65,13 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
     private val stationClickUseCase: StationClickUseCase by inject()
+    private val sleepTimerService by lazy { SleepTimerService() }
 
     val animateProperty = bind(Player::animate) as BooleanProperty
     val volumeProperty = bind(Player::volume) as DoubleProperty
     val trackNameProperty = bind(Player::trackName) as StringProperty
     val mediaPlayerProperty = bind(Player::mediaPlayer) as ObjectProperty
+    val sleepTimerIntervalProperty = bind(Player::sleepTimerInterval) as IntegerProperty
 
     fun initializePlayer() {
 
@@ -109,6 +115,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
                         mp.changeVolume(volumeProperty.value)
                         mp.play(it.url)
                         mp.changeVolume(volumeProperty.value)
+                        sleepTimerService.start()
                     }
                 }
 
@@ -145,6 +152,7 @@ class PlayerViewModel : BaseStateViewModel<Player, PlayerState>(Player(), Player
             Properties.Player to mediaPlayerProperty.value.playerType,
             Properties.PlayerAnimated to animateProperty.value,
             Properties.Volume to volumeProperty.value,
+            Properties.SleepTimerInterval to sleepTimerIntervalProperty.value
         )
     }
 }

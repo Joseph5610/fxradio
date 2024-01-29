@@ -28,6 +28,7 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.booleanBinding
+import tornadofx.checkmenuitem
 import tornadofx.disableWhen
 import tornadofx.get
 
@@ -82,7 +83,47 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    override val menuItems = listOf(startItem, stopItem, separator(), playerTypeItem, animateItem)
+    private val sleepTimerItem by lazy {
+        menu(messages["sleepTimer.menu"]) {
+            checkmenuitem(messages["sleepTimer.disabled"]) {
+                val timerValue = 0
+                playerViewModel.sleepTimerIntervalProperty.toObservable()
+                    .subscribe {
+                        isSelected = it == timerValue
+                    }
+                action {
+                    playerViewModel.sleepTimerIntervalProperty.value = timerValue
+                    playerViewModel.commit()
+                }
+            }
+            checkmenuitem(messages["sleepTimer.30min"]) {
+                val timerValue = 30 * 60
+                playerViewModel.sleepTimerIntervalProperty.toObservable()
+                    .subscribe {
+                        isSelected = it == timerValue
+                    }
+                action {
+                    playerViewModel.sleepTimerIntervalProperty.value = timerValue
+                    playerViewModel.commit()
+                }
+            }
+            checkmenuitem(messages["sleepTimer.1hr"]) {
+                val timerValue = 60 * 60
+                playerViewModel.sleepTimerIntervalProperty.toObservable()
+                    .subscribe {
+                        isSelected = it == timerValue
+                    }
+                action {
+                    playerViewModel.sleepTimerIntervalProperty.value = timerValue
+                    playerViewModel.commit()
+                }
+            }
+        }
+    }
+
+    override val menuItems =
+        listOf(startItem, stopItem, separator(), playerTypeItem, animateItem, separator(), sleepTimerItem)
+
 
     private fun MenuItem.disableWhenInvalidStation() {
         disableWhen(selectedStationViewModel.stationProperty.booleanBinding {

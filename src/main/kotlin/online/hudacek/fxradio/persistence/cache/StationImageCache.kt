@@ -34,8 +34,6 @@ import kotlin.io.path.exists
 
 class StationImageCache : ImageCache() {
 
-    private val defaultStationLogoMaybe by lazy { Maybe.just(defaultStationLogo) }
-
     /**
      * Retrieves the station image either from local cache or remote url
      */
@@ -71,7 +69,7 @@ class StationImageCache : ImageCache() {
     private fun getLocalPath(station: Station): Image? {
         val stationImagePath = cacheBasePath.resolve(station.uuid)
         return if (stationImagePath.exists()) {
-            Image("file:" + stationImagePath.absolutePathString(), true)
+            Image("file:" + stationImagePath.absolutePathString(), 256.0, 256.0, true, true, true)
         } else {
             null
         }
@@ -79,7 +77,9 @@ class StationImageCache : ImageCache() {
 
     companion object {
 
-        val defaultStationLogo by lazy { Image(Config.Resources.APP_WAVE_ICON) }
+        val defaultStationLogo by lazy { Image(Config.Resources.APP_WAVE_ICON, 256.0, 256.0, true, true, true) }
+
+        private val defaultStationLogoMaybe by lazy { Maybe.just(defaultStationLogo) }
 
         private fun copyInputStreamIntoFile(ips: InputStream, fileName: String) = ips.use {
             Files.copy(it, cacheBasePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)
