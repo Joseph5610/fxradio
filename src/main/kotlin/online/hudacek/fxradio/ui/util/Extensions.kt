@@ -38,7 +38,6 @@ import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.StationImageView
@@ -55,6 +54,7 @@ import tornadofx.bind
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.toGlyph
 import tornadofx.field
+import tornadofx.item
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.onChange

@@ -27,12 +27,14 @@ import javafx.scene.control.MenuItem
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.MouseButton
+import javafx.scene.input.MouseEvent
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.value
 import tornadofx.bind
 import tornadofx.contextmenu
+import tornadofx.selectedItem
 
 /**
  * Menu helpers
@@ -76,7 +78,7 @@ internal fun EventTarget.platformContextMenu(op: Menu.() -> Unit = {}): Menu {
     op(menu)
     if (MacUtils.isMac && Properties.UsePlatformMenus.value(true)) {
         if (this is Node) {
-            setOnMouseClicked {
+            addEventFilter(MouseEvent.MOUSE_CLICKED) {
                 if (it.button == MouseButton.SECONDARY) {
                     NsMenu.showContextMenu(menu, it)
                 }

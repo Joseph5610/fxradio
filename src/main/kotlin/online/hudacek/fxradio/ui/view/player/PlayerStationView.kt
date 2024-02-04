@@ -120,7 +120,6 @@ class PlayerStationView : BaseView() {
             prefWidthProperty().bind(this@hbox.maxWidthProperty())
 
             top {
-                autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 vbox(alignment = Pos.CENTER) {
                     // Dynamic ticker for station name
                     add(tickerView)
@@ -136,6 +135,8 @@ class PlayerStationView : BaseView() {
                             viewModel.animateProperty.not()
                         }
                     }
+
+                    autoUpdatingCopyMenu(clipboard, messages["copy.nowPlaying"], viewModel.trackNameProperty)
                 }
             }
 

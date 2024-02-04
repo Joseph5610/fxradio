@@ -34,7 +34,7 @@ object Attributions {
             Attribution("slf4j-api", "2.0.7", Licenses.sl4fj),
             Attribution("log4j", "2.20.0", Licenses.apache20),
             Attribution("kotlin-logging", "3.0.5", Licenses.apache20),
-            Attribution("nsmenufx", "3.1.10", license = Licenses.nsMenuFx),
+            Attribution("nsmenufx", "3.1.0", license = Licenses.nsMenuFx),
             Attribution("rxjavafx", "3.0.2", license = Licenses.apache20),
             Attribution("sqliteJdbc", "3.42.0.0", license = Licenses.apache20),
             Attribution("rxjava3-jdbc", "0.1.3", license = Licenses.apache20),

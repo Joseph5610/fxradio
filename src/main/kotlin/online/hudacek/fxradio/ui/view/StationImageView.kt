@@ -41,7 +41,6 @@ class StationImageView(
 
     init {
         // Set basic image properties
-        isCache = true
         isPreserveRatio = true
         fitWidth = size
         fitHeight = size
