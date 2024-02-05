@@ -192,7 +192,7 @@ task<PackageTask>("jfxNative") {
     dependsOn("jar")
     vmArgs = listOf(
         "-Xms256m",
-        "-Xmx2048m",
+        "-Xmx1500m",
         "-XX:+UnlockExperimentalVMOptions",
         "-XX:+UseG1GC"
     )
