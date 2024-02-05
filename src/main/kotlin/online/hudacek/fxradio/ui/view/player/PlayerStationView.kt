@@ -98,7 +98,7 @@ class PlayerStationView : BaseView() {
                 .subscribe({
                     if (it.first.isSuccessful) {
                         it.first.body?.byteStream().use { i ->
-                            image = Image(i)
+                            image = Image(i, 150.0, 150.0, true, true)
                         }
                     } else {
                         image = it.second

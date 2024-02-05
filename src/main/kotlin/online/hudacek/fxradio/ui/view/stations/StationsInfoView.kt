@@ -151,7 +151,7 @@ class StationsInfoView : BaseView() {
                         .subscribe {
                             if (it.isSuccessful) {
                                 it.body?.byteStream().use { i ->
-                                    image = Image(i)
+                                    image = Image(i, 80.0, 80.0, true, true)
                                 }
                             }
                         }
