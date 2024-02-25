@@ -151,11 +151,12 @@ application {
 }
 
 task<PackageTask>("jfxNative") {
+    val outputDir = project.layout.buildDirectory.dir("jfx/native")
     mainClass = "online.hudacek.fxradio.FxRadioKt"
     appName = "FXRadio"
     appDescription = "Internet Radio Directory"
     assetsDir = File("${project.rootDir}/src/main/deploy/package")
-    outputDirectory = File("${project.buildDir}/jfx/native")
+    outputDirectory = outputDir.get().asFile
     displayName = "FXRadio"
     version = appVersion
     url = "https://hudacek.online/fxradio"
