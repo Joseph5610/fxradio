@@ -141,7 +141,7 @@ configurations {
 }
 
 javafx {
-    version = "21.0.1"
+    version = "21.0.2"
     modules = mutableListOf("javafx.controls", "javafx.media")
 }
 
