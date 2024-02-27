@@ -21,7 +21,7 @@ jobs:
       - name: Find zipball on filesystem
         id: find-zipball
         run: echo "ZIPBALL_PATH=$(find . -name "FXRadio-*.zip")" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: FXRadio.zip
           path: ${{ env.ZIPBALL_PATH }}
