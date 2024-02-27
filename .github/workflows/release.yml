@@ -7,7 +7,7 @@ jobs:
     prepareRelease:
         if: startsWith(github.ref, 'refs/tags/')
         name: Prepare Release
-        runs-on: macos-12
+        runs-on: macos-13
         # Map a step output to a job output
         outputs:
             uploadUrl: ${{ steps.create_release.outputs.upload_url }}
@@ -33,15 +33,15 @@ jobs:
     build:
         if: startsWith(github.ref, 'refs/tags/')
         name: Build macOS Release
-        runs-on: macos-12
+        runs-on: macos-13
         needs:
             - prepareRelease
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-java@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-java@v4
               with:
                   distribution: 'temurin'
-                  java-version: '20'
+                  java-version: '21'
                   java-package: jdk
             - run: ./gradlew -i jfxNative
             - name: Find DMG file on filesystem
@@ -64,13 +64,13 @@ jobs:
         needs:
             - prepareRelease
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
               shell: bash
-            - uses: actions/setup-java@v3
+            - uses: actions/setup-java@v4
               with:
                   distribution: 'temurin'
-                  java-version: '20'
+                  java-version: '21'
                   java-package: jdk
             - run: ./gradlew -i jfxNative
             - name: Find MSI file on filesystem

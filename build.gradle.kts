@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.10"
+    kotlin("jvm") version "1.9.22"
     id("org.openjfx.javafxplugin") version "0.0.14"
     id("application")
 }
@@ -27,13 +27,13 @@ apply(plugin = "io.github.fvarrui.javapackager.plugin")
 val kotlinCoroutinesVersion = "1.7.3"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.20.0"
-val slf4jVersion = "2.0.7"
+val slf4jVersion = "2.0.9"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.16-alpha"
 val junitVersion = "5.10.0"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.21.2"
+val flywayVersion = "10.1.0"
 val controlsFxVersion = "11.1.2"
 
 val defaultAppJvmArgs = listOf(
@@ -79,7 +79,7 @@ allprojects {
 
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(20))
+            languageVersion.set(JavaLanguageVersion.of(21))
             vendor.set(JvmVendorSpec.ADOPTIUM)
         }
     }
@@ -141,7 +141,7 @@ configurations {
 }
 
 javafx {
-    version = "21.0.1"
+    version = "21.0.2"
     modules = mutableListOf("javafx.controls", "javafx.media")
 }
 
@@ -151,11 +151,12 @@ application {
 }
 
 task<PackageTask>("jfxNative") {
+    val outputDir = project.layout.buildDirectory.dir("jfx/native")
     mainClass = "online.hudacek.fxradio.FxRadioKt"
     appName = "FXRadio"
     appDescription = "Internet Radio Directory"
     assetsDir = File("${project.rootDir}/src/main/deploy/package")
-    outputDirectory = File("${project.buildDir}/jfx/native")
+    outputDirectory = outputDir.get().asFile
     displayName = "FXRadio"
     version = appVersion
     url = "https://hudacek.online/fxradio"
