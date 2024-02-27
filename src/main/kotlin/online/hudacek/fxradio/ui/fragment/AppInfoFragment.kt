@@ -47,13 +47,13 @@ class AppInfoFragment : BaseFragment() {
         prefWidth = 280.0
 
         vbox(alignment = Pos.CENTER) {
-            imageview(Config.Resources.appLogo) {
+            imageview(Config.Resources.APP_LOGO) {
                 fitHeight = 80.0
                 isPreserveRatio = true
                 paddingAll = 20.0
             }
 
-            label(FxRadio.appName) {
+            label(FxRadio.APP_NAME) {
                 style {
                     paddingAll = 10.0
                 }
@@ -72,7 +72,7 @@ class AppInfoFragment : BaseFragment() {
                 }
             }
 
-            smallLabel("${FxRadio.copyright} ${FxRadio.author}")
+            smallLabel("${FxRadio.copyright} ${FxRadio.APP_AUTHOR}")
         }
 
         vbox(alignment = Pos.CENTER) {
@@ -80,7 +80,7 @@ class AppInfoFragment : BaseFragment() {
 
             hyperlink(messages["about.dataSource"]) {
                 action {
-                    app.openUrl(Config.API.radioBrowserUrl)
+                    app.openUrl(Config.API.BASE_URL)
                 }
                 addClass(Styles.grayLabel)
             }

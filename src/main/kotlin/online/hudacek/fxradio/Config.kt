@@ -24,19 +24,18 @@ package online.hudacek.fxradio
 object Config {
 
     object Resources {
-        const val appLogo = "radio-icon-applogo.png"
-        const val stageIcon = "radio-logo-stageicon.png"
-        const val trayIcon = "/radio-icon-applogo.png"
-        const val waveIcon = "radio-logo-big.png"
+        const val APP_LOGO = "radio-icon-applogo.png"
+        const val APP_STAGE_ICON = "radio-logo-stageicon.png"
+        const val APP_TRAY_ICON = "/radio-icon-applogo.png"
+        const val APP_WAVE_ICON = "radio-logo-big.png"
     }
 
     object API {
-        const val dnsLookupURL = "all.api.radio-browser.info"
-        const val fallbackApiServerURL = "nl1.api.radio-browser.info"
-        const val repositoryURL = "https://github.com/Joseph5610/fxradio/"
-        const val radioBrowserUrl = "https://radio-browser.info"
-        const val musicBrainzApi = "https://musicbrainz.org/ws/2/"
-        const val coverArtApiUrl = "https://coverartarchive.org/release/"
+        const val DNS_LOOKUP_URL = "all.api.radio-browser.info"
+        const val FALLBACK_URL = "nl1.api.radio-browser.info"
+        const val BASE_URL = "https://radio-browser.info"
+        const val MUSICBRAINZ_URL = "https://musicbrainz.org/ws/2/"
+        const val COVER_ART_URL = "https://coverartarchive.org/release/"
     }
 
     /**
@@ -44,7 +43,7 @@ object Config {
      * All user files should be stored in $USER_HOME/.fxradio/ directory
      */
     object Paths {
-        private val appName = FxRadio.appName.lowercase()
+        private val appName = FxRadio.APP_NAME.lowercase()
 
         val baseAppPath = System.getProperty("user.home") + "/.$appName"
         val confDirPath = "$baseAppPath/conf"

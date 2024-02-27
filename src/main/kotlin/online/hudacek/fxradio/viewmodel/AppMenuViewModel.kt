@@ -54,5 +54,5 @@ class AppMenuViewModel : BaseViewModel<AppMenu>(AppMenu()) {
             appEvent.appNotification.onNext(AppNotification(messages["cache.clear.error"], FontAwesome.Glyph.WARNING))
         })
 
-    fun openWebsite() = app.openUrl(FxRadio.appUrl)
+    fun openWebsite() = app.openUrl(FxRadio.APP_URL)
 }

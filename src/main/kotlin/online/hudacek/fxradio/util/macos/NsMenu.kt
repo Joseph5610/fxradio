@@ -42,7 +42,7 @@ class NsMenu {
      * macOS default Application Menu
      */
     private val appMenu by lazy {
-        menu(FxRadio.appName) {
+        menu(FxRadio.APP_NAME) {
             items.addAll(
                 separator(),
                 toolkit.createHideMenuItem(text),
@@ -106,7 +106,7 @@ class NsMenu {
          */
         private val dockMenu by lazy {
             menu("") {
-                item(messages["show"] + " " + FxRadio.appName) {
+                item(messages["show"] + " " + FxRadio.APP_NAME) {
                     action {
                         primaryStage.show()
                         primaryStage.toFront()

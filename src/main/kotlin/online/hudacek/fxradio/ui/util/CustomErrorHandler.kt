@@ -28,8 +28,8 @@ import javafx.scene.control.TextArea
 import javafx.scene.input.Clipboard
 import javafx.scene.layout.VBox
 import mu.KotlinLogging
-import online.hudacek.fxradio.Config
 import online.hudacek.fxradio.FxRadio
+import online.hudacek.fxradio.FxRadio.Companion.APP_GITHUB_URL
 import online.hudacek.fxradio.ui.style.Styles
 import tornadofx.FX.Companion.application
 import tornadofx.FX.Companion.primaryStage
@@ -38,8 +38,7 @@ import tornadofx.addClass
 import tornadofx.putString
 import java.net.URLEncoder
 
-private const val ISSUE_URL = Config.API.repositoryURL +
-        "issues/new?assignees=&labels=bug&template=bug_report.md&title="
+private const val ISSUE_URL = "${APP_GITHUB_URL}issues/new?assignees=&labels=bug&template=bug_report.md&title="
 
 private val log = KotlinLogging.logger("ErrorHandler")
 

@@ -111,7 +111,7 @@ open class FxRadio(
                     y = it
                 }
             }
-            setStageIcon(Image(Config.Resources.stageIcon))
+            setStageIcon(Image(Config.Resources.APP_STAGE_ICON))
             super.start(this)
         }
 
@@ -154,9 +154,10 @@ open class FxRadio(
      */
     companion object {
 
-        const val appName = "FXRadio"
-        const val appUrl = "https://hudacek.online/fxradio/"
-        const val author = "hudacek.online"
+        const val APP_NAME = "FXRadio"
+        const val APP_URL = "https://hudacek.online/fxradio/"
+        const val APP_AUTHOR = "hudacek.online"
+        const val APP_GITHUB_URL = "https://github.com/Joseph5610/fxradio/"
         val copyright = "Copyright (c) 2020-" + Year.now().value
 
         /**

@@ -20,7 +20,6 @@ package online.hudacek.fxradio.ui.view
 
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
-import javafx.scene.CacheHint
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import mu.KotlinLogging
@@ -42,8 +41,6 @@ class StationImageView(
 
     init {
         // Set basic image properties
-        isCache = true
-        cacheHint = CacheHint.SPEED
         isPreserveRatio = true
         fitWidth = size
         fitHeight = size

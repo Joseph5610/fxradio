@@ -37,7 +37,7 @@ sealed class ServersState(val key: String = "") {
 }
 
 class Servers(
-    selectedServer: String = Properties.ApiServer.value(Config.API.fallbackApiServerURL),
+    selectedServer: String = Properties.ApiServer.value(Config.API.FALLBACK_URL),
     availableServers: ObservableList<String> = observableListOf(selectedServer)
 ) {
     var selected: String by property(selectedServer)

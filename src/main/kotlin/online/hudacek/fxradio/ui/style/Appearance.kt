@@ -30,7 +30,7 @@ class LightAppearance : Appearance() {
     override val backgroundBorder = "#E8E8E8"
     override val backgroundSelected = "#E9E9E9"
     override val label = "#2b2b2b"
-    override val grayLabel = "#8B8B8B"
+    override val grayLabel = "#5a5a5a"
 }
 
 class DarkAppearance : Appearance() {

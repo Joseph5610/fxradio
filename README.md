@@ -49,7 +49,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/FXRadio.app/
 
 # Build
 
-App requires JDK 20 and JavaFX 20 to build and run.
+App requires JDK 20 and JavaFX 21 to build and run.
 
 To build the app yourself:
 

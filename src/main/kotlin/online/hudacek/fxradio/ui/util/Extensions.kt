@@ -38,7 +38,6 @@ import javafx.stage.Window
 import javafx.util.Duration
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
-import online.hudacek.fxradio.ui.menu.item
 import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.view.StationImageView
@@ -55,6 +54,7 @@ import tornadofx.bind
 import tornadofx.controlsfx.bindAutoCompletion
 import tornadofx.controlsfx.toGlyph
 import tornadofx.field
+import tornadofx.item
 import tornadofx.label
 import tornadofx.managedWhen
 import tornadofx.onChange
@@ -72,12 +72,13 @@ private const val NOTIFICATION_TIME_ON_SCREEN = 3.0
  * This is to overcome a bug that sometimes
  * scene is not available when requesting focus
  */
-internal fun Node.requestFocusOnSceneAvailable() = if (scene == null) {
+internal fun Node.requestFocusOnSceneAvailable(action: () -> Unit = {}) = if (scene == null) {
     val listener = object : ChangeListener<Scene> {
         override fun changed(observable: ObservableValue<out Scene>?, oldValue: Scene?, newValue: Scene?) {
             if (newValue != null) {
                 sceneProperty().removeListener(this)
                 requestFocus()
+                action()
             }
         }
     }

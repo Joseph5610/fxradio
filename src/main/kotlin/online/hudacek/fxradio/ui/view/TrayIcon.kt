@@ -45,15 +45,15 @@ class TrayIcon : Controller() {
     private val showIconObservable = preferencesViewModel.useTrayIconProperty.toObservable()
 
     private fun createIcon() = with(app) {
-        trayicon(resources.stream(Config.Resources.trayIcon), tooltip = FxRadio.appName, autoSize = true) {
+        trayicon(resources.stream(Config.Resources.APP_TRAY_ICON), tooltip = FxRadio.APP_NAME, autoSize = true) {
             trayIcon = this
 
             setOnMouseClicked(fxThread = true) {
                 showPrimaryStage()
             }
 
-            menu(FxRadio.appName) {
-                item(messages["show"] + " " + FxRadio.appName) {
+            menu(FxRadio.APP_NAME) {
+                item(messages["show"] + " " + FxRadio.APP_NAME) {
                     setOnAction(fxThread = true) {
                         showPrimaryStage()
                     }

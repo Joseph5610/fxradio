@@ -47,7 +47,7 @@ private const val WINDOW_PREF_WIDTH = 300.0
 /***
  * Simple Information about the app
  */
-class OpenStreamFragment : BaseFragment(FxRadio.appName) {
+class OpenStreamFragment : BaseFragment(FxRadio.APP_NAME) {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
 

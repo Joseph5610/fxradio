@@ -39,6 +39,7 @@ import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import online.hudacek.fxradio.viewmodel.StationsState
 import online.hudacek.fxradio.viewmodel.StationsViewModel
 import org.controlsfx.glyphfont.FontAwesome
+import tornadofx.DataGrid
 import tornadofx.action
 import tornadofx.booleanBinding
 import tornadofx.datagrid
@@ -81,24 +82,15 @@ class StationsDataGridView : BaseView() {
 
         cellWidth = CELL_WIDTH
 
-        // Handle cases when selectedStation was not selected by the DataGrid action but from other ways
+        // Always select correct station in the grid, if clicked or if station was selected some other ways
         selectedStationViewModel.stationObservable
             .subscribe {
-                if (items.contains(it)) {
-                    selectionModel.select(it)
-                } else {
-                    selectionModel.clearSelection()
-                }
+                selectOrClear(it)
             }
 
         // Cleanup selected item on refresh of library
         itemsProperty.toObservableChanges().subscribe {
-            selectionModel.clearSelection()
-            selectionModel.select(selectedStationViewModel.stationProperty.value)
-        }
-
-        onUserSelect {
-            selectStation(it)
+            selectOrClear(selectedStationViewModel.stationProperty.value)
         }
 
         cellFormat {
@@ -112,12 +104,6 @@ class StationsDataGridView : BaseView() {
                 }
             }
 
-            // Workaround for https://github.com/edvin/tornadofx/issues/1216
-            onLeftClick {
-                selectionModel.select(it)
-                selectStation(it)
-            }
-
             addEventFilter(MouseEvent.DRAG_DETECTED, cellHandler::onDragDetected)
             addEventFilter(DragEvent.DRAG_OVER, cellHandler::onDragOver)
             addEventFilter(DragEvent.DRAG_ENTERED, cellHandler::onDragEntered)
@@ -128,9 +114,29 @@ class StationsDataGridView : BaseView() {
 
         cellCache { station ->
             vbox(alignment = Pos.BOTTOM_CENTER) {
-
                 onHover {
                     tooltip(station.name)
+                }
+
+                stationView(station, LOGO_SIZE) {
+                    paddingAll = 5
+                    subscribe()
+                }
+
+                label(station.name) {
+                    if (station.hasExtendedInfo) {
+                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = VERIFIED_ICON_SIZE)
+                    }
+                    paddingTop = 5
+                    style {
+                        fontSize = 12.5.px
+                    }
+                }
+                smallLabel(station.description)
+
+                // Workaround for https://github.com/edvin/tornadofx/issues/1216
+                onLeftClick {
+                    selectStation(station)
                 }
 
                 platformContextMenu {
@@ -165,22 +171,6 @@ class StationsDataGridView : BaseView() {
                         }
                     }
                 }
-
-                stationView(station, LOGO_SIZE) {
-                    paddingAll = 5
-                    subscribe()
-                }
-
-                label(station.name) {
-                    if (station.hasExtendedInfo) {
-                        graphic = FontAwesome.Glyph.CHECK_CIRCLE.make(size = VERIFIED_ICON_SIZE)
-                    }
-                    paddingTop = 5
-                    style {
-                        fontSize = 13.px
-                    }
-                }
-                smallLabel(station.description)
             }
         }
 
@@ -191,6 +181,14 @@ class StationsDataGridView : BaseView() {
                     else -> false
                 }
             }
+        }
+    }
+
+    private fun <T> DataGrid<T>.selectOrClear(item: T) {
+        if (items.contains(item)) {
+            selectionModel.select(item)
+        } else {
+            selectionModel.clearSelection()
         }
     }
 

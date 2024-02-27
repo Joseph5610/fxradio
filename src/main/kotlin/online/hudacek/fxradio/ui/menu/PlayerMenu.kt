@@ -18,10 +18,8 @@
 
 package online.hudacek.fxradio.ui.menu
 
-import javafx.beans.property.Property
 import javafx.scene.control.CheckMenuItem
 import javafx.scene.control.MenuItem
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
 import online.hudacek.fxradio.media.MediaPlayer
 import online.hudacek.fxradio.media.MediaPlayerFactory
 import online.hudacek.fxradio.util.toObservable
@@ -30,6 +28,7 @@ import online.hudacek.fxradio.viewmodel.PlayerViewModel
 import online.hudacek.fxradio.viewmodel.SelectedStationViewModel
 import tornadofx.action
 import tornadofx.booleanBinding
+import tornadofx.checkmenuitem
 import tornadofx.disableWhen
 import tornadofx.get
 
@@ -40,7 +39,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val startItem by lazy {
         item(messages["menu.player.start"], KeyCodes.play) {
-            disableWhenInvalidStation(selectedStationViewModel.stationProperty)
+            disableWhenInvalidStation()
             action {
                 playerViewModel.stateProperty.value = selectedStationViewModel.urlResolvedProperty.let {
                     PlayerState.Playing(it.value)
@@ -51,7 +50,7 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
 
     private val stopItem by lazy {
         item(messages["menu.player.stop"], KeyCodes.stop) {
-            disableWhenInvalidStation(selectedStationViewModel.stationProperty)
+            disableWhenInvalidStation()
             action {
                 playerViewModel.stateProperty.value = PlayerState.Stopped
             }
@@ -84,10 +83,50 @@ class PlayerMenu : BaseMenu("menu.player.controls") {
         }
     }
 
-    override val menuItems = listOf(startItem, stopItem, separator(), playerTypeItem, animateItem)
+    private val sleepTimerItem by lazy {
+        menu(messages["sleepTimer.menu"]) {
+            checkmenuitem(messages["sleepTimer.disabled"]) {
+                val timerValue = 0
+                playerViewModel.sleepTimerIntervalProperty.toObservable()
+                    .subscribe {
+                        isSelected = it == timerValue
+                    }
+                action {
+                    playerViewModel.sleepTimerIntervalProperty.value = timerValue
+                    playerViewModel.commit()
+                }
+            }
+            checkmenuitem(messages["sleepTimer.30min"]) {
+                val timerValue = 30 * 60
+                playerViewModel.sleepTimerIntervalProperty.toObservable()
+                    .subscribe {
+                        isSelected = it == timerValue
+                    }
+                action {
+                    playerViewModel.sleepTimerIntervalProperty.value = timerValue
+                    playerViewModel.commit()
+                }
+            }
+            checkmenuitem(messages["sleepTimer.1hr"]) {
+                val timerValue = 60 * 60
+                playerViewModel.sleepTimerIntervalProperty.toObservable()
+                    .subscribe {
+                        isSelected = it == timerValue
+                    }
+                action {
+                    playerViewModel.sleepTimerIntervalProperty.value = timerValue
+                    playerViewModel.commit()
+                }
+            }
+        }
+    }
 
-    private fun MenuItem.disableWhenInvalidStation(station: Property<Station>) {
-        disableWhen(station.booleanBinding {
+    override val menuItems =
+        listOf(startItem, stopItem, separator(), playerTypeItem, animateItem, separator(), sleepTimerItem)
+
+
+    private fun MenuItem.disableWhenInvalidStation() {
+        disableWhen(selectedStationViewModel.stationProperty.booleanBinding {
             it == null || !it.isValid()
         })
     }

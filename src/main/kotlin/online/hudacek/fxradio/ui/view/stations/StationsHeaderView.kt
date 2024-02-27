@@ -72,7 +72,6 @@ class StationsHeaderView : BaseView() {
                     paddingTop = 8.0
                     paddingBottom = 8.0
                     addClass(Styles.subheader)
-                    addClass(Styles.boldText)
                 }
 
                 label(searchViewModel.queryBinding) {
@@ -85,7 +84,6 @@ class StationsHeaderView : BaseView() {
                     }
                     addClass(Styles.grayTextColor)
                     addClass(Styles.subheader)
-                    addClass(Styles.boldText)
                 }
             }
         }
