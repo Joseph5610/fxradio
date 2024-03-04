@@ -97,7 +97,7 @@ dependencies {
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
-    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
+    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.3")
     implementation("org.xerial:sqlite-jdbc:3.42.0.1")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
