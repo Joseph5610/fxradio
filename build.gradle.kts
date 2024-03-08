@@ -24,7 +24,7 @@ plugins {
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
-val kotlinCoroutinesVersion = "1.7.3"
+val kotlinCoroutinesVersion = "1.8.0"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.20.0"
 val slf4jVersion = "2.0.9"
@@ -97,7 +97,7 @@ dependencies {
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
-    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
+    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.3")
     implementation("org.xerial:sqlite-jdbc:3.45.1.0")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
