@@ -52,6 +52,13 @@ sealed class Modal<out T : Fragment>(
     data object Preferences : Modal<PreferencesFragment>()
     data object OpenStream : Modal<OpenStreamFragment>()
     data object Countries : Modal<CountriesSearchFragment>()
+
+    companion object {
+        /**
+         * Returns true if any [Fragment] is currently present in the scene
+         */
+        fun isAnyFragmentOpen() = FX.primaryStage.scene.findUIComponents().any { it is Fragment }
+    }
 }
 
 /**

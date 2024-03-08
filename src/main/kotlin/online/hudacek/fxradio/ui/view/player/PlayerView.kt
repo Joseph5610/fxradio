@@ -107,8 +107,10 @@ class PlayerView : BaseView() {
             }
 
             shortcut(keyCombination(KeyCode.I)) {
-                if (selectedStationViewModel.stationProperty.value.isValid()) {
-                    isSelected = !isSelected
+                if (!Modal.isAnyFragmentOpen()) {
+                    if (selectedStationViewModel.stationProperty.value.isValid()) {
+                        isSelected = !isSelected
+                    }
                 }
             }
 
