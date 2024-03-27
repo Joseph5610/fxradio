@@ -25,6 +25,7 @@ import online.hudacek.fxradio.ui.util.keyCombination
 import online.hudacek.fxradio.ui.util.make
 import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.searchField
+import online.hudacek.fxradio.util.Modal
 import online.hudacek.fxradio.viewmodel.LibraryState
 import online.hudacek.fxradio.viewmodel.LibraryViewModel
 import online.hudacek.fxradio.viewmodel.SearchViewModel
@@ -65,8 +66,10 @@ class LibrarySearchView : BaseView() {
         }
 
         shortcut(keyCombination(KeyCode.F)) {
-            requestFocusOnSceneAvailable()
-            setSearchState(text)
+            if (!Modal.isAnyFragmentOpen()) {
+                requestFocusOnSceneAvailable()
+                setSearchState(text)
+            }
         }
 
         validator {
