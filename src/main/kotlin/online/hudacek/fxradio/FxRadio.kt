@@ -55,6 +55,7 @@ private const val WINDOW_MIN_WIDTH = 800.0
 private const val WINDOW_MIN_HEIGHT = 600.0
 private const val WINDOW_DEFAULT_WIDTH = 950.0
 private const val WINDOW_DEFAULT_HEIGHT = 680.0
+
 /**
  * Load app in Dark Mode
  */
@@ -122,7 +123,7 @@ open class FxRadio(
 
         trayIcon.subscribe()
         MacUtils.setAppearance(preferencesViewModel.darkModeProperty.value)
-        if(MacUtils.isMac) {
+        if (MacUtils.isMac) {
             NsMenu.createDockMenu()
         }
     }

@@ -29,7 +29,7 @@ val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.23.1"
 val slf4jVersion = "2.0.12"
 val kotlinLoggingVersion = "3.0.5"
-val testFxVersion = "4.0.16-alpha"
+val testFxVersion = "4.0.18"
 val junitVersion = "5.10.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
@@ -127,6 +127,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
+    testImplementation("org.hamcrest:hamcrest:2.1")
 }
 
 configurations {
@@ -141,7 +142,7 @@ configurations {
 
 javafx {
     version = "21.0.2"
-    modules = mutableListOf("javafx.controls", "javafx.media")
+    modules = mutableListOf("javafx.base", "javafx.graphics", "javafx.controls", "javafx.media")
 }
 
 application {
