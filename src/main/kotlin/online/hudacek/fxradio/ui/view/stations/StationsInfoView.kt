@@ -105,7 +105,7 @@ class StationsInfoView : BaseView() {
     private val copyIcon by lazy { FontAwesome.Glyph.COPY.make(ICON_SIZE, isPrimary = false) }
     private val favouriteAddIcon by lazy { FontAwesome.Glyph.HEART.make(ICON_SIZE, isPrimary = false) }
     private val favouriteRemoveIcon by lazy { FontAwesome.Glyph.HEART_ALT.make(ICON_SIZE, isPrimary = false) }
-    private val playlistLargeIcon by lazy { FontAwesome.Glyph.TH_LIST.make(EMPTY_LIST_ICON_SIZE, isPrimary = false) }
+    private val playlistLargeIcon by lazy { FontAwesome.Glyph.HISTORY.make(EMPTY_LIST_ICON_SIZE, isPrimary = false) }
 
     private val stationLogo by lazy {
         stationView(selectedStationViewModel.stationObservable, LOGO_SIZE) {
@@ -387,5 +387,5 @@ class StationsInfoView : BaseView() {
         private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     }
 
-    private data class MetaDataWithStation(val station: Station, val metaData: StreamMetaData)
+    data class MetaDataWithStation(val station: Station, val metaData: StreamMetaData)
 }
