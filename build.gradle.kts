@@ -50,7 +50,7 @@ val defaultAppJvmArgs = listOf(
     "--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
 )
 
-version = "0.19.0"
+version = "0.19.1"
 
 val appVersion: String = version as String
 
