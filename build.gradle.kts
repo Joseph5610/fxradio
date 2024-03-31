@@ -17,24 +17,24 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.10"
-    id("org.openjfx.javafxplugin") version "0.0.14"
+    kotlin("jvm") version "1.9.23"
+    id("org.openjfx.javafxplugin") version "0.1.0"
     id("application")
 }
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
-val kotlinCoroutinesVersion = "1.7.3"
+val kotlinCoroutinesVersion = "1.8.0"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
-val log4jVersion = "2.20.0"
+val log4jVersion = "2.23.1"
 val slf4jVersion = "2.0.12"
 val kotlinLoggingVersion = "3.0.5"
-val testFxVersion = "4.0.16-alpha"
-val junitVersion = "5.10.0"
+val testFxVersion = "4.0.18"
+val junitVersion = "5.10.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "9.21.2"
-val controlsFxVersion = "11.1.2"
+val flywayVersion = "10.10.0"
+val controlsFxVersion = "11.2.0"
 
 val defaultAppJvmArgs = listOf(
     // Tornadofx
@@ -50,7 +50,7 @@ val defaultAppJvmArgs = listOf(
     "--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
 )
 
-version = "0.19.0"
+version = "0.19.1"
 
 val appVersion: String = version as String
 
@@ -59,7 +59,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven(url = "https://jitpack.io")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 
@@ -79,7 +78,7 @@ allprojects {
 
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(20))
+            languageVersion.set(JavaLanguageVersion.of(21))
             vendor.set(JvmVendorSpec.ADOPTIUM)
         }
     }
@@ -97,8 +96,8 @@ dependencies {
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
-    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.2")
-    implementation("org.xerial:sqlite-jdbc:3.42.0.1")
+    implementation("org.pdfsam.rxjava3:rxjavafx:3.0.3")
+    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {
@@ -128,6 +127,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
+    testImplementation("org.hamcrest:hamcrest:2.1")
 }
 
 configurations {
@@ -141,8 +141,8 @@ configurations {
 }
 
 javafx {
-    version = "21.0.1"
-    modules = mutableListOf("javafx.controls", "javafx.media")
+    version = "21.0.2"
+    modules = mutableListOf("javafx.base", "javafx.graphics", "javafx.controls", "javafx.media")
 }
 
 application {
@@ -151,11 +151,12 @@ application {
 }
 
 task<PackageTask>("jfxNative") {
+    val outputDir = project.layout.buildDirectory.dir("jfx/native")
     mainClass = "online.hudacek.fxradio.FxRadioKt"
     appName = "FXRadio"
     appDescription = "Internet Radio Directory"
     assetsDir = File("${project.rootDir}/src/main/deploy/package")
-    outputDirectory = File("${project.buildDir}/jfx/native")
+    outputDirectory = outputDir.get().asFile
     displayName = "FXRadio"
     version = appVersion
     url = "https://hudacek.online/fxradio"

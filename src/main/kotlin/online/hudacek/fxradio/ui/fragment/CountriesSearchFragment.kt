@@ -26,6 +26,7 @@ import online.hudacek.fxradio.ui.menu.platformContextMenu
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.flagIcon
 import online.hudacek.fxradio.ui.util.make
+import online.hudacek.fxradio.ui.util.requestFocusOnSceneAvailable
 import online.hudacek.fxradio.ui.util.searchField
 import online.hudacek.fxradio.ui.util.showWhen
 import online.hudacek.fxradio.viewmodel.LibraryState
@@ -66,6 +67,9 @@ class CountriesSearchFragment : BaseFragment() {
                 left = FontAwesome.Glyph.SEARCH.make(GLYPH_SIZE, isPrimary = false) {
                     alignment = Pos.CENTER
                     padding = insets(5, 9)
+                }
+                requestFocusOnSceneAvailable {
+                    selectAll()
                 }
             }
 
