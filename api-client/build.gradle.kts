@@ -7,5 +7,5 @@ dependencies {
     api("com.squareup.okhttp3:okhttp-dnsoverhttps")
     api("com.squareup.retrofit2:retrofit:2.10.0")
     api("com.squareup.retrofit2:adapter-rxjava3:2.10.0")
-    api("com.squareup.retrofit2:converter-gson:2.10.0")
+    api("com.squareup.retrofit2:converter-gson:2.11.0")
 }
