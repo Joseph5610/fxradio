@@ -43,13 +43,14 @@ class GetCoverArtUseCase : BaseUseCase<String, Maybe<Response>>() {
     private val musicBrainzApi: MusicBrainzApi by lazy { MusicBrainzApiProvider.provide() }
 
     override fun execute(input: String): Maybe<Response> = musicBrainzApi.getReleases(input)
+        // Take only the most probable candidate for cover art
         .flatMapMaybe { maybeOfNullable(it.releases.firstOrNull { r -> r.score >= SCORE_THRESHOLD }) }
         .map {
-            // Take only the most probable candidate for cover art
             val coverUrl = Config.API.COVER_ART_URL + it.id + ART_PATH
             ReleaseWithCoverArt(coverUrl, it)
         }
         .doOnSuccess { logger.debug { "Requesting CoverArt: ${it.coverArtUrl}" } }
+        .doOnError { logger.error(it) { "Failed to retrieve CoverArt!" } }
         .flatMapSingle { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
         .compose(applySchedulersMaybe())
         .onErrorComplete()
