@@ -1,6 +1,6 @@
 version = "0.11"
 
-val retrofitVersion = "2.10.0"
+val retrofitVersion = "2.11.0"
 val jacksonVersion = "2.17.0"
 
 dependencies {
