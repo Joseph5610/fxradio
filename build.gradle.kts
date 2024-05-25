@@ -127,7 +127,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
-    testImplementation("org.hamcrest:hamcrest:2.1")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
 configurations {
