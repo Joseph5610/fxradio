@@ -34,7 +34,7 @@ val junitVersion = "5.10.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "10.13.0"
-val controlsFxVersion = "11.2.0"
+val controlsFxVersion = "11.2.1"
 
 val defaultAppJvmArgs = listOf(
     // Tornadofx
