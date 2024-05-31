@@ -18,7 +18,8 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 import online.hudacek.fxradio.apiclient.ApiUtils.COUNTRY_IGNORE_LIST
 import java.io.Serializable
 
@@ -29,26 +30,27 @@ private const val INVALID_UUID = "0"
 /**
  * Station data class
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Station(
-    @SerializedName("stationuuid") val uuid: String,
+    @JsonProperty("stationuuid") val uuid: String,
     val name: String,
-    @SerializedName("url_resolved") val urlResolved: String,
+    @JsonProperty("url_resolved") val urlResolved: String,
     val homepage: String,
     val favicon: String?,
     val tags: String = "",
     val country: String = "",
-    @SerializedName("countrycode") val countryCode: String = "",
+    @JsonProperty("countrycode") val countryCode: String = "",
     val state: String = "",
     val language: String = "",
     val codec: String = "",
     val bitrate: Int = 0,
     val votes: Int = 0,
-    @SerializedName("geo_lat") val geoLat: Double = 0.0,
-    @SerializedName("geo_long") val geoLong: Double = 0.0,
-    @SerializedName("clicktrend") val clickTrend: Int = 0,
-    @SerializedName("clickcount") val clickCount: Int = 0,
-    @SerializedName("languagecodes") val languageCodes: String = "",
-    @SerializedName("has_extended_info") val hasExtendedInfo: Boolean = false
+    @JsonProperty("geo_lat") val geoLat: Double = 0.0,
+    @JsonProperty("geo_long") val geoLong: Double = 0.0,
+    @JsonProperty("clicktrend") val clickTrend: Int = 0,
+    @JsonProperty("clickcount") val clickCount: Int = 0,
+    @JsonProperty("languagecodes") val languageCodes: String = "",
+    @JsonProperty("has_extended_info") val hasExtendedInfo: Boolean = false
 ) : Serializable {
 
     fun isValid() = uuid != INVALID_UUID

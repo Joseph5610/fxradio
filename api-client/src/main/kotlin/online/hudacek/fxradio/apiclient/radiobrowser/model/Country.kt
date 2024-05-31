@@ -18,13 +18,13 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 import online.hudacek.fxradio.apiclient.ApiUtils.COUNTRY_IGNORE_LIST
 
 data class Country(
     val name: String,
-    @SerializedName("iso_3166_1") val iso3166: String,
-    @SerializedName("stationcount") val stationCount: Int
+    @JsonProperty("iso_3166_1") val iso3166: String,
+    @JsonProperty("stationcount") val stationCount: Int
 ) {
 
     // Don't use stationCount when comparing this data class

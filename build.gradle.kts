@@ -27,14 +27,14 @@ apply(plugin = "io.github.fvarrui.javapackager.plugin")
 val kotlinCoroutinesVersion = "1.8.0"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.23.1"
-val slf4jVersion = "2.0.12"
+val slf4jVersion = "2.0.13"
 val kotlinLoggingVersion = "3.0.5"
 val testFxVersion = "4.0.18"
 val junitVersion = "5.10.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "10.13.0"
-val controlsFxVersion = "11.2.0"
+val controlsFxVersion = "11.2.1"
 
 val defaultAppJvmArgs = listOf(
     // Tornadofx
