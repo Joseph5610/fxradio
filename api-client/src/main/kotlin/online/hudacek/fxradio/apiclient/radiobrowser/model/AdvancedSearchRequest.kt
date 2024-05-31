@@ -18,7 +18,7 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 data class AdvancedSearchRequest(
     val name: String? = null,
@@ -26,8 +26,8 @@ data class AdvancedSearchRequest(
     val tagExact: Boolean? = null,
     val order: String? = null,
     val limit: Int? = null,
-    @SerializedName("hidebroken") val hideBroken: Boolean = true,
+    @JsonProperty("hidebroken") val hideBroken: Boolean = true,
     val reverse: Boolean? = null,
-    @SerializedName("has_extended_info") val hasExtendedInfo: Boolean? = null,
+    @JsonProperty("has_extended_info") val hasExtendedInfo: Boolean? = null,
 )
 

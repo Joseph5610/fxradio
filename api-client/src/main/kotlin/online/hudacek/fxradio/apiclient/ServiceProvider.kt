@@ -18,11 +18,12 @@
 
 package online.hudacek.fxradio.apiclient
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import online.hudacek.fxradio.apiclient.http.provider.AbstractClientProvider
 import online.hudacek.fxradio.apiclient.http.provider.CachingClientProvider
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 /**
  * Provides Retrofit instance for [baseUrl]
@@ -38,7 +39,7 @@ class ServiceProvider(
     val retrofit: Retrofit
         get() = Retrofit.Builder()
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper))
             .baseUrl(baseUrl)
             .client(clientProvider.client)
             .build()
@@ -49,4 +50,12 @@ class ServiceProvider(
     inline fun <reified T : ApiDefinition> create(): T = retrofit.create(T::class.java)
 
     fun close() = clientProvider.close()
+
+    companion object {
+
+        /**
+         * instance of kotlin jackson object mapper
+         */
+        private val jacksonObjectMapper = jacksonObjectMapper()
+    }
 }

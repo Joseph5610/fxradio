@@ -18,17 +18,17 @@
 
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 data class StatsResponse(
-    @SerializedName("supported_version") val supportedVersion: String = "",
-    @SerializedName("software_version") val softwareVersion: String = "",
+    @JsonProperty("supported_version") val supportedVersion: String = "",
+    @JsonProperty("software_version") val softwareVersion: String = "",
     val status: String = "",
     val stations: String = "",
-    @SerializedName("stations_broken") val stationsBroken: String = "",
+    @JsonProperty("stations_broken") val stationsBroken: String = "",
     val tags: String = "",
-    @SerializedName("clicks_last_hour") val clicksLastHour: Int = 0,
-    @SerializedName("clicks_last_day") val clicksLastDay: Int = 0,
+    @JsonProperty("clicks_last_hour") val clicksLastHour: Int = 0,
+    @JsonProperty("clicks_last_day") val clicksLastDay: Int = 0,
     val languages: Int = 0,
     val countries: Int = 0
 )
