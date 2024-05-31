@@ -33,7 +33,7 @@ val testFxVersion = "4.0.18"
 val junitVersion = "5.10.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
-val flywayVersion = "10.10.0"
+val flywayVersion = "10.13.0"
 val controlsFxVersion = "11.2.1"
 
 val defaultAppJvmArgs = listOf(
@@ -127,7 +127,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.testfx:testfx-core:$testFxVersion")
     testImplementation("org.testfx:testfx-junit5:$testFxVersion")
-    testImplementation("org.hamcrest:hamcrest:2.1")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
 configurations {
