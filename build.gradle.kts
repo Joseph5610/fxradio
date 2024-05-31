@@ -24,7 +24,7 @@ plugins {
 
 apply(plugin = "io.github.fvarrui.javapackager.plugin")
 
-val kotlinCoroutinesVersion = "1.8.0"
+val kotlinCoroutinesVersion = "1.8.1"
 val tornadoFxVersion = "2.0.0-SNAPSHOT"
 val log4jVersion = "2.23.1"
 val slf4jVersion = "2.0.13"
