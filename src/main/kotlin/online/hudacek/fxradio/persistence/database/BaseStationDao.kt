@@ -16,30 +16,23 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package online.hudacek.fxradio.persistence.database
 
 import io.reactivex.rxjava3.core.Flowable
-import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.persistence.database.entity.StationEntity
 
-class PinnedCountriesTable(override val tableName: String = "PINNED") : Table<Country>, Database(tableName) {
+/**
+ * Common operations on database of stations with different tables (e.g. History, Favourites ...)
+ */
+abstract class BaseStationDao : Dao<Station, StationEntity> {
 
-    override fun selectAll(): Flowable<Country> = selectAllQuery()
-        .get {
-            // We do not store the count of stations for pinned countries
-            // so the returned object will have count set to 0 and the number is not displayed in UI
-            Country(it.getString("name"), it.getString("iso3"), 0)
-        }
+    override fun selectAll(): Flowable<StationEntity> = selectAllQuery().autoMap(StationEntity::class.java)
 
     override fun removeAll(): Flowable<Int> = removeAllQuery().counts()
 
-    override fun insert(element: Country): Flowable<Int> =
-        database.update("INSERT INTO $tableName (name, iso3) VALUES (:name, :iso3)")
-            .parameter("name", element.name)
-            .parameter("iso3", element.iso3166)
+    override fun remove(element: Station): Flowable<Int> =
+        database.update("DELETE FROM $tableName WHERE stationuuid = ?")
+            .parameter(element.uuid)
             .counts()
-
-    override fun remove(element: Country): Flowable<Int> = database.update("DELETE FROM $tableName WHERE name = ?")
-        .parameter(element.name)
-        .counts()
 }

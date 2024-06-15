@@ -144,7 +144,7 @@ open class FxRadio(
             RadioBrowserApiProvider.close()
             MusicBrainzApiProvider.close()
             HttpClient.close()
-            Database.close()
+            Database.shutdown()
             LogManager.shutdown()
         }
         super.stop()

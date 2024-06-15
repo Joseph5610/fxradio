@@ -28,13 +28,14 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
+import online.hudacek.fxradio.FxRadio
 import online.hudacek.fxradio.util.Properties
 import online.hudacek.fxradio.util.macos.MacUtils
 import online.hudacek.fxradio.util.macos.NsMenu
 import online.hudacek.fxradio.util.value
+import tornadofx.FX
 import tornadofx.bind
 import tornadofx.contextmenu
-import tornadofx.selectedItem
 
 /**
  * Menu helpers
@@ -74,8 +75,12 @@ internal fun separator() = SeparatorMenuItem()
  * if platform is not macOS
  */
 internal fun EventTarget.platformContextMenu(op: Menu.() -> Unit = {}): Menu {
+    val isMenuEnabled by lazy { !(FX.application as FxRadio).isAppRunningInTest }
+    if (!isMenuEnabled) return Menu()
+
     val menu = Menu()
     op(menu)
+
     if (MacUtils.isMac && Properties.UsePlatformMenus.value(true)) {
         if (this is Node) {
             addEventFilter(MouseEvent.MOUSE_CLICKED) {

@@ -21,7 +21,8 @@ package online.hudacek.fxradio.ui.view.library
 import javafx.scene.Node
 import javafx.scene.layout.VBox
 import javafx.util.Duration
-import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
+import online.hudacek.fxradio.persistence.database.Database
 import online.hudacek.fxradio.ui.BaseView
 import online.hudacek.fxradio.ui.style.Styles
 import online.hudacek.fxradio.ui.util.make
@@ -158,8 +159,9 @@ class LibraryView : BaseView() {
         // Download list of countries
         viewModel.getCountries()
 
-        Tables.pinnedCountries
+        Database.pinnedCountriesDao
             .selectAll()
+            .map { Country(name = it.name(), iso3166 = it.iso3(), stationCount = 0) }
             .subscribe {
                 viewModel.pinnedProperty += it
             }

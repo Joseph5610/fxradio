@@ -18,23 +18,35 @@
 
 package online.hudacek.fxradio.persistence.database
 
+import io.reactivex.rxjava3.core.Flowable
+import org.davidmoten.rxjava3.jdbc.Database
+import org.davidmoten.rxjava3.jdbc.SelectBuilder
+import org.davidmoten.rxjava3.jdbc.UpdateBuilder
+
 /**
- * Object that holds kotlin classes representing SQLite tables
+ * Basic interface for common table operations
  */
-object Tables {
+interface Dao<In : Any, Out: Any> {
+
+    val database: Database
 
     /**
-     * Table for stations saved as favourites
+     *  Name of the table in SQLite DB
      */
-    val favourites by lazy { FavouritesTable() }
+    val tableName: String
 
-    /**
-     * Table for history of played stations
-     */
-    val history by lazy { HistoryTable() }
+    fun selectAll(): Flowable<Out>
 
-    /**
-     * Table for pinned Countries
-     */
-    val pinnedCountries by lazy { PinnedCountriesTable() }
+    fun removeAll(): Flowable<Int>
+
+    fun insert(element: In): Flowable<Int>
+
+    fun remove(element: In): Flowable<Int>
+
+    fun selectAllQuery(): SelectBuilder = database.select("SELECT * FROM $tableName")
+
+    fun removeAllQuery(): UpdateBuilder = database.update("DELETE FROM $tableName")
 }
+
+
+

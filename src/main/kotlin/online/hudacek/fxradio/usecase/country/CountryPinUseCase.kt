@@ -20,12 +20,12 @@ package online.hudacek.fxradio.usecase.country
 
 import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.persistence.database.Tables
+import online.hudacek.fxradio.persistence.database.Database
 import online.hudacek.fxradio.usecase.BaseUseCase
 import online.hudacek.fxradio.util.applySchedulersFlowable
 
 class CountryPinUseCase : BaseUseCase<Country, Flowable<Int>>() {
 
-    override fun execute(input: Country): Flowable<Int> = Tables.pinnedCountries.insert(input)
+    override fun execute(input: Country): Flowable<Int> = Database.pinnedCountriesDao.insert(input)
         .compose(applySchedulersFlowable())
 }
