@@ -16,16 +16,29 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package online.hudacek.fxradio.usecase.country
+
+package online.hudacek.fxradio.persistence.database
 
 import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Country
-import online.hudacek.fxradio.persistence.database.Database
-import online.hudacek.fxradio.usecase.BaseUseCase
-import online.hudacek.fxradio.util.applySchedulersFlowable
+import online.hudacek.fxradio.persistence.database.entity.CountryEntity
+import org.davidmoten.rxjava3.jdbc.Database
 
-class CountryUnpinUseCase : BaseUseCase<Country, Flowable<Int>>() {
+class PinnedCountriesDao(override val database: Database) : Dao<Country, CountryEntity> {
 
-    override fun execute(input: Country): Flowable<Int> = Database.pinnedCountriesDao.remove(input)
-        .compose(applySchedulersFlowable())
+    override val tableName = "PINNED"
+
+    override fun selectAll(): Flowable<CountryEntity> = database.select(CountryEntity::class.java).get()
+
+    override fun removeAll(): Flowable<Int> = removeAllQuery().counts()
+
+    override fun insert(element: Country): Flowable<Int> =
+        database.update("INSERT INTO $tableName (name, iso3) VALUES (:name, :iso3)")
+            .parameter("name", element.name)
+            .parameter("iso3", element.iso3166)
+            .counts()
+
+    override fun remove(element: Country): Flowable<Int> = database.update("DELETE FROM $tableName WHERE name = ?")
+        .parameter(element.name)
+        .counts()
 }

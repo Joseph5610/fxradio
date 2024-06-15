@@ -18,59 +18,26 @@
 
 package online.hudacek.fxradio.persistence.database
 
-import io.reactivex.rxjava3.schedulers.Schedulers
 import online.hudacek.fxradio.Config
-import org.davidmoten.rxjava3.jdbc.Database
-import org.davidmoten.rxjava3.jdbc.SelectBuilder
-import org.davidmoten.rxjava3.jdbc.UpdateBuilder
-import org.davidmoten.rxjava3.jdbc.pool.Pools
-import org.flywaydb.core.Flyway
-import java.util.concurrent.Executors
-
-private const val DB_POOLS = 5
 
 /**
- * Database helper class with useful methods to write/read from local sqlite.db
+ * Object that holds kotlin classes representing SQLite tables
  */
-open class Database(private val tableName: String) {
+object Database {
 
-    fun selectAllQuery(): SelectBuilder = database.select("SELECT * FROM $tableName")
+    private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
 
-    fun removeAllQuery(): UpdateBuilder = database.update("DELETE FROM $tableName")
+    private val connectionManager by lazy { ConnectionManager(dbUrl) }
 
-    companion object {
+    /**
+     * Table for stations saved as favourites
+     */
+    val favouritesDao by lazy { FavouritesDao(connectionManager.database) }
 
-        private val dbUrl = "jdbc:sqlite:${Config.Paths.dbPath}"
+    /**
+     * Table for pinned Countries
+     */
+    val pinnedCountriesDao by lazy { PinnedCountriesDao(connectionManager.database) }
 
-        // Workaround for https://github.com/davidmoten/rxjava2-jdbc/issues/51
-        private val executor = Executors.newFixedThreadPool(DB_POOLS)
-
-        private val pools = Pools.nonBlocking()
-            .url(dbUrl)
-            .maxPoolSize(DB_POOLS)
-            .scheduler(Schedulers.from(executor))
-            .build()
-
-        /**
-         * Establishes connection to SQLite db with [dbUrl]
-         * Performs create table operation for all tables in [Tables] object
-         */
-        internal val database: Database = Database.from(pools).also {
-            /**
-             * Apply flyway db migrations
-             */
-            Flyway.configure().dataSource(dbUrl, null, null).load().also {
-                it.migrate()
-            }
-        }
-
-        /**
-         * Closes connection to DB
-         */
-        fun close() {
-            database.close()
-            executor.shutdownNow()
-        }
-    }
+    fun shutdown() = connectionManager.close()
 }
-

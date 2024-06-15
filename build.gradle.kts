@@ -34,7 +34,7 @@ val junitVersion = "5.10.2"
 val vlcjVersion = "4.8.2"
 val humbleVersion = "0.3.0"
 val flywayVersion = "10.14.0"
-val controlsFxVersion = "11.2.0"
+val controlsFxVersion = "11.2.1"
 
 val defaultAppJvmArgs = listOf(
     // Tornadofx
@@ -97,7 +97,7 @@ dependencies {
     implementation("no.tornado:tornadofx-controlsfx:0.1.1")
 
     implementation("org.pdfsam.rxjava3:rxjavafx:3.0.3")
-    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
+    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
     implementation("de.jangassen:nsmenufx:3.1.0")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.github.davidmoten:rxjava3-jdbc:0.1.4") {

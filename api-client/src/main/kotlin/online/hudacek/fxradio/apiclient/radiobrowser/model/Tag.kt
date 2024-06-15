@@ -1,5 +1,5 @@
 package online.hudacek.fxradio.apiclient.radiobrowser.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
-data class Tag(val name: String, @SerializedName("stationcount") val stationCount: Int)
+data class Tag(val name: String, @JsonProperty("stationcount") val stationCount: Int)

@@ -88,6 +88,8 @@ private const val COVER_ART_SIZE = 25.0
 private const val GLYPH_SIZE = 14.0
 private const val YT_URL = "https://www.youtube.com/results?search_query="
 
+data class MetaDataWithStation(val station: Station, val metaData: StreamMetaData)
+
 class StationsInfoView : BaseView() {
 
     private val selectedStationViewModel: SelectedStationViewModel by inject()
@@ -386,6 +388,4 @@ class StationsInfoView : BaseView() {
     companion object {
         private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     }
-
-    data class MetaDataWithStation(val station: Station, val metaData: StreamMetaData)
 }

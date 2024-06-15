@@ -2,11 +2,15 @@ package online.hudacek.fxradio.persistence.database
 
 import io.reactivex.rxjava3.core.Flowable
 import online.hudacek.fxradio.apiclient.radiobrowser.model.Station
+import online.hudacek.fxradio.persistence.database.entity.StationEntity
+import org.davidmoten.rxjava3.jdbc.Database
 
-class FavouritesTable : StationTable(tableName = "FAVOURITES") {
+class FavouritesDao(override val database: Database) : BaseStationDao() {
 
-    override fun selectAll() =
-        database.select("SELECT * FROM $tableName ORDER BY sorting_order ASC, id ASC;").asStationFlowable()
+    override val tableName = "FAVOURITES"
+
+    override fun selectAll(): Flowable<StationEntity> =
+        database.select("SELECT * FROM $tableName ORDER BY sorting_order ASC, id ASC;").autoMap(StationEntity::class.java)
 
     override fun insert(element: Station): Flowable<Int> = database.update(
         "INSERT INTO $tableName (name, stationuuid, url_resolved, " +
