@@ -1,7 +1,7 @@
 version = "0.11"
 
 val retrofitVersion = "2.11.0"
-val jacksonVersion = "2.17.0"
+val jacksonVersion = "2.17.1"
 
 dependencies {
     api(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
