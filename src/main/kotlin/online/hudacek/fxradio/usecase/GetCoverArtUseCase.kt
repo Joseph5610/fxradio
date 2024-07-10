@@ -50,8 +50,8 @@ class GetCoverArtUseCase : BaseUseCase<String, Maybe<Response>>() {
             ReleaseWithCoverArt(coverUrl, it)
         }
         .doOnSuccess { logger.debug { "Requesting CoverArt: ${it.coverArtUrl}" } }
-        .doOnError { logger.error(it) { "Failed to retrieve CoverArt!" } }
         .flatMapSingle { Single.fromCallable { HttpClient.request(it.coverArtUrl) } }
+        .doOnError { logger.error(it) { "Failed to retrieve CoverArt!" } }
         .compose(applySchedulersMaybe())
         .onErrorComplete()
 }

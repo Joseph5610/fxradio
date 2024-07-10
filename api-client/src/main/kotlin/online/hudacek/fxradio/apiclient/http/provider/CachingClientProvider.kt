@@ -32,8 +32,8 @@ import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
-private const val TIMEOUT_SECS: Long = 45 // Timeout for the duration of the whole call in seconds
-private const val MAX_IDLE_CONNECTIONS: Int = 7
+private const val TIMEOUT_SECS = 15L  // Timeout for the duration of the whole call in seconds
+private const val MAX_IDLE_CONNECTIONS = 7
 private const val MAX_CACHE_SIZE = 100L * 1024L * 1024L  // 100 MiB
 private const val CACHE_BASE_DIR = "fxradio-http-cache"
 private const val GOOGLE_DNS = "https://dns.google/dns-query"
