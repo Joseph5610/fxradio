@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { radioBrowserService } from "./api/radioBrowser";
-import { usePlayerStore, useFavoritesStore } from "./store/useStore";
+import { usePlayerStore, useFavoritesStore, useRecentStore } from "./store/useStore";
 import { useAudio } from "./hooks/useAudio";
 import { Search, Heart, Globe, Tag as TagIcon, History, Play, Pause, SkipBack, SkipForward, Volume2, Music } from "lucide-react";
 import { cn } from "./lib/utils";
@@ -11,6 +11,7 @@ type View = "browse" | "favorites" | "countries" | "tags" | "recent";
 function App() {
   const { currentStation, isPlaying, volume, metadata, setCurrentStation, togglePlay, setVolume } = usePlayerStore();
   const { favorites, isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const { recent, addRecent } = useRecentStore();
   const [view, setView] = useState<View>("browse");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
@@ -50,10 +51,11 @@ function App() {
   const displayStations = useMemo(() => {
     if (searchQuery) return stations || [];
     if (view === "favorites") return favorites;
+    if (view === "recent") return recent;
     if (view === "browse") return stations || [];
     if (view === "countries" && selectedItem) return stations || [];
     return [];
-  }, [view, favorites, stations, searchQuery, selectedItem]);
+  }, [view, favorites, recent, stations, searchQuery, selectedItem]);
 
   const isLoading = isLoadingStations || (view === "countries" && !selectedItem && isLoadingCountries) || (view === "tags" && isLoadingTags);
 
@@ -197,7 +199,10 @@ function App() {
                     "group relative flex flex-col items-center text-center space-y-3 p-4 rounded-xl transition-all duration-200 hover:bg-muted/50 cursor-default",
                     currentStation?.stationuuid === station.stationuuid && "bg-primary/5"
                   )}
-                  onClick={() => setCurrentStation(station)}
+                  onClick={() => {
+                    setCurrentStation(station);
+                    addRecent(station);
+                  }}
                 >
                   <div className="relative aspect-square w-full rounded-2xl bg-muted shadow-sm flex items-center justify-center overflow-hidden group-hover:shadow-md transition-shadow">
                     {station.favicon ? (

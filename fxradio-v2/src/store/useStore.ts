@@ -34,6 +34,32 @@ export const usePlayerStore = create<PlayerState>()(
   )
 );
 
+interface RecentState {
+  recent: Station[];
+  addRecent: (station: Station) => void;
+  clearRecent: () => void;
+}
+
+export const useRecentStore = create<RecentState>()(
+  persist(
+    (set) => ({
+      recent: [],
+      addRecent: (station) => {
+        set((state) => {
+          const filtered = state.recent.filter((s) => s.stationuuid !== station.stationuuid);
+          return {
+            recent: [station, ...filtered].slice(0, 50), // Keep top 50
+          };
+        });
+      },
+      clearRecent: () => set({ recent: [] }),
+    }),
+    {
+      name: "fxradio-recent-storage",
+    }
+  )
+);
+
 interface FavoritesState {
   favorites: Station[];
   addFavorite: (station: Station) => void;
