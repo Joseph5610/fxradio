@@ -2,21 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
+      "name": "Spustiť FXRadio Desktop",
+      "type": "node-terminal",
       "request": "launch",
-      "name": "Tauri Frontend (Chrome)",
-      "url": "http://localhost:1420",
-      "webRoot": "${workspaceFolder}/fxradio-v2/src",
-      "preLaunchTask": "Tauri Dev"
+      "command": "npm run tauri dev",
+      "cwd": "${workspaceFolder}/fxradio-v2"
     },
     {
-      "type": "lldb",
+      "name": "Spustiť FXRadio Web",
+      "type": "node-terminal",
       "request": "launch",
-      "name": "Tauri Backend (Rust Debug)",
-      "program": "${workspaceFolder}/fxradio-v2/src-tauri/target/debug/fxradio",
-      "args": [],
-      "cwd": "${workspaceFolder}/fxradio-v2/src-tauri",
-      "preLaunchTask": "Tauri Dev"
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/fxradio-v2"
     }
   ]
 }
