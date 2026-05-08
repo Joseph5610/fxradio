@@ -1,44 +1,108 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { radioBrowserService } from "./api/radioBrowser";
 import { usePlayerStore, useFavoritesStore } from "./store/useStore";
 import { useAudio } from "./hooks/useAudio";
-import { Search, Heart, Globe, Tag as TagIcon, History, Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Search, Heart, Globe, Tag as TagIcon, History, Play, Pause, SkipBack, SkipForward, Volume2, Music } from "lucide-react";
 import { cn } from "./lib/utils";
+
+type View = "browse" | "favorites" | "countries" | "tags" | "recent";
 
 function App() {
   const { currentStation, isPlaying, volume, setCurrentStation, togglePlay, setVolume } = usePlayerStore();
   const { favorites, isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const [view, setView] = useState<View>("browse");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   // Initialize audio engine
   useAudio();
 
-  const { data: topStations, isLoading } = useQuery({
-    queryKey: ["top-stations"],
-    queryFn: () => radioBrowserService.getTopStations(20),
+  const { data: stations, isLoading: isLoadingStations } = useQuery({
+    queryKey: ["stations", view, searchQuery, selectedItem],
+    queryFn: () => {
+      if (searchQuery) {
+        return radioBrowserService.searchStations(searchQuery, 50);
+      }
+      if (view === "browse") {
+        return radioBrowserService.getTopStations(50);
+      }
+      if (view === "countries" && selectedItem) {
+        return radioBrowserService.getStationsByCountry(selectedItem, 50);
+      }
+      return Promise.resolve([]);
+    },
+    enabled: view === "browse" || !!searchQuery || (view === "countries" && !!selectedItem),
   });
+
+  const { data: countries, isLoading: isLoadingCountries } = useQuery({
+    queryKey: ["countries"],
+    queryFn: () => radioBrowserService.getCountries(),
+    enabled: view === "countries",
+  });
+
+  const { data: tags, isLoading: isLoadingTags } = useQuery({
+    queryKey: ["tags"],
+    queryFn: () => radioBrowserService.getTags(),
+    enabled: view === "tags",
+  });
+
+  const displayStations = useMemo(() => {
+    if (searchQuery) return stations || [];
+    if (view === "favorites") return favorites;
+    if (view === "browse") return stations || [];
+    if (view === "countries" && selectedItem) return stations || [];
+    return [];
+  }, [view, favorites, stations, searchQuery, selectedItem]);
+
+  const isLoading = isLoadingStations || (view === "countries" && !selectedItem && isLoadingCountries) || (view === "tags" && isLoadingTags);
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground overflow-hidden font-sans select-none">
       {/* Sidebar - macOS inspired */}
       <aside className="w-64 bg-muted/40 border-r border-border backdrop-blur-xl flex flex-col">
         <div className="p-6 pb-2">
-          <div className="flex items-center space-x-2 text-primary">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">FXRadio</h1>
+          <div className="flex items-center space-x-2">
+            <img src="/logo.png" alt="FXRadio" className="w-8 h-8" />
+            <h1 className="text-xl font-bold tracking-tight text-primary">FXRadio</h1>
           </div>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           <div className="px-3 py-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">Library</div>
-          <SidebarItem icon={<Heart className="w-4 h-4" />} label="Favorites" count={favorites.length} />
-          <SidebarItem icon={<History className="w-4 h-4" />} label="Recently Played" />
+          <SidebarItem
+            icon={<Heart className="w-4 h-4" />}
+            label="Favorites"
+            active={view === "favorites"}
+            onClick={() => { setView("favorites"); setSearchQuery(""); }}
+            count={favorites.length}
+          />
+          <SidebarItem
+            icon={<History className="w-4 h-4" />}
+            label="Recently Played"
+            active={view === "recent"}
+            onClick={() => { setView("recent"); setSearchQuery(""); }}
+          />
 
           <div className="px-3 py-2 mt-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">Discover</div>
-          <SidebarItem icon={<Search className="w-4 h-4" />} label="Browse" active />
-          <SidebarItem icon={<Globe className="w-4 h-4" />} label="Countries" />
-          <SidebarItem icon={<TagIcon className="w-4 h-4" />} label="Tags" />
+          <SidebarItem
+            icon={<Search className="w-4 h-4" />}
+            label="Browse"
+            active={view === "browse" && !searchQuery}
+            onClick={() => { setView("browse"); setSearchQuery(""); }}
+          />
+          <SidebarItem
+            icon={<Globe className="w-4 h-4" />}
+            label="Countries"
+            active={view === "countries"}
+            onClick={() => { setView("countries"); setSearchQuery(""); }}
+          />
+          <SidebarItem
+            icon={<TagIcon className="w-4 h-4" />}
+            label="Tags"
+            active={view === "tags"}
+            onClick={() => { setView("tags"); setSearchQuery(""); }}
+          />
         </nav>
 
         <div className="p-4 border-t border-border/50">
@@ -59,12 +123,26 @@ function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 relative">
         <header className="h-12 border-b border-border/40 flex items-center px-6 justify-between bg-background/80 backdrop-blur-md sticky top-0 z-10">
-          <div className="text-[13px] font-semibold">Top Radio Stations</div>
+          <div className="flex items-center space-x-2">
+            {selectedItem && (
+              <button
+                onClick={() => setSelectedItem(null)}
+                className="p-1 hover:bg-muted rounded text-muted-foreground"
+              >
+                <SkipBack className="w-4 h-4" />
+              </button>
+            )}
+            <div className="text-[13px] font-semibold">
+              {searchQuery ? `Search results for "${searchQuery}"` : selectedItem || view.charAt(0).toUpperCase() + view.slice(1)}
+            </div>
+          </div>
           <div className="relative group">
              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
              <input
               type="search"
-              placeholder="Search..."
+              placeholder="Search stations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="h-7 w-48 rounded-md border border-border/50 bg-muted/30 pl-8 pr-3 py-1 text-[12px] transition-all focus:w-64 focus:bg-background focus:ring-1 focus:ring-primary/20"
              />
           </div>
@@ -72,10 +150,47 @@ function App() {
 
         <div className="flex-1 overflow-auto p-8 custom-scrollbar">
           {isLoading ? (
-            <div className="flex items-center justify-center h-full text-muted-foreground">Loading stations...</div>
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground space-y-4">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-sm font-medium">Loading...</p>
+            </div>
+          ) : (view === "countries" && !selectedItem && !searchQuery) ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {countries?.filter(c => c.stationcount > 10).map((country) => (
+                <button
+                  key={country.name}
+                  onClick={() => setSelectedItem(country.iso_3166_1)}
+                  className="p-4 rounded-xl bg-muted/30 hover:bg-muted/60 transition-colors text-center"
+                >
+                  <div className="text-2xl mb-1">{getFlagEmoji(country.iso_3166_1)}</div>
+                  <div className="text-xs font-bold truncate">{country.name}</div>
+                  <div className="text-[10px] text-muted-foreground">{country.stationcount} stations</div>
+                </button>
+              ))}
+            </div>
+          ) : (view === "tags" && !searchQuery) ? (
+            <div className="flex flex-wrap gap-2">
+               {tags?.filter(t => t.stationcount > 50).map((tag) => (
+                 <button
+                  key={tag.name}
+                  onClick={() => {
+                    setSearchQuery(tag.name);
+                    setView("browse");
+                  }}
+                  className="px-3 py-1.5 rounded-full bg-muted/50 hover:bg-primary hover:text-primary-foreground transition-all text-xs font-medium"
+                 >
+                   #{tag.name} <span className="opacity-50 ml-1">{tag.stationcount}</span>
+                 </button>
+               ))}
+            </div>
+          ) : displayStations.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground space-y-2 opacity-50">
+              <Music className="w-12 h-12 stroke-1" />
+              <p className="text-sm font-medium">No stations found</p>
+            </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {topStations?.map((station) => (
+              {displayStations.map((station) => (
                 <div
                   key={station.stationuuid}
                   className={cn(
@@ -86,7 +201,14 @@ function App() {
                 >
                   <div className="relative aspect-square w-full rounded-2xl bg-muted shadow-sm flex items-center justify-center overflow-hidden group-hover:shadow-md transition-shadow">
                     {station.favicon ? (
-                      <img src={station.favicon} alt={station.name} className="w-full h-full object-cover" />
+                      <img
+                        src={station.favicon}
+                        alt={station.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://www.google.com/s2/favicons?domain=' + new URL(station.url_resolved).hostname + '&sz=128';
+                        }}
+                      />
                     ) : (
                       <Globe className="w-1/3 h-1/3 text-muted-foreground/30" />
                     )}
@@ -101,7 +223,7 @@ function App() {
                         isFavorite(station.stationuuid) ? removeFavorite(station.stationuuid) : addFavorite(station);
                       }}
                       className={cn(
-                        "absolute top-2 right-2 p-1.5 rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity",
+                        "absolute top-2 right-2 p-1.5 rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity z-10",
                         isFavorite(station.stationuuid) ? "bg-red-500 text-white opacity-100" : "bg-black/20 text-white hover:bg-black/40"
                       )}
                     >
@@ -184,9 +306,20 @@ function App() {
   );
 }
 
-function SidebarItem({ icon, label, active = false, count }: { icon: React.ReactNode; label: string; active?: boolean; count?: number }) {
+function getFlagEmoji(countryCode: string) {
+  if (!countryCode) return "🌐";
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+}
+
+function SidebarItem({ icon, label, active = false, count, onClick }: { icon: React.ReactNode; label: string; active?: boolean; count?: number; onClick?: () => void }) {
   return (
-    <div className={cn(
+    <div
+      onClick={onClick}
+      className={cn(
       "flex items-center justify-between px-3 py-1.5 rounded-md text-[13px] font-medium transition-all cursor-default group",
       active ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/70 hover:bg-muted/60 hover:text-foreground"
     )}>
