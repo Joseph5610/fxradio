@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-app",
+  "productName": "FXRadio",
   "version": "0.1.0",
-  "identifier": "com.jules.tauri-app",
+  "identifier": "online.hudacek.fxradio",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,8 +12,8 @@
   "app": {
     "windows": [
       {
-        "title": "tauri-app",
-        "width": 800,
+        "title": "FXRadio",
+        "width": 1024,
         "height": 600
       }
     ],

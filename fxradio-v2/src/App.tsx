@@ -9,7 +9,7 @@ import { cn } from "./lib/utils";
 type View = "browse" | "favorites" | "countries" | "tags" | "recent";
 
 function App() {
-  const { currentStation, isPlaying, volume, setCurrentStation, togglePlay, setVolume } = usePlayerStore();
+  const { currentStation, isPlaying, volume, metadata, setCurrentStation, togglePlay, setVolume } = usePlayerStore();
   const { favorites, isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const [view, setView] = useState<View>("browse");
   const [searchQuery, setSearchQuery] = useState("");
@@ -258,29 +258,34 @@ function App() {
              </div>
           </div>
 
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <div className="flex items-center space-x-6">
-              <button className="text-muted-foreground hover:text-foreground transition-colors p-1">
+          <div className="flex-1 flex flex-col items-center justify-center px-4">
+            <div className="flex items-center space-x-6 mb-1">
+              <button className="text-muted-foreground/40 cursor-default p-1">
                 <SkipBack className="w-5 h-5 fill-current" />
               </button>
               <button
                 onClick={togglePlay}
                 disabled={!currentStation}
-                className="h-10 w-10 bg-foreground text-background rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
+                className="h-10 w-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
               >
                 {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
               </button>
-              <button className="text-muted-foreground hover:text-foreground transition-colors p-1">
+              <button className="text-muted-foreground/40 cursor-default p-1">
                 <SkipForward className="w-5 h-5 fill-current" />
               </button>
             </div>
-            <div className="w-full max-w-sm flex items-center space-x-2 mt-2">
-               <span className="text-[10px] text-muted-foreground tabular-nums w-8 text-right opacity-50">0:00</span>
-               <div className="flex-1 h-1 bg-muted rounded-full relative overflow-hidden group cursor-pointer">
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className={cn("h-full bg-primary transition-all duration-300", isPlaying ? "w-1/3" : "w-0")}></div>
+
+            <div className="w-full max-w-md flex flex-col items-center">
+               <div className="text-[12px] font-medium text-foreground/90 truncate w-full text-center h-5">
+                 {isPlaying && metadata ? (
+                    <div className="animate-in fade-in slide-in-from-bottom-1 duration-500">{metadata}</div>
+                 ) : isPlaying ? (
+                    <div className="text-muted-foreground/60 text-[10px] uppercase tracking-widest flex items-center justify-center space-x-2">
+                       <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+                       <span>Live Stream</span>
+                    </div>
+                 ) : null}
                </div>
-               <span className="text-[10px] text-muted-foreground opacity-50">LIVE</span>
             </div>
           </div>
 

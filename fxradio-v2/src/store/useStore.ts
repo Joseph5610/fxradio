@@ -6,9 +6,11 @@ interface PlayerState {
   currentStation: Station | null;
   isPlaying: boolean;
   volume: number;
+  metadata: string | null;
   setCurrentStation: (station: Station | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setVolume: (volume: number) => void;
+  setMetadata: (metadata: string | null) => void;
   togglePlay: () => void;
 }
 
@@ -18,9 +20,11 @@ export const usePlayerStore = create<PlayerState>()(
       currentStation: null,
       isPlaying: false,
       volume: 0.7,
-      setCurrentStation: (station) => set({ currentStation: station, isPlaying: !!station }),
+      metadata: null,
+      setCurrentStation: (station) => set({ currentStation: station, isPlaying: !!station, metadata: null }),
       setIsPlaying: (isPlaying) => set({ isPlaying }),
       setVolume: (volume) => set({ volume }),
+      setMetadata: (metadata) => set({ metadata }),
       togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
     }),
     {
