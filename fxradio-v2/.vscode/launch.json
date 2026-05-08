@@ -6,7 +6,7 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "npm run tauri dev",
-      "cwd": "${workspaceFolder}/fxradio-v2"
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "Web: Spustiť FXRadio",
@@ -20,7 +20,7 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "npm run tauri build",
-      "cwd": "${workspaceFolder}/fxradio-v2"
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "Web: Build Production",

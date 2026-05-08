@@ -62,3 +62,10 @@ This document outlines the strategy for migrating the FXRadio application from i
 *   **Performance:** Native WebKit rendering on macOS.
 *   **Portability:** True Web version via PWA.
 *   **Modern DX:** Hot Module Replacement, Type safety, and a vast ecosystem of React components.
+
+## 5. Legacy Features to Port (v1 to v2)
+Based on analysis of the legacy Kotlin app, the following distinct features need to be replicated in v2:
+*   **Dynamic Cover Art:** The legacy app fetched album covers for the currently playing song via MusicBrainz API (`https://musicbrainz.org/ws/2/`) and CoverArt Archive (`https://coverartarchive.org/release/`). This requires a Tauri Rust implementation to bypass CORS.
+*   **Custom Favorites Ordering:** The SQLite `FAVOURITES` table had a `sorting_order` column, allowing custom drag-and-drop ordering, not just alphabetical.
+*   **Pinned Countries:** The legacy app had a `PINNED` table to save favorite countries.
+*   **Aggressive Caching:** The legacy app aggressively cached API data in `~/.fxradio/cache`. We should ensure TanStack Query has a persistent storage persister configured.
