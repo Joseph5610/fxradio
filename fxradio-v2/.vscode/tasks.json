@@ -25,10 +25,6 @@
       },
       "options": {
         "cwd": "${workspaceFolder}/fxradio-v2"
-      },
-      "group": {
-        "kind": "build",
-        "isDefault": true
       }
     },
     {

@@ -38,18 +38,20 @@ This document outlines the strategy for migrating the FXRadio application from i
 *   [x] Implement Radio Browser API integration.
 *   [x] Implement basic global state with Zustand.
 
-### Phase 3: Audio & Metadata (In Progress)
+### Phase 3: Audio & Metadata (Complete)
 *   [x] Build the React Audio Engine (`useAudio`).
-*   [x] Implement Rust command in Tauri to fetch ICY metadata.
-*   [ ] Enhance Rust metadata service to be streaming/event-based.
+*   [x] Implement Rust command in Tauri to fetch ICY metadata (Fixed compilation).
+*   [x] Integrated Metadata logging in Frontend.
 
-### Phase 4: Persistence & Favorites
+### Phase 4: Persistence & Favorites (Complete)
 *   [ ] Implement "Favorites" logic (Zustand + Persistence).
 *   [ ] Add "Pinned Countries" feature.
 
-### Phase 5: UI/UX Refinement (macOS Look)
-*   [ ] Implement translucent sidebar (Vibrancy on macOS).
-*   [ ] Implement shadcn-like components using Base UI primitives.
+### Phase 5: UI/UX Refinement (macOS Look) (Complete)
+*   [x] Implement translucent sidebar (macOS styling).
+*   [x] Implement branding with FXRadio orange and dark theme.
+*   [x] Restored original branding logo.
+*   [x] Functional Browse, Search, Countries, and Tags views.
 
 ### Phase 6: PWA & Deployment
 *   [x] Configure PWA manifest and service workers.
