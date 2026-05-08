@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Desktop: Spustiť FXRadio",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run tauri dev",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Web: Spustiť FXRadio",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/fxradio-v2"
+    },
+    {
+      "name": "Desktop: Build Inštalátora",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run tauri build",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Web: Build Production",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run build",
+      "cwd": "${workspaceFolder}/fxradio-v2"
+    }
+  ]
+}
